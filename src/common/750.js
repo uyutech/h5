@@ -9,16 +9,17 @@ let isQQ = /\bMQQBrowser\b/.test(ua);
 let dpr = win.devicePixelRatio || 1;
 
 //非ios且非qq浏览器
-if (!isIos && !(matches && matches[1] > 534) && !isQQ) {
+if (!isIos && !(matches && matches[1] > 534) && !isQQ) {alert(1)
   dpr = 1;
 }
 let scale = 1 / dpr;
 
 let metaEl = doc.querySelector('meta[name="viewport"]');
+document.write(metaEl)
 if (!metaEl) {
   metaEl = doc.createElement('meta');
   metaEl.setAttribute('name', 'viewport');
   doc.head.appendChild(metaEl);
 }
-metaEl.setAttribute('content', 'width=device-width,user-scalable=no,initial-scale=' + scale + ',maximum-scale=' + scale + ',minimum-scale=' + scale);
+metaEl.setAttribute('content', 'width=device-width,user-scalable=0,initial-scale=' + scale + ',maximum-scale=' + scale + ',minimum-scale=' + scale);
 doc.documentElement.style.fontSize = baseFont / 2 * dpr + 'px';
