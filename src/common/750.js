@@ -9,7 +9,7 @@ let isQQ = /\bMQQBrowser\b/.test(ua);
 let dpr = win.devicePixelRatio || 1;
 
 //非ios且非qq浏览器
-if (!isIos && !(matches && matches[1] > 534) && !isQQ) {alert(1)
+if (!isIos && !(matches && matches[1] > 534) && !isQQ) {
   dpr = 1;
 }
 let scale = 1 / dpr;
