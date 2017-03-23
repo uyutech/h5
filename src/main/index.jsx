@@ -22,22 +22,7 @@ let slide = migi.render(
   document.body
 );
 let $slide = $(slide.element);
-// migi.render(
-//   <SearchNav/>,
-//   document.body
-// );
-// migi.render(
-//   <Carousel/>,
-//   document.body
-// );
-{/*migi.render(*/}
-  {/*<Follow/>,*/}
-//   document.body
-// );
-// migi.render(
-//   <News/>,
-//   document.body
-// );
+
 var bottomNav = migi.render(
   <BottomNav/>,
   document.body
@@ -45,4 +30,8 @@ var bottomNav = migi.render(
 bottomNav.on('change', function(index) {
   $slide.removeClass('s1 s2 s3');
   $slide.addClass('s' + index);
+});
+
+bridge.ready(function() {
+  console.log('ready');
 });
