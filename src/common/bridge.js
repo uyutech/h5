@@ -8,6 +8,9 @@ let bridge = {
     else {
       document.addEventListener('JSBridgeReady', cb);
     }
+  },
+  setTitle: function(s) {
+    JSBridge.call('setTitle', s || '');
   }
 };
 
