@@ -1,3 +1,7 @@
+/**
+ * Created by army on 2017/3/19.
+ */
+
 let baseFont = 100;
 let win = window;
 let doc = document;

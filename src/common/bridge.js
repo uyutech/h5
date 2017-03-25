@@ -1,3 +1,7 @@
+/**
+ * Created by army on 2017/3/19.
+ */
+
 let bridge = {
   ready: function(cb) {
     cb = cb || function() {};

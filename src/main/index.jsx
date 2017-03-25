@@ -1,3 +1,7 @@
+/**
+ * Created by army on 2017/3/19.
+ */
+
 import './index.html';
 import './index.less';
 
@@ -33,5 +37,8 @@ bottomNav.on('change', function(index) {
 });
 
 bridge.ready(function() {
-  console.log('ready');
+  bridge.setTitle('test');
+  $.getJSON("http://www.army8735.me/migijs/migi/demo/data.json", function(res) {
+    console.log(JSON.stringify(res));
+  });
 });

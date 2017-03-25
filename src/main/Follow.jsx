@@ -1,3 +1,7 @@
+/**
+ * Created by army on 2017/3/19.
+ */
+
 class Follow extends migi.Component {
   constructor(...data) {
     super(...data);
