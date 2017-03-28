@@ -5,7 +5,6 @@
 let bridge = {
   ready: function(cb) {
     cb = cb || function() {};
-    console.log(window.JSBridge);
     if(window.JSBridge && window.JSBridge.call) {
       cb();
     }
@@ -15,6 +14,23 @@ let bridge = {
   },
   setTitle: function(s) {
     JSBridge.call('setTitle', s || '');
+  },
+  pushWindow: function(s) {
+    s = s.trim();
+    if(s) {
+      if(/^\w+:\/\//i.test(s)) {}
+      else if(/^\//.test(s)) {
+        s = location.protocol + location.host + s;
+      }
+      else {
+        var i = location.href.lastIndexOf('/');
+        s = location.href.slice(0, i) + '/' + s;
+      }
+      JSBridge.call('pushWindow', s);
+    }
+  },
+  popWindow: function(data) {
+    JSBridge.call('popWindow', JSON.stringify(data));
   }
 };
 

@@ -38,7 +38,8 @@ bottomNav.on('change', function(index) {
 
 bridge.ready(function() {
   bridge.setTitle('test');
-  $.getJSON("http://www.army8735.me/migijs/migi/demo/data.json", function(res) {
-    console.log(JSON.stringify(res));
-  });
+  bridge.pushWindow('https://www.baidu.com');
+  // $.getJSON("http://www.army8735.me/migijs/migi/demo/data.json", function(res) {
+  //   console.log(JSON.stringify(res));
+  // });
 });
