@@ -4,7 +4,9 @@ const extractLESS = new ExtractTextPlugin('[name].css');
 module.exports = {
   entry: {
     common: './src/common/index.js',
-    index: './src/main/index.jsx'
+    index: './src/main/index.jsx',
+    guide: './src/guide/index.jsx',
+    step1: './src/guide/step1.jpg',
   },
   output: {
     path: __dirname + '/www',
