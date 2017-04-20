@@ -33,6 +33,11 @@ body{
     background:#edf3f7;
     border:none;
     border-radius:0.1rem;
+    text-align:center;
+    &::-webkit-input-placeholder{
+      color:#4c8daf;
+      font-size:0.13rem;
+    }
   }
   .qsex{
     margin-top:0.2rem;
@@ -49,11 +54,39 @@ body{
     font-size:0.13rem;
     li{
       flex:1;
-      &:first-child:before{
+      span{
         display:block;
+        margin-top:0.05rem;
+        opacity:0.6;
+      }
+      &.cur span{
+        opacity:1;
+      }
+      &.male:before{
+        display:block;
+        margin:0.1rem auto 0;
         width:0.86rem;
         height:0.82rem;
-        background:url(male_on.png) no-repeat;
+        background:url(male_off.png) no-repeat center;
+        background-size:100% auto;
+        content:' ';
+      }
+      &.cur.male:before{
+        background:url(male_on.png) no-repeat center;
+        background-size:100% auto;
+      }
+      &.female:before{
+        display:block;
+        margin:0.1rem auto 0;
+        width:0.86rem;
+        height:0.82rem;
+        background:url(female_off.png) no-repeat center;
+        background-size:100% auto;
+        content:' ';
+      }
+      &.cur.female:before{
+        background:url(female_on.png) no-repeat center;
+        background-size:100% auto;
       }
     }
   }
