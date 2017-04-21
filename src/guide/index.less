@@ -3,28 +3,44 @@
  */
 
 body{
-  padding-top:0.2rem;
+  padding:0.2rem 0;
   background:#FFF;
 }
 
+.logo{
+  margin:0 auto;
+  display:block;
+  width:1.74rem;
+}
+h2{
+  margin-top:0.1rem;
+  font-size:0.23rem;
+  text-align:center;
+  font-weight:400;
+}
+h4{
+  font-size:0.16rem;
+  opacity:0.6;
+  text-align:center;
+  line-height:1.8;
+  font-weight:400;
+}
+.sub{
+  margin:0.3rem auto 0;
+  display:block;
+  width:2.7rem;
+  height:0.4rem;
+  background:#4c8daf;
+  border:none;
+  color:#FFF;
+  border-radius:0.2rem;
+  font-size:0.14rem;
+  &.dis{
+    background:#edf3f7;
+    color:#8b99a3;
+  }
+}
 .step1{
-  .logo{
-    margin:0 auto;
-    display:block;
-    width:1.74rem;
-  }
-  h2{
-    margin-top:0.1rem;
-    font-size:0.23rem;
-    text-align:center;
-    font-weight:400;
-  }
-  .qname{
-    font-size:0.16rem;
-    opacity:0.6;
-    text-align:center;
-    line-height:1.8;
-  }
   .iname{
     margin:0.1rem auto 0;
     display:block;
@@ -37,6 +53,7 @@ body{
     &::-webkit-input-placeholder{
       color:#4c8daf;
       font-size:0.13rem;
+      opacity:0.5;
     }
   }
   .error{
@@ -94,6 +111,75 @@ body{
       &.cur.female:before{
         background:url(female_on.png) no-repeat center;
         background-size:100% auto;
+      }
+    }
+  }
+}
+.step2{
+  .list{
+    margin-top:0.2rem;
+    width:3.1rem;
+    .line{
+      display:flex;
+      .item{
+        flex:1;
+        .con{
+          position:relative;
+          margin:0 auto;
+          width:1rem;
+          .bg{
+            padding-top:0.06rem;
+            width:1rem;
+            height:0.54rem;
+            background:#e9e9e9;
+            border-radius:~'1rem / 0.6rem';
+            &:before{
+              display:block;
+              width:1rem;
+              height:0.54rem;
+              background:#c5d2df;
+              border-radius:~'1rem / 0.54rem';
+              content:' ';
+            }
+          }
+          .flag{
+            position:absolute;
+            left:-0.05rem;
+            bottom:0.1rem;
+            &:before{
+              position:absolute;
+              left:0.01rem;
+              bottom:0.04rem;
+              width:0.01rem;
+              height:0.3rem;
+              background:#d8d7d7;
+              border-right:0.5px solid #e8e5e5;
+              content:' ';
+            }
+            &:after{
+              position:absolute;
+              right:0;
+              bottom:-0.2rem;
+              width:0.01rem;
+              height:0.3rem;
+              background:#d8d7d7;
+              border-right:0.5px solid #e8e5e5;
+              content:' ';
+            }
+            span{
+              position:relative;
+              z-index:10;
+              display:block;
+              padding:0 0.04rem;
+              line-height:1.8;
+              background:#b8dcff;
+              white-space:nowrap;
+              color:#FFF;
+              font-size:0.12rem;
+              transform:skewY(30deg);
+            }
+          }
+        }
       }
     }
   }
