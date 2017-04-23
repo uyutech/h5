@@ -1,8 +1,7 @@
 /**
  * Created by army on 2017/4/21.
  */
-
-
+ 
 class Step2 extends migi.Component {
   constructor(...data) {
     super(...data);

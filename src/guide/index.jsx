@@ -7,6 +7,7 @@ import './index.less';
 
 import Step1 from './Step1.jsx';
 import Step2 from './Step2.jsx';
+import Step3 from './Step3.jsx';
 
 let step1 = migi.render(
   <Step1/>,
@@ -14,5 +15,9 @@ let step1 = migi.render(
 );
 let step2 = migi.render(
   <Step2/>,
+  document.body
+);
+let step3 = migi.render(
+  <Step3/>,
   document.body
 );
