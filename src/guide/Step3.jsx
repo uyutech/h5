@@ -21,10 +21,25 @@ class Step3 extends migi.Component {
         <li><img src="step1.jpg"/><span>河图</span></li>
         <li><img src="step1.jpg"/><span>河图</span></li>
       </ul>
-      <a href="change">换一换</a>
+      <a href="#" class="change">换一换</a>
       <div class="choose">
-        <ul></ul>
-        <button>我选好啦！</button>
+        <div class="lists">
+          <ul>
+            <li><img src="step1.jpg"/></li>
+            <li><img src="step1.jpg"/></li>
+            <li><img src="step1.jpg"/></li>
+            <li><img src="step1.jpg"/></li>
+            <li><img src="step1.jpg"/></li>
+            <li><img src="step1.jpg"/></li>
+            <li><img src="step1.jpg"/></li>
+            <li><img src="step1.jpg"/></li>
+            <li><img src="step1.jpg"/></li>
+            <li><img src="step1.jpg"/></li>
+            <li><img src="step1.jpg"/></li>
+            <li><img src="step1.jpg"/></li>
+          </ul>
+        </div>
+        <button>我选好啦!</button>
       </div>
     </div>;
   }
