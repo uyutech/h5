@@ -36,9 +36,35 @@ bottomNav.on('change', function(index) {
   $slide.addClass('s' + index);
 });
 
-bridge.ready(function() {
-  bridge.setTitle('test');
-  // bridge.pushWindow('https://www.baidu.com');
+jsBridge.ready(function() {
+  // setTimeout(function() {
+  //   jsBridge.back();
+  // }, 5000);
+  // jsBridge.confirm({
+  //   title: 123,
+  //   message: 'ffff'
+  // }, function(res) {
+  //   console.log(res);
+  // });
+  // jsBridge.hideBackButton();
+  // setTimeout(function() {
+  //   jsBridge.showBackButton();
+  // }, 5000);
+  // jsBridge.setTitle('test');
+  // document.addEventListener('back', function(e) {
+  //   e.preventDefault();
+  // });
+  // jsBridge.showLoading('aaa');
+  // setTimeout(function() {
+  //   jsBridge.hideLoading();
+  // }, 5000);
+  jsBridge.pushWindow('https://www.baidu.com');
+  jsBridge.on('pause', function() {
+    console.log('pause ' + location.href);
+  });
+  jsBridge.on('resume', function() {
+    console.log('resume ' + location.href);
+  });
   // $.getJSON("http://www.army8735.me/migijs/migi/demo/data.json", function(res) {
   //   console.log(JSON.stringify(res));
   // });

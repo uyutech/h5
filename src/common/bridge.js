@@ -10,7 +10,9 @@ function isType(type) {
 }
 var isString = isType('String');
 
-let bridge = {
+var CONFIRM_HASH = {};
+
+let jsBridge = {
   ready: function(cb) {
     cb = cb || function() {};
     if(window.JSBridge && window.JSBridge.call) {
@@ -19,6 +21,10 @@ let bridge = {
     else {
       document.addEventListener('JSBridgeReady', cb);
     }
+  },
+  on: function(name, cb) {
+    cb = cb || function() {};
+    document.addEventListener(name, cb);
   },
   setTitle: function(s) {
     JSBridge.call('setTitle', s || '');
@@ -47,7 +53,7 @@ let bridge = {
     if(isString(s)) {
       s = {
         title: '',
-        message: s,
+        message: s || '加载中...',
         cancelable: true
       };
     }
@@ -63,7 +69,54 @@ let bridge = {
   },
   hideLoading: function() {
     JSBridge.call('hideLoading');
+  },
+  alert: function(s) {
+    if(isString(s)) {
+      s = {
+        title: '',
+        message: s || '消息'
+      };
+    }
+    else {
+      s = s || {};
+      s.title = s.title || '';
+      s.message = s.message || '消息';
+    }
+    JSBridge.call('alert', s);
+  },
+  confirm: function(s, callback) {
+    if(isString(s)) {
+      s = {
+        title: '',
+        message: s || '确认吗？'
+      };
+    }
+    else {
+      s = s || {};
+      s.title = s.title || '';
+      s.message = s.message || '确认吗？';
+    }
+    var uid = Math.random() + '' + Date.now();
+    CONFIRM_HASH[uid] = callback || function() {};
+    s.uid = uid;
+    JSBridge.call('confirm', s);
+  },
+  confirmCb: function(uid, res) {
+    var callback = CONFIRM_HASH[uid] || function() {};
+    callback(res);
+  },
+  hideBackButton: function() {
+    JSBridge.call('hideBackButton');
+  },
+  showBackButton: function() {
+    JSBridge.call('showBackButton');
+  },
+  back: function() {
+    // 复用back event，模拟没有调用preventDefault()方法
+    JSBridge.call('back', { prevent: false });
   }
 };
 
-export default bridge;
+window.jsBridge = jsBridge;
+
+export default jsBridge;
