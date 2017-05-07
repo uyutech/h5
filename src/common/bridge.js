@@ -12,6 +12,7 @@ var isString = isType('String');
 
 var CONFIRM_HASH = {};
 
+window.JSBridge = window.JSBridge || {};
 JSBridge.ready = function(cb) {
   cb = cb || function() {};
   if(window.JSBridge && window.JSBridge.call) {
@@ -48,7 +49,7 @@ JSBridge.popWindow = function(data) {
 JSBridge.toast = function(s) {
   JSBridge.call('toast', s);
 };
-jsBridge.showLoading = function(s) {
+JSBridge.showLoading = function(s) {
   if(isString(s)) {
     s = {
       title: '',
