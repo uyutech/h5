@@ -16,6 +16,8 @@ class Step2 extends migi.Component {
           <div class="item">
             <div class="con">
               <div class="bg"></div>
+              <div class="icon"></div>
+              <div class="fg"></div>
               <div class="flag"><span>广播剧</span></div>
             </div>
           </div>

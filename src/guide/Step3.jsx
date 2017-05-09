@@ -6,8 +6,15 @@ class Step3 extends migi.Component {
   constructor(...data) {
     super(...data);
   }
+  @bind isShow = false
+  show() {
+    this.isShow = true;
+  }
+  hide() {
+    this.isShow = false;
+  }
   render() {
-    return <div class="step3">
+    return <div class={ 'step3' + (this.isShow ? '' : ' fn-hide') }>
       <img class="logo" src="step1.jpg"/>
       <h2>这里有你喜欢的东西吗？</h2>
       <h4>没有也没关系，之后随时可以添加</h4>
