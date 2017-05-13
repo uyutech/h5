@@ -18,10 +18,10 @@ let step1 = migi.render(
   <Step1/>,
   document.body
 );
-// let step2 = migi.render(
-//   <Step2/>,
-//   document.body
-// );
+let step2 = migi.render(
+  <Step2/>,
+  document.body
+);
 let step3 = migi.render(
   <Step3/>,
   document.body
@@ -29,5 +29,10 @@ let step3 = migi.render(
 
 step1.on('next', function() {
   step1.hide();
+  step2.show();
+});
+step2.on('next', function() {
+  step2.hide();
   step3.show();
 });
+// step1.hide();step2.hide();step3.show();
