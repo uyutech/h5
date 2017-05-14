@@ -36,3 +36,7 @@ step2.on('next', function() {
   step3.show();
 });
 // step1.hide();step2.hide();step3.show();
+
+jsBridge.ready(function() {
+  console.log('ready');
+});

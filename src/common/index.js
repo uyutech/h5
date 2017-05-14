@@ -7,7 +7,7 @@ import 'migi-es6-shim';
 import 'migi';
 import $ from 'anima-yocto-ajax';
 import './index.less';
-import jsBridge from './bridge.js';
+import './bridge.js';
 
 if(/iP(hone|od|ad)/.test(navigator.userAgent)) {
   var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/),
@@ -17,5 +17,4 @@ if(/iP(hone|od|ad)/.test(navigator.userAgent)) {
   }
 }
 
-window.jsBridge = jsBridge;
 window.$ = $;

@@ -8,6 +8,7 @@ module.exports = {
     guide: './src/guide/index.jsx',
     step1: './src/guide/step1.jpg',
     step2: './src/guide/step2.jpg',
+    square: './src/square/index.jsx'
   },
   output: {
     path: __dirname + '/www',
