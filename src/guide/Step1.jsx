@@ -6,9 +6,10 @@ class Step1 extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  @bind isShow = true
+  @bind isShow = false
   @bind isMale = true
   @bind isDis = true
+  @bind setDis = false
   @bind v = ''
   click(e, vd, tvd) {
     var $o = $(tvd.element);
@@ -19,8 +20,15 @@ class Step1 extends migi.Component {
   input(e, vd) {
     this.isDis = $(vd.element).val().length < 4;
   }
-  next() {
-    this.emit('next');
+  next(e, vd) {
+    var $vd = $(vd.element);
+    if(!$vd.hasClass('dis')) {
+      this.setDis = true;
+      this.emit('next');
+    }
+  }
+  enable() {
+    this.setDis = false;
   }
   show() {
     this.isShow = true;
@@ -42,7 +50,7 @@ class Step1 extends migi.Component {
           <li class={ 'female' + (this.isMale ? '' : ' cur') }><span>妹子</span></li>
         </ul>
       </div>
-      <button class={ 'sub' + (this.isDis ? ' dis' : '') } onClick={ this.next }>就叫这个！</button>
+      <button ref="next" class={ 'sub' + ((this.isDis || this.setDis) ? ' dis' : '') } onClick={ this.next }>就叫这个！</button>
     </div>;
   }
 }

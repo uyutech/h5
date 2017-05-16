@@ -7,6 +7,7 @@ class Step3 extends migi.Component {
     super(...data);
   }
   @bind isShow = false
+  @bind setDis = false
   show() {
     this.isShow = true;
   }
@@ -31,6 +32,16 @@ class Step3 extends migi.Component {
     else {
       $li.addClass('sel');
     }
+  }
+  next(e, vd) {
+    var $vd = $(vd.element);
+    if(!$vd.hasClass('dis')) {
+      this.setDis = true;
+      this.emit('next');
+    }
+  }
+  enable() {
+    this.setDis = false;
   }
   render() {
     return <div class={ 'step3' + (this.isShow ? '' : ' fn-hide') }>
@@ -65,7 +76,7 @@ class Step3 extends migi.Component {
             <li><img src="step1.jpg"/></li>
           </ul>
         </div>
-        <button>我选好啦!</button>
+        <button ref="next" class={ 'sub' + (this.setDis ? ' dis' : '') } onClick={ this.next }>我选好啦!</button>
       </div>
     </div>;
   }

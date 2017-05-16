@@ -11,8 +11,7 @@ class Step2 extends migi.Component {
     }
   }
   @bind isShow = false
-  @bind isMale = true
-  @bind isDis = true
+  @bind setDis = false
   get list() {
     return this._list || [];
   }
@@ -24,8 +23,15 @@ class Step2 extends migi.Component {
     var $li = $(tvd.element);
     $li.toggleClass('sel');
   }
-  next() {
-    this.emit('next');
+  next(e, vd) {
+    var $vd = $(vd.element);
+    if(!$vd.hasClass('dis')) {
+      this.setDis = true;
+      this.emit('next');
+    }
+  }
+  enable() {
+    this.setDis = false;
   }
   show() {
     this.isShow = true;
@@ -49,7 +55,7 @@ class Step2 extends migi.Component {
           </ul>
         </div>
       </div>
-      <button class="sub" onClick={ this.next }>我选好啦！</button>
+      <button ref="next" class={ 'sub' + (this.setDis ? ' dis' : '') } onClick={ this.next }>我选好啦！</button>
     </div>;
   }
 }
