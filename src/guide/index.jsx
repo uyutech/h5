@@ -7,23 +7,32 @@ import qs from 'anima-querystring';
 import './guide.html';
 import './index.less';
 
+import Step0 from './Step0.jsx';
 import Step1 from './Step1.jsx';
 import Step2 from './Step2.jsx';
 import Step3 from './Step3.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let step = parseInt(search.step) || 0;
+let step = parseInt(search.step);
+if(step === undefined || isNaN(step)) {
+  step = 1;
+}
+let firstStep = step;
 
+let step0 = migi.render(
+  <Step0 isShow={ step == 0 }/>,
+  document.body
+);
 let step1 = migi.render(
-  <Step1/>,
+  <Step1 isShow={ step == 1 }/>,
   document.body
 );
 let step2 = migi.render(
-  <Step2/>,
+  <Step2 isShow={ step == 2 }/>,
   document.body
 );
 let step3 = migi.render(
-  <Step3/>,
+  <Step3 isShow={ step == 3 }/>,
   document.body
 );
 
@@ -44,11 +53,13 @@ step3.on('next', function() {
 });
 
 switch (step) {
-  case 2:
+  case 3:
     step3.show();
     break;
-  case 1:
+  case 2:
     step2.show();
+    break;
+  case 0:
     break;
   default:
     step1.show();
@@ -59,17 +70,18 @@ jsBridge.ready(function() {
   jsBridge.on('back', function(e) {
     if(step) {
       e.preventDefault();
-      console.log(step);
       switch (step) {
-        case 2:
+        case 3:
           step3.hide();
           step2.show();
           step--;
           break;
-        case 1:
+        case 2:
           step2.hide();
           step1.show();
           step--;
+          break;
+        case 1:
           break;
       }
     }

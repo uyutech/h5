@@ -5,8 +5,9 @@
 class Step1 extends migi.Component {
   constructor(...data) {
     super(...data);
+    this.isShow = this.props.isShow;
   }
-  @bind isShow = false
+  @bind isShow
   @bind isMale = true
   @bind isDis = true
   @bind setDis = false

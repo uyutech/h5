@@ -5,12 +5,13 @@
 class Step2 extends migi.Component {
   constructor(...data) {
     super(...data);
+    this.isShow = this.props.isShow;
     this.list = [];
     for(let i = 0; i < 30; i++) {
       this.list.push(1);
     }
   }
-  @bind isShow = false
+  @bind isShow
   @bind setDis = false
   get list() {
     return this._list || [];

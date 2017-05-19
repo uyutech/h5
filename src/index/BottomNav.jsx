@@ -27,7 +27,7 @@ class BottomNav extends migi.Component {
           <b class="icon"></b>
           <span>转圈</span>
         </li>
-        <li class="new">
+        <li class="new cur">
           <b class="icon"></b>
         </li>
         <li class="find" rel="2">
