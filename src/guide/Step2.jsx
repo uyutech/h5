@@ -43,7 +43,7 @@ class Step2 extends migi.Component {
   render() {
     return <div class={ 'step2' + (this.isShow ? '' : ' fn-hide') }>
       <div class="con">
-        <img class="logo" src="step2.jpg"/>
+        <img class="logo" src="src/guide/step2.jpg"/>
         <h2>请选择你感兴趣的圈子</h2>
         <h4>以便我们呈现更适合你的内容</h4>
         <div class="list">

@@ -23,9 +23,16 @@ class Step1 extends migi.Component {
   }
   next(e, vd) {
     var $vd = $(vd.element);
+    var self = this;
     if(!$vd.hasClass('dis')) {
-      this.setDis = true;
-      this.emit('next');
+      self.setDis = true;
+      util.getJSON('register/setNickNameAndGenderOnRegister.json', {
+        uid: 1000,
+        nickName: 'sdf',
+        gender: 1,
+      }, function(data) {
+        self.emit('next');
+      });
     }
   }
   enable() {
@@ -40,7 +47,7 @@ class Step1 extends migi.Component {
   render() {
     return <div class={ 'step1' + (this.isShow ? '' : ' fn-hide') }>
       <div class="con">
-        <img class="logo" src="step1.jpg"/>
+        <img class="logo" src="src/guide/step1.jpg"/>
         <h2>欢迎来到转圈</h2>
         <h4>我是圈娘，请问该怎么称呼你呢？</h4>
         <input type="text" class="iname" placeholder="字数请超过4个" maxLength="16" onInput={ this.input } value={ this.v }/>

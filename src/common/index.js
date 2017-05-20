@@ -6,6 +6,7 @@
 import 'migi-es6-shim';
 import 'migi';
 import $ from 'anima-yocto-ajax';
+import util from './util';
 import './index.less';
 import './bridge.js';
 
@@ -17,4 +18,7 @@ if(/iP(hone|od|ad)/.test(navigator.userAgent)) {
   }
 }
 
+console.log(document.cookie);
+
 window.$ = $;
+window.util = util;

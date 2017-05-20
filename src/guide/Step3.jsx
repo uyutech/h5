@@ -46,35 +46,35 @@ class Step3 extends migi.Component {
   }
   render() {
     return <div class={ 'step3' + (this.isShow ? '' : ' fn-hide') }>
-      <img class="logo" src="step2.jpg"/>
+      <img class="logo" src="src/guide/step2.jpg"/>
       <h2>这里有你喜欢的作者吗？</h2>
       <h4>没有也没关系，之后随时可以添加</h4>
       <ul class="list fn-clear" onClick={ { 'li': this.click } }>
-        <li><img src="step1.jpg"/><span>河图</span></li>
-        <li><img src="step1.jpg"/><span>河图</span></li>
-        <li><img src="step1.jpg"/><span>河图</span></li>
-        <li><img src="step1.jpg"/><span>河图</span></li>
-        <li><img src="step1.jpg"/><span>河图</span></li>
-        <li><img src="step1.jpg"/><span>河图</span></li>
-        <li><img src="step1.jpg"/><span>河图</span></li>
-        <li><img src="step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
       </ul>
       <a href="#" class="change"><span>换一换</span></a>
       <div class="choose">
         <div class="lists">
           <ul onClick={ { 'li': this.click2 } }>
-            <li><img src="step1.jpg"/></li>
-            <li><img src="step1.jpg"/></li>
-            <li><img src="step1.jpg"/></li>
-            <li><img src="step1.jpg"/></li>
-            <li><img src="step1.jpg"/></li>
-            <li><img src="step1.jpg"/></li>
-            <li><img src="step1.jpg"/></li>
-            <li><img src="step1.jpg"/></li>
-            <li><img src="step1.jpg"/></li>
-            <li><img src="step1.jpg"/></li>
-            <li><img src="step1.jpg"/></li>
-            <li><img src="step1.jpg"/></li>
+            <li><img src="src/guide/step1.jpg"/></li>
+            <li><img src="src/guide/step1.jpg"/></li>
+            <li><img src="src/guide/step1.jpg"/></li>
+            <li><img src="src/guide/step1.jpg"/></li>
+            <li><img src="src/guide/step1.jpg"/></li>
+            <li><img src="src/guide/step1.jpg"/></li>
+            <li><img src="src/guide/step1.jpg"/></li>
+            <li><img src="src/guide/step1.jpg"/></li>
+            <li><img src="src/guide/step1.jpg"/></li>
+            <li><img src="src/guide/step1.jpg"/></li>
+            <li><img src="src/guide/step1.jpg"/></li>
+            <li><img src="src/guide/step1.jpg"/></li>
           </ul>
         </div>
         <button ref="next" class={ 'sub' + (this.setDis ? ' dis' : '') } onClick={ this.next }>我选好啦!</button>
