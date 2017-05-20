@@ -18,7 +18,7 @@ if(/iP(hone|od|ad)/.test(navigator.userAgent)) {
   }
 }
 
-console.log(document.cookie);
+console.log('cookie: ' + document.cookie);
 
 window.$ = $;
 window.util = util;
