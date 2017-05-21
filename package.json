@@ -27,6 +27,7 @@
     "build": "rm -rf ./www && webpack -p",
     "mock": "webpack-dev-server",
     "zip": "rm -rf dist && mkdir dist && cd www && zip -r ../dist/h5.zip *",
-    "pack": "npm run build && npm run zip"
+    "pack": "npm run build && npm run zip",
+    "pack2": "npm run start && npm run zip"
   }
 }

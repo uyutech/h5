@@ -10,6 +10,14 @@ class Step2 extends migi.Component {
     for(let i = 0; i < 30; i++) {
       this.list.push(1);
     }
+    this.on(migi.Event.DOM, function() {
+      util.getJSON('tag/getSuggestTags.json', {
+        uid: 1000,
+        pageNum: 1,
+      }, function(res) {
+        console.log(res);
+      });
+    });
   }
   @bind isShow
   @bind setDis = false

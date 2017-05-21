@@ -30,8 +30,14 @@ class Step1 extends migi.Component {
         uid: 1000,
         nickName: 'sdf',
         gender: 1,
-      }, function(data) {
-        self.emit('next');
+      }, function(res) {
+        if(res.success) {
+          self.emit('next');
+        }
+        else {
+          self.setDis = false;
+          jsBridge.toast(res.message || 123);
+        }
       });
     }
   }

@@ -67,23 +67,26 @@ switch (step) {
 }
 
 jsBridge.ready(function() {
-  jsBridge.on('back', function(e) {
-    if(step) {
-      e.preventDefault();
-      switch (step) {
-        case 3:
-          step3.hide();
-          step2.show();
-          step--;
-          break;
-        case 2:
-          step2.hide();
-          step1.show();
-          step--;
-          break;
-        case 1:
-          break;
-      }
-    }
-  });
+  // jsBridge.on('back', function(e) {
+  //   if(step) {
+  //     if(step > firstStep && step > 1) {
+  //       e.preventDefault();
+  //       switch (step) {
+  //         case 3:
+  //           step3.hide();
+  //           step2.show();
+  //           step--;
+  //           break;
+  //         case 2:
+  //           step2.hide();
+  //           step1.show();
+  //           step--;
+  //           break;
+  //         case 1:
+  //           s
+  //           break;
+  //       }
+  //     }
+  //   }
+  // });
 });
