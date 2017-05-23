@@ -10,7 +10,7 @@ import FollowList from './FollowList.jsx';
 import BottomNav from './BottomNav.jsx';
 import News from './News.jsx';
 
-migi.render(
+let carousel = migi.render(
   <Carousel/>,
   document.body
 );

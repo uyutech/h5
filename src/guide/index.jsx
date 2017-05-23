@@ -49,7 +49,7 @@ step2.on('next', function() {
   step2.enable();
 });
 step3.on('next', function() {
-  //
+  location.href = 'index.html';
 });
 
 switch (step) {

@@ -4,10 +4,13 @@
 
 let screenWidth = window.screen.availWidth;
 let itemWidth;
+let itemLength;
 let isStart;
+let isMove;
 let startX;
-let curX;
-let lastX;
+let endX;
+let curX = 0;
+let lastCur = 0;
 
 class Carousel extends migi.Component {
   constructor(...data) {
@@ -16,11 +19,20 @@ class Carousel extends migi.Component {
       let screen = this.ref.screen;
       let $screen = $(screen.element);
       let $ul = this.$ul = $screen.find('ul');
-      let $lis = $ul.find('li');
+      let $lis = this.$lis = $ul.find('li');
       itemWidth = $lis.eq(0).width();
+      itemLength = $lis.length;
       $screen.css('-webkit-transform', `translateX(${(screenWidth - itemWidth) / 2}px)`);
       $screen.css('transform', `translateX(${(screenWidth - itemWidth) / 2}px)`);
       $lis.eq(0).addClass('cur');
+      
+      let tag = this.ref.tag;
+      let $tag = $(tag.element);
+      let $tagLis = $tag.find('li');
+      this.on('change', function(i) {
+        $tagLis.removeClass('cur');
+        $tagLis.eq(i).addClass('cur');
+      });
     });
   }
   start(e) {
@@ -35,17 +47,49 @@ class Carousel extends migi.Component {
   }
   move(e) {
     if(isStart) {
-      lastX = curX = e.touches[0].pageX;
-      let diff = curX - startX;
-      this.$ul.css('-webkit-transform', `translateX(${diff}px)`);
-      this.$ul.css('transform', `translateX(${diff}px)`);
+      isMove = true;
+      endX = e.touches[0].pageX;
+      let diff = endX - startX;
+      this.$ul.css('-webkit-transform', `translate3d(${curX + diff}px, 0, 0)`);
+      this.$ul.css('transform', `translate3d(${curX + diff}px, 0, 0)`);
     }
   }
   end(e) {
-    if(isStart) {
+    if(isStart && isMove) {
       isStart = false;
-      console.log(curX);
+      isMove = false;
+      curX += endX - startX;
+      if(curX >= -itemWidth / 2) {
+        curX = 0;
+        if(lastCur != 0) {
+          this.$lis.removeClass('cur');
+          this.$lis.eq(0).addClass('cur');
+          lastCur = 0;
+          this.emit('change', lastCur);
+        }
+      }
+      else if(curX < -itemWidth * (itemLength - 1)) {
+        curX = -itemWidth * (itemLength - 1);
+        if(lastCur != itemLength - 1) {
+          this.$lis.removeClass('cur');
+          this.$lis.eq(itemLength - 1).addClass('cur');
+          lastCur = itemLength - 1;
+          this.emit('change', lastCur);
+        }
+      }
+      else {
+        let i = Math.abs(Math.round(curX / itemWidth));
+        curX = -itemWidth * i;
+        if(lastCur != i) {
+          this.$lis.removeClass('cur');
+          this.$lis.eq(i).addClass('cur');
+          lastCur = i;
+          this.emit('change', lastCur);
+        }
+      }
       this.$ul.removeClass('no_trans');
+      this.$ul.css('-webkit-transform', `translate3d(${curX}px, 0, 0)`);
+      this.$ul.css('transform', `translate3d(${curX}px, 0, 0)`);
     }
   }
   render() {
@@ -59,7 +103,7 @@ class Carousel extends migi.Component {
           <li><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100388475.jpg"/></li>
         </ul>
       </div>
-      <div class="tag">
+      <div class="tag" ref="tag">
         <ul>
           <li class="cur">1</li>
           <li>2</li>

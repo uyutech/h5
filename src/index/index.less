@@ -14,7 +14,7 @@ body{
     ul{
       width:1000%;
       height:100%;
-      transition:all 2s;
+      transition:all 0.2s;
       &.no_trans{
         transition:none;
       }
@@ -69,8 +69,93 @@ body{
 }
 
 .follow_list{
+  position:relative;
+  display:flex;
   padding:0.1rem 0;
   background:#fff;
+  align-items:center;
+  min-height:0.8rem;
+  .ti{
+    width:0.25rem;
+    .config{
+      display:flex;
+      align-items:center;
+      height:0.8rem;
+      line-height:1;
+      border-left:0.02rem solid #9ECDDB;
+      font-size:0.12rem;
+      word-wrap:break-word;
+      word-break:break-all;
+      flex-wrap:wrap;
+      text-align:center;
+      &:after{
+        display:block;
+        margin:0 auto;
+        width:0.12rem;
+        height:0.12rem;
+        background:url(config.png) no-repeat;
+        background-size:100% auto;
+        content:' ';
+        transform:translateX(0.01rem);
+      }
+    }
+  }
+  .con{
+    flex:1;
+    padding-left:0.05rem;
+    overflow:hidden;
+    .ers{
+      overflow:scroll;
+      .c{
+        width:999rem;
+        ul{
+          display:inline-block;
+          li{
+            display:inline-block;
+            text-align:center;
+            font-size:0.12rem;
+            color:#6C7275;
+            img{
+              display:block;
+              margin:0 auto 0.02rem;
+              width:0.49rem;
+              height:0.49rem;
+              border-radius:0.49rem;
+            }
+          }
+        }
+      }
+    }
+    .tags{
+      margin-top:0.08rem;
+      padding-top:0.1rem;
+      overflow:scroll;
+      border-top:1px solid #E8F4FF;
+      .hairlines &{
+        border-width:0.5px;
+      }
+      .c{
+        width:999rem;
+        ul{
+          display:inline-block;
+          li{
+            display:inline-block;
+            margin-right:0.1rem;
+            padding:0 0.1rem;
+            height:0.24rem;
+            line-height:0.24rem;
+            font-size:0.13rem;
+            color:#98A1A5;
+            border:1px solid #98A1A5;
+            .hairlines &{
+              border-width:0.5px;
+            }
+            border-radius:0.26rem;
+          }
+        }
+      }
+    }
+  }
 }
 
 .news{
