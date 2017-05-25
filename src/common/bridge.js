@@ -10,8 +10,6 @@ function isType(type) {
 }
 let isString = isType('String');
 
-let CONFIRM_HASH = {};
-
 let jsBridge = {
   ready: function(cb) {
     cb = cb || function() {};
@@ -112,16 +110,8 @@ let jsBridge = {
         s.title = s.title || '';
         s.message = s.message || '确认吗？';
       }
-      let uid = Math.random() + '' + Date.now();
-      CONFIRM_HASH[uid] = callback || function() {
-        };
-      s.uid = uid;
-      ZhuanQuanJSBridge.call('confirm', s);
+      ZhuanQuanJSBridge.call('confirm', s, callback);
     }
-  },
-  confirmCb: function(uid, res) {
-    let callback = CONFIRM_HASH[uid] || function() {};
-    callback(res);
   },
   hideBackButton: function() {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
@@ -138,7 +128,12 @@ let jsBridge = {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('back', { prevent: false });
     }
-  }
+  },
+  userInfo: function(callback) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('userInfo', callback);
+    }
+  },
 };
 
 window.jsBridge = jsBridge;

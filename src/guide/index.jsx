@@ -67,6 +67,9 @@ switch (step) {
 }
 
 jsBridge.ready(function() {
+  jsBridge.userInfo(function(res) {
+    console.log(2222222 + JSON.stringify(res));
+  });
   // jsBridge.on('back', function(e) {
   //   if(step) {
   //     if(step > firstStep && step > 1) {
