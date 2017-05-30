@@ -44,6 +44,10 @@ let util = {
           }, 20);
         }
         console.log(JSON.stringify(data));
+        success(data);
+      },
+      error: function() {
+        error();
       }
     });
   }

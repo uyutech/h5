@@ -16,13 +16,13 @@ class FollowList extends migi.Component {
       let style = document.createElement('style');
       style.innerText = `.follow_list .con .ers ul li{width:${perWidth}px}`;
       document.head.appendChild(style);
-      $ersC.css('width', Math.ceil($ersUl.width()) + 'px');
+      $ersC.css('width', Math.ceil($ersUl.width()) + 10 + 'px');
       
       let tags = this.ref.tags;
       let $tags = $(tags.element);
       let $tagsC = $tags.find('.c');
       let $tagsUl = $tagsC.find('ul');
-      $tagsC.css('width', Math.ceil($tagsUl.width()) + 'px');
+      $tagsC.css('width', Math.ceil($tagsUl.width()) + 10 + 'px');
       
       let $ersLi = $ersUl.find('li');
       let $ersImg = $ersLi.find('img');

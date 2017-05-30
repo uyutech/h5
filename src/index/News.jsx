@@ -36,6 +36,10 @@ class News extends migi.Component {
                <div class="head fn-clear">
                  <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
                </div>
+               <div class="name">
+                 <p>aaa、bbb、ccc、阿斯利康的方式、阿萨德了富士康、上岛咖啡</p>
+                 <small>1小时前</small>
+               </div>
              </div>
              <p class="info"><b class="wb"/>建立了合作项目<a href="#">《铁拳无敌孙中山，军道杀拳周恩来》</a>是的发生的发顺丰</p>
            </div>

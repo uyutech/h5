@@ -17,7 +17,10 @@ let step = parseInt(search.step);
 if(step === undefined || isNaN(step)) {
   step = 1;
 }
-let firstStep = step;
+if(step > 1) {
+  $(document.body).addClass('no_fit');
+}
+// let firstStep = step;
 
 let step0 = migi.render(
   <Step0 isShow={ step == 0 }/>,
@@ -67,9 +70,12 @@ switch (step) {
 }
 
 jsBridge.ready(function() {
-  jsBridge.userInfo(function(res) {
-    console.log(2222222 + JSON.stringify(res));
-  });
+  // jsBridge.userInfo(function(res) {
+  //   console.log(JSON.stringify(res));
+  // });
+  // jsBridge.confirm('haha', function(res) {
+  //   console.log(res);
+  // });
   // jsBridge.on('back', function(e) {
   //   if(step) {
   //     if(step > firstStep && step > 1) {

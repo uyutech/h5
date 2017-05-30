@@ -58,8 +58,15 @@ class Step3 extends migi.Component {
         <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
         <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
         <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
+        <li><img src="src/guide/step1.jpg"/><span>河图</span></li>
       </ul>
-      <a href="#" class="change"><span>换一换</span></a>
       <div class="choose">
         <div class="lists">
           <ul onClick={ { 'li': this.click2 } }>
