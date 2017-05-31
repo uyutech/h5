@@ -16,6 +16,7 @@ let util = {
       success = data;
       data = {};
     }
+    error = error || function(){};
     // 兼容无host
     if (!/^http(s)?:\/\//.test(url)) {
       url = 'http://106.14.223.219:8089/' + url.replace(/^\//, '');
@@ -32,6 +33,7 @@ let util = {
       cache: false,
       crossDomain: true,
       timeout: 10000,
+      type: 'POST',
       // ajax 跨域设置必须加上
       beforeSend: function(xhr) {
         xhr.withCredentials = true;

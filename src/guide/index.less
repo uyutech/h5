@@ -228,11 +228,9 @@ h4{
       right:1rem;
       height:0.5rem;
       background:#EAF5FA;
-      overflow-x:scroll;
-      //overflow-y:hidden;
+      overflow:scroll;
       z-index:11;
       .c{
-        //width:999rem;
         width:100%;
         height:100%;
         ul{
@@ -340,8 +338,12 @@ h4{
         }
       }
       span{
-        font-size:0.13rem;
+        display:block;
+        font-size:0.12rem;
         opacity:0.6;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
       }
     }
   }
@@ -384,48 +386,58 @@ h4{
       background:#eaf5fa;
       overflow:scroll;
       z-index:11;
-      ul{
-        width:10rem;
-        padding-top:0.06rem;
-        li{
-          position:relative;
-          margin-left:0.1rem;
+      .c{
+        width:100%;
+        height:100%;
+        ul{
           display:inline-block;
-          width:0.37rem;
-          height:0.37rem;
-          border-radius:0.37rem;
-          border:1px solid #CCC;
-          overflow:hidden;
-          transition:all 0.5s;
-          .hairlines &{
-            border-width:0.5px;
-          }
-          img{
+          padding-top:0.06rem;
+          li{
+            position:relative;
+            margin-left:0.1rem;
             display:inline-block;
-            width:100%;
-            height:100%;
-            border-radius:0.37rem;
-          }
-          &.sel:after{
-            position:absolute;
-            left:0;
-            top:0;
-            width:100%;
-            height:100%;
-            background:rgba(0,0,0,0.3) url(del.png) no-repeat center;
-            background-size:0.16rem auto;
-            border-radius:0.37rem;
-            content:' ';
-            opacity:0.7;
-          }
-          &.sel{
-            animation:shake 0.3s linear infinite;
-          }
-          &.remove{
-            margin:0;
-            opacity:0;
-            width:0;
-            border:none;
+            width:0.37rem;
+            height:0.37rem;
+            img{
+              display:inline-block;
+              width:100%;
+              height:100%;
+              border-radius:0.37rem;
+              border:1px solid #CCC;
+              transition:all 0.5s;
+              .hairlines &{
+                border-width:0.5px;
+              }
+            }
+            b{
+              position:absolute;
+              right:-0.04rem;
+              top:-0.04rem;
+              width:0.16rem;
+              height:0.16rem;
+              background:url(del.png) no-repeat;
+              background-size:100% auto;
+              content:' ';
+              opacity:0;
+              transition:all 0.2s;
+            }
+            &.sel{
+              animation:shake 0.3s linear infinite;
+              b{
+                opacity:1;
+              }
+            }
+            &.remove{
+              transition:all 0.2s;
+              margin:0;
+              padding:0;
+              opacity:0;
+              width:0!important;
+              border:none;
+              b{
+                display:none;
+              }
+            }
           }
         }
       }

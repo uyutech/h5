@@ -19,7 +19,6 @@ if (!isIos && !(matches && matches[1] > 534) && !isQQ) {
 let scale = 1 / dpr;
 
 let metaEl = doc.querySelector('meta[name="viewport"]');
-document.write(metaEl)
 if (!metaEl) {
   metaEl = doc.createElement('meta');
   metaEl.setAttribute('name', 'viewport');

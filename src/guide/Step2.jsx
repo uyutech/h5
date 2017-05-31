@@ -71,10 +71,12 @@ class Step2 extends migi.Component {
       let self = this;
       let last;
       $win.on('scroll', function() {
-        let scrollTop = $win.scrollTop();
-        let bodyHeight = $(document.body).height();
-        if(scrollTop + winHeight > bodyHeight - 50) {
-          self.loadMore();
+        if(self.isShow) {
+          let scrollTop = $win.scrollTop();
+          let bodyHeight = $(document.body).height();
+          if (scrollTop + winHeight > bodyHeight - 50) {
+            self.loadMore();
+          }
         }
       });
       $list2.on('click', 'b', function(e) {
@@ -85,17 +87,26 @@ class Step2 extends migi.Component {
           $list.find(`[tagId="${tagId}"]`).removeClass('sel');
           $li.addClass('fn-hidden');
           $li.addClass('remove');
+          setTimeout(function() {
+            $li.remove();
+            self.autoWidth();
+          }, 200);
         }
       });
       $list2.on('click', 'li', function(e) {
         let $li = $(this);
         if(e.target == this) {
-          if(last) {
-            last.removeClass('sel');
+          if($li.hasClass('sel')) {
+            $li.removeClass('sel');
+            last = null;
           }
-          let tagId = $li.attr('tagId');
-          $li.toggleClass('sel');
-          last = $li;
+          else {
+            if (last) {
+              last.removeClass('sel');
+            }
+            $li.toggleClass('sel');
+            last = $li;
+          }
         }
       });
       $(document.body).on('click', function(e) {
@@ -128,9 +139,9 @@ class Step2 extends migi.Component {
       this.$c.css('width', '999rem');
       let $new = $(`<li tagId="${tagId}">${tvd.children[0]}<b></b></li>`);
       this.$list2.append($new);
-      this.$c.css('width', this.$list2.width() + 1);
       $new.css('width', $new.width() + 1);
     }
+    this.autoWidth();
     $li.toggleClass('sel');
   }
   next(e, vd) {
@@ -148,6 +159,9 @@ class Step2 extends migi.Component {
   }
   hide() {
     this.isShow = false;
+  }
+  autoWidth() {
+    this.$c.css('width', this.$list2.width() + 1);
   }
   loadMore() {
     if(loading) {
