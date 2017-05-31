@@ -8,7 +8,9 @@ let itemLength;
 let isStart;
 let isMove;
 let startX;
+let startY;
 let endX;
+let endY;
 let curX = 0;
 let lastCur = 0;
 
@@ -42,16 +44,32 @@ class Carousel extends migi.Component {
     else {
       isStart = true;
       startX = e.touches[0].pageX;
+      startY = e.touches[0].pageY;
       this.$ul.addClass('no_trans');
     }
   }
   move(e) {
-    if(isStart) {
-      isMove = true;
+    if(isMove) {
+      e.preventDefault();
       endX = e.touches[0].pageX;
-      let diff = endX - startX;
-      this.$ul.css('-webkit-transform', `translate3d(${curX + diff}px, 0, 0)`);
-      this.$ul.css('transform', `translate3d(${curX + diff}px, 0, 0)`);
+      let diffX = endX - startX;
+      this.$ul.css('-webkit-transform', `translate3d(${curX + diffX}px, 0, 0)`);
+      this.$ul.css('transform', `translate3d(${curX + diffX}px, 0, 0)`);
+    }
+    else if(isStart) {
+      endX = e.touches[0].pageX;
+      endY = e.touches[0].pageY;
+      let diffX = endX - startX;
+      let diffY = endY - startY;
+      if(Math.abs(diffY) < Math.abs(diffX)) {
+        e.preventDefault();
+        isMove = true;
+        this.$ul.css('-webkit-transform', `translate3d(${curX + diffX}px, 0, 0)`);
+        this.$ul.css('transform', `translate3d(${curX + diffX}px, 0, 0)`);
+      }
+      else {
+        isStart = false;
+      }
     }
   }
   end(e) {
