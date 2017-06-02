@@ -1,8 +1,11 @@
 /**
  * Created by army on 2017/5/21.
  */
- 
-let screenWidth = screen.availWidth;
+
+let isStart;
+let isMove;
+let startX;
+let startY;
 
 class FollowList extends migi.Component {
   constructor(...data) {
@@ -30,6 +33,24 @@ class FollowList extends migi.Component {
       $tagsC.css('padding-left', dx + 'px');
     });
   }
+  start(e) {
+    if(e.touches.length != 1) {
+      isStart = false;
+    }
+    else {
+      isStart = true;
+      startX = e.touches[0].pageX;
+      startY = e.touches[0].pageY;
+    }
+  }
+  move(e) {
+    e.preventDefault();
+    if(isMove) {
+      e.preventDefault();
+    }
+    else if(isStart) {}
+  }
+  end() {}
   render() {
     return <div class="follow_list">
       <div class="ti">
@@ -37,7 +58,7 @@ class FollowList extends migi.Component {
       </div>
       <div class="con">
         <div class="tags" ref="tags">
-          <div class="c">
+          <div class="c" onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
             <ul>
               <li>古风</li>
               <li>古风123</li>

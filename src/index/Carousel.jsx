@@ -2,7 +2,7 @@
  * Created by army on 2017/5/21.
  */
 
-let screenWidth = window.screen.availWidth;
+let screenWidth = $(window).width();
 let itemWidth;
 let itemLength;
 let isStart;

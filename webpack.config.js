@@ -1,5 +1,6 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const extractLESS = new ExtractTextPlugin('[name].css');
+const webpack = require("webpack");
 
 module.exports = {
   entry: {
@@ -54,6 +55,14 @@ module.exports = {
     ]
   },
   plugins: [
+    // new webpack.DefinePlugin({
+    //   ENV: JSON.stringify(process.env.NODE_ENV || 'production')
+    // }),
     extractLESS
-  ]
+  ],
+  resolve: {
+    alias: {
+      ENV: process.env.NODE_ENV == 'development' ? './development.js' : './production.js',
+    },
+  },
 };

@@ -60,12 +60,12 @@ class Step2 extends migi.Component {
       this.$c = $(this.ref.c.element);
       let $list2 = this.$list2 = $(this.ref.list2.element);
       let $list = $(this.ref.list.element);
-      // util.getJSON('tag/getSuggestTags.json', {
-      //   uid: 1000,
-      //   pageNum: 1,
-      // }, function(res) {
-      //   console.log(res);
-      // });
+      util.getJSON('tag/getSuggestTags.json', {
+        uid: 1000,
+        pageNum: 1,
+      }, function(res) {
+        console.log(res);
+      });
       let $win = $(window);
       let winHeight = $win.height();
       let self = this;
