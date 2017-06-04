@@ -15,7 +15,8 @@ module.exports = {
       {
         tagId: 8,
         tagName: "游戏8",
-        tagType: 0
+        tagType: 0,
+        isDefaultFollowed: 1
       },
       {
         tagId: 7,

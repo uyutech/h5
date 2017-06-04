@@ -3,72 +3,20 @@
  */
 
 let loading = false;
+let fromIndex = 0;
+let limit = 20;
 
 class Step3 extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.isShow = this.props.isShow;
-    this.list = [
-      {
-        "authorId": 1,
-        "authorName": "asdf",
-        "headUrl": "http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 2,
-        "authorName": "f是发送发送",
-        "headUrl": "http://tva4.sinaimg.cn/crop.7.1.129.129.180/64319a89gw1f62p9lp7hyj203w03wq2x.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 3,
-        "authorName": "了交水电费",
-        "headUrl": "http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 4,
-        "authorName": "路上看到烦",
-        "headUrl": "http://tva4.sinaimg.cn/crop.7.1.129.129.180/64319a89gw1f62p9lp7hyj203w03wq2x.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 5,
-        "authorName": "心随风动",
-        "headUrl": "http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 6,
-        "authorName": "234234",
-        "headUrl": "http://tva4.sinaimg.cn/crop.7.1.129.129.180/64319a89gw1f62p9lp7hyj203w03wq2x.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 7,
-        "authorName": "是的发顺丰",
-        "headUrl": "http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 8,
-        "authorName": "斯蒂芬斯蒂芬",
-        "headUrl": "http://tva4.sinaimg.cn/crop.7.1.129.129.180/64319a89gw1f62p9lp7hyj203w03wq2x.jpg",
-        "isDefaultFollow": 1
-      }
-    ];
-    this.temp = this.list.slice();
-    this.list = this.list.concat(this.temp);
-    this.list = this.list.concat(this.temp);
-    this.list = this.list.concat(this.temp);
-    this.on(migi.Event.DOM, function() {
-      this.$c = $(this.ref.c.element);
-      let $list2 = this.$list2 = $(this.ref.list2.element);
-      let $list = $(this.ref.list.element);
+    let self = this;
+    self.isShow = self.props.isShow;
+    self.on(migi.Event.DOM, function() {
+      self.$c = $(self.ref.c.element);
+      let $list2 = self.$list2 = $(self.ref.list2.element);
+      let $list = $(self.ref.list.element);
       let $win = $(window);
       let winHeight = $win.height();
-      let self = this;
       let last;
       $win.on('scroll', function() {
         if(self.isShow) {
@@ -131,7 +79,7 @@ class Step3 extends migi.Component {
     this.isShow = false;
   }
   click(e, vd, tvd) {
-    var $li = $(tvd.element);
+    let $li = $(tvd.element);
     let authorId = tvd.props.authorId;
     if($li.hasClass('sel')) {
       this.$list2.find(`[authorId="${authorId}"]`).remove();
@@ -147,10 +95,10 @@ class Step3 extends migi.Component {
     $li.toggleClass('sel');
   }
   next(e, vd) {
-    var $vd = $(vd.element);
+    let $vd = $(vd.element);
     if(!$vd.hasClass('dis')) {
       this.setDis = true;
-      this.emit('next');
+      // this.emit('next');
     }
   }
   enable() {
@@ -165,63 +113,29 @@ class Step3 extends migi.Component {
     }
     loading = true;
     let self = this;
-    self.list = self.list.concat([
-      {
-        "authorId": 1,
-        "authorName": "asdf",
-        "headUrl": "http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 2,
-        "authorName": "f是发送发送",
-        "headUrl": "http://tva4.sinaimg.cn/crop.7.1.129.129.180/64319a89gw1f62p9lp7hyj203w03wq2x.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 3,
-        "authorName": "了交水电费",
-        "headUrl": "http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 4,
-        "authorName": "路上看到烦",
-        "headUrl": "http://tva4.sinaimg.cn/crop.7.1.129.129.180/64319a89gw1f62p9lp7hyj203w03wq2x.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 5,
-        "authorName": "心随风动",
-        "headUrl": "http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 6,
-        "authorName": "234234",
-        "headUrl": "http://tva4.sinaimg.cn/crop.7.1.129.129.180/64319a89gw1f62p9lp7hyj203w03wq2x.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 7,
-        "authorName": "是的发顺丰",
-        "headUrl": "http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg",
-        "isDefaultFollow": 1
-      },
-      {
-        "authorId": 8,
-        "authorName": "斯蒂芬斯蒂芬",
-        "headUrl": "http://tva4.sinaimg.cn/crop.7.1.129.129.180/64319a89gw1f62p9lp7hyj203w03wq2x.jpg",
-        "isDefaultFollow": 1
+    util.getJSON('author/getSuggestAuthors.json', {
+      uid: 1000,
+      fromIndex,
+      limit,
+    }, function(res) {
+      if(res.dataList && res.dataList.length) {
+        self.list = self.list.concat(res.dataList);
+        loading = false;
+        fromIndex += limit;
+        res.dataList.forEach(function(item) {
+          if(item.isDefaultFollow) {
+            self.add(item.authorId, item.headUrl);
+            self.autoWidth();
+          }
+        });
       }
-    ]);
-    loading = false;
-    // util.getJSON('author/getSuggestAuthors.json', {
-    //   uid: 1000,
-    //   pageNum: 1,
-    // }, function(res) {
-    //
-    // });
+    });
+  }
+  add(authorId, headUrl) {
+    this.$c.css('width', '999rem');
+    let $new = $(`<li authorId="${authorId}"><img src="${headUrl}"/><b></b></li>`);
+    this.$list2.append($new);
+    $new.css('width', $new.width() + 1);
   }
   render() {
     return <div class={ 'step3' + (this.isShow ? '' : ' fn-hide') }>
@@ -231,6 +145,9 @@ class Step3 extends migi.Component {
       <ul class="list fn-clear" onClick={ { 'li': this.click } } ref="list">
         {
           this.list.map(function(item) {
+            if(item.isDefaultFollow) {
+              return <li authorId={ item.authorId } class="sel"><img src={ item.headUrl }/><span>{ item.authorName }</span></li>;
+            }
             return <li authorId={ item.authorId }><img src={ item.headUrl }/><span>{ item.authorName }</span></li>;
           })
         }

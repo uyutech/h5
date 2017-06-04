@@ -42,12 +42,14 @@ let step3 = migi.render(
 step1.on('next', function() {
   step1.hide();
   step2.show();
+  step2.loadMore();
   step++;
   step1.enable();
 });
 step2.on('next', function() {
   step2.hide();
   step3.show();
+  step3.loadMore();
   step++;
   step2.enable();
 });
@@ -58,9 +60,11 @@ step3.on('next', function() {
 switch (step) {
   case 3:
     step3.show();
+    step3.loadMore();
     break;
   case 2:
     step2.show();
+    step2.loadMore();
     break;
   case 0:
     break;

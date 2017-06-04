@@ -3,72 +3,20 @@
  */
  
 let loading = false;
+let fromIndex = 0;
+let limit = 30;
 
 class Step2 extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.isShow = this.props.isShow;
-    this.list = [
-      {
-        "tagId": 1,
-        "tagName": "游戏1",
-        "tagType": 0,
-        "isDefaultFollowed": 0
-      },
-      {
-        "tagId": 2,
-        "tagName": "拉伸到福建省客服",
-        "tagType": 0,
-        "isDefaultFollowed": 0
-      },
-      {
-        "tagId": 3,
-        "tagName": "拉建省客服",
-        "tagType": 0,
-        "isDefaultFollowed": 0
-      },
-      {
-        "tagId": 4,
-        "tagName": "12",
-        "tagType": 0,
-        "isDefaultFollowed": 0
-      },
-      {
-        "tagId": 5,
-        "tagName": "sdsf",
-        "tagType": 0,
-        "isDefaultFollowed": 0
-      },
-      {
-        "tagId": 6,
-        "tagName": "阿斯顿飞",
-        "tagType": 0,
-        "isDefaultFollowed": 0
-      },
-      {
-        "tagId": 7,
-        "tagName": "阿斯顿",
-        "tagType": 0,
-        "isDefaultFollowed": 0
-      }
-    ];
-    this.temp = this.list.slice();
-    this.list = this.list.concat(this.temp);
-    this.list = this.list.concat(this.temp);
-    this.list = this.list.concat(this.temp);
-    this.on(migi.Event.DOM, function() {
-      this.$c = $(this.ref.c.element);
-      let $list2 = this.$list2 = $(this.ref.list2.element);
-      let $list = $(this.ref.list.element);
-      util.getJSON('tag/getSuggestTags.json', {
-        uid: 1000,
-        pageNum: 1,
-      }, function(res) {
-        console.log(res);
-      });
+    let self = this;
+    self.isShow = self.props.isShow;
+    self.on(migi.Event.DOM, function() {
+      self.$c = $(self.ref.c.element);
+      let $list2 = self.$list2 = $(self.ref.list2.element);
+      let $list = $(self.ref.list.element);
       let $win = $(window);
       let winHeight = $win.height();
-      let self = this;
       let last;
       $win.on('scroll', function() {
         if(self.isShow) {
@@ -110,7 +58,7 @@ class Step2 extends migi.Component {
         }
       });
       $(document.body).on('click', function(e) {
-        var $o = $(e.target);
+        let $o = $(e.target);
         if(!$o.closest('.choose')[0]) {
           if(last) {
             last.removeClass('sel');
@@ -136,19 +84,29 @@ class Step2 extends migi.Component {
       this.$list2.find(`[tagId="${tagId}"]`).remove();
     }
     else {
-      this.$c.css('width', '999rem');
-      let $new = $(`<li tagId="${tagId}">${tvd.children[0]}<b></b></li>`);
-      this.$list2.append($new);
-      $new.css('width', $new.width() + 1);
+      this.add(tagId, tvd.children[0]);
     }
     this.autoWidth();
     $li.toggleClass('sel');
   }
   next(e, vd) {
-    var $vd = $(vd.element);
+    let self = this;
+    let $vd = $(vd.element);
     if(!$vd.hasClass('dis')) {
-      this.setDis = true;
-      this.emit('next');
+      self.setDis = true;
+      let tagIds = [];
+      self.$list2.find('li').each(function(i, o) {
+        tagIds.push(parseInt($(o).attr('tagId')));
+      });
+      util.getJSON('register/setFollowTagsOnRegister.json', {
+        uid: 1000,
+        tagIds: JSON.stringify(tagIds),
+      }, function(res) {
+        self.emit('next');
+      }, function(res) {
+        self.setDis = false;
+        jsBridge.toast(res.message || '网络错误请稍后再试');
+      });
     }
   }
   enable() {
@@ -171,54 +129,27 @@ class Step2 extends migi.Component {
     let self = this;
     util.getJSON('tag/getSuggestTags.json', {
       uid: 1000,
-      pageNum: 1,
+      fromIndex,
+      limit,
     }, function(res) {
-      self.list = self.list.concat([
-        {
-          "tagId": 1,
-          "tagName": "游戏1",
-          "tagType": 0,
-          "isDefaultFollowed": 0
-        },
-        {
-          "tagId": 2,
-          "tagName": "拉伸到福建省客服",
-          "tagType": 0,
-          "isDefaultFollowed": 0
-        },
-        {
-          "tagId": 3,
-          "tagName": "拉建省客服",
-          "tagType": 0,
-          "isDefaultFollowed": 0
-        },
-        {
-          "tagId": 4,
-          "tagName": "12",
-          "tagType": 0,
-          "isDefaultFollowed": 0
-        },
-        {
-          "tagId": 5,
-          "tagName": "sdsf",
-          "tagType": 0,
-          "isDefaultFollowed": 0
-        },
-        {
-          "tagId": 6,
-          "tagName": "阿斯顿飞",
-          "tagType": 0,
-          "isDefaultFollowed": 0
-        },
-        {
-          "tagId": 7,
-          "tagName": "阿斯顿",
-          "tagType": 0,
-          "isDefaultFollowed": 0
-        }
-      ]);
-      loading = false;
+      if(res.dataList && res.dataList.length) {
+        self.list = self.list.concat(res.dataList);
+        loading = false;
+        fromIndex += limit;
+        res.dataList.forEach(function(item) {
+          if(item.isDefaultFollowed) {
+            self.add(item.tagId, item.tagName);
+            self.autoWidth();
+          }
+        });
+      }
     });
+  }
+  add(tagId, txt) {
+    this.$c.css('width', '999rem');
+    let $new = $(`<li tagId="${tagId}">${txt}<b></b></li>`);
+    this.$list2.append($new);
+    $new.css('width', $new.width() + 1);
   }
   render() {
     return <div class={ 'step2' + (this.isShow ? '' : ' fn-hide') }>
@@ -229,6 +160,9 @@ class Step2 extends migi.Component {
         <ul class="fn-clear" onClick={ { 'li': this.click } }>
           {
             this.list.map(function(item) {
+              if(item.isDefaultFollowed) {
+                return <li tagId={ item.tagId } class="sel">{ item.tagName }</li>;
+              }
               return <li tagId={ item.tagId }>{ item.tagName }</li>;
             }.bind(this))
           }

@@ -28,16 +28,13 @@ class Step1 extends migi.Component {
       self.setDis = true;
       util.getJSON('register/setNickNameAndGenderOnRegister.json', {
         uid: 1000,
-        nickName: 'sdf',
-        gender: 1,
+        nickName: self.v,
+        gender: self.isMale ? 0 : 1,
       }, function(res) {
-        if(res.success) {
-          self.emit('next');
-        }
-        else {
-          self.setDis = false;
-          jsBridge.toast(res.message || 123);
-        }
+        self.emit('next');
+      }, function(res) {
+        self.setDis = false;
+        jsBridge.toast(res.message || '网络错误请稍后再试');
       });
     }
   }

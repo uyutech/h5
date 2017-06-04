@@ -23,6 +23,11 @@ export default {
       crossDomain: true,
       timeout: 10000,
       type: 'POST',
+      // contentType: 'application/json',
+      // headers: {
+      //   "Content-Type": "application/json",
+      //   "Accept": "application/json"
+      // },
       // ajax 跨域设置必须加上
       beforeSend: function(xhr) {
         xhr.withCredentials = true;
@@ -34,12 +39,18 @@ export default {
             bridge.hideLoading();
           }, 20);
         }
+        console.log(data);
         console.log(JSON.stringify(data));
-        success(data);
+        if(data.success) {
+          success(data.data);
+        }
+        else {
+          error(data);
+        }
       },
-      error: function() {
-        error();
+      error: function(data) {
+        error(data || {});
       }
     });
-  }
+  },
 };
