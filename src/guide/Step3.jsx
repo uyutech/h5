@@ -95,10 +95,23 @@ class Step3 extends migi.Component {
     $li.toggleClass('sel');
   }
   next(e, vd) {
+    let self = this;
     let $vd = $(vd.element);
     if(!$vd.hasClass('dis')) {
-      this.setDis = true;
-      // this.emit('next');
+      self.setDis = true;
+      let authorIdsStr = [];
+      self.$list2.find('li').each(function(i, o) {
+        authorIdsStr.push(parseInt($(o).attr('authorId')));
+      });
+      util.getJSON('register/setFollowAuthorsOnRegister.json', {
+        uid: 1000,
+        authorIdsStr: JSON.stringify(authorIdsStr),
+      }, function(res) {
+        self.emit('next');
+      }, function(res) {
+        self.setDis = false;
+        jsBridge.toast(res.message || '网络错误请稍后再试');
+      });
     }
   }
   enable() {

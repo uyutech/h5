@@ -23,11 +23,6 @@ export default {
       crossDomain: true,
       timeout: 10000,
       type: 'POST',
-      // contentType: 'application/json',
-      // headers: {
-      //   "Content-Type": "application/json",
-      //   "Accept": "application/json"
-      // },
       // ajax 跨域设置必须加上
       beforeSend: function(xhr) {
         xhr.withCredentials = true;
