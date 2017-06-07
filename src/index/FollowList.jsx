@@ -44,11 +44,6 @@ class FollowList extends migi.Component {
     }
   }
   move(e) {
-    e.preventDefault();
-    if(isMove) {
-      e.preventDefault();
-    }
-    else if(isStart) {}
   }
   end() {}
   render() {

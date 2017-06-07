@@ -14,7 +14,7 @@ export default {
     if (!cancelLoading) {
       bridge.showLoading();
     }
-  
+    console.log('ajax: ' + url + ', ' + JSON.stringify(data));
     $.ajax({
       url: url,
       data: data,
@@ -44,6 +44,13 @@ export default {
         }
       },
       error: function(data) {
+        if(!cancelLoading) {
+          // ios下面进入页面的时候loading一直不消失，加一个延时处理
+          setTimeout(function() {
+            bridge.hideLoading();
+          }, 20);
+        }
+        console.log('ajax error: ' + data);
         error(data || {});
       }
     });
