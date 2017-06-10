@@ -57,7 +57,7 @@ class Authors extends migi.Component {
           },
           {
             img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
-            name: '司夏5'
+            name: '司夏长长长长长长长'
           }
         ]
       }
@@ -70,7 +70,7 @@ class Authors extends migi.Component {
         let item = datas[i];
         // 屏蔽空的
         if(item.list.length) {
-          temp.push(<li class="label"><span>{ item.type }</span></li>);
+          temp.push(<li class="label"><div><span>{ item.type }</span></div></li>);
           for (let j = 0, len = item.list.length; j < len; j++) {
             let item2 = item.list[j];
             temp.push(<li class="item">

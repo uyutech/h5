@@ -26,7 +26,7 @@
   "scripts": {
     "start": "export NODE_ENV=production && rm -rf ./www && webpack",
     "build": "export NODE_ENV=production && rm -rf ./www && webpack -p",
-    "mock": "export NODE_ENV=development && webpack-dev-server",
+    "mock": "export NODE_ENV=development && webpack-dev-server --host 0.0.0.0",
     "dev": "export NODE_ENV=production && webpack-dev-server",
     "zip": "export NODE_ENV=production && rm -rf dist && mkdir dist && cd www && zip -r ../dist/h5.zip *",
     "pack": "export NODE_ENV=production && npm run build && npm run zip",
