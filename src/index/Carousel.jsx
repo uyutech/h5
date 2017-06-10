@@ -114,7 +114,7 @@ class Carousel extends migi.Component {
     return <div class="carousel">
       <div class="screen" ref="screen">
         <ul onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
-          <li><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100397440.jpg"/></li>
+          <li><a href="works.html?id=1"><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100397440.jpg"/></a></li>
           <li><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100388475.jpg"/></li>
           <li><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100222800.jpg"/></li>
           <li><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100393706.jpg"/></li>
