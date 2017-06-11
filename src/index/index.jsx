@@ -5,10 +5,16 @@
 import './index.html';
 import './index.less';
 
+import Nav from './Nav.jsx';
 import Carousel from './Carousel.jsx';
 import FollowList from './FollowList.jsx';
 import BottomNav from './BottomNav.jsx';
 import News from './News.jsx';
+
+let nav = migi.render(
+  <Nav/>,
+  document.body
+);
 
 let carousel = migi.render(
   <Carousel/>,
