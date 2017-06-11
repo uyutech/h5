@@ -18,6 +18,15 @@ if(/iP(hone|od|ad)/.test(navigator.userAgent)) {
   }
 }
 
+window.requestAnimFrame = function() {
+  return window.requestAnimationFrame
+    || window.webkitRequestAnimationFrame
+    || window.mozRequestAnimationFrame
+    || function(callback) {
+      window.setTimeout(callback, 16.7);
+    };
+}();
+
 console.log('cookie: ' + document.cookie);
 
 window.$ = $;

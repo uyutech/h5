@@ -22,7 +22,7 @@ let authors = migi.render(
 );
 
 let video = migi.render(
-  <Video/>,
+  <Video nav={ nav }/>,
   document.body
 );
 

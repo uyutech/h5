@@ -64,7 +64,6 @@ class Authors extends migi.Component {
     ];
     this.on(migi.Event.DOM, function() {
       let c = this.ref.c.element;
-      let $c = $(c);
       let temp = [];
       for(let i = 0, len = datas.length; i < len; i++) {
         let item = datas[i];
@@ -89,6 +88,7 @@ class Authors extends migi.Component {
       if(temp[1]) {
         temp[1].appendTo(ul);
       }
+      let count = 0;
       // 循环后面挨个插入判断高度换行
       for(let i = 2, len = temp.length; i < len; i++) {
         let item = temp[i];
@@ -103,6 +103,7 @@ class Authors extends migi.Component {
             ul = <ul class="fn-clear"></ul>;
             ul.appendTo(c);
             item.appendTo(ul);
+            count++;
           }
         }
         else {
@@ -112,6 +113,7 @@ class Authors extends migi.Component {
             ul = <ul class="fn-clear"></ul>;
             ul.appendTo(c);
             item.appendTo(ul);
+            count++;
           }
         }
       }
