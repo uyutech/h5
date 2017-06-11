@@ -19,8 +19,6 @@ class Video extends migi.Component {
       let $switch = $(self.ref.switch.element);
       let $nav = $(self.props.nav.element);
       let top = $switch.offset().top - $nav.height();
-      let itemWidth = 40;
-      let totalHeight = 200;
       let winWidth = $window.width();
       let $video = $switch.find('.video');
       let videoLeft = $video.offset().left;

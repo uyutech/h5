@@ -2,6 +2,7 @@
  * Created by army on 2017/6/8.
  */
  
+let isOn = false;
 class Authors extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -53,7 +54,7 @@ class Authors extends migi.Component {
           },
           {
             img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
-            name: '司夏4'
+            name: '司夏4长长长长'
           },
           {
             img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
@@ -64,6 +65,7 @@ class Authors extends migi.Component {
     ];
     this.on(migi.Event.DOM, function() {
       let c = this.ref.c.element;
+      let $c = this.$c = $(c);
       let temp = [];
       for(let i = 0, len = datas.length; i < len; i++) {
         let item = datas[i];
@@ -79,7 +81,8 @@ class Authors extends migi.Component {
           }
         }
       }
-      let ul = <ul class="fn-clear"></ul>;
+      let placeholder = <li class="placeholder"/>;
+      let ul = <ul class="fn-clear"/>;
       ul.appendTo(c);
       // 最初的2个
       if(temp[0]) {
@@ -94,13 +97,22 @@ class Authors extends migi.Component {
         let item = temp[i];
         let $ul = $(ul.element);
         let height = $ul.height();
+        // 当是第3行时，尝试插入占位符，一旦产生换行，循环回退一次，同时占位符替代上一次的元素，因为占位符宽度最小所以不会产生影响
+        if(count == 2) {
+          placeholder.appendTo(ul);
+          if($ul.height() > height) {
+            i--;
+            temp[i].clean();
+            continue;
+          }
+        }
         // 标签类型连续插入2个测试是否需要换行
         if(item.props.class == 'label') {
           item.appendTo(ul);
           temp[i+1].appendTo(ul);
           //换行生成新的行
           if($ul.height() > height) {
-            ul = <ul class="fn-clear"></ul>;
+            ul = <ul class="fn-clear"/>;
             ul.appendTo(c);
             item.appendTo(ul);
             count++;
@@ -110,19 +122,34 @@ class Authors extends migi.Component {
           item.appendTo(ul);
           //换行生成新的行
           if($ul.height() > height) {
-            ul = <ul class="fn-clear"></ul>;
+            ul = <ul class="fn-clear"/>;
             ul.appendTo(c);
             item.appendTo(ul);
             count++;
           }
         }
       }
+      this.firstHeight = $(this.element).height();
+      $(this.element).css('height', this.firstHeight);
     });
+  }
+  click(e, vd) {
+    let $b = $(vd.element);
+    let $c = $(this.ref.c.element);
+    let $root = $(this.element);
+    if($b.hasClass('on')) {
+      $root.css('height', this.firstHeight);
+    }
+    else if($root.height() < $c.height()) {
+      $root.css('height', $c.height());
+    }
+    $b.toggleClass('on');
+    $root.addClass('no_max');
   }
   render() {
     return <div class="authors">
-      <div class="c" ref="c">
-      </div>
+      <div class="c" ref="c"/>
+      <b class="slide" onClick={ this.click }/>
     </div>;
   }
 }

@@ -71,8 +71,13 @@ body{
 }
 
 .authors{
-  //max-height:1.2rem;
+  position:relative;
+  max-height:1.2rem;
   overflow:hidden;
+  transition:height 0.2s;
+  &.no_max{
+    max-height:none;
+  }
   .c{
     ul{
       position:relative;
@@ -93,6 +98,7 @@ body{
         div{
           display:block;
           padding:0 0.03rem;
+          min-width:0.2rem;
           height:0.24rem;
           line-height:0.24rem;
           font-size:0.12rem;
@@ -133,6 +139,27 @@ body{
           position:absolute;
         }
       }
+      &.placeholder{
+        width:0.24rem;
+      }
+    }
+  }
+  .slide{
+    position:absolute;
+    bottom:0.15rem;
+    right:0.15rem;
+    transition:transform 0.2s;
+    transform:rotateZ(45deg);
+    &:after{
+      display:block;
+      width:0.1rem;
+      height:0.1rem;
+      border-right:1px solid #808080;
+      border-bottom:1px solid #808080;
+      content:' ';
+    }
+    &.on{
+      transform:translateY(0.06rem) rotateZ(225deg);
     }
   }
 }
