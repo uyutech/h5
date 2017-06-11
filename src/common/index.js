@@ -27,6 +27,7 @@ window.requestAnimFrame = function() {
     };
 }();
 
+console.log('ua: ' + navigator.userAgent);
 console.log('cookie: ' + document.cookie);
 
 window.$ = $;

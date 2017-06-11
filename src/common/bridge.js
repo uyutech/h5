@@ -9,15 +9,22 @@ function isType(type) {
   }
 }
 let isString = isType('String');
+let ua = navigator.userAgent;
 
 let jsBridge = {
+  isInApp: /app\/ZhuanQuan/.test(ua),
   ready: function(cb) {
     cb = cb || function() {};
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      cb();
+    if(this.isInApp) {
+      if (window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+        cb();
+      }
+      else {
+        document.addEventListener('ZhuanQuanJSBridgeReady', cb);
+      }
     }
     else {
-      document.addEventListener('ZhuanQuanJSBridgeReady', cb);
+      cb();
     }
   },
   on: function(name, cb) {
@@ -30,25 +37,35 @@ let jsBridge = {
     }
   },
   pushWindow: function(s) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-    s = s.trim();
-    if(s) {
-      if (/^\w+:\/\//i.test(s)) {
+    if(this.isInApp) {
+      if (window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+        s = s.trim();
+        if (s) {
+          if (/^\w+:\/\//i.test(s)) {
+          }
+          else if (/^\//.test(s)) {
+            s = location.protocol + location.host + s;
+          }
+          else {
+            let i = location.href.lastIndexOf('/');
+            s = location.href.slice(0, i) + '/' + s;
+          }
+          ZhuanQuanJSBridge.call('pushWindow', s);
+        }
       }
-      else if (/^\//.test(s)) {
-        s = location.protocol + location.host + s;
-      }
-      else {
-        let i = location.href.lastIndexOf('/');
-        s = location.href.slice(0, i) + '/' + s;
-      }
-      ZhuanQuanJSBridge.call('pushWindow', s);
     }
+    else {
+      location.href = s;
     }
   },
   popWindow: function(data) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('popWindow', JSON.stringify(data));
+    if(this.isInApp) {
+      if (window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+        ZhuanQuanJSBridge.call('popWindow', JSON.stringify(data));
+      }
+    }
+    else {
+      history.go(-1);
     }
   },
   toast: function(s) {

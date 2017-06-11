@@ -110,9 +110,14 @@ class Carousel extends migi.Component {
       this.$ul.css('transform', `translate3d(${curX}px, 0, 0)`);
     }
   }
+  click(e, vd, tvd) {
+    e.preventDefault();
+    let href = tvd.props.href;
+    jsBridge.pushWindow(href);
+  }
   render() {
     return <div class="carousel">
-      <div class="screen" ref="screen">
+      <div class="screen" ref="screen" onClick={ { 'a': this.click } }>
         <ul onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
           <li><a href="works.html?id=1"><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100397440.jpg"/></a></li>
           <li><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100388475.jpg"/></li>

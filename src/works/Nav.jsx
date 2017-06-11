@@ -6,9 +6,12 @@ class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
   }
+  click() {
+    jsBridge.popWindow();
+  }
   render() {
     return <div class="nav">
-      <b class="back"/>
+      <b class="back" onClick={ this.click }/>
       <h1>标题标题</h1>
       <h2>副标题</h2>
       <b class="play"/>

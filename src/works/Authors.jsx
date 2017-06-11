@@ -11,10 +11,12 @@ class Authors extends migi.Component {
         type: '出品',
         list: [
           {
+            uid: 1,
             img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
             name: '司夏'
           },
           {
+            uid: 2,
             img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
             name: '司夏2'
           }
@@ -24,10 +26,12 @@ class Authors extends migi.Component {
         type: '出品2',
         list: [
           {
+            uid: 3,
             img: 'http://tva4.sinaimg.cn/crop.7.1.129.129.180/64319a89gw1f62p9lp7hyj203w03wq2x.jpg',
             name: '老司机sdf'
           },
           {
+            uid: 4,
             img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
             name: '司夏换行'
           }
@@ -37,26 +41,32 @@ class Authors extends migi.Component {
         type: '很长的',
         list: [
           {
+            uid: 5,
             img: 'http://tva4.sinaimg.cn/crop.7.1.129.129.180/64319a89gw1f62p9lp7hyj203w03wq2x.jpg',
             name: '老司机sddf'
           },
           {
+            uid: 6,
             img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
             name: '司夏1'
           },
           {
+            uid: 7,
             img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
             name: '司夏2'
           },
           {
+            uid: 8,
             img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
             name: '司夏3'
           },
           {
+            uid: 9,
             img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
             name: '司夏4长长长长'
           },
           {
+            uid: 10,
             img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
             name: '司夏长长长长长长长'
           }
@@ -74,7 +84,7 @@ class Authors extends migi.Component {
           temp.push(<li class="label"><div><span>{ item.type }</span></div></li>);
           for (let j = 0, len = item.list.length; j < len; j++) {
             let item2 = item.list[j];
-            temp.push(<li class="item">
+            temp.push(<li class="item" uid={ item2.uid }>
               <img src={ item2.img }/>
               <span>{ item2.name }</span>
             </li>);
@@ -133,7 +143,13 @@ class Authors extends migi.Component {
       $(this.element).css('height', this.firstHeight);
     });
   }
-  click(e, vd) {
+  click(e, vd, tvd) {
+    this.emit('choose', tvd.props.uid, e.pageX, e.pageY);
+  }
+  click2() {
+    this.emit('chooseNone');
+  }
+  alt(e, vd) {
     let $b = $(vd.element);
     let $c = $(this.ref.c.element);
     let $root = $(this.element);
@@ -148,8 +164,8 @@ class Authors extends migi.Component {
   }
   render() {
     return <div class="authors">
-      <div class="c" ref="c"/>
-      <b class="slide" onClick={ this.click }/>
+      <div class="c" ref="c" onClick={ { 'li.item': this.click, 'li.label': this.click2 } }/>
+      <b class="slide" onClick={ this.alt }/>
     </div>;
   }
 }

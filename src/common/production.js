@@ -22,7 +22,7 @@ export default {
       cache: false,
       crossDomain: true,
       timeout: 10000,
-      type: 'POST',
+      type: 'get',
       // ajax 跨域设置必须加上
       beforeSend: function(xhr) {
         xhr.withCredentials = true;
