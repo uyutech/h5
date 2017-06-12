@@ -9,6 +9,8 @@ import Nav from './Nav.jsx';
 import Authors from './Authors.jsx';
 import Video from './Video.jsx';
 import Audio from './Audio.jsx';
+import Image from './Image.jsx';
+import Link from './Link.jsx';
 import MediaSwitch from './MediaSwitch.jsx';
 import Tags from './Tags.jsx';
 import Intro from './Intro.jsx';
@@ -52,8 +54,10 @@ jsBridge.ready(function() {
   let medias = migi.render(
     <div class="medias">
       <div class="c">
-        <Video nav={ nav }/>
+        <Video/>
         <Audio/>
+        <Image/>
+        <Link/>
       </div>
       <MediaSwitch nav={ nav }/>
     </div>,
@@ -73,6 +77,7 @@ jsBridge.ready(function() {
     $mediasC.css('-webkit-transform', `translate3d(${-x}px,0,0)`);
     $mediasC.css('transform', `translate3d(${-x}px,0,0)`);
   });
+  mediaSwitch.emit('change', 2);
   let tags = migi.render(
     <Tags/>,
     document.body

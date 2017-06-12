@@ -13,14 +13,16 @@ class MediaSwitch extends migi.Component {
       let top = $switch.offset().top - $nav.height();
       let winWidth = $window.width();
       let $lis = $switch.find('li.item');
+      let liWidth = $lis.width();
+      let perWidth = Math.round(liWidth * 1.3);
       let lefts = [];
       for(let i = 0, len = $lis.length; i < len; i++) {
         lefts.push($lis.eq(i).offset().left);
       }
       for(let i = 0, len = $lis.length; i < len; i++) {
         let $item = $lis.eq(i);
-        $item.css('-webkit-transform', `translate3d(${winWidth-lefts[i]-40}px,${i*40}px,0)`);
-        $item.css('transform', `translate3d(${winWidth-lefts[i]-40}px,${i*40}px,0)`);
+        $item.css('-webkit-transform', `translate3d(${winWidth-lefts[i]-perWidth}px,${i*perWidth}px,0)`);
+        $item.css('transform', `translate3d(${winWidth-lefts[i]-perWidth}px,${i*perWidth}px,0)`);
       }
       $window.on('scroll', function() {
         let diff = top - $window.scrollTop();
@@ -28,8 +30,8 @@ class MediaSwitch extends migi.Component {
           $switch.removeClass('fix');
           for(let i = 0, len = $lis.length; i < len; i++) {
             let $item = $lis.eq(i);
-            $item.css('-webkit-transform', `translate3d(${Math.floor((winWidth-lefts[i]-40)*diff/top)}px,${Math.floor(i*40*diff/top)}px,0)`);
-            $item.css('transform', `translate3d(${Math.floor((winWidth-lefts[i]-40)*diff/top)}px,${Math.floor(i*40*diff/top)}px,0)`);
+            $item.css('-webkit-transform', `translate3d(${Math.floor((winWidth-lefts[i]-perWidth)*diff/top)}px,${Math.floor(i*perWidth*diff/top)}px,0)`);
+            $item.css('transform', `translate3d(${Math.floor((winWidth-lefts[i]-perWidth)*diff/top)}px,${Math.floor(i*perWidth*diff/top)}px,0)`);
           }
         }
         else {

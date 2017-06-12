@@ -8,6 +8,8 @@ class Audio extends migi.Component {
   }
   render() {
     return <div class="audio">
+      <div class="wave1"/>
+      <div class="wave2"/>
       <audio
         controls="controls"
         src={ 'http://192.168.100.199/github/zhuanq/h5/ysj.mp3' }>
