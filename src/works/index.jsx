@@ -17,11 +17,18 @@ import Intro from './Intro.jsx';
 import PlayList from './PlayList.jsx';
 import Comments from './Comments.jsx';
 import Menu from './Menu.jsx';
+import ImageView from './ImageView.jsx';
 
 let $window = $(window);
 let winWidth = $window.width();
 
 jsBridge.ready(function() {
+  let images = [
+    'http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100388475.jpg',
+    'http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100222800.jpg',
+    'http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100393706.jpg'
+  ];
+  
   let nav = migi.render(
     <Nav/>,
     document.body
@@ -56,7 +63,7 @@ jsBridge.ready(function() {
       <div class="c">
         <Video/>
         <Audio/>
-        <Image/>
+        <Image images={ images }/>
         <Link/>
       </div>
       <MediaSwitch nav={ nav }/>
@@ -71,13 +78,22 @@ jsBridge.ready(function() {
   video.on('pause', function() {
   });
   let audio = medias.find(Audio);
+  let image = medias.find(Image);
   let mediaSwitch = medias.find(MediaSwitch);
   mediaSwitch.on('change', function(i) {
     let x = i * winWidth;
     $mediasC.css('-webkit-transform', `translate3d(${-x}px,0,0)`);
     $mediasC.css('transform', `translate3d(${-x}px,0,0)`);
   });
-  mediaSwitch.emit('change', 2);
+  // mediaSwitch.emit('change', 2);
+  let imageView = migi.render(
+    <ImageView images={ images }/>,
+    document.body
+  );
+  image.on('show', function(i) {
+    imageView.show(i);
+  });
+  
   let tags = migi.render(
     <Tags/>,
     document.body

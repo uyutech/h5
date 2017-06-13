@@ -69,10 +69,7 @@ body{
   }
   > .authors{
     position:relative;
-    max-height:1.22rem;
-    .hairlines &{
-      border-width:1.21rem;
-    }
+    max-height:0.81rem;
     overflow:hidden;
     transition:height 0.2s;
     &.no_max{
@@ -448,6 +445,37 @@ body{
           border-radius:100%;
           box-shadow:0 0 4px rgba(0,0,0,0.5);
         }
+      }
+    }
+  }
+  > .image_view{
+    display:none;
+    position:fixed;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    z-index:1001;
+    background:rgba(0,0,0,0.5);
+    overflow:hidden;
+    .num{
+      position:absolute;
+      left:0;
+      top:10%;
+      width:100%;
+      text-align:center;
+      color:#fff;
+      font-size:0.14rem;
+      text-shadow:0 0 2px rgba(0,0,0,0.5);
+    }
+    .list{
+      transition:transform 0.2s;
+      width:100%;
+      height:100%;
+      display:flex;
+      align-items:center;
+      img{
+        flex:1;
       }
     }
   }

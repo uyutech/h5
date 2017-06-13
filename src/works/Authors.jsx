@@ -2,7 +2,6 @@
  * Created by army on 2017/6/8.
  */
  
-let isOn = false;
 class Authors extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -108,7 +107,7 @@ class Authors extends migi.Component {
         let $ul = $(ul.element);
         let height = $ul.height();
         // 当是第3行时，尝试插入占位符，一旦产生换行，循环回退一次，同时占位符替代上一次的元素，因为占位符宽度最小所以不会产生影响
-        if(count == 2) {
+        if(count == 1) {
           placeholder.appendTo(ul);
           if($ul.height() > height) {
             i--;
