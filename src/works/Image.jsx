@@ -16,7 +16,6 @@ class Image extends migi.Component {
         img.appendTo(imgs);
       });
       $list.css('width', (height + 2) * datas.length + 2);
-      // this.$list2 = $list2.css('padding-top', (winHeight - winWidth) >> 1);
     });
   }
   click(e, vd, tvd) {

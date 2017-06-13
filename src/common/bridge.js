@@ -151,6 +151,11 @@ let jsBridge = {
       ZhuanQuanJSBridge.call('userInfo', callback);
     }
   },
+  swipeRefresh: function(state) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('swipeRefresh', state);
+    }
+  }
 };
 
 window.jsBridge = jsBridge;

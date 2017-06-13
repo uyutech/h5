@@ -66,6 +66,7 @@ class Carousel extends migi.Component {
         isMove = true;
         this.$ul.css('-webkit-transform', `translate3d(${curX + diffX}px, 0, 0)`);
         this.$ul.css('transform', `translate3d(${curX + diffX}px, 0, 0)`);
+        jsBridge.swipeRefresh(false);
       }
       else {
         isStart = false;
@@ -109,6 +110,7 @@ class Carousel extends migi.Component {
       this.$ul.css('-webkit-transform', `translate3d(${curX}px, 0, 0)`);
       this.$ul.css('transform', `translate3d(${curX}px, 0, 0)`);
     }
+    jsBridge.swipeRefresh(true);
   }
   click(e, vd, tvd) {
     e.preventDefault();

@@ -20,7 +20,7 @@ class ImageView extends migi.Component {
   }
   @bind index = 0
   @bind length = 0
-  start(e) {
+  move(e) {
     e.preventDefault();
   }
   left() {
@@ -42,12 +42,14 @@ class ImageView extends migi.Component {
     this.$list.css('-webkit-transform', `translate3d(-${this.index*winWidth}px,0,0)`);
     this.$list.css('transform', `translate3d(-${this.index*winWidth}px,0,0)`);
     $(this.element).show();
+    jsBridge.swipeRefresh(false);
   }
   click() {
     $(this.element).hide();
+    jsBridge.swipeRefresh(true);
   }
   render() {
-    return <div class="image_view" onTouchStart={ this.start } onSwipeLeft={ this.left } onSwipeRight={ this.right } onClick={ this.click }>
+    return <div class="image_view" onTouchmove={ this.move } onSwipeLeft={ this.left } onSwipeRight={ this.right } onClick={ this.click }>
       <div class="num">{ this.index + 1}/{ this.length }</div>
       <div class="list fn-clear" ref="list" style={ `width:${this.length}00%;` }/>
     </div>;
