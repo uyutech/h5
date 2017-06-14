@@ -17,8 +17,11 @@ let util = {
       success = data;
       data = {};
     }
-    error = error || function(){};
-    env.ajax(url, data, success, error, cancelLoading);
+    jsBridge.userInfo(function(item) {
+      data.uid = item.userId;
+      error = error || function(){};
+      env.ajax(url, data, success, error, cancelLoading);
+    });
   }
 };
 

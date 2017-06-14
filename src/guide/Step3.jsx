@@ -104,7 +104,6 @@ class Step3 extends migi.Component {
         authorIdsStr.push(parseInt($(o).attr('authorId')));
       });
       util.getJSON('register/setFollowAuthorsOnRegister.json', {
-        uid: 1000,
         authorIdsStr: JSON.stringify(authorIdsStr),
       }, function(res) {
         self.emit('next');
@@ -127,7 +126,6 @@ class Step3 extends migi.Component {
     loading = true;
     let self = this;
     util.getJSON('author/getSuggestAuthors.json', {
-      uid: 1000,
       fromIndex,
       limit,
     }, function(res) {

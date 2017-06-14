@@ -150,6 +150,9 @@ let jsBridge = {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('userInfo', callback);
     }
+    else {
+      callback();
+    }
   },
   swipeRefresh: function(state) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {

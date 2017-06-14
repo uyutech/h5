@@ -99,7 +99,6 @@ class Step2 extends migi.Component {
         tagIds.push(parseInt($(o).attr('tagId')));
       });
       util.getJSON('register/setFollowTagsOnRegister.json', {
-        uid: 1000,
         tagIds: JSON.stringify(tagIds),
       }, function(res) {
         self.emit('next');
@@ -128,7 +127,6 @@ class Step2 extends migi.Component {
     loading = true;
     let self = this;
     util.getJSON('tag/getSuggestTags.json', {
-      uid: 1000,
       fromIndex,
       limit,
     }, function(res) {
