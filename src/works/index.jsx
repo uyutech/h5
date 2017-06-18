@@ -70,7 +70,7 @@ jsBridge.ready(function() {
     </div>,
     document.body
   );
-  let $mediasC = $(medias.element).find('.c');
+  let $mediasC = $(medias.element).children('.c');
   let video = medias.find(Video);
   video.on('playing', function() {
     menu.hide();
@@ -85,7 +85,7 @@ jsBridge.ready(function() {
     $mediasC.css('-webkit-transform', `translate3d(${-x}px,0,0)`);
     $mediasC.css('transform', `translate3d(${-x}px,0,0)`);
   });
-  // mediaSwitch.emit('change', 2);
+  mediaSwitch.emit('change', 3);
   let imageView = migi.render(
     <ImageView images={ images }/>,
     document.body

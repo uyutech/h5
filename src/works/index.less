@@ -357,8 +357,66 @@ body{
       > .link{
         position:relative;
         flex:1;
+        display:flex;
+        align-items:center;
         height:2.1rem;
-        background:#f00;
+        background:url(link_bg.png) no-repeat;
+        background-size:cover;
+        overflow:hidden;
+        ul{
+          flex:1;
+          padding-right:0.5rem;
+          text-align:center;
+          li{
+            display:inline-block;
+            width:25%;
+            background:url(5sing.png) no-repeat center 0;
+            background-size:0.3rem auto;
+            text-align:center;
+            &.baidu{
+              background-image:url(baidu.png);
+            }
+            &.wangyi{
+              background-image:url(wangyi.png);
+            }
+            &.bili{
+              background-image:url(bili.png);
+            }
+            a{
+              display:block;
+              padding-top:0.3rem;
+              height:100%;
+              box-sizing:border-box;
+              font-size:0.12rem;
+              color:#fff;
+              overflow:hidden;
+              text-overflow:ellipsis;
+            }
+          }
+        }
+        //.tags{
+        //  margin-right:1rem;
+        //  overflow:scroll;
+        //  .c{
+        //    width:9999rem;
+        //    ul{
+        //      display:inline-block;
+        //      li{
+        //        display:inline-block;
+        //        padding-top:0.4rem;
+        //        width:1rem;
+        //        background:url(5sing.png) no-repeat center 0;
+        //        background-size:0.3rem auto;
+        //        font-size:0.12rem;
+        //        text-align:center;
+        //        span{
+        //          color:#fff;
+        //          transform:scale(0.833);
+        //        }
+        //      }
+        //    }
+        //  }
+        //}
       }
     }
     > .switch{
@@ -370,6 +428,7 @@ body{
       box-sizing:border-box;
       opacity:0;
       transition:opacity 0.2s;
+      overflow:visible;
       &.show{
         opacity:1;
       }
@@ -377,6 +436,7 @@ body{
         position:fixed;
         top:0.65rem;
         z-index:1000;
+        height:0.48rem;
         .bg{
           opacity:1;
         }
