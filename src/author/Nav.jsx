@@ -34,7 +34,7 @@ class Nav extends migi.Component {
               </div>
               <span>热度</span>
             </div>
-            <a href="#">应援</a>
+            <a href="#" class="follow">应援</a>
           </div>
         </div>
       </div>

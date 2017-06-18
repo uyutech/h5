@@ -181,6 +181,57 @@ body{
               background-size:100% auto;
               content:' ';
             }
+            &.follow:before{
+              background-image:url(+.png);
+              background-size:0.1rem auto;
+            }
+          }
+        }
+      }
+    }
+  }
+  > .link{
+    padding:0.1rem;
+    width:100%;
+    box-sizing:border-box;
+    overflow:scroll;
+    .c{
+      width:9999rem;
+      ul{
+        display:inline-block;
+        li{
+          display:inline-block;
+          margin-right:0.15rem;
+          a{
+            display:block;
+            padding-top:0.2rem;
+            width:0.58rem;
+            height:0.4rem;
+            box-sizing:border-box;
+            border:1px solid #EDF3F7;
+            border-radius:0.05rem;
+            text-align:center;
+            background:url(5sing.png) no-repeat center 0.02rem;
+            background-size:0.19rem auto;
+            span{
+              display:block;
+              font-size:0.12rem;
+              transform:scale(0.833);
+              color:#4E8EB0;
+              white-space:nowrap;
+            }
+            &.bili{
+              background:url(bili.png) no-repeat center 0.02rem;
+              background-size:0.16rem auto;
+            }
+            &.wangyi{
+              background:url(bili.png) no-repeat center 0.02rem;
+              background-size:0.16rem auto;
+            }
+            &.baidu{
+              background:url(bili.png) no-repeat center 0.02rem;
+              background-size:0.18rem auto;
+            }
           }
         }
       }
