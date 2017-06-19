@@ -7,7 +7,7 @@ class Nav extends migi.Component {
     super(...data);
   }
   click() {
-    jsBridge.popWindow();
+    jsBridge.back();
   }
   render() {
     return <div class="nav">

@@ -7,6 +7,7 @@ import './index.less';
 
 import Nav from './Nav.jsx';
 import Link from './Link.jsx';
+import Tags from './Tags.jsx';
 
 jsBridge.ready(function() {
   migi.render(
@@ -15,6 +16,10 @@ jsBridge.ready(function() {
   );
   migi.render(
     <Link/>,
+    document.body
+  );
+  migi.render(
+    <Tags/>,
     document.body
   );
 });

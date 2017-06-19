@@ -85,7 +85,7 @@ jsBridge.ready(function() {
     $mediasC.css('-webkit-transform', `translate3d(${-x}px,0,0)`);
     $mediasC.css('transform', `translate3d(${-x}px,0,0)`);
   });
-  mediaSwitch.emit('change', 3);
+  // mediaSwitch.emit('change', 3);
   let imageView = migi.render(
     <ImageView images={ images }/>,
     document.body

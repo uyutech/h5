@@ -6,32 +6,35 @@ import './index.html';
 import './index.less';
 
 import Nav from './Nav.jsx';
-import Carousel from './Carousel.jsx';
-import FollowList from './FollowList.jsx';
 import BottomNav from './BottomNav.jsx';
-import News from './News.jsx';
+import FollowCard from './FollowCard.jsx';
+import FindCard from './FindCard.jsx';
 
 let nav = migi.render(
   <Nav/>,
   document.body
 );
 
-let carousel = migi.render(
-  <Carousel/>,
+let followCard = migi.render(
+  <FollowCard/>,
   document.body
 );
 
-migi.render(
-  <FollowList/>,
+let findCard = migi.render(
+  <FindCard/>,
   document.body
 );
 
-migi.render(
-  <News/>,
-  document.body
-);
-
-migi.render(
+let bottomNav = migi.render(
   <BottomNav/>,
   document.body
 );
+
+let list = [followCard, findCard];
+let last = followCard;
+bottomNav.on('change', function(i) {
+  last.hide();
+  last = list[i];
+  last.show();
+});
+bottomNav.emit('change', 1);

@@ -46,6 +46,11 @@ class FollowList extends migi.Component {
   move(e) {
   }
   end() {}
+  authorClick(e, vd, tvd) {
+    e.preventDefault();
+    let href = tvd.props.href;
+    jsBridge.pushWindow(href);
+  }
   render() {
     return <div class="follow_list">
       <div class="ti">
@@ -67,7 +72,7 @@ class FollowList extends migi.Component {
         </div>
         <div class="ers" ref="ers">
           <div class="c">
-            <ul class="fn-clear">
+            <ul onClick={ { a: this.authorClick } }>
               <li><a href="author.html?id=1"><img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/><span>揩油哥</span></a></li>
               <li><img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/><span>揩油哥</span></li>
               <li><img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/><span>揩油哥</span></li>
