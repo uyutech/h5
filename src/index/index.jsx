@@ -37,4 +37,4 @@ bottomNav.on('change', function(i) {
   last = list[i];
   last.show();
 });
-bottomNav.emit('change', 1);
+// bottomNav.emit('change', 1);
