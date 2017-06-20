@@ -9,13 +9,16 @@ class HotWorks extends migi.Component {
   constructor(...data) {
     super(...data);
     this.on(migi.Event.DOM, function() {
-      this.$root = $(this.element);
-      this.list = this.ref.list.element;
-      this.$list = $(this.list);
-      let $c = this.$list.find('.c');
-      let $ul = $c.find('ul');
-      $c.css($ul.width() + 1);
+      this.autoWidth();
     });
+  }
+  autoWidth() {
+    this.$root = $(this.element);
+    this.list = this.ref.list.element;
+    this.$list = $(this.list);
+    let $c = this.$list.find('.c');
+    let $ul = $c.find('ul');
+    $c.css($ul.width() + 1);
   }
   start(e) {
     if(e.touches.length != 1) {

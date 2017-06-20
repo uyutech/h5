@@ -7,7 +7,7 @@ class Banner extends migi.Component {
     super(...data);
   }
   render() {
-    return <div class="banner">转圈一周精选<br/>Vol 01</div>
+    return <div class="banner"><pre>转圈一周精选<br/>Vol 01</pre></div>;
   }
 }
 
