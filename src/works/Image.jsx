@@ -1,7 +1,12 @@
 /**
  * Created by army on 2017/6/12.
  */
- 
+
+let isStart;
+let isMove;
+let startX;
+let startY;
+
 class Image extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -18,11 +23,24 @@ class Image extends migi.Component {
       $list.css('width', (height + 2) * datas.length + 2);
     });
   }
+  start(e) {
+    if(e.touches.length != 1) {
+      isStart = false;
+    }
+    else {
+      isStart = true;
+      startX = e.touches[0].pageX;
+      startY = e.touches[0].pageY;
+    }
+  }
+  end() {
+    jsBridge.swipeRefresh(true);
+  }
   click(e, vd, tvd) {
     this.emit('show', tvd.props.index);
   }
   render() {
-    return <div class="image">
+    return <div class="image" onTouchStart={ this.start } onTouchEnd={ this.end } onTouchCancel={ this.end }>
       <div class="list" ref="list">
         <div class="imgs" ref="imgs" onClick={ { img: this.click } }/>
       </div>

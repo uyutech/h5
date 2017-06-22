@@ -11,10 +11,21 @@ import FollowCard from './FollowCard.jsx';
 import ZhuanquanCard from './ZhuanquanCard.jsx';
 import FindCard from './FindCard.jsx';
 
+let $window = $(window);
+
 let nav = migi.render(
   <Nav/>,
   document.body
 );
+
+$window.on('scroll', function() {
+  let top = $window.scrollTop();
+  let opaicty = top / 200;
+  if(opaicty > 1) {
+    opaicty = 1;
+  }
+  nav.setOpacity(opaicty);
+});
 
 let followCard = migi.render(
   <FollowCard/>,

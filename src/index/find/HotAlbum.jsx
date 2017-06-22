@@ -1,11 +1,11 @@
 /**
- * Created by army on 2017/6/19.
+ * Created by army on 2017/6/21.
  */
 
 let isStart;
 let startX;
 
-class HotWorks extends migi.Component {
+class HotAlbum extends migi.Component {
   constructor(...data) {
     super(...data);
   }
@@ -50,13 +50,15 @@ class HotWorks extends migi.Component {
     jsBridge.swipeRefresh(true);
   }
   render() {
-    return <div class="hot_works" onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
-      <h3>热门作品</h3>
+    return <div class="hot_album" onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
+      <h3>热门专辑</h3>
       <div class="list" ref="list">
         <div class="c">
           <ul>
             <li>
               <div class="pic">
+                <div class="bg3"/>
+                <div class="bg2"/>
                 <div class="bg"/>
                 <div class="mask"/>
                 <div class="num"><b class="audio"/>66w</div>
@@ -66,6 +68,9 @@ class HotWorks extends migi.Component {
             </li>
             <li>
               <div class="pic">
+                <div class="bg3"/>
+                <div class="bg2"/>
+                <div class="bg"/>
                 <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
                 <div class="mask"/>
                 <div class="num"><b class="video"/>66w</div>
@@ -75,6 +80,9 @@ class HotWorks extends migi.Component {
             </li>
             <li>
               <div class="pic">
+                <div class="bg3"/>
+                <div class="bg2"/>
+                <div class="bg"/>
                 <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
                 <div class="mask"/>
                 <div class="num"><b class="video"/>66w</div>
@@ -84,6 +92,9 @@ class HotWorks extends migi.Component {
             </li>
             <li>
               <div class="pic">
+                <div class="bg3"/>
+                <div class="bg2"/>
+                <div class="bg"/>
                 <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
                 <div class="mask"/>
                 <div class="num"><b class="video"/>66w</div>
@@ -93,6 +104,9 @@ class HotWorks extends migi.Component {
             </li>
             <li>
               <div class="pic">
+                <div class="bg3"/>
+                <div class="bg2"/>
+                <div class="bg"/>
                 <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
                 <div class="mask"/>
                 <div class="num"><b class="video"/>66w</div>
@@ -102,6 +116,9 @@ class HotWorks extends migi.Component {
             </li>
             <li>
               <div class="pic">
+                <div class="bg3"/>
+                <div class="bg2"/>
+                <div class="bg"/>
                 <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
                 <div class="mask"/>
                 <div class="num"><b class="video"/>66w</div>
@@ -116,4 +133,4 @@ class HotWorks extends migi.Component {
   }
 }
 
-export default HotWorks;
+export default HotAlbum;
