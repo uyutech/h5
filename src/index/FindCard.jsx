@@ -6,6 +6,7 @@ import Banner from './find/Banner.jsx';
 import Tags from './find/Tags.jsx';
 import HotWorks from './find/HotWorks.jsx';
 import HotAlbum from './find/HotAlbum.jsx';
+import HotAuthor from './find/HotAuthor.jsx';
 
 let first = true;
 
@@ -31,6 +32,7 @@ class FindCard extends migi.Component {
       <Tags ref="tags"/>
       <HotWorks ref="hotWorks"/>
       <HotAlbum ref="hotAlbum"/>
+      <HotAuthor ref="hotAuthor"/>
     </div>;
   }
 }

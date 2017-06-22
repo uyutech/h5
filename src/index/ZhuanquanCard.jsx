@@ -13,7 +13,7 @@ class ZhuanquanCard extends migi.Component {
     $(this.element).hide();
   }
   render() {
-    return <div class="zhuanquan_card">123</div>;
+    return <div class="zhuanquan_card"></div>;
   }
 }
 
