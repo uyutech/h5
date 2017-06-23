@@ -10,6 +10,7 @@ import BottomNav from './BottomNav.jsx';
 import FollowCard from './FollowCard.jsx';
 import ZhuanquanCard from './ZhuanquanCard.jsx';
 import FindCard from './FindCard.jsx';
+import MyCard from './MyCard.jsx';
 
 let $window = $(window);
 
@@ -42,16 +43,21 @@ let findCard = migi.render(
   document.body
 );
 
+let myCard = migi.render(
+  <MyCard/>,
+  document.body
+);
+
 let bottomNav = migi.render(
   <BottomNav/>,
   document.body
 );
 
-let list = [followCard, zhuanquanCard, findCard];
+let list = [followCard, zhuanquanCard, findCard, myCard];
 let last = followCard;
 bottomNav.on('change', function(i) {
   last.hide();
   last = list[i];
   last.show();
 });
-bottomNav.emit('change', 2);
+// bottomNav.emit('change', 2);

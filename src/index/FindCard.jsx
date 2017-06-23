@@ -21,6 +21,7 @@ class FindCard extends migi.Component {
       this.ref.tags.autoWidth();
       this.ref.hotWorks.autoWidth();
       this.ref.hotAlbum.autoWidth();
+      this.ref.hotAuthor.autoWidth();
     }
   }
   hide() {

@@ -6,6 +6,15 @@ class HotAuthor extends migi.Component {
   constructor(...data) {
     super(...data);
   }
+  autoWidth() {
+    this.$root = $(this.element);
+    this.list = this.ref.list.element;
+    this.$list = $(this.list);
+    let $c = this.$list.find('.c');
+    $c.width('css', '9999rem');
+    let $ul = $c.find('ul');
+    $c.css('width', $ul.width() + 1);
+  }
   render() {
     return <div class="hot_author">
       <h3>热门作者</h3>
