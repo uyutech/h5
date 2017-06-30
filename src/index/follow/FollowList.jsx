@@ -7,6 +7,47 @@ let isMove;
 let startX;
 let startY;
 
+let hotAuthor = [
+  {
+    id: 0,
+    img: 'http://bbs.xiguo.net/zq/zz/02.png',
+    name: '司夏',
+    vip: true
+  },
+  {
+    id: 1,
+    img: 'http://bbs.xiguo.net/zq/zz/01.jpg',
+    name: '河图',
+    vip: true
+  },
+  {
+    id: 2,
+    img: 'http://bbs.xiguo.net/zq/zz/03.png',
+    name: '慕寒',
+    vip: true
+  },
+  {
+    id: 3,
+    img: 'http://bbs.xiguo.net/zq/zz/07.jpg',
+    name: '银临'
+  },
+  {
+    id: 4,
+    img: 'http://bbs.xiguo.net/zq/zz/04.jpg',
+    name: '吾恩'
+  },
+  {
+    id: 5,
+    img: 'http://bbs.xiguo.net/zq/zz/06.jpg',
+    name: '竹桑'
+  },
+  {
+    id: 6,
+    img: 'http://bbs.xiguo.net/zq/zz/05.jpg',
+    name: '双笙'
+  }
+];
+
 class FollowList extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -61,68 +102,31 @@ class FollowList extends migi.Component {
         <div class="c">
           <ul>
             <li>古风</li>
-            <li>古风123</li>
-            <li>古风sd</li>
-            <li>古风</li>
-            <li>古风asdasdfs</li>
-            <li>古风</li>
-            <li>古风a</li>
+            <li>音乐</li>
+            <li>阴阳师</li>
+            <li>日漫</li>
+            <li>小清新</li>
+            <li>剑网3</li>
+            <li>游戏</li>
           </ul>
         </div>
       </div>
       <div class="ers" ref="ers" onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
         <div class="c">
           <ul onClick={ { a: this.authorClick } }>
-            <li>
-              <a href="author.html?id=1">
-                <div class="pic">
-                  <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                  <b/>
-                </div>
-                <span>揩油哥</span><b/>
-              </a>
-            </li>
-            <li>
-              <a href="author.html?id=1">
-                <div class="pic">
-                  <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                  <b/>
-                </div>
-                <span>揩油哥</span><b/>
-              </a>
-            </li>
-            <li>
-              <a href="author.html?id=1">
-                <div class="pic">
-                  <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                </div>
-                <span>揩油哥</span><b/>
-              </a>
-            </li>
-            <li>
-              <a href="author.html?id=1">
-                <div class="pic">
-                  <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                </div>
-                <span>揩油哥</span><b/>
-              </a>
-            </li>
-            <li>
-              <a href="author.html?id=1">
-                <div class="pic">
-                  <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                </div>
-                <span>揩油哥</span><b/>
-              </a>
-            </li>
-            <li>
-              <a href="author.html?id=1">
-                <div class="pic">
-                  <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                </div>
-                <span>揩油哥</span><b/>
-              </a>
-            </li>
+            {
+              hotAuthor.map(function(item) {
+                return <li>
+                  <a href="author.html?id=1">
+                    <div class="pic">
+                      <img src={ item.img }/>
+                      { item.vip ? <b/> : '' }
+                    </div>
+                    <span>{ item.name }</span><b/>
+                  </a>
+                </li>;
+              })
+            }
           </ul>
         </div>
       </div>

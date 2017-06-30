@@ -1,18 +1,17 @@
 /**
- * Created by army on 2017/6/18.
+ * Created by army on 2017/6/24.
  */
- 
-class Tags extends migi.Component {
+
+class Tags2 extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.on(migi.Event.DOM, function() {
-      this.autoWidth();
-    });
   }
   clickL1(e, vd, tvd) {
+    e.preventDefault();
     $(tvd.element).toggleClass('on');
   }
   clickL2(e, vd, tvd) {
+    e.preventDefault();
     $(tvd.element).toggleClass('on');
   }
   autoWidth() {
@@ -33,23 +32,19 @@ class Tags extends migi.Component {
         <div class="c">
           <ul>
             <li><a href="#"><span>音乐</span></a></li>
-            <li><a href="#"><span>广播剧</span></a></li>
-            <li><a href="#"><span>视频</span></a></li>
-            <li><a href="#"><span>绘画</span></a></li>
-            <li><a href="#"><span>COS</span></a></li>
-            <li><a href="#"><span>游戏</span></a></li>
+            <li class="on"><a href="#"><span>视频</span></a></li>
+            <li class="on"><a href="#"><span>文词</span></a></li>
+            <li><a href="#"><span>测试</span></a></li>
+            <li><a href="#"><span>aga</span></a></li>
+            <li class="on"><a href="#"><span>水电费</span></a></li>
           </ul>
         </div>
       </div>
       <div class="l2" ref="l2" onClick={ { li: this.clickL2 } }>
         <div class="c">
           <ul>
-            <li><a href="#"><span>古风</span></a></li>
-            <li><a href="#"><span>小清新</span></a></li>
             <li><a href="#"><span>阴阳师</span></a></li>
-            <li><a href="#"><span>日漫</span></a></li>
-            <li><a href="#"><span>流行</span></a></li>
-            <li><a href="#"><span>剑网3</span></a></li>
+            <li class="on"><a href="#"><span>阴阳师</span></a></li>
           </ul>
         </div>
       </div>
@@ -57,4 +52,4 @@ class Tags extends migi.Component {
   }
 }
 
-export default Tags;
+export default Tags2;

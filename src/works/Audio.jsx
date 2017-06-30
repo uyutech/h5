@@ -12,7 +12,7 @@ class Audio extends migi.Component {
       <div class="wave2"/>
       <audio
         controls="controls"
-        src={ 'http://192.168.100.199/github/zhuanq/h5/ysj.mp3' }>
+        src={ 'http://bbs.xiguo.net/zq/01.mp3' }>
         your browser does not support the audio tag
       </audio>
     </div>;

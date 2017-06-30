@@ -28,8 +28,8 @@ class Comments extends migi.Component {
               <div class="profile">
                 <img class="pic" src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
                 <div class="txt">
-                  <div><span class="name">名字</span><small class="time">昨天 18:08</small></div>
-                  <p>签名签名签名签名签名签名</p>
+                  <div><span class="name">海妖小马甲</span><small class="time">3小时前</small></div>
+                  <p>我是个马甲</p>
                 </div>
               </div>
               <div class="fn">
@@ -37,8 +37,8 @@ class Comments extends migi.Component {
               </div>
             </div>
             <div class="c">
-              <pre>内容内容内容内容\n内容内容内容n内容内容内容n内容内容内容内容内容1234<span class="placeholder"></span></pre>
-              <div class="slide"><small>12</small><span>收起</span></div>
+              <pre>前排支持<span class="placeholder"></span></pre>
+              <div class="slide"><small></small><span>收起</span></div>
             </div>
             <div class="list2">
               <ul>

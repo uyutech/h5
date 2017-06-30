@@ -27,10 +27,7 @@ class Tags extends migi.Component {
       <div class="c" ref="c">
         <ul onClick={ { li: this.click } }>
           <li class="cur" rel={ 0 }><span>简介<b/></span></li>
-          <li rel={ 1 }><span>播放列表<b/></span><small>2</small></li>
-          <li rel={ 2 }><span>评论<b/></span><small>23</small></li>
-          <li rel={ 3 }><span>同人文<b/></span><small>2333</small></li>
-          <li rel={ 4 }><span>同人图<b/></span><small>2.3w</small></li>
+          <li rel={ 1 }><span>评论<b/></span><small>1</small></li>
         </ul>
       </div>
     </div>;

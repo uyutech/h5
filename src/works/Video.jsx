@@ -67,7 +67,7 @@ class Video extends migi.Component {
         controls="controls"
         x5-video-player-type="h5"
         x5-video-player-fullscreen="true"
-        src={ 'http://192.168.100.199/github/zhuanq/h5/ssc.mp4' }>
+        src={ 'http://bbs.xiguo.net/zq/02.mp4' }>
         your browser does not support the video tag
       </video>
     </div>;

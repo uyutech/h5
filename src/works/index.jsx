@@ -101,10 +101,7 @@ jsBridge.ready(function() {
   let selects = migi.render(
     <div class="selects" style={ `width:${tags.getTagNum()}00%` }>
       <Intro/>
-      <PlayList/>
       <Comments/>
-      <div>empty</div>
-      <div>empty</div>
     </div>,
     document.body
   );

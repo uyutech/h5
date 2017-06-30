@@ -5,6 +5,7 @@
 class HotAuthor extends migi.Component {
   constructor(...data) {
     super(...data);
+    this.list2 = this.props.list || [];
   }
   autoWidth() {
     this.$root = $(this.element);
@@ -15,75 +16,25 @@ class HotAuthor extends migi.Component {
     let $ul = $c.find('ul');
     $c.css('width', $ul.width() + 1);
   }
+  @bind list2
   render() {
     return <div class="hot_author">
-      <h3>热门作者</h3>
+      <h3>{ this.props.title }</h3>
       <div class="list" ref="list">
         <div class="c">
           <ul>
-            <li>
-              <div class="pic">
-                <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                <b class="ce"/>
-                <b class="ge"/>
-                <b class="ge"/>
-              </div>
-              <div class="txt">名字名字名字</div>
-            </li>
-            <li>
-              <div class="pic">
-                <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                <b class="ce"/>
-                <b class="ge"/>
-                <b class="ge"/>
-              </div>
-              <div class="txt">名字名字名字</div>
-            </li>
-            <li>
-              <div class="pic">
-                <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                <b class="ce"/>
-                <b class="ge"/>
-                <b class="ge"/>
-              </div>
-              <div class="txt">名字名字名字</div>
-            </li>
-            <li>
-              <div class="pic">
-                <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                <b class="ce"/>
-                <b class="ge"/>
-                <b class="ge"/>
-              </div>
-              <div class="txt">名字名字名字</div>
-            </li>
-            <li>
-              <div class="pic">
-                <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                <b class="ce"/>
-                <b class="ge"/>
-                <b class="ge"/>
-              </div>
-              <div class="txt">名字名字名字</div>
-            </li>
-            <li>
-              <div class="pic">
-                <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                <b class="ce"/>
-                <b class="ge"/>
-                <b class="ge"/>
-              </div>
-              <div class="txt">名字名字名字</div>
-            </li>
-            <li>
-              <div class="pic">
-                <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                <b class="ce"/>
-                <b class="ge"/>
-                <b class="ge"/>
-              </div>
-              <div class="txt">名字名字名字</div>
-            </li>
+            {
+              this.list2.map(function(item) {
+                return <li>
+                  <div class="pic">
+                    <img src={ item.img }/>
+                    <b class="ge"/>
+                  </div>
+                  <div class="txt">{ item.name }</div>
+                  <div class="info">{ item.info }</div>
+                </li>;
+              })
+            }
           </ul>
         </div>
       </div>

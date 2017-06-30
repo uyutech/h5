@@ -8,6 +8,7 @@ let startX;
 class HotWorks extends migi.Component {
   constructor(...data) {
     super(...data);
+    this.list2 = this.props.list || [];
   }
   autoWidth() {
     this.$root = $(this.element);
@@ -49,66 +50,40 @@ class HotWorks extends migi.Component {
     this.$list.removeAttr('style');
     jsBridge.swipeRefresh(true);
   }
+  @bind list2
+  click(e, vd, tvd) {
+    jsBridge.pushWindow('works.html');
+  }
   render() {
-    return <div class="hot_works" onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
+    return <div class="hot_works">
       <h3>热门作品</h3>
       <div class="list" ref="list">
         <div class="c">
-          <ul>
-            <li>
-              <div class="pic">
-                <div class="bg"/>
-                <div class="mask"/>
-                <div class="num"><b class="audio"/>66w</div>
-                <div class="ath">作者/作者</div>
-              </div>
-              <p class="txt">名字</p>
-            </li>
-            <li>
-              <div class="pic">
-                <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                <div class="mask"/>
-                <div class="num"><b class="video"/>66w</div>
-                <div class="ath">作者/作者</div>
-              </div>
-              <p class="txt">名字</p>
-            </li>
-            <li>
-              <div class="pic">
-                <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                <div class="mask"/>
-                <div class="num"><b class="video"/>66w</div>
-                <div class="ath">作者/作者</div>
-              </div>
-              <p class="txt">名字</p>
-            </li>
-            <li>
-              <div class="pic">
-                <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                <div class="mask"/>
-                <div class="num"><b class="video"/>66w</div>
-                <div class="ath">作者/作者</div>
-              </div>
-              <p class="txt">名字</p>
-            </li>
-            <li>
-              <div class="pic">
-                <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                <div class="mask"/>
-                <div class="num"><b class="video"/>66w</div>
-                <div class="ath">作者/作者</div>
-              </div>
-              <p class="txt">名字</p>
-            </li>
-            <li>
-              <div class="pic">
-                <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-                <div class="mask"/>
-                <div class="num"><b class="video"/>66w</div>
-                <div class="ath">作者/作者</div>
-              </div>
-              <p class="txt">名字</p>
-            </li>
+          <ul onClick={ { li: this.click } }>
+            {
+              this.list2.map(function(item) {
+                if(item.type == 'audio') {
+                  return <li>
+                    <div class="pic">
+                      <div class="bg"/>
+                      <div class="mask"/>
+                      <div class="num"><b class="audio"/>66w</div>
+                      <div class="ath">{ item.author }</div>
+                    </div>
+                    <p class="txt">名字</p>
+                  </li>;
+                }
+                return <li>
+                  <div class="pic">
+                    <img src={ item.img }/>
+                    <div class="mask"/>
+                    <div class="num"><b class="video"/>{ item.num }</div>
+                    <div class="ath">{ item.author }</div>
+                  </div>
+                  <p class="txt">{ item.name }</p>
+                </li>;
+              })
+            }
           </ul>
         </div>
       </div>

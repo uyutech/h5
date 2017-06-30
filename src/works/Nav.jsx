@@ -12,8 +12,8 @@ class Nav extends migi.Component {
   render() {
     return <div class="nav">
       <b class="back" onClick={ this.click }/>
-      <h1>标题标题</h1>
-      <h2>副标题</h2>
+      <h1>前前前世</h1>
+      <h2>《你的名字》主题曲中文版</h2>
       <b class="play"/>
     </div>;
   }

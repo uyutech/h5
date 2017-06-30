@@ -47,11 +47,11 @@ module.exports = {
         use: extractLESS.extract([ 'css-loader', 'autoprefixer-loader', 'less-loader' ])
       },
       {
-        test: /\.(html?)|(\.jpg)|(\.jpeg)|(\.gif)|(\.png)$/,
+        test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)$/,
         use: 'file-loader?name=[path][name].[ext]'
       },
       {
-        test: /\.(html?)$/,
+        test: /\.(html?)|(\.mp4)$/,
         use: 'file-loader?name=[name].[ext]'
       }
     ]

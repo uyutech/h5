@@ -10,21 +10,21 @@ class Nav extends migi.Component {
     jsBridge.back();
   }
   render() {
-    return <div class="nav">
+    return <div class="nav" style="background-image:url(http://bbs.xiguo.net/zq/bg.png)">
       <b class="back" onClick={ this.back }/>
       <b class="play"/>
       <div class="profile">
         <div class="pic">
-          <img src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
+          <img src="http://bbs.xiguo.net/zq/zz/02.png"/>
           <b class="v"/>
         </div>
         <div class="txt">
           <div class="n">
             <h3>司夏</h3>
-            <span>策</span>
             <span>歌</span>
+            <span>策</span>
           </div>
-          <p class="intro">别名：揩油哥</p>
+          <p class="intro">别名：西国の海妖</p>
           <div class="o">
             <div class="fans">
               <strong>6.6w</strong>

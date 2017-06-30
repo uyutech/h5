@@ -7,67 +7,42 @@ class Authors extends migi.Component {
     super(...data);
     let datas = [
       {
-        type: '出品',
+        type: '演唱',
         list: [
           {
             uid: 1,
-            img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
+            img: 'http://bbs.xiguo.net/zq/zz/02.png',
             name: '司夏'
-          },
-          {
-            uid: 2,
-            img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
-            name: '司夏2'
           }
         ]
       },
       {
-        type: '出品2',
+        type: '作词',
         list: [
           {
             uid: 3,
-            img: 'http://tva4.sinaimg.cn/crop.7.1.129.129.180/64319a89gw1f62p9lp7hyj203w03wq2x.jpg',
-            name: '老司机sdf'
-          },
-          {
-            uid: 4,
-            img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
-            name: '司夏换行'
+            img: 'http://bbs.xiguo.net/zq/zz/01.jpg',
+            name: '沈行之'
           }
         ]
       },
       {
-        type: '很长的',
+        type: '混音',
         list: [
           {
             uid: 5,
-            img: 'http://tva4.sinaimg.cn/crop.7.1.129.129.180/64319a89gw1f62p9lp7hyj203w03wq2x.jpg',
-            name: '老司机sddf'
-          },
+            img: 'http://bbs.xiguo.net/zq/zz/07.jpg',
+            name: '少年E'
+          }
+        ]
+      },
+      {
+        type: '视频',
+        list: [
           {
-            uid: 6,
-            img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
-            name: '司夏1'
-          },
-          {
-            uid: 7,
-            img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
-            name: '司夏2'
-          },
-          {
-            uid: 8,
-            img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
-            name: '司夏3'
-          },
-          {
-            uid: 9,
-            img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
-            name: '司夏4长长长长'
-          },
-          {
-            uid: 10,
-            img: 'http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg',
-            name: '司夏长长长长长长长'
+            uid: 5,
+            img: 'http://bbs.xiguo.net/zq/zz/03.png',
+            name: '尉晓'
           }
         ]
       }
@@ -106,7 +81,7 @@ class Authors extends migi.Component {
         let item = temp[i];
         let $ul = $(ul.element);
         let height = $ul.height();
-        // 当是第3行时，尝试插入占位符，一旦产生换行，循环回退一次，同时占位符替代上一次的元素，因为占位符宽度最小所以不会产生影响
+        // 当是第2行时，尝试插入占位符，一旦产生换行，循环回退一次，同时占位符替代上一次的元素，因为占位符宽度最小所以不会产生影响
         if(count == 1) {
           placeholder.appendTo(ul);
           if($ul.height() > height) {
