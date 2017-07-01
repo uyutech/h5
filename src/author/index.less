@@ -2,6 +2,8 @@
  * Created by army on 2017/6/16.
  */
 
+@import '../component/playlist/playlist.less';
+
 body{
   padding-top:0;
   background:#EDF3F7;
@@ -789,27 +791,9 @@ body{
         }
       }
     }
-    > .wlist{
-      position:relative;
-      > .bar{
-        li{
-          float:left;
-          padding:0 0.1rem;
-          height:0.32rem;
-          line-height:0.32rem;
-          background:#4E8EB0;
-          border-radius:5px;
-          font-size:0.14rem;
-          color:#fff;
-          .video{
-            display:inline-block;
-            width:0.22rem;
-            height:0.22rem;
-            background:url(video.png) no-repeat;
-            background-size:cover;
-          }
-        }
-      }
+    > .cp_playlist{
+      padding-top:0.05rem;
+      background:#fff;
     }
   }
 }

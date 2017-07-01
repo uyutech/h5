@@ -3,7 +3,7 @@
  */
  
 import Tags2 from './Tags2.jsx';
-import WList from './WList.jsx';
+import PlayList from '../component/playlist/PlayList.jsx';
 
 class Works extends migi.Component {
   constructor(...data) {
@@ -19,7 +19,7 @@ class Works extends migi.Component {
   render() {
     return <div class="works">
       <Tags2 ref="tag"/>
-      <WList ref="wlist"/>
+      <PlayList ref="playlist"/>
     </div>;
   }
 }
