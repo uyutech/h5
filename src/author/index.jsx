@@ -10,6 +10,7 @@ import Link from './Link.jsx';
 import Tags from './Tags.jsx';
 import Home from './Home.jsx';
 import Works from './Works.jsx';
+import Comments from './Comments.jsx';
 
 jsBridge.ready(function() {
   migi.render(
@@ -31,10 +32,15 @@ jsBridge.ready(function() {
   let works = migi.render(
     <Works/>,
     document.body
-  )
+  );
+  let comments = migi.render(
+    <Comments/>,
+    document.body
+  );
   tags.on('change', function(i) {
     home.hide();
     works.hide();
+    comments.hide();
     switch (i) {
       case '0':
         home.show();
@@ -43,8 +49,9 @@ jsBridge.ready(function() {
         works.show();
         break;
       case '2':
+        comments.show();
         break;
     }
   });
-  // tags.emit('change', '1');
+  tags.emit('change', '2');
 });
