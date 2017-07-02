@@ -7,6 +7,7 @@ import Tags from './find/Tags.jsx';
 import HotWorks from './find/HotWorks.jsx';
 import HotAlbum from './find/HotAlbum.jsx';
 import HotAuthor from './find/HotAuthor.jsx';
+import PlayList from '../component/playlist/PlayList.jsx';
 
 let first = true;
 
@@ -154,6 +155,7 @@ class FindCard extends migi.Component {
       <HotWorks ref="hotWorks" list={ hotWorks }/>
       <HotAlbum ref="hotAlbum" list={ hotAlbum } title="热门专辑"/>
       <HotAuthor ref="hotAuthor" list={ hotAuthor } title="热门作者"/>
+      <PlayList/>
     </div>;
   }
 }

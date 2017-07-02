@@ -1,0 +1,125 @@
+/**
+ * Created by army on 2017/7/2.
+ */
+
+.cp_dynamic{
+  ul{
+    li{
+      display:flex;
+      margin-bottom:0.05rem;
+      padding:0.08rem 0.1rem;
+      background:#fff;
+      .con{
+        flex:1;
+        overflow:hidden;
+        .user{
+          display:flex;
+          align-items:center;
+          .head{
+            padding-right:0.1rem;
+            width:0.28rem;
+            &.n2{
+              width:0.49rem;
+            }
+            &.n3{
+              width:0.69rem;
+            }
+            &.n4{
+              width:0.89rem;
+            }
+            &.n5{
+              width:1.09rem;
+            }
+            img{
+              display:block;
+              float:left;
+              margin-left:-0.08rem;
+              width:0.28rem;
+              height:0.28rem;
+              border-radius:0.28rem;
+              &:first-child{
+                margin-left:0;
+              }
+            }
+          }
+          .name{
+            flex:1;
+            overflow:hidden;
+            line-height:1.2;
+            p{
+              font-size:0.13rem;
+              color:#6C7275;
+              white-space:nowrap;
+              overflow:hidden;
+              text-overflow:ellipsis;
+            }
+            small{
+              font-size:0.11rem;
+              font-weight:400;
+              color:#98A1A5;
+            }
+          }
+        }
+        .info{
+          margin-top:0.05rem;
+          overflow:hidden;
+          color:#6C7275;
+          font-size:0.13rem;
+          white-space:nowrap;
+          text-overflow:ellipsis;
+          a{
+            color:#9FB7C0;
+          }
+          .zq{
+            display:inline-block;
+            margin-right:0.05rem;
+            width:0.13rem;
+            height:0.13rem;
+            background:url(icon_zq.png) no-repeat center;
+            background-size:auto 0.13rem;
+            transform:translateY(0.015rem);
+          }
+          .wb{
+            display:inline-block;
+            margin-right:0.05rem;
+            width:0.13rem;
+            height:0.13rem;
+            background:url(icon_wb.png) no-repeat center;
+            background-size:0.13rem auto;
+            transform:translateY(0.015rem);
+          }
+          .bili{
+            display:inline-block;
+            margin-right:0.05rem;
+            width:0.13rem;
+            height:0.13rem;
+            background:url(icon_bili.png) no-repeat center;
+            background-size:auto 0.12rem;
+            transform:translateY(0.015rem);
+          }
+          .xmly{
+            display:inline-block;
+            margin-right:0.05rem;
+            width:0.13rem;
+            height:0.13rem;
+            background:url(icon_xmly.png) no-repeat center;
+            background-size:auto 0.13rem;
+            transform:translateY(0.015rem);
+          }
+        }
+      }
+      .preview{
+        padding-left:0.1rem;
+        width:0.5rem;
+        display:flex;
+        align-items:center;
+        img{
+          display:block;
+          flex:1;
+          width:0.5rem;
+          height:0.5rem;
+        }
+      }
+    }
+  }
+}

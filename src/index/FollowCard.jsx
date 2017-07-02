@@ -4,7 +4,7 @@
 
 import Carousel from './follow/Carousel.jsx';
 import FollowList from './follow/FollowList.jsx';
-import News from './follow/News.jsx';
+import Dynamic from '../component/dynamic/Dynamic.jsx';
 
 class FollowCard extends migi.Component {
   constructor(...data) {
@@ -20,7 +20,7 @@ class FollowCard extends migi.Component {
     return <div class="follow_card">
       <Carousel/>
       <FollowList/>
-      <News/>
+      <Dynamic/>
     </div>;
   }
 }

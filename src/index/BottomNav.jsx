@@ -12,9 +12,11 @@ class BottomNav extends migi.Component {
       return;
     }
     let rel = tvd.props.rel;
-    $(this.element).find('.cur').removeClass('cur');
-    $elem.addClass('cur');
-    this.emit('change', rel);
+    if(rel) {
+      $(this.element).find('.cur').removeClass('cur');
+      $elem.addClass('cur');
+      this.emit('change', rel);
+    }
   }
   render() {
     return <div class="bottom_nav" onClick={ { li: this.click } }>

@@ -5,6 +5,7 @@
 import HotWorks from '../index/find/HotWorks.jsx';
 import HotAlbum from '../index/find/HotAlbum.jsx';
 import HotAuthor from '../index/find/HotAuthor.jsx';
+import Dynamic from '../component/dynamic/Dynamic.jsx';
 
 let hotWorks = [
   {
@@ -109,6 +110,8 @@ class Home extends migi.Component {
       <HotWorks ref="hotWorks" list={ hotWorks }/>
       <HotAlbum ref="hotAlbum" list={ hotAlbum } title="专辑"/>
       <HotAuthor ref="hotAuthor" list={ hotAuthor } title="关系"/>
+      <h5 class="dynamic">作者动态</h5>
+      <Dynamic/>
     </div>;
   }
 }
