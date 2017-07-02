@@ -68,7 +68,7 @@ class Authors extends migi.Component {
       let placeholder = <li class="placeholder"/>;
       let ul = <ul class="fn-clear"/>;
       ul.appendTo(c);
-      // 最初的2个
+      // 最初的2个，label+用户
       if(temp[0]) {
         temp[0].appendTo(ul);
       }
@@ -93,12 +93,14 @@ class Authors extends migi.Component {
         // 标签类型连续插入2个测试是否需要换行
         if(item.props.class == 'label') {
           item.appendTo(ul);
-          temp[i+1].appendTo(ul);
+          i++;
+          temp[i].appendTo(ul);
           //换行生成新的行
           if($ul.height() > height) {
             ul = <ul class="fn-clear"/>;
             ul.appendTo(c);
             item.appendTo(ul);
+            temp[i].appendTo(ul);
             count++;
           }
         }
@@ -113,6 +115,7 @@ class Authors extends migi.Component {
           }
         }
       }
+      placeholder.clean();
       this.firstHeight = $(this.element).height();
       $(this.element).css('height', this.firstHeight);
     });
