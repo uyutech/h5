@@ -8,22 +8,20 @@ class Tags extends migi.Component {
   }
   click(e, vd, tvd) {
     let $ul = $(this.element).find('ul');
-    let $span = $(tvd.element);
-    if($span.hasClass('cur')) {
+    let $li = $(tvd.element);
+    if($li.hasClass('cur')) {
       return;
     }
     $ul.find('.cur').removeClass('cur');
-    $span.addClass('cur');
-    this.emit('change', $span.attr('rel'));
+    $li.addClass('cur');
+    this.emit('change', $li.attr('rel'));
   }
   render() {
     return <div class="tags">
-      <ul onClick={ { span: this.click } }>
-        <li class="item"><span class="cur" rel="0">主页<b/></span></li>
-        <li class="placeholder"/>
-        <li class="item"><span rel="1">作品<b/></span></li>
-        <li class="placeholder"/>
-        <li class="item"><span rel="2">留言<b/></span></li>
+      <ul onClick={ { li: this.click } }>
+        <li class="item cur" rel="0"><span>主页<b/></span></li>
+        <li class="item" rel="1"><span>作品<b/></span></li>
+        <li class="item" rel="2"><span>留言<b/></span></li>
       </ul>
     </div>;
   }

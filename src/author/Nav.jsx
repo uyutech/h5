@@ -10,7 +10,7 @@ class Nav extends migi.Component {
     jsBridge.back();
   }
   render() {
-    return <div class="nav" style="background-image:url(http://bbs.xiguo.net/zq/bg.png)">
+    return <div class="nav">
       <b class="back" onClick={ this.back }/>
       <b class="play"/>
       <div class="profile">

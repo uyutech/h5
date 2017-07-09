@@ -32,19 +32,18 @@ class Tags2 extends migi.Component {
         <div class="c">
           <ul>
             <li><a href="#"><span>音乐</span></a></li>
-            <li class="on"><a href="#"><span>视频</span></a></li>
-            <li class="on"><a href="#"><span>文词</span></a></li>
-            <li><a href="#"><span>测试</span></a></li>
-            <li><a href="#"><span>aga</span></a></li>
-            <li class="on"><a href="#"><span>水电费</span></a></li>
+            <li><a href="#"><span>视频</span></a></li>
           </ul>
         </div>
       </div>
       <div class="l2" ref="l2" onClick={ { li: this.clickL2 } }>
         <div class="c">
           <ul>
+            <li><a href="#"><span>古风</span></a></li>
+            <li><a href="#"><span>动漫</span></a></li>
+            <li><a href="#"><span>流行</span></a></li>
             <li><a href="#"><span>阴阳师</span></a></li>
-            <li class="on"><a href="#"><span>阴阳师</span></a></li>
+            <li><a href="#"><span>日语</span></a></li>
           </ul>
         </div>
       </div>

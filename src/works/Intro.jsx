@@ -6,21 +6,24 @@ class Intro extends migi.Component {
   constructor(...data) {
     super(...data);
     this.on(migi.Event.DOM, function() {
-      let $timeline = $(this.ref.timeline.element);
-      let $line = $timeline.find('.line');
-      let $c = $timeline.find('.c');
-      let $ul = $c.find('ul');
-      let width = $ul.width() + 1;
-      $c.css('width', width);
-      $line.css('width', width + 10);
-      
-      let $inspiration = $(this.ref.inspiration.element);
-      $inspiration.children('li').each(function(i, item) {
-        let $li = $(item);
-        let $placeholder = $li.find('.placeholder');
-        let $slide = $li.find('.slide');
-        $placeholder.css('width', $slide.width());
-      });
+      this.autoWidth();
+    });
+  }
+  autoWidth() {
+    let $timeline = $(this.ref.timeline.element);
+    let $line = $timeline.find('.line');
+    let $c = $timeline.find('.c');
+    let $ul = $c.find('ul');
+    let width = $ul.width() + 1;
+    $c.css('width', width);
+    $line.css('width', width + 10);
+  
+    let $inspiration = $(this.ref.inspiration.element);
+    $inspiration.children('li').each(function(i, item) {
+      let $li = $(item);
+      let $placeholder = $li.find('.placeholder');
+      let $slide = $li.find('.slide');
+      $placeholder.css('width', $slide.width());
     });
   }
   slide(e, vd, tvd) {
@@ -36,6 +39,12 @@ class Intro extends migi.Component {
       $slide.addClass('on');
       $list2.css('height', $ul.height());
     }
+  }
+  show() {
+    $(this.element).show();
+  }
+  hide() {
+    $(this.element).hide();
   }
   render() {
     return <div class="intro">

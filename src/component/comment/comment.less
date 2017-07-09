@@ -114,12 +114,14 @@
         }
       }
       > .c{
+        display:inline-block;
+        max-width:100%;
         position:relative;
         margin:0.1rem 0;
         padding:0.05rem 0.1rem;
         color:#FFF;
         font-size:0.12rem;
-        background:#7EB4CA;
+        background:#4E8EB0;
         border-radius:0.1rem;
         &:after{
           position:absolute;
@@ -128,7 +130,7 @@
           display:block;
           width:0;
           height:0;
-          border:0.08rem solid #7EB4CA;
+          border:0.09rem solid #4E8EB0;
           border-top-color:transparent;
           border-left-color:transparent;
           border-right-color:transparent;
@@ -139,6 +141,7 @@
           margin:0;
           word-break:break-all;
           word-wrap:break-word;
+          white-space:pre-wrap;
           .placeholder{
             display:inline-block;
             width:0.4rem;
@@ -304,6 +307,7 @@
             text-align:left;
             word-break:break-all;
             word-wrap:break-word;
+            white-space:pre-wrap;
           }
         }
       }

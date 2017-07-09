@@ -53,5 +53,5 @@ jsBridge.ready(function() {
         break;
     }
   });
-  // tags.emit('change', '2');
+  // tags.emit('change', '1');
 });

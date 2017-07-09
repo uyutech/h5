@@ -44,7 +44,7 @@ class Comment extends migi.Component {
               </div>
             </div>
             <div class="fn">
-              <span class="zan has"><small>123</small></span>
+              <span class="zan has"><small>66</small></span>
             </div>
           </div>
           <div class="c">
@@ -62,19 +62,19 @@ class Comment extends migi.Component {
               </div>
             </div>
             <div class="fn">
-              <span class="zan has"><small>123</small></span>
+              <span class="zan has"><small>56</small></span>
             </div>
           </div>
           <div class="c">
-            <pre>前排支持前排支持前排支持前排支持前排支持前排支持前排支持<span class="placeholder"></span></pre>
-            <div class="slide"><small>123</small><span>收起</span></div>
+            <pre>前排支持前排支持前排支持前排支持前排  <span class="placeholder"></span></pre>
+            <div class="slide"><small>2</small><span>收起</span></div>
           </div>
           <div class="list2">
             <ul>
               <li>
                 <div class="t">
                   <div class="fn">
-                    <span class="zan has"><small>123</small></span>
+                    <span class="zan has"><small>12</small></span>
                   </div>
                   <div class="profile">
                     <div class="txt">
@@ -91,7 +91,7 @@ class Comment extends migi.Component {
               <li>
                 <div class="t">
                   <div class="fn">
-                    <span class="zan has"><small>123</small></span>
+                    <span class="zan has"><small>5</small></span>
                   </div>
                   <div class="profile">
                     <div class="txt">

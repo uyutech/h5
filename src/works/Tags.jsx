@@ -26,8 +26,8 @@ class Tags extends migi.Component {
     return <div class="tags">
       <div class="c" ref="c">
         <ul onClick={ { li: this.click } }>
-          <li class="cur" rel={ 0 }><span>简介<b/></span></li>
-          <li rel={ 1 }><span>评论<b/></span><small>1</small></li>
+          <li class="cur" rel="0"><span>简介<b/></span></li>
+          <li rel="1"><span>评论<b/></span><small>1</small></li>
         </ul>
       </div>
     </div>;

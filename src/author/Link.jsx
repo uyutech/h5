@@ -18,6 +18,8 @@ class Link extends migi.Component {
         <ul>
           <li><a href="#"><span>5sing</span></a></li>
           <li><a href="#" class="bili"><span>b站</span></a></li>
+          <li><a href="#" class="baidu"><span>百度</span></a></li>
+          <li><a href="#" class="wangyi"><span>网易</span></a></li>
         </ul>
       </div>
     </div>;

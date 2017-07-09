@@ -42,12 +42,13 @@ let list = [
 class Dynamics extends migi.Component {
   constructor(...data) {
     super(...data);
+    this.list = this.props.list;
   }
   render() {
     return <div class="cp_dynamic">
       <ul>
         {
-          list.map(function(item) {
+          this.list.map(function(item) {
             let info;
             let preview;
             if(item.type == 'song') {

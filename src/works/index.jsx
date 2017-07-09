@@ -98,27 +98,25 @@ jsBridge.ready(function() {
     <Tags/>,
     document.body
   );
-  let selects = migi.render(
-    <div class="selects" style={ `width:${tags.getTagNum()}00%` }>
-      <Intro/>
-      <Comments/>
-    </div>,
+  let intro = migi.render(
+    <Intro/>,
     document.body
   );
-  let $selects = $(selects.element);
-  // let timeout;
+  let comments = migi.render(
+    <Comments/>,
+    document.body
+  );
   tags.on('change', function(i) {
-    let x = i * winWidth;
-    $selects.css('-webkit-transform', `translate3d(${-x}px,0,0)`);
-    $selects.css('transform', `translate3d(${-x}px,0,0)`);
-    // $selects.children('div').removeClass('fn-zero');
-    // if(timeout) {
-    //   clearTimeout(timeout);
-    // }
-    // timeout = setTimeout(function() {
-    //   $selects.children('div').addClass('fn-zero');
-    //   $selects.children('div').eq(i).removeClass('fn-zero');
-    // }, 200);
+    intro.hide();
+    comments.hide();
+    switch(i) {
+      case '0':
+        intro.show();
+        break;
+      case '1':
+        comments.show();
+        break;
+    }
   });
   // tags.emit('change', 2);
 });
