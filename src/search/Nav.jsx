@@ -6,6 +6,9 @@ class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
   }
+  cancel() {
+    jsBridge.popWindow();
+  }
   render() {
     return <div class="nav">
       <div class="form">
