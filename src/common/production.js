@@ -9,7 +9,7 @@ export default {
   ajax: function(url, data, success, error, cancelLoading) {
     // 兼容无host
     if (!/^http(s)?:\/\//.test(url)) {
-      url = 'http://106.14.223.219:8089/' + url.replace(/^\//, '');
+      url = 'http://116.62.244.93:8089/' + url.replace(/^\//, '');
     }
     if (!cancelLoading) {
       bridge.showLoading();
