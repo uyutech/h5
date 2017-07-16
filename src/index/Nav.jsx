@@ -18,11 +18,14 @@ class Nav extends migi.Component {
       });
     });
   }
+  formClick() {
+    jsBridge.pushWindow('search.html');
+  }
   render() {
     return <div class="nav">
       <div class="bg" ref="bg"/>
-      <div class="form">
-        <input type="text" placeholder="河图新歌发布"/>
+      <div class="form" onClick={ this.formClick }>
+        <input type="text" placeholder="河图新歌发布" readOnly="readOnly"/>
       </div>
       <b class="comment"/>
       <b class="play"/>

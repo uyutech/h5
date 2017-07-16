@@ -10,7 +10,8 @@ module.exports = {
     step1: './src/guide/step1.jpg',
     step2: './src/guide/step2.jpg',
     works: './src/works/index.jsx',
-    author: './src/author/index.jsx'
+    author: './src/author/index.jsx',
+    search: './src/search/index.jsx'
   },
   output: {
     path: __dirname + '/www',
