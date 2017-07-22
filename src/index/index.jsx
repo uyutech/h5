@@ -10,7 +10,7 @@ import BottomNav from './BottomNav.jsx';
 import FollowCard from './FollowCard.jsx';
 import ZhuanquanCard from './ZhuanquanCard.jsx';
 import FindCard from './FindCard.jsx';
-import MyCard from './MyCard.jsx';
+import MyCard from './my/MyCard.jsx';
 
 let nav = migi.render(
   <Nav/>,
@@ -48,5 +48,11 @@ bottomNav.on('change', function(i) {
   last.hide();
   last = list[i];
   last.show();
+  if(i == 3) {
+    nav.hide();
+  }
+  else {
+    nav.show();
+  }
 });
-// bottomNav.emit('change', 2);
+bottomNav.emit('change', 3);

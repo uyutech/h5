@@ -18,6 +18,12 @@ class Nav extends migi.Component {
       });
     });
   }
+  show() {
+    $(this.element).css('display', 'block');
+  }
+  hide() {
+    $(this.element).css('display', 'none');
+  }
   formClick() {
     jsBridge.pushWindow('search.html');
   }

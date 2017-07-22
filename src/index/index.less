@@ -5,6 +5,8 @@
 @import '../component/dynamic/dynamic.less';
 @import '../component/playlist/playlist.less';
 
+@import './my/my.less';
+
 body{
   padding-top:0;
   padding-bottom:0.6rem;
@@ -281,6 +283,11 @@ body{
   }
   > .find_card{
     display:none;
+    &.hide{
+      position:absolute;
+      left:1000%;
+      visibility:hidden;
+    }
     > .banner{
       position:relative;
       height:1.6rem;
@@ -804,9 +811,6 @@ body{
         background:#fff;
       }
     }
-  }
-  > .my_card{
-    display:none;
   }
   > .bottom_nav{
     position:fixed;
