@@ -21,12 +21,12 @@
     "less-loader": "^3.0.0",
     "migi-loader": "^3.4.0",
     "webpack": "^2.2.1",
-    "webpack-dev-server": "^2.4.2"
+    "webpack-dev-server": "~2.5.1"
   },
   "scripts": {
     "start": "export NODE_ENV=production && rm -rf ./www && webpack",
     "build": "export NODE_ENV=production && rm -rf ./www && webpack -p",
-    "mock": "export NODE_ENV=development && webpack-dev-server --host 0.0.0.0",
+    "mock": "export NODE_ENV=development && webpack-dev-server --host 0.0.0.0 --public 192.168.100.117:8080",
     "dev": "export NODE_ENV=production && webpack-dev-server",
     "zip": "export NODE_ENV=production && rm -rf dist && mkdir dist && cd www && zip -r ../dist/h5.zip *",
     "pack": "export NODE_ENV=production && npm run build && npm run zip",
