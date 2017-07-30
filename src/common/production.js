@@ -34,7 +34,6 @@ export default {
             bridge.hideLoading();
           }, 20);
         }
-        console.log(data);
         console.log(JSON.stringify(data));
         if(data.success) {
           success(data.data);

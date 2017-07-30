@@ -9,11 +9,10 @@ let ua = navigator.userAgent;
 
 let isIos = navigator.appVersion.match(/(iphone|ipad|ipod)/gi);
 let matches = ua.match(/Android[\S\s]+AppleWebkit\/(\d{3})/i);
-let isQQ = /\bMQQBrowser\b/.test(ua);
 let dpr = win.devicePixelRatio || 1;
 
-//非ios且非qq浏览器
-if (!isIos && !(matches && matches[1] > 534) && !isQQ) {
+//非ios且版本号<534
+if (!isIos && !(matches && matches[1] > 534)) {
   dpr = 1;
 }
 let scale = 1 / dpr;
@@ -24,5 +23,7 @@ if (!metaEl) {
   metaEl.setAttribute('name', 'viewport');
   doc.head.appendChild(metaEl);
 }
-metaEl.setAttribute('content', 'width=device-width,user-scalable=0,initial-scale=' + scale + ',maximum-scale=' + scale + ',minimum-scale=' + scale);
+let v = `width=device-width,user-scalable=0,initial-scale=${scale},maximum-scale=${scale},minimum-scale=${scale}`;
+console.log(v);
+metaEl.setAttribute('content', v);
 doc.documentElement.style.fontSize = baseFont / 2 * dpr + 'px';

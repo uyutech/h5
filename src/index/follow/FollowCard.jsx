@@ -2,9 +2,9 @@
  * Created by army on 2017/6/18.
  */
 
-import Carousel from './follow/Carousel.jsx';
-import FollowList from './follow/FollowList.jsx';
-import Dynamic from '../component/dynamic/Dynamic.jsx';
+import Carousel from './Carousel.jsx';
+import FollowList from './FollowList.jsx';
+import Dynamic from '../../component/dynamic/Dynamic.jsx';
 
 let list = [
   {

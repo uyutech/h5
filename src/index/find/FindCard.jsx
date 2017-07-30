@@ -2,12 +2,12 @@
  * Created by army on 2017/6/18.
  */
  
-import Banner from './find/Banner.jsx';
-import Tags from './find/Tags.jsx';
-import HotWorks from './find/HotWorks.jsx';
-import HotAlbum from './find/HotAlbum.jsx';
-import HotAuthor from './find/HotAuthor.jsx';
-import PlayList from '../component/playlist/PlayList.jsx';
+import Banner from './Banner.jsx';
+import Tags from './Tags.jsx';
+import HotWorks from './HotWorks.jsx';
+import HotAlbum from './HotAlbum.jsx';
+import HotAuthor from './HotAuthor.jsx';
+import PlayList from '../../component/playlist/PlayList.jsx';
 
 let first = true;
 
