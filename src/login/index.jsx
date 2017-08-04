@@ -13,7 +13,7 @@ jsBridge.ready(function() {
     <div class="con">
       <div class="niang">
         <div class="bg"></div>
-        <div class="tip">sdlfsdf<span>sdf</span>sdf</div>
+        <div class="tip">{ history.length }<span>b</span></div>
       </div>
       <Login ref="login"/>
     </div>,

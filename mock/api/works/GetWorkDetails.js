@@ -1,3 +1,7 @@
+/**
+ * Created by army8735 on 2017/8/4.
+ */
+
 module.exports = {
   "success": true,
   "message": "",
@@ -5,6 +9,7 @@ module.exports = {
     "ID": 1,
     "Title": "NL不分",
     "sub_Title": null,
+    "Tags": [{"Tag_ID": 1, "Tag_Name": "音乐0"}, {"Tag_ID": 2, "Tag_Name": "音乐1"}, {"Tag_ID": 3, "Tag_Name": "音乐2"}],
     "Works_Music": [{
       "MusicName": "NL不分",
       "FileUrl": "http://data.5sing.kgimg.com/G061/M02/04/13/fQ0DAFbLAAeATnvtAGzf73KHG08247.mp3",

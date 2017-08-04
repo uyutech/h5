@@ -10,6 +10,7 @@ export default {
     // 兼容无host
     if (!/^http(s)?:\/\//.test(url)) {
       url = 'http://192.168.100.156/' + url.replace(/^\//, '');
+      // url = 'http://120.26.95.178:8088/' + url.replace(/^\//, '');
     }
     if (!cancelLoading) {
       bridge.showLoading();

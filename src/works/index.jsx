@@ -127,7 +127,7 @@ jsBridge.ready(function() {
 
   if(id) {
     util.postJSON('api/works/GetWorkDetails', { WorksID: id }, function(res) {
-      console.log(res);
+      // console.log(res);
       nav.title = res.Title;
       nav.subTitle = res.sub_Title;
 
@@ -160,6 +160,8 @@ jsBridge.ready(function() {
       if(temp.length) {
         authors.setAuthor(temp);
       }
+
+      intro.tags = res.Tags;
     });
   }
 });

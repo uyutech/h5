@@ -46,14 +46,21 @@ class Intro extends migi.Component {
   hide() {
     $(this.element).hide();
   }
+  @bind tags = [{
+    blank: true
+  }]
   render() {
     return <div class="intro">
       <div class="tag">
         <ul class="fn-clear">
-          <li><a href="#">日漫</a></li>
-          <li><a href="#">小清新</a></li>
-          <li><a href="#">新海诚</a></li>
-          <li><a href="#">中翻</a></li>
+          {
+            this.tags.map(function(item) {
+              if(item.blank) {
+                return <li class="blank"><a href="#">...</a></li>
+              }
+              return <li><a href={ `#${item.Tag_ID}` }>{ item.Tag_Name }</a></li>;
+            })
+          }
           <li class="placeholder"></li>
         </ul>
         <a href="#" class="config"></a>

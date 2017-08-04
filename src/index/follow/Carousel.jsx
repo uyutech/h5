@@ -128,8 +128,8 @@ class Carousel extends migi.Component {
           {
             this.list.map(function(item) {
               if(item.ID) {
-                if(item.img) {
-                  return <li><a href="works.html?id=1"><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100388475.jpg"/></a></li>;
+                if(item.cover_Pic) {
+                  return <li><a href="works.html?id=1" style={ `background:url(${item.cover_Pic}) no-repeat center` }></a></li>;
                 }
                 return <li><a href={ `works.html?id=${item.ID}` }></a></li>;
               }

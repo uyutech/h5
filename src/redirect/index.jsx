@@ -20,12 +20,12 @@ catch(e) {
 let regStat = data.User_Reg_Stat;
 if(regStat !== undefined) {
   if(regStat >= 4) {
-    location.href = 'index.html';
+    location.replace('index.html');
   }
   else {
-    location.href = 'guide.html?step=' + regStat;
+    location.replace('guide.html?step=' + regStat);
   }
 }
 else {
-  location.href = 'login.html';
+  location.replace('login.html');
 }

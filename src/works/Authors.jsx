@@ -7,10 +7,10 @@ class Authors extends migi.Component {
     super(...data);
     this.on(migi.Event.DOM, function() {
       this.setAuthor([{
-        type: '作者',
+        type: '...',
         list: [
           {
-            name: '--'
+            name: '...'
           }
         ]
       }]);

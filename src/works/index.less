@@ -107,6 +107,7 @@ body{
               display:block;
               white-space:nowrap;
               transform:scale(0.833);
+              text-align:center;
             }
           }
         }
@@ -608,6 +609,7 @@ body{
       position:relative;
       padding:0.1rem 0 0 0.1rem;
       ul{
+        min-height:0.35rem;
       }
       li{
         float:left;
@@ -631,11 +633,13 @@ body{
           overflow:hidden;
         }
         &.placeholder{
-          float:left;
           visibility:hidden;
           width:0.16rem;
           height:0.2rem;
           content:' ';
+        }
+        &.blank{
+          opacity:0.5;
         }
       }
       .config{
