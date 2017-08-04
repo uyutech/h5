@@ -126,20 +126,20 @@ class Step2 extends migi.Component {
     }
     loading = true;
     let self = this;
-    util.getJSON('tag/getSuggestTags.json', {
-      fromIndex,
-      limit,
+    util.getJSON('api/Users/GetTag', {
+      Skip: fromIndex,
+      Take: limit,
     }, function(res) {
-      if(res.dataList && res.dataList.length) {
-        self.list = self.list.concat(res.dataList);
+      if(res.data && res.data.length) {
+        self.list = self.list.concat(res.data);
         loading = false;
         fromIndex += limit;
-        res.dataList.forEach(function(item) {
-          if(item.isDefaultFollowed) {
-            self.add(item.tagId, item.tagName);
-            self.autoWidth();
-          }
-        });
+        // res.data.forEach(function(item) {
+        //   if(item.isDefaultFollowed) {
+        //     self.add(item.tagId, item.tagName);
+        //     self.autoWidth();
+        //   }
+        // });
       }
     });
   }
@@ -159,9 +159,9 @@ class Step2 extends migi.Component {
           {
             this.list.map(function(item) {
               if(item.isDefaultFollowed) {
-                return <li tagId={ item.tagId } class="sel">{ item.tagName }</li>;
+                return <li tagId={ item.ID } class="sel">{ item.Tag_Name }</li>;
               }
-              return <li tagId={ item.tagId }>{ item.tagName }</li>;
+              return <li tagId={ item.ID }>{ item.Tag_Name }</li>;
             }.bind(this))
           }
         </ul>

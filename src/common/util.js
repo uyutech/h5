@@ -17,11 +17,22 @@ let util = {
       success = data;
       data = {};
     }
-    jsBridge.userInfo(function(item) {
-      data.uid = item.userId;
-      error = error || function(){};
-      env.ajax(url, data, success, error, cancelLoading);
-    });
+    error = error || function() {};
+    env.ajax(url, data, success, error, cancelLoading, 'get');
+    // jsBridge.userInfo(function(item) {
+    //   data.uid = item.userId;
+    //   env.ajax(url, data, success, error, cancelLoading);
+    // });
+  },
+  postJSON: function(url, data, success, error, cancelLoading) {
+    if (typeof data === 'function') {
+      cancelLoading = error;
+      error = success;
+      success = data;
+      data = {};
+    }
+    error = error || function() {};
+    env.ajax(url, data, success, error, cancelLoading, 'post');
   }
 };
 

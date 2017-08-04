@@ -26,10 +26,11 @@ class Step1 extends migi.Component {
     var self = this;
     if(!$vd.hasClass('dis')) {
       self.setDis = true;
-      util.getJSON('register/setNickNameAndGenderOnRegister.json', {
-        nickName: self.v,
-        gender: self.isMale ? 0 : 1,
+      util.getJSON('api/users/SaveNickNameAndSex', {
+        NickName: self.v,
+        Sex: self.isMale ? 0 : 1,
       }, function(res) {
+        console.log(res);
         self.emit('next');
       }, function(res) {
         self.setDis = false;

@@ -6,10 +6,10 @@ import $ from 'anima-yocto-ajax';
 import bridge from './bridge';
 
 export default {
-  ajax: function(url, data, success, error, cancelLoading) {
+  ajax: function(url, data, success, error, cancelLoading, type) {
     // 兼容无host
     if (!/^http(s)?:\/\//.test(url)) {
-      url = 'http://116.62.244.93:8089/' + url.replace(/^\//, '');
+      url = 'http://192.168.100.156/' + url.replace(/^\//, '');
     }
     if (!cancelLoading) {
       bridge.showLoading();
@@ -22,7 +22,7 @@ export default {
       cache: false,
       crossDomain: true,
       timeout: 10000,
-      type: 'get',
+      type: type || 'get',
       // ajax 跨域设置必须加上
       beforeSend: function(xhr) {
         xhr.withCredentials = true;
