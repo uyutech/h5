@@ -5,6 +5,8 @@
 import './works.html';
 import './index.less';
 
+import qs from 'anima-querystring';
+
 import Nav from './Nav.jsx';
 import Authors from './Authors.jsx';
 import Video from './Video.jsx';
@@ -21,6 +23,9 @@ import ImageView from './ImageView.jsx';
 
 let $window = $(window);
 let winWidth = $window.width();
+
+let search = qs.parse(location.search.replace(/^\?/, ''));
+let id = search.id;
 
 jsBridge.ready(function() {
   let images = [
@@ -119,4 +124,42 @@ jsBridge.ready(function() {
     }
   });
   // tags.emit('change', 2);
+
+  if(id) {
+    util.postJSON('api/works/GetWorkDetails', { WorksID: id }, function(res) {
+      console.log(res);
+      nav.title = res.Title;
+      nav.subTitle = res.sub_Title;
+
+      let temp = [];
+      function addAuthor(type, data) {
+        if(data && data.length) {
+          let arr = {
+            type,
+            list: []
+          };
+          data.forEach(function(author) {
+            arr.list.push({
+              id: author.ID,
+              name: author.AuthName,
+              img: author.HeadUrl,
+            });
+          });
+          temp.push(arr);
+        }
+      }
+      if(res.Works_Music) {
+        res.Works_Music.forEach(function(item) {
+          addAuthor('歌手', item.Works_Music_Siger);
+          addAuthor('作词', item.Works_Music_Lyricist);
+          addAuthor('策划', item.Works_Music_Arrange);
+          addAuthor('混音', item.Works_Music_Mixer);
+          addAuthor('压缩', item.Works_Music_Composer);
+        });
+      }
+      if(temp.length) {
+        authors.setAuthor(temp);
+      }
+    });
+  }
 });

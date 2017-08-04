@@ -55,7 +55,7 @@ class FollowCard extends migi.Component {
   }
   render() {
     return <div class="follow_card">
-      <Carousel/>
+      <Carousel ref="carousel"/>
       <FollowList/>
       <Dynamic list={ list }/>
     </div>;

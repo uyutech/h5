@@ -4,7 +4,6 @@
 
 let screenWidth = $(window).width();
 let itemWidth;
-let itemLength;
 let isStart;
 let isMove;
 let startX;
@@ -23,7 +22,6 @@ class Carousel extends migi.Component {
       let $ul = this.$ul = $screen.find('ul');
       let $lis = this.$lis = $ul.find('li');
       itemWidth = $lis.eq(0).width();
-      itemLength = $lis.length;
       $screen.css('-webkit-transform', `translateX(${(screenWidth - itemWidth) / 2}px)`);
       $screen.css('transform', `translateX(${(screenWidth - itemWidth) / 2}px)`);
       $lis.eq(0).addClass('cur');
@@ -32,12 +30,15 @@ class Carousel extends migi.Component {
       let $tag = $(tag.element);
       let $tagLis = $tag.find('li');
       this.on('change', function(i) {
-        $tagLis.removeClass('cur');
-        $tagLis.eq(i).addClass('cur');
+        $tag.find('li').removeClass('cur');
+        $tag.find('li').eq(i).addClass('cur');
       });
+      $tagLis.eq(0).addClass('cur');
     });
   }
+  @bind list = [{}]
   start(e) {
+    this.$lis = this.$ul.find('li');
     if(e.touches.length != 1) {
       isStart = false;
     }
@@ -74,7 +75,8 @@ class Carousel extends migi.Component {
     }
   }
   end(e) {
-    if(isStart && isMove) {
+    if(isMove) {
+      let itemLength = this.list.length;
       isStart = false;
       isMove = false;
       curX += endX - startX;
@@ -115,26 +117,34 @@ class Carousel extends migi.Component {
   click(e, vd, tvd) {
     e.preventDefault();
     let href = tvd.props.href;
-    jsBridge.pushWindow(href);
+    if(href && href != '#') {
+      jsBridge.pushWindow(href);
+    }
   }
   render() {
     return <div class="carousel">
       <div class="screen" ref="screen" onClick={ { 'a': this.click } }>
-        <ul onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
-          <li><a href="works.html?id=1"><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100397440.jpg"/></a></li>
-          <li><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100388475.jpg"/></li>
-          <li><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100222800.jpg"/></li>
-          <li><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100393706.jpg"/></li>
-          <li><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100388475.jpg"/></li>
+        <ul class="fn-clear" onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
+          {
+            this.list.map(function(item) {
+              if(item.ID) {
+                if(item.img) {
+                  return <li><a href="works.html?id=1"><img src="http://mu1.sinaimg.cn/square.240/weiyinyue.music.sina.com.cn/wpp_cover/100388475.jpg"/></a></li>;
+                }
+                return <li><a href={ `works.html?id=${item.ID}` }></a></li>;
+              }
+              return <li></li>;
+            })
+          }
         </ul>
       </div>
       <div class="tag" ref="tag">
         <ul>
-          <li class="cur">1</li>
-          <li>2</li>
-          <li>3</li>
-          <li>4</li>
-          <li>5</li>
+          {
+            this.list.map(function(item, i) {
+              return <li>{ i }</li>;
+            })
+          }
         </ul>
       </div>
     </div>;

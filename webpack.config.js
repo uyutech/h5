@@ -6,6 +6,7 @@ module.exports = {
   entry: {
     pre: './src/common/pre.js',
     common: './src/common/index.js',
+    blank: './src/common/blank.png',
     redirect: './src/redirect/index.jsx',
     login: './src/login/index.jsx',
     index: './src/index/index.jsx',

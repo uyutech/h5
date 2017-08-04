@@ -141,9 +141,14 @@ let jsBridge = {
     }
   },
   back: function() {
-    // 复用back event，模拟没有调用preventDefault()方法
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('back', { prevent: false });
+    if(this.isInApp) {
+      // 复用back event，模拟没有调用preventDefault()方法
+      if (window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+        ZhuanQuanJSBridge.call('back', {prevent: false});
+      }
+    }
+    else {
+      history.go(-1);
     }
   },
   userInfo: function(callback) {

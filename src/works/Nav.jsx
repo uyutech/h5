@@ -9,11 +9,13 @@ class Nav extends migi.Component {
   click() {
     jsBridge.back();
   }
+  @bind title
+  @bind subTitle
   render() {
     return <div class="nav">
       <b class="back" onClick={ this.click }/>
-      <h1>前前前世</h1>
-      <h2>《你的名字》主题曲中文版</h2>
+      <h1>{ this.title }</h1>
+      <h2>{ this.subTitle }</h2>
       <b class="play"/>
     </div>;
   }
