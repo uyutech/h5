@@ -5,12 +5,17 @@
 import './author.html';
 import './index.less';
 
+import qs from 'anima-querystring';
+
 import Nav from './Nav.jsx';
 import Link from './Link.jsx';
 import Tags from './Tags.jsx';
 import Home from './Home.jsx';
 import Works from './Works.jsx';
 import Comments from './Comments.jsx';
+
+let search = qs.parse(location.search.replace(/^\?/, ''));
+let id = search.id;
 
 jsBridge.ready(function() {
   migi.render(
@@ -54,4 +59,8 @@ jsBridge.ready(function() {
     }
   });
   // tags.emit('change', '1');
+
+  util.postJSON('api/author/GetAuthorDetails', { AuthorID: id }, function(res) {
+    console.log(res);
+  });
 });

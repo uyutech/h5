@@ -13,7 +13,7 @@ jsBridge.ready(function() {
     <div class="con">
       <div class="niang">
         <div class="bg"></div>
-        <div class="tip">{ history.length }<span>b</span></div>
+        <div class="tip fn-hide"></div>
       </div>
       <Login ref="login"/>
     </div>,
@@ -21,9 +21,21 @@ jsBridge.ready(function() {
   );
   let login = con.find(Login);
   let $bg = $(con.element).find('.bg');
-  let niang = con.find('.niang');
+  let $tip = $(con.element).find('.tip');
   login.on('change', function() {
     $bg.toggleClass('alt');
+    $tip.addClass('fn-hide');
+    $tip.html('');
+  });
+  login.on('tip', function(ok, mes) {
+    if(ok) {
+      $tip.addClass('fn-hide');
+      $tip.html('');
+    }
+    else {
+      $tip.removeClass('fn-hide');
+      $tip.html(mes);
+    }
   });
   requestAnimationFrame(function() {
     $bg.addClass('alt');

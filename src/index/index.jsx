@@ -85,10 +85,11 @@ jsBridge.ready(function() {
     Skip: 0,
     Take: 10,
   }, function(res) {
-    console.log(res);
-    let carouselList = res.data;
-    if(carouselList && carouselList.length) {
-      followCard.ref.carousel.list = carouselList;
+    if(res.success) {
+      let carouselList = res.data;
+      if (carouselList.data && carouselList.data.length) {
+        followCard.ref.carousel.list = carouselList.data;
+      }
     }
   });
 });

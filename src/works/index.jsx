@@ -63,41 +63,61 @@ jsBridge.ready(function() {
     }
     menu.hide();
   });
+
   let medias = migi.render(
     <div class="medias">
-      <div class="c">
-        <Video/>
-        <Audio/>
-        <Image images={ images }/>
-        <Link/>
-      </div>
+      <div class="c"></div>
       <MediaSwitch nav={ nav }/>
     </div>,
     document.body
   );
-  let $mediasC = $(medias.element).children('.c');
-  let video = medias.find(Video);
-  video.on('playing', function() {
-    menu.hide();
-  });
-  video.on('pause', function() {
-  });
-  let audio = medias.find(Audio);
-  let image = medias.find(Image);
+  let mediasC = medias.find('.c');
+  let $mediasC = $(mediasC.element);
+  let video, audio, image, link;
+  let mediasList = [];
+  let count = 0;
   let mediaSwitch = medias.find(MediaSwitch);
   mediaSwitch.on('change', function(i) {
     let x = i * winWidth;
     $mediasC.css('-webkit-transform', `translate3d(${-x}px,0,0)`);
     $mediasC.css('transform', `translate3d(${-x}px,0,0)`);
+    mediasList[i].show();
   });
-  // mediaSwitch.emit('change', 3);
-  let imageView = migi.render(
-    <ImageView images={ images }/>,
-    document.body
-  );
-  image.on('show', function(i) {
-    imageView.show(i);
-  });
+  // let medias = migi.render(
+  //   <div class="medias">
+  //     <div class="c">
+  //       <Video/>
+  //       <Audio/>
+  //       <Image images={ images }/>
+  //       <Link/>
+  //     </div>
+  //     <MediaSwitch nav={ nav }/>
+  //   </div>,
+  //   document.body
+  // );
+  // let $mediasC = $(medias.element).children('.c');
+  // let video = medias.find(Video);
+  // video.on('playing', function() {
+  //   menu.hide();
+  // });
+  // video.on('pause', function() {
+  // });
+  // let audio = medias.find(Audio);
+  // let image = medias.find(Image);
+  // let mediaSwitch = medias.find(MediaSwitch);
+  // mediaSwitch.on('change', function(i) {
+  //   let x = i * winWidth;
+  //   $mediasC.css('-webkit-transform', `translate3d(${-x}px,0,0)`);
+  //   $mediasC.css('transform', `translate3d(${-x}px,0,0)`);
+  // });
+  // // mediaSwitch.emit('change', 3);
+  // let imageView = migi.render(
+  //   <ImageView images={ images }/>,
+  //   document.body
+  // );
+  // image.on('show', function(i) {
+  //   imageView.show(i);
+  // });
   
   let tags = migi.render(
     <Tags/>,
@@ -127,41 +147,78 @@ jsBridge.ready(function() {
 
   if(id) {
     util.postJSON('api/works/GetWorkDetails', { WorksID: id }, function(res) {
-      // console.log(res);
-      nav.title = res.Title;
-      nav.subTitle = res.sub_Title;
+      if(res.success) {
+        let data = res.data;
 
-      let temp = [];
-      function addAuthor(type, data) {
-        if(data && data.length) {
-          let arr = {
-            type,
-            list: []
-          };
-          data.forEach(function(author) {
-            arr.list.push({
-              id: author.ID,
-              name: author.AuthName,
-              img: author.HeadUrl,
+        nav.title = data.Title;
+        nav.subTitle = data.sub_Title;
+
+        let authorsList = [];
+        let linksList = [];
+
+        function addAuthor(type, data) {
+          if (data && data.length) {
+            let arr = {
+              type,
+              list: []
+            };
+            data.forEach(function (author) {
+              arr.list.push({
+                id: author.ID,
+                name: author.AuthName,
+                img: author.HeadUrl,
+              });
             });
-          });
-          temp.push(arr);
+            authorsList.push(arr);
+          }
         }
-      }
-      if(res.Works_Music) {
-        res.Works_Music.forEach(function(item) {
-          addAuthor('歌手', item.Works_Music_Siger);
-          addAuthor('作词', item.Works_Music_Lyricist);
-          addAuthor('策划', item.Works_Music_Arrange);
-          addAuthor('混音', item.Works_Music_Mixer);
-          addAuthor('压缩', item.Works_Music_Composer);
-        });
-      }
-      if(temp.length) {
-        authors.setAuthor(temp);
-      }
 
-      intro.tags = res.Tags;
+        if (data.Works_Music && data.Works_Music.length) {
+          data.Works_Music.forEach(function (item) {
+            addAuthor('歌手', item.Works_Music_Siger);
+            addAuthor('作词', item.Works_Music_Lyricist);
+            addAuthor('策划', item.Works_Music_Arrange);
+            addAuthor('混音', item.Works_Music_Mixer);
+            addAuthor('压缩', item.Works_Music_Composer);
+
+            if(item._5SingUrl) {
+              linksList.push({
+                type: '5sing',
+                url: item._5SingUrl
+              });
+            }
+          });
+
+          audio = migi.render(
+            <Audio data={ data.Works_Music }/>,
+            mediasC.element
+          );
+          if(count++ == 0) {
+            audio.show();
+          }
+          mediasList.push(audio);
+        }
+
+        if (authorsList.length) {
+          authors.setAuthor(authorsList);
+        }
+        if(linksList.length) {
+          link = migi.render(
+            <Link data={ linksList }/>,
+            mediasC.element
+          );
+          if(count++ == 0) {
+            link.show();
+          }
+          mediasList.push(link);
+        }
+
+        let width = Math.max(1, count);
+        $mediasC.css('width', width * 100 + '%');
+        mediaSwitch.init(mediasList);
+
+        intro.tags = data.Tags || [];
+      }
     });
   }
 });

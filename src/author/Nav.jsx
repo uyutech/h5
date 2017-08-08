@@ -6,12 +6,8 @@ class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  back() {
-    jsBridge.back();
-  }
   render() {
     return <div class="nav">
-      <b class="back" onClick={ this.back }/>
       <b class="play"/>
       <div class="profile">
         <div class="pic">

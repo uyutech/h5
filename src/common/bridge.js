@@ -36,26 +36,30 @@ let jsBridge = {
       ZhuanQuanJSBridge.call('setTitle', s || '');
     }
   },
-  pushWindow: function(s) {
+  pushWindow: function(url, params) {
     if(this.isInApp) {
       if (window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-        s = s.trim();
-        if (s) {
-          if (/^\w+:\/\//i.test(s)) {
+        url = url.trim();
+        if (url) {
+          if (/^\w+:\/\//i.test(url)) {
           }
-          else if (/^\//.test(s)) {
-            s = location.protocol + location.host + s;
+          else if (/^\//.test(url)) {
+            url = location.protocol + location.host + url;
           }
           else {
             let i = location.href.lastIndexOf('/');
-            s = location.href.slice(0, i) + '/' + s;
+            url = location.href.slice(0, i) + '/' + url;
           }
-          ZhuanQuanJSBridge.call('pushWindow', s);
+          params = params || {};
+          ZhuanQuanJSBridge.call('pushWindow', {
+            url,
+            params,
+          });
         }
       }
     }
     else {
-      location.href = s;
+      location.href = url;
     }
   },
   popWindow: function(data) {
@@ -162,6 +166,21 @@ let jsBridge = {
   swipeRefresh: function(state) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('swipeRefresh', state);
+    }
+  },
+  loginWeibo: function(callback) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('loginWeibo', callback);
+    }
+  },
+  getPreference: function(key, callback) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('getPreference', key, callback);
+    }
+  },
+  setPreference: function(key, value, callback) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('setPreference', { key, value }, callback);
     }
   }
 };

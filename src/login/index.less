@@ -35,8 +35,8 @@ body{
       }
       .tip{
         position:absolute;
-        left:60%;
-        top:20%;
+        left:55%;
+        top:15%;
         padding:0 0.05rem;
         background:#fff;
         color:#7F706F;
@@ -61,7 +61,7 @@ body{
         }
       }
     }
-    > .login_panel{
+    > .login_forget{
       position:relative;
       margin:0 7%;
       padding:0 0.2rem;
@@ -138,6 +138,10 @@ body{
           height:0.24rem;
           background:url(pass_invisible.png) no-repeat;
           background-size:contain;
+          &.alt{
+            background:url(pass_visible.png) no-repeat;
+            background-size:contain;
+          }
         }
         &.phone{
           padding-right:0.4rem;
@@ -219,16 +223,21 @@ body{
               font-size:0.12rem;
             }
           }
+          &.dis{
+            opacity:0.5;
+          }
         }
         .send{
           margin-left:0.1rem;
           padding:0 0.1rem;
           font-size:0.13rem;
+          width:0.9rem;
           height:0.4rem;
           border-radius:0.05rem;
           border:none;
           color:#fff;
           background:#4C8DAF;
+          text-align:center;
           &:active{
             color:#8B99A3;
             background:#357799;

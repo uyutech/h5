@@ -27,6 +27,7 @@ window.requestAnimFrame = function() {
     };
 }();
 
+// document.domain = 'circling.cc';
 console.log('ua: ' + navigator.userAgent);
 console.log('cookie: ' + document.cookie);
 

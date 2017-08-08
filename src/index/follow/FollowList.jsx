@@ -93,7 +93,9 @@ class FollowList extends migi.Component {
   authorClick(e, vd, tvd) {
     e.preventDefault();
     let href = tvd.props.href;
-    jsBridge.pushWindow(href);
+    jsBridge.pushWindow(href, {
+      showBack: true
+    });
   }
   render() {
     return <div class="follow_list">

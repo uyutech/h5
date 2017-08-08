@@ -92,7 +92,7 @@ body{
         box-sizing:border-box;
         height:0.4rem;
         &.label{
-          padding:0.08rem 0.1rem 0.08rem 0;
+          padding:0.08rem 0.08rem 0.08rem 0;
           color:#FFF;
           div{
             display:block;
@@ -281,9 +281,12 @@ body{
   }
   > .medias{
     position:relative;
+    height:2.1rem;
     > .c{
       display:flex;
-      width:400%;
+      width:100%;
+      height:100%;
+      background:#C2D8E4;
       transition:transform 0.2s;
       > .video{
         flex:1;
@@ -464,9 +467,10 @@ body{
         display:flex;
         height:100%;
         align-items:center;
+        justify-content:space-around;
         &:before, &:after{
-          flex:1;
-          content:' ';
+          //flex:1;
+          //content:' ';
         }
       }
       li{

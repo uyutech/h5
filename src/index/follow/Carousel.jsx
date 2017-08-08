@@ -118,7 +118,9 @@ class Carousel extends migi.Component {
     e.preventDefault();
     let href = tvd.props.href;
     if(href && href != '#') {
-      jsBridge.pushWindow(href);
+      jsBridge.pushWindow(href, {
+        showBack: true
+      });
     }
   }
   render() {

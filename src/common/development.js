@@ -14,7 +14,7 @@ export default {
       bridge.hideLoading();
       url = url.replace(/\.json$/, '.js');
       let res = require('../../mock/' + url);
-      success(res.data);
+      success(res);
     }, 20);
   },
 };

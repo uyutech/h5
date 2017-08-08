@@ -6,15 +6,24 @@ class Link extends migi.Component {
   constructor(...data) {
     super(...data);
   }
+  show() {
+    $(this.element).removeClass('fn-hide');
+  }
+  click(e, vd, tvd) {
+    e.preventDefault();
+    jsBridge.pushWindow(tvd.props.href, {
+      titleBar: 1,
+      showBack: true
+    });
+  }
   render() {
-    return <div class="link">
-      <ul>
-        <li class="5sing"><a href="https://www.baidu.com">5sing</a></li>
-        <li class="baidu"><a href="https://www.baidu.com">百度</a></li>
-        <li class="wangyi"><a href="https://www.baidu.com">网易云</a></li>
-        <li class="bili"><a href="https://www.baidu.com">bilibili</a></li>
-        <li class="bili"><a href="https://www.baidu.com">bilibili</a></li>
-        <li class="bili"><a href="https://www.baidu.com">bilibili</a></li>
+    return <div class="link fn-hide">
+      <ul onClick={ { a: this.click } }>
+        {
+          (this.props.data || []).map(function(item) {
+            return <li class={ item.type }><a href={ item.url }>{ item.type }</a></li>;
+          })
+        }
       </ul>
     </div>;
   }

@@ -10,29 +10,27 @@ let util = {
   isIPhone: function(){
     return navigator.appVersion.match(/iphone/gi);
   },
-  getJSON: function(url, data, success, error, cancelLoading) {
+  getJSON: function(url, data, success, error) {
     if (typeof data === 'function') {
-      cancelLoading = error;
       error = success;
       success = data;
       data = {};
     }
     error = error || function() {};
-    env.ajax(url, data, success, error, cancelLoading, 'get');
+    env.ajax(url, data, success, error, 'get');
     // jsBridge.userInfo(function(item) {
     //   data.uid = item.userId;
-    //   env.ajax(url, data, success, error, cancelLoading);
+    //   env.ajax(url, data, success, error);
     // });
   },
-  postJSON: function(url, data, success, error, cancelLoading) {
+  postJSON: function(url, data, success, error) {
     if (typeof data === 'function') {
-      cancelLoading = error;
       error = success;
       success = data;
       data = {};
     }
     error = error || function() {};
-    env.ajax(url, data, success, error, cancelLoading, 'post');
+    env.ajax(url, data, success, error, 'post');
   }
 };
 
