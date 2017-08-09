@@ -3,48 +3,10 @@
  */
 
 import HotAlbum from '../index/find/HotAlbum.jsx';
-import HotAuthor from '../index/find/HotAuthor.jsx';
 import HotWork from '../component/hotwork/HotWork.jsx';
+import HotAuthor from '../component/hotauthor/HotAuthor.jsx';
 import Dynamic from '../component/dynamic/Dynamic.jsx';
 
-let hotWorks = [
-  {
-    id: 1,
-    img: 'http://bbs.xiguo.net/zq/zp/02.jpg',
-    name: '机械之心',
-    num: '66w'
-  },
-  {
-    id: 2,
-    img: 'http://bbs.xiguo.net/zq/zp/08.jpeg',
-    name: '化鹤归',
-    num: '60w'
-  },
-  {
-    id: 3,
-    img: 'http://bbs.xiguo.net/zq/zp/04.jpg',
-    name: '送郎君',
-    num: '48w'
-  },
-  {
-    id: 4,
-    img: 'http://bbs.xiguo.net/zq/zp/05.jpg',
-    name: '千岁暖',
-    num: '47w'
-  },
-  {
-    id: 5,
-    img: 'http://bbs.xiguo.net/zq/zp/06.jpg',
-    name: '汐',
-    num: '36w'
-  },
-  {
-    id: 6,
-    img: 'http://bbs.xiguo.net/zq/zp/03.jpg',
-    name: '晴时雨时',
-    num: '34w'
-  }
-];
 let hotAlbum = [
   {
     id: 1,
@@ -144,9 +106,9 @@ class Home extends migi.Component {
   }
   render() {
     return <div class="home">
-      <HotWork ref="hotwork"/>
+      <HotWork ref="hotWork"/>
       <HotAlbum ref="hotAlbum" list={ hotAlbum } title="专辑"/>
-      <HotAuthor ref="hotAuthor" list={ hotAuthor } title="关系"/>
+      <HotAuthor ref="hotAuthor" title="关系"/>
       <h5 class="dynamic">作者动态</h5>
       <Dynamic list={ list }/>
     </div>;

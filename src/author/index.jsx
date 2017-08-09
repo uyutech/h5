@@ -30,7 +30,8 @@ jsBridge.ready(function() {
     <Home/>,
     document.body
   );
-  let hotwork = home.ref.hotwork;
+  let hotWork = home.ref.hotWork;
+  let hotAuthor = home.ref.hotAuthor;
 
   let works = migi.render(
     <Works/>,
@@ -73,9 +74,10 @@ jsBridge.ready(function() {
     util.postJSON('api/author/GetAuthorHomePage', { AuthorID: id }, function (res) {
       if(res.success) {
         let data = res.data;
-        console.log(data);
-        hotwork.dataList = data.Hot_Works_Music;
-        hotwork.autoWidth();
+        hotWork.dataList = data.Hot_Works_Music;
+        hotWork.autoWidth();
+        hotAuthor.dataList = data.AuthorToAuthor;
+        hotAuthor.autoWidth();
       }
     });
   }
