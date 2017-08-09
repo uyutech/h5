@@ -27,5 +27,5 @@ if(regStat !== undefined) {
   }
 }
 else {
-  location.replace('login.html');
+  location.replace('index.html');
 }

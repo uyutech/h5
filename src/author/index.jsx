@@ -18,22 +18,20 @@ let search = qs.parse(location.search.replace(/^\?/, ''));
 let id = search.id;
 
 jsBridge.ready(function() {
-  migi.render(
+  let nav = migi.render(
     <Nav/>,
     document.body
   );
-  migi.render(
-    <Link/>,
-    document.body
-  );
-  let tags = migi.render(
-    <Tags/>,
-    document.body
-  );
+  let profile = nav.ref.profile;
+  let link = nav.ref.link;
+  let tags = nav.ref.tags;
+
   let home = migi.render(
     <Home/>,
     document.body
   );
+  let hotwork = home.ref.hotwork;
+
   let works = migi.render(
     <Works/>,
     document.body
@@ -60,7 +58,25 @@ jsBridge.ready(function() {
   });
   // tags.emit('change', '1');
 
-  util.postJSON('api/author/GetAuthorDetails', { AuthorID: id }, function(res) {
-    console.log(res);
-  });
+  if(id) {
+    util.postJSON('api/author/GetAuthorDetails', { AuthorID: id }, function (res) {
+      if(res.success) {
+        let data = res.data;
+        profile.headUrl = data.Head_url;
+        profile.authorName = data.AuthorName;
+        profile.sign = data.Sign;
+        profile.fansNumber = data.FansNumber;
+
+        link.autoWidth();
+      }
+    });
+    util.postJSON('api/author/GetAuthorHomePage', { AuthorID: id }, function (res) {
+      if(res.success) {
+        let data = res.data;
+        console.log(data);
+        hotwork.dataList = data.Hot_Works_Music;
+        hotwork.autoWidth();
+      }
+    });
+  }
 });

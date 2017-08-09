@@ -2,20 +2,36 @@
  * Created by army on 2017/6/16.
  */
 
-@import '../component/playlist/playlist.less';
-@import '../component/comment/comment.less';
-@import '../component/dynamic/dynamic.less';
+@import '../component/playlist/index.less';
+@import '../component/comment/index.less';
+@import '../component/dynamic/index.less';
+@import '../component/hotwork/index.less';
 
 body{
   padding-top:0;
-  background:url(http://bbs.xiguo.net/zq/bg.jpg) no-repeat center 0;
-  background-size:100% auto;
   > .nav{
+    position:relative;
     padding:0.66rem 0 0;
-    //background:url(http://bbs.xiguo.net/zq/bg.png) no-repeat 0 center;
-    //background-size:100% auto;
-    //background-size:cover;
-    min-height:0.41rem;
+    overflow:hidden;
+    .bg{
+      position:absolute;
+      left:-10%;
+      top:-10%;
+      width:120%;
+      height:120%;
+      background:url(bg.png) no-repeat center 0;
+      background-size:cover;
+      filter:blur(0.07rem);
+      &:after{
+        position:absolute;
+        left:0;
+        top:0;
+        width:100%;
+        height:100%;
+        background:rgba(0,0,0,0.2);
+        content:' ';
+      }
+    }
     .back{
       position:absolute;
       top:0.24rem;
@@ -46,7 +62,8 @@ body{
       background:url(../works/nav_play.png) no-repeat center;
       background-size:0.22rem auto;
     }
-    .profile{
+    > .profile{
+      position:relative;
       padding:0 0 0 0.2rem;
       display:flex;
       align-items:center;
@@ -99,15 +116,12 @@ body{
           }
         }
         .intro{
-          margin:0.02rem 0;
-          font-size:0.12rem;
-          transform:scale(0.833);
-          transform-origin:0;
+          font-size:0.1rem;
         }
         .o{
           display:flex;
           align-items:center;
-          padding:0.1rem 0.1rem 0 0;
+          padding:0.1rem 0 0 0;
           border-top:1px solid #fff;
           .fans{
             margin-right:0.1rem;
@@ -174,7 +188,9 @@ body{
             line-height:0.24rem;
             box-sizing:border-box;
             border:1px solid #fff;
-            border-radius:0.05rem;
+            border-right:none;
+            border-top-left-radius:0.1rem;
+            border-bottom-left-radius:0.1rem;
             color:#fff;
             font-size:0.12rem;
             text-align:center;
@@ -192,227 +208,114 @@ body{
         }
       }
     }
-  }
-  > .link{
-    padding:0.1rem;
-    width:100%;
-    box-sizing:border-box;
-    overflow:scroll;
-    //background:#fff;
-    .c{
-      width:9999rem;
-      ul{
-        display:inline-block;
-        li{
+    > .link{
+      position:relative;
+      padding:0.1rem 0;
+      width:100%;
+      box-sizing:border-box;
+      overflow:scroll;
+      .c{
+        width:9999rem;
+        min-width:100%;
+        text-align:center;
+        ul{
           display:inline-block;
-          margin-right:0.15rem;
-          background:rgba(255,255,255,0.5);
-          border-radius:0.1rem;
-          a{
-            display:block;
-            padding-top:0.2rem;
-            width:0.58rem;
-            height:0.4rem;
-            box-sizing:border-box;
-            border:1px solid #EDF3F7;
+          li{
+            display:inline-block;
+            margin-right:0.1rem;
             border-radius:0.1rem;
-            text-align:center;
-            background:url(5sing.png) no-repeat center 0.02rem;
-            background-size:0.19rem auto;
-            span{
+            &:last-child{
+              margin-right:0;
+            }
+            a{
               display:block;
-              font-size:0.12rem;
-              transform:scale(0.833);
-              color:#4E8EB0;
-              white-space:nowrap;
-            }
-            &.bili{
-              background:url(bili.png) no-repeat center 0.02rem;
-              background-size:0.16rem auto;
-            }
-            &.wangyi{
-              background:url(wangyi.png) no-repeat center 0.02rem;
-              background-size:0.16rem auto;
-            }
-            &.baidu{
-              background:url(baidu.png) no-repeat center 0.02rem;
-              background-size:0.18rem auto;
+              padding-top:0.2rem;
+              width:0.58rem;
+              height:0.4rem;
+              box-sizing:border-box;
+              border:1px solid #fff;
+              border-radius:0.1rem;
+              text-align:center;
+              background:url(5sing.png) no-repeat center 0.02rem;
+              background-size:0.19rem auto;
+              span{
+                display:block;
+                font-size:0.12rem;
+                transform:scale(0.833);
+                color:#fff;
+                white-space:nowrap;
+              }
+              &.bili{
+                background:url(bili.png) no-repeat center 0.02rem;
+                background-size:0.16rem auto;
+              }
+              &.wangyi{
+                background:url(wangyi.png) no-repeat center 0.02rem;
+                background-size:0.16rem auto;
+              }
+              &.baidu{
+                background:url(baidu.png) no-repeat center 0.02rem;
+                background-size:0.18rem auto;
+              }
             }
           }
         }
       }
     }
-  }
-  > .tags{
-    padding-top:0.05rem;
-    //background:#fff;
-    &:after{
-      display:block;
-      height:0.05rem;
-      background:#4E8EB0;
-      content:' ';
-    }
-    ul{
-      height:100%;
-      color:#A8A8A8;
-      font-size:0.16rem;
-      text-align:center;
-      overflow:hidden;
-      li{
-        position:relative;
-        margin-right:0.05rem;
-        display:inline-block;
-        width:0.96rem;
+    > .tags{
+      position:relative;
+      padding-top:0.05rem;
+      &:after{
+        display:block;
+        width:100%;
+        height:0.1rem;
+        background:linear-gradient(#A4D2DF, #7EB4CA);
+        content:' ';
+      }
+      ul{
         height:100%;
-        line-height:0.3rem;
-        &:before{
-          position:absolute;
-          left:0;
-          top:0.25rem;
-          width:100%;
-          height:101%;
-          background:#4E8EB0;
-          content:' ';
-          border-top-left-radius:0.18rem;
-          border-top-right-radius:0.18rem;
-          transition:transform 0.2s;
-        }
-        &:last-child{
-          margin:0;
-        }
-        span{
+        color:#ccc;
+        font-size:0.16rem;
+        text-align:center;
+        overflow:hidden;
+        li{
           position:relative;
-          display:block;
+          margin-right:0.05rem;
+          display:inline-block;
+          width:0.96rem;
           height:100%;
-        }
-        &.cur{
-          color:#fff;
+          line-height:0.3rem;
           &:before{
-            transform:translate3d(0, -0.25rem, 0);
+            position:absolute;
+            left:0;
+            top:0.25rem;
+            width:100%;
+            height:101%;
+            background:linear-gradient(#A4D2DF, #7EB4CA);
+            content:' ';
+            border-top-left-radius:0.18rem;
+            border-top-right-radius:0.18rem;
+            transition:transform 0.2s;
+          }
+          &:last-child{
+            margin:0;
+          }
+          span{
+            position:relative;
+            display:block;
+            height:100%;
+          }
+          &.cur{
+            color:#fff;
+            &:before{
+              transform:translate3d(0, -0.25rem, 0);
+            }
           }
         }
       }
     }
   }
   > .home{
-    .hot_works{
-      position:relative;
-      padding-top:0.1rem;
-      padding-left:0.25rem;
-      min-height:0.75rem;
-      background:#fff;
-      h3{
-        position:absolute;
-        left:0;
-        top:0.1rem;
-        display:flex;
-        padding-left:0.02rem;
-        width:0.16rem;
-        height:0.75rem;
-        background:#4E8EB0;
-        border-top-right-radius:0.05rem;
-        border-bottom-right-radius:0.05rem;
-        color:#fff;
-        word-wrap:break-word;
-        word-break:break-all;
-        font-size:0.12rem;
-        line-height:1.2;
-        align-items:center;
-      }
-      .list{
-        overflow:scroll;
-        transition:transform 0.2s;
-        &.no_trans{
-          transition:none;
-        }
-        .c{
-          width:9999rem;
-          overflow:hidden;
-          ul{
-            display:inline-block;
-            li{
-              display:inline-block;
-              margin-right:0.05rem;
-              width:0.75rem;
-              .pic{
-                position:relative;
-                width:0.75rem;
-                height:0.75rem;
-                color:#fff;
-                .bg{
-                  position:absolute;
-                  left:0;
-                  top:0;
-                  width:100%;
-                  bottom:0;
-                  content:' ';
-                  background:#EDF3F7;
-                  border-radius:0.05rem;
-                  overflow:hidden;
-                }
-                .mask{
-                  position:absolute;
-                  left:0;
-                  top:30%;
-                  width:100%;
-                  bottom:0;
-                  content:' ';
-                  background:linear-gradient(rgba(237,243,247,0), rgba(0,0,0,0.3));
-                  border-radius:0.05rem;
-                  overflow:hidden;
-                }
-                img{
-                  position:relative;
-                  display:block;
-                  width:100%;
-                  height:100%;
-                  border-radius:0.05rem;
-                  overflow:hidden;
-                }
-                .num{
-                  position:absolute;
-                  left:0.05rem;
-                  bottom:0;
-                  padding-left:0.22rem;
-                  font-size:0.12rem;
-                  transform:scale(0.833);
-                  transform-origin:0 center;
-                  .audio{
-                    position:absolute;
-                    left:0;
-                    top:0;
-                    display:block;
-                    width:0.18rem;
-                    height:0.18rem;
-                    background:url(../index/find/audio.png) no-repeat center;
-                    background-size:cover;
-                  }
-                  .video{
-                    position:absolute;
-                    left:0;
-                    top:0;
-                    display:block;
-                    width:0.18rem;
-                    height:0.18rem;
-                    background:url(../index/find/video.png) no-repeat center;
-                    background-size:0.1rem auto;
-                  }
-                }
-                .ath{
-                  display:none;
-                }
-              }
-              .txt{
-                padding:0.05rem 0;
-                font-size:0.12rem;
-                transform:scale(0.833);
-                transform-origin:0;
-              }
-            }
-          }
-        }
-      }
-    }
     .hot_album{
       position:relative;
       padding-top:0.05rem;
