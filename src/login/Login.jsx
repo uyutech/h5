@@ -240,15 +240,27 @@ class Login extends migi.Component {
     if(!$button.hasClass('dis')) {
       let User_Phone = $(this.ref.name.element).val();
       let User_Pwd = $(this.ref.pass.element).val();
+      jsBridge.showLoading('登录中...');
       util.postJSON('api/Users/Login', { User_Phone, User_Pwd }, function(res) {
+        jsBridge.hideLoading();
         if(res.success) {
           let sessionid = res.data.sessionid;
-          jsBridge.setPreference('sessionid', sessionid);
+          jsBridge.setPreference('sessionid', sessionid, function() {
+            let regStat = res.data.User_Reg_Stat;
+            if(regStat >= 4) {
+              location.replace('index.html');
+            }
+            else {
+              let AuthorName = res.data.AuthorName;
+              location.replace('guide.html?step=' + regStat + '&authorName=' + encodeURIComponent(AuthorName));
+            }
+          });
         }
         else {
           jsBridge.toast(res.message || '人气大爆发，请稍后再试。');
         }
       }, function() {
+        jsBridge.hideLoading();
         jsBridge.toast('人气大爆发，请稍后再试。');
       });
     }
@@ -296,10 +308,20 @@ class Login extends migi.Component {
       let User_Phone = $(this.ref.name2.element).val();
       let User_Pwd = $(this.ref.pass2.element).val();
       let YZMCode = $(this.ref.valid.element).val();
-      util.postJSON('api/Users/Regist', { User_Phone, User_Pwd, YZMCode }, function(res, state, xhr) {
+      util.postJSON('api/Users/Regist', { User_Phone, User_Pwd, YZMCode }, function(res) {
         jsBridge.hideLoading();
         if(res.success) {
-          console.log(213);
+          let sessionid = res.data.sessionid;
+          jsBridge.setPreference('sessionid', sessionid, function() {
+            let regStat = res.data.User_Reg_Stat;
+            if(regStat >= 4) {
+              location.replace('index.html');
+            }
+            else {
+              let AuthorName = res.data.AuthorName;
+              location.replace('guide.html?step=' + regStat + '&authorName=' + encodeURIComponent(AuthorName));
+            }
+          });
         }
         else {
           jsBridge.toast(res.message || '人气大爆发，请稍后再试。');

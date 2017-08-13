@@ -46,7 +46,7 @@ class Step0 extends migi.Component {
       <div class="con">
         <img class="logo" src="src/guide/step2.jpg"/>
         <h2>原来是传说中的</h2>
-        <h4>揩油哥！</h4>
+        <h4>{ this.props.authorName }</h4>
         <p>欢迎来到“转圈”，热心粉丝们已经为您建立了详尽的个人主页，正恭候您的大驾！</p>
         <p>在这里，除了转圈的基本功能外（如社交、收藏作品等），您还拥有了创作者专属功能（如管理、上传您的作品、发起粉丝活动等）！</p>
         <a href="#" class="on" onClick={ this.onc }></a>

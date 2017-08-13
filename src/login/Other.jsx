@@ -10,12 +10,26 @@ class Other extends migi.Component {
     jsBridge.showLoading('打开微博中...');
     jsBridge.loginWeibo(function(res) {
       jsBridge.hideLoading();
-      console.log(JSON.stringify(res));
       if(res.success) {
         jsBridge.showLoading('登录中...');
         util.postJSON('api/Users/WeiboLogin', { mAccessTokenuid: res.openId, access_token: res.token }, function(res2) {
-          console.log(JSON.stringify(res2));
           jsBridge.hideLoading();
+          if(res2.success) {
+            let sessionid = res2.data.sessionid;
+            jsBridge.setPreference('sessionid', sessionid, function() {
+              let regStat = res2.data.User_Reg_Stat;
+              if(regStat >= 4) {
+                location.replace('index.html');
+              }
+              else {
+                let AuthorName = res2.data.AuthorName;
+                location.replace('guide.html?step=' + regStat + '&authorName=' + encodeURIComponent(AuthorName));
+              }
+            });
+          }
+          else {
+            jsBridge.toast(res2.message || '人气大爆发，请稍后再试。');
+          }
         }, function() {
           jsBridge.hideLoading();
           jsBridge.toast('人气大爆发，请稍后再试。');

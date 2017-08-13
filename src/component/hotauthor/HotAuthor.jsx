@@ -35,9 +35,14 @@ class HotAuthor extends migi.Component {
                     <div class="pic"/>
                   </li>;
                 }
+                let types = item.WorksType || [];
                 return <li AuthorID={ item.AuthorID }>
                   <div class="pic" style={ `background:url(${item.Head_url || 'src/common/blank.png'})` }>
-                    <b class="ge"/>
+                    {
+                      types.slice(0, 2).map(function(item) {
+                        return <b class={ `cp_author_type${item}` }/>;
+                      })
+                    }
                   </div>
                   <div class="txt">{ item.AuthorName }</div>
                   <div class="info">合作{ item.CooperationTimes }次</div>

@@ -16,7 +16,7 @@ export default {
     // if (!cancelLoading) {
     //   bridge.showLoading();
     // }
-    console.log('ajaxs: ' + url + ', ' + JSON.stringify(data));
+    console.log('ajax: ' + url + ', ' + JSON.stringify(data));
     $.ajax({
       url: url,
       data: data,
@@ -36,7 +36,7 @@ export default {
         //     bridge.hideLoading();
         //   }, 20);
         // }
-        console.log(JSON.stringify(data));
+        console.log('ajax success: ' + url + ', ' + JSON.stringify(data));
         success(data, state, xhr);
       },
       error: function(data) {
@@ -46,7 +46,7 @@ export default {
           //   bridge.hideLoading();
           // }, 20);
         // }
-        console.log('ajax error: ' + data);
+        console.log('ajax error: ' + url + ', ' + data);
         if(!error.__hasExec) {
           error.__hasExec = true;
           error(data || {});

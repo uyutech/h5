@@ -9,6 +9,25 @@ class Works extends migi.Component {
   constructor(...data) {
     super(...data);
   }
+  load(authorId) {
+    let self = this;
+    util.postJSON('api/author/GetAuthorWorks', { AuthorID: authorId }, function (res) {
+      if(res.success) {
+        let data = res.data;
+        console.log(data);
+        let tagList = [];
+        Object.keys(data).forEach(function(k) {
+          let v = data[k];
+          tagList.push({
+            k,
+            v
+          });
+        });
+        self.ref.tag.tagList = tagList;
+        self.ref.tag.autoWidth();
+      }
+    });
+  }
   show() {
     this.element.style.display = 'block';
     this.ref.tag.autoWidth();
@@ -18,7 +37,7 @@ class Works extends migi.Component {
   }
   render() {
     return <div class="works">
-      <Tags2 ref="tag"/>
+      <Tags2 authorId={ this.props.authorId } ref="tag"/>
       <PlayList ref="playlist"/>
     </div>;
   }

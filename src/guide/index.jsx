@@ -14,6 +14,8 @@ import Step3 from './Step3.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
 let step = parseInt(search.step);
+let authorName = search.authorName;
+
 if(step === undefined || isNaN(step)) {
   step = 1;
 }
@@ -23,7 +25,7 @@ if(step > 1) {
 // let firstStep = step;
 
 let step0 = migi.render(
-  <Step0 isShow={ step == 0 }/>,
+  <Step0 isShow={ step == 0 } authorName={ authorName }/>,
   document.body
 );
 let step1 = migi.render(

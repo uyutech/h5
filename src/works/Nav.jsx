@@ -11,7 +11,7 @@ class Nav extends migi.Component {
   render() {
     return <div class="nav">
       <h1>{ this.title }</h1>
-      <h2>{ this.subTitle }</h2>
+      <h2>{ this.subTitle || 'sdf' }</h2>
       <b class="play"/>
     </div>;
   }

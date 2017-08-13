@@ -12,7 +12,7 @@ class Nav extends migi.Component {
   }
   render() {
     return <div class="nav">
-      <div class="bg"></div>
+      <div class="bg"/>
       <Profile ref="profile"/>
       <Link ref="link"/>
       <Tags ref="tags"/>

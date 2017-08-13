@@ -7,14 +7,18 @@ class Audio extends migi.Component {
     super(...data);
   }
   show() {
-    $(this.element).removeClass('fn-hide');
+    let $root = $(this.element);
+    if($root.hasClass('fn-hide')) {
+      $root.removeClass('fn-hide');
+    }
   }
   render() {
-    return <div class="audio fn-hide">
+    return <div class="audio">
       <div class="wave1"/>
       <div class="wave2"/>
       <audio
         controls="controls"
+        preload="meta"
         src={ this.props.data[0].FileUrl }>
         your browser does not support the audio tag
       </audio>

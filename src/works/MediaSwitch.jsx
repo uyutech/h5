@@ -7,50 +7,10 @@ class MediaSwitch extends migi.Component {
     super(...data);
   }
   init(data) {
-    let list = this.ref.list.element;
     for(let i = 0, len = data.length; i < len; i++) {
       let item = data[i];
-      <li class={ 'item ' + item.name.toLowerCase() + (i == 0 ? ' cur' : '') } ref={ i }/>.appendTo(list);
+      <li class={ item.name.toLowerCase() + (i == 0 ? ' cur' : '') } ref={ i }/>.appendTo(this.element);
     }
-    this.addLis();
-  }
-  addLis() {
-    let self = this;
-    let $window = $(window);
-    let $switch = $(self.element);
-    let $nav = $(self.props.nav.element);
-    let top = $switch.offset().top - $nav.height();
-    let winWidth = $window.width();
-    let $lis = $switch.find('li.item');
-    let liWidth = $lis.width();
-    let perWidth = Math.round(liWidth * 1.3);
-    let lefts = [];
-    for(let i = 0, len = $lis.length; i < len; i++) {
-      lefts.push($lis.eq(i).offset().left);
-    }
-    for(let i = 0, len = $lis.length; i < len; i++) {
-      let $item = $lis.eq(i);
-      $item.css('-webkit-transform', `translate3d(${winWidth-lefts[i]-perWidth}px,${i*perWidth}px,0)`);
-      $item.css('transform', `translate3d(${winWidth-lefts[i]-perWidth}px,${i*perWidth}px,0)`);
-    }
-    $window.on('scroll', function() {
-      let diff = top - $window.scrollTop();
-      if(diff > 0) {
-        $switch.removeClass('fix');
-        for(let i = 0, len = $lis.length; i < len; i++) {
-          let $item = $lis.eq(i);
-          $item.css('-webkit-transform', `translate3d(${Math.floor((winWidth-lefts[i]-perWidth)*diff/top)}px,${Math.floor(i*perWidth*diff/top)}px,0)`);
-          $item.css('transform', `translate3d(${Math.floor((winWidth-lefts[i]-perWidth)*diff/top)}px,${Math.floor(i*perWidth*diff/top)}px,0)`);
-        }
-      }
-      else {
-        $switch.addClass('fix');
-        $lis.removeAttr('style');
-      }
-    });
-    setTimeout(function() {
-      $switch.addClass('show');
-    }, 200);
   }
   click(e, vd, tvd) {
     let $ul = $(vd.element);
@@ -62,11 +22,8 @@ class MediaSwitch extends migi.Component {
     }
   }
   render() {
-    return <div class="switch">
-      <b class="bg"/>
-      <ul onClick={ { 'li.item': this.click } } ref="list">
-      </ul>
-    </div>;
+    return <ul class="switch" onClick={ { li: this.click } }>
+    </ul>;
   }
 }
 

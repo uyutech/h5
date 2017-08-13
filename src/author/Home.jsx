@@ -15,44 +15,6 @@ let hotAlbum = [
     num: '33w'
   }
 ];
-let hotAuthor = [
-  {
-    id: 1,
-    img: 'http://bbs.xiguo.net/zq/zz/01.jpg',
-    name: '河图',
-    info: '合作16次'
-  },
-  {
-    id: 2,
-    img: 'http://bbs.xiguo.net/zq/zz/03.png',
-    name: '慕寒',
-    info: '合作10次'
-  },
-  {
-    id: 3,
-    img: 'http://bbs.xiguo.net/zq/zz/07.jpg',
-    name: '银临',
-    info: '合作6次'
-  },
-  {
-    id: 4,
-    img: 'http://bbs.xiguo.net/zq/zz/04.jpg',
-    name: '吾恩',
-    info: '合作4次'
-  },
-  {
-    id: 5,
-    img: 'http://bbs.xiguo.net/zq/zz/06.jpg',
-    name: '竹桑',
-    info: '合作3次'
-  },
-  {
-    id: 6,
-    img: 'http://bbs.xiguo.net/zq/zz/05.jpg',
-    name: '双笙',
-    info: '合作1次'
-  }
-];
 
 let list = [
   {
@@ -106,7 +68,7 @@ class Home extends migi.Component {
   }
   render() {
     return <div class="home">
-      <HotWork ref="hotWork"/>
+      <HotWork authorId={ this.props.authorId } ref="hotWork" title="热门作品"/>
       <HotAlbum ref="hotAlbum" list={ hotAlbum } title="专辑"/>
       <HotAuthor ref="hotAuthor" title="关系"/>
       <h5 class="dynamic">作者动态</h5>

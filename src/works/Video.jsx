@@ -54,6 +54,12 @@ class Video extends migi.Component {
     }
     $vd.toggleClass('pause');
   }
+  show() {
+    let $root = $(this.element);
+    if($root.hasClass('fn-hide')) {
+      $root.removeClass('fn-hide');
+    }
+  }
   render() {
     return <div class="video">
       <video
@@ -61,13 +67,13 @@ class Video extends migi.Component {
         onPause={ this.pause }
         onLoadedmetadata={ this.loadedmetadata }
         ref="video"
-        preload="preload"
+        preload="meta"
         playsinline="true"
         webkit-playsinline="true"
         controls="controls"
         x5-video-player-type="h5"
         x5-video-player-fullscreen="true"
-        src={ 'http://bbs.xiguo.net/zq/02.mp4' }>
+        src={ this.props.data[0].FileUrl }>
         your browser does not support the video tag
       </video>
     </div>;

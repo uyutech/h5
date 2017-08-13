@@ -2,9 +2,8 @@
  * Created by army on 2017/5/20.
  */
 
-import $ from 'anima-yocto-ajax';
-import bridge from './bridge';
 import env from 'ENV';
+import sort from './sort';
 
 let util = {
   isIPhone: function(){
@@ -31,7 +30,8 @@ let util = {
     }
     error = error || function() {};
     env.ajax(url, data, success, error, 'post');
-  }
+  },
+  sort
 };
 
 export default util;

@@ -36,6 +36,11 @@ let jsBridge = {
       ZhuanQuanJSBridge.call('setTitle', s || '');
     }
   },
+  setSubTitle: function(s) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('setSubTitle', s || '');
+    }
+  },
   pushWindow: function(url, params) {
     if(this.isInApp) {
       if (window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
@@ -181,6 +186,21 @@ let jsBridge = {
   setPreference: function(key, value, callback) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('setPreference', { key, value }, callback);
+    }
+  },
+  showOptionMenu: function() {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('showOptionMenu');
+    }
+  },
+  hideOptionMenu: function() {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('hideOptionMenu');
+    }
+  },
+  setOptionMenu: function(data) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('setOptionMenu', data);
     }
   }
 };
