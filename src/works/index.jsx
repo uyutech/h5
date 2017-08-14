@@ -20,8 +20,7 @@ import PlayList from './PlayList.jsx';
 import Comments from './Comments.jsx';
 import Menu from './Menu.jsx';
 import ImageView from './ImageView.jsx';
-import AuthorSortTemplate from './AuthorSortTemplate';
-import ItemTemplate from "./itemTemplate";
+import itemTemplate from "./itemTemplate";
 
 let $window = $(window);
 let winWidth = $window.width();
@@ -149,7 +148,7 @@ jsBridge.ready(function() {
 
         data.Works_Items.forEach(function(item) {
           // 先按每个小作品类型排序其作者
-          util.sort(item.Works_Item_Author, ItemTemplate(item.ItemType).authorSort || function(){});
+          util.sort(item.Works_Item_Author, itemTemplate(item.ItemType).authorSort || function(){});
           // 将每个小作品根据小类型映射到大类型上，再归类
           let bigType = WorkType.TypeHash[item.ItemType];
           workHash[bigType] = workHash[bigType] || [];
@@ -230,7 +229,7 @@ jsBridge.ready(function() {
         });
 
         // authors.setAuthor(authorList);
-        authors.temp(authorList);
+        authors.setAuthor(authorList);
 
         count = Math.max(1, count);
         $mediasC.css('width', count * 100 + '%');

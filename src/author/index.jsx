@@ -85,8 +85,8 @@ jsBridge.ready(function() {
         let data = res.data;
         hotWork.dataList = data.Hot_Works_Items;
         hotWork.autoWidth();
-        // hotAuthor.dataList = data.AuthorToAuthor;
-        // hotAuthor.autoWidth();
+        hotAuthor.dataList = data.AuthorToAuthor;
+        hotAuthor.autoWidth();
       }
     });
   }

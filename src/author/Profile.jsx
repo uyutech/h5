@@ -2,7 +2,6 @@
  * Created by army8735 on 2017/8/8.
  */
 
-import AuthorType from '../component/author/AuthorType.jsx';
 
 class Profile extends migi.Component {
   constructor(...data) {
@@ -24,7 +23,7 @@ class Profile extends migi.Component {
           <h3>{ this.authorName || '&nbsp;' }</h3>
           {
             this.type.map(function(item) {
-              return <span class={ `cp_author_type${item.AuthorTypeID}` } title={ AuthorType.TypeHash[item.AuthorTypeID] }></span>;
+              return <span class={ `cp_author_type${item.AuthorTypeID}` }></span>;
             })
           }
         </div>

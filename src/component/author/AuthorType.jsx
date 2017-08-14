@@ -4,7 +4,7 @@
 
 import './index.less';
 
-const TypeHash = {
+const TYPE = {
   111: '演唱',
   112: '和声',
   113: '伴唱',
@@ -44,8 +44,11 @@ const TypeHash = {
   423: '小说',
 };
 
-const Weight = {};
+const CODE = {
+  '演唱': 111,
+};
 
 export default {
-  TypeHash,
+  TYPE,
+  CODE,
 };
