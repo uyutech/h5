@@ -21,6 +21,7 @@ import Comments from './Comments.jsx';
 import Menu from './Menu.jsx';
 import ImageView from './ImageView.jsx';
 import AuthorSortTemplate from './AuthorSortTemplate';
+import ItemTemplate from "./itemTemplate";
 
 let $window = $(window);
 let winWidth = $window.width();
@@ -33,27 +34,27 @@ jsBridge.ready(function() {
     <Authors/>,
     document.body
   );
-  let menu = migi.render(
-    <Menu/>,
-    document.body
-  );
-  menu.len(3);
-  authors.on('choose', function(uid, x, y) {
-    menu.pos(x, y);
-    menu.hide();
-    setTimeout(function() {
-      menu.show();
-    }, 50);
-  });
-  authors.on('chooseNone', function() {
-    menu.hide();
-  });
-  $(document.body).on('touchstart', function(e) {
-    if ($(e.target).closest('.authors')[0]) {
-      return;
-    }
-    menu.hide();
-  });
+  // let menu = migi.render(
+  //   <Menu/>,
+  //   document.body
+  // );
+  // menu.len(3);
+  // authors.on('choose', function(uid, x, y) {
+  //   menu.pos(x, y);
+  //   menu.hide();
+  //   setTimeout(function() {
+  //     menu.show();
+  //   }, 50);
+  // });
+  // authors.on('chooseNone', function() {
+  //   menu.hide();
+  // });
+  // $(document.body).on('touchstart', function(e) {
+  //   if ($(e.target).closest('.authors')[0]) {
+  //     return;
+  //   }
+  //   menu.hide();
+  // });
 
   let medias = migi.render(
     <div class="medias">
@@ -148,7 +149,7 @@ jsBridge.ready(function() {
 
         data.Works_Items.forEach(function(item) {
           // 先按每个小作品类型排序其作者
-          util.sort(item.Works_Item_Author, AuthorSortTemplate(item.ItemType));
+          util.sort(item.Works_Item_Author, ItemTemplate(item.ItemType).authorSort || function(){});
           // 将每个小作品根据小类型映射到大类型上，再归类
           let bigType = WorkType.TypeHash[item.ItemType];
           workHash[bigType] = workHash[bigType] || [];

@@ -2,7 +2,7 @@
  * Created by army on 2017/6/8.
  */
 
-import AuthorType from '../component/author/AuthorType.jsx';
+import AuthorTemplate from '../component/author/authorTemplate';
 
 class Authors extends migi.Component {
   constructor(...data) {
@@ -13,21 +13,21 @@ class Authors extends migi.Component {
     let c = self.ref.c.element;
     let $c = $(c);
     $c.html('');
-    let count = 0;
+    let count = -1;
     let placeholder = <li class="placeholder"/>;
     let ul;
+    let $ul;
+    let temp;
     authorList.forEach(function(authors) {
       ul = <ul class="fn-clear"/>;
-      let temp = [];
+      count++;
+      temp = [];
       for(let i = 0, len = authors.length; i < len; i++) {
         let item = authors[i];
-        temp.push(<li class="label"><span>{ AuthorType.TypeHash[item.type] }</span></li>);
+        temp.push(<li class="label"><span>{ AuthorTemplate(item.type).name }</span></li>);
         for(let j = 0, len = item.list.length; j < len; j++) {
           let item2 = item.list[j];
-          temp.push(<li class="item" uid={ item2.ID }>
-            <img src={ item2.HeadUrl || 'src/common/blank.png' }/>
-            <span>{ item2.AuthName }</span>
-          </li>);
+          temp.push(<li class="item" uid={ item2.ID }>{ item2.AuthName }</li>);
         }
       }
       ul.appendTo(c);
@@ -38,21 +38,16 @@ class Authors extends migi.Component {
       if(temp[1]) {
         temp[1].appendTo(ul);
       }
+      // 当是第2行时，先插入占位符
+      if(count == 1) {
+        placeholder.appendTo(ul);
+      }
       // 循环后面挨个插入判断高度换行
       for(let i = 2, len = temp.length; i < len; i++) {
         let item = temp[i];
-        let $ul = $(ul.element);
+        $ul = $(ul.element);
         let height = $ul.height();
-        // 当是第2行时，尝试插入占位符，一旦产生换行，循环回退一次，同时占位符替代上一次的元素，因为占位符宽度最小所以不会产生影响
-        if(count == 1) {
-          placeholder.appendTo(ul);
-          if($ul.height() > height) {
-            i--;
-            temp[i].clean();
-            continue;
-          }
-        }
-        // 标签类型连续插入2个测试是否需要换行
+        // 标签类型，连续插入第2个非标签作者，再测试是否需要换行
         if(item.props.class == 'label') {
           item.appendTo(ul);
           i++;
@@ -64,6 +59,10 @@ class Authors extends migi.Component {
             item.appendTo(ul);
             temp[i].appendTo(ul);
             count++;
+            // 当是第2行时，先插入占位符
+            if(count == 1) {
+              placeholder.appendTo(ul);
+            }
           }
         }
         else {
@@ -74,18 +73,40 @@ class Authors extends migi.Component {
             ul.appendTo(c);
             item.appendTo(ul);
             count++;
+            // 当是第2行时，先插入占位符
+            if(count == 1) {
+              placeholder.appendTo(ul);
+            }
           }
         }
       }
-      placeholder.clean();
-      $(self.element).css('height', 'auto');
-      self.firstHeight = $(self.element).height();
-      $(self.element).css('height', self.firstHeight);
-      if(count > 1) {
-        let $slide = $(self.ref.slide.element);
-        $slide.removeClass('fn-hide');
-      }
     });
+    // 最后一行且超过2行时，插入占位符判断是否需要换行
+    if(count > 1) {
+      let height = $ul.height();
+      placeholder.appendTo(ul);
+      if($ul.height() > height) {
+        let last = temp[temp.length - 1];
+        let last2 = temp[temp.length - 2];
+        ul = <ul class="fn-clear"/>;
+        ul.appendTo(c);
+        if(last2.props.class == 'label') {
+          last2.appendTo(ul);
+          last.appendTo(ul);
+        }
+        else {
+          last.appendTo(ul);
+        }
+      }
+    }
+    placeholder.clean();
+    $(self.element).css('height', 'auto');
+    self.firstHeight = $(self.element).height();
+    $(self.element).css('height', self.firstHeight);
+    if(count > 1) {
+      let $slide = $(self.ref.slide.element);
+      $slide.removeClass('fn-hide');
+    }
   }
   setAuthor(datas) {
     let c = this.ref.c.element;
