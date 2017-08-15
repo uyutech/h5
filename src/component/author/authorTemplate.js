@@ -31,7 +31,7 @@ export default function(authorType) {
       };
     default:
       return {
-        name: '',
+        name: authorType,
         labelType: -1
       };
   }

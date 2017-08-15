@@ -141,7 +141,7 @@ jsBridge.ready(function() {
         let data = res.data;
 
         jsBridge.setTitle(data.Title);
-        jsBridge.setSubTitle(data.sub_Title);
+        jsBridge.setSubTitle(data.sub_Title || '小标题');
 
         let workHash = {};
         let workList = [];

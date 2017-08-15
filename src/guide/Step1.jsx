@@ -26,15 +26,20 @@ class Step1 extends migi.Component {
     var self = this;
     if(!$vd.hasClass('dis')) {
       self.setDis = true;
-      util.getJSON('api/users/SaveNickNameAndSex', {
+      util.postJSON('api/users/SaveNickNameAndSex', {
         NickName: self.v,
         Sex: self.isMale ? 0 : 1,
       }, function(res) {
-        console.log(res);
-        self.emit('next');
+        if(res.success) {
+          self.emit('next');
+        }
+        else {
+          self.setDis = false;
+          jsBridge.toast(res.message || '人气大爆发，请稍后再试。');
+        }
       }, function(res) {
         self.setDis = false;
-        jsBridge.toast(res.message || '网络错误请稍后再试');
+        jsBridge.toast(res.message || '人气大爆发，请稍后再试。');
       });
     }
   }

@@ -94,7 +94,7 @@ class FollowList extends migi.Component {
     e.preventDefault();
     let href = tvd.props.href;
     jsBridge.pushWindow(href, {
-      showBack: true
+      transparentTitle: true
     });
   }
   render() {

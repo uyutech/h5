@@ -16,7 +16,7 @@ let util = {
       data = {};
     }
     error = error || function() {};
-    env.ajax(url, data, success, error, 'get');
+    return env.ajax(url, data, success, error, 'get');
     // jsBridge.userInfo(function(item) {
     //   data.uid = item.userId;
     //   env.ajax(url, data, success, error);
@@ -29,7 +29,7 @@ let util = {
       data = {};
     }
     error = error || function() {};
-    env.ajax(url, data, success, error, 'post');
+    return env.ajax(url, data, success, error, 'post');
   },
   sort
 };

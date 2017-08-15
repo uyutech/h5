@@ -70,9 +70,6 @@ class Video extends migi.Component {
         preload="meta"
         playsinline="true"
         webkit-playsinline="true"
-        controls="controls"
-        x5-video-player-type="h5"
-        x5-video-player-fullscreen="true"
         src={ this.props.data[0].FileUrl }>
         your browser does not support the video tag
       </video>

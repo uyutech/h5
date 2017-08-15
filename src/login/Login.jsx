@@ -350,7 +350,7 @@ class Login extends migi.Component {
           </div>
           <div class="line pass">
             <b class="icon"></b>
-            <input type="password" ref="pass" maxlength="16" placeholder="请输入密码" onInput={ this.inputPass } value="1111111"/>
+            <input type="password" ref="pass" maxlength="16" placeholder="请输入密码" onInput={ this.inputPass } value="aaaaaaa"/>
             <b class="clear fn-hidden" onClick={ this.clear }></b>
             <b class="eye" onClick={ this.eye }></b>
           </div>

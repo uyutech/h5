@@ -5,26 +5,44 @@
 import Tags2 from './Tags2.jsx';
 import PlayList from '../component/playlist/PlayList.jsx';
 
+let last = '';
+let ajax;
+
 class Works extends migi.Component {
   constructor(...data) {
     super(...data);
-  }
-  load(authorId) {
     let self = this;
-    util.postJSON('api/author/GetAuthorWorks', { AuthorID: authorId }, function (res) {
+    self.on(migi.Event.DOM, function() {
+      self.ref.tag.on('change', function(lA, lB) {
+        // self.ref.playlist.load(lA, lB);
+        let Parameter = lA.concat(lB);
+        Parameter = Parameter.length ? JSON.stringify(Parameter) : '';
+        if(last !== Parameter) {
+          last = Parameter;
+          if(ajax) {
+            ajax.abort();
+          }
+          ajax = util.postJSON('api/author/SearchWorks', { AuthorID: this.props.authorId, Parameter, Skip: 1, Take: 10 }, function(res) {
+            if(res.success) {
+              self.ref.playlist.setData(res.data);
+            }
+          });
+        }
+      });
+    });
+  }
+  load() {
+    let self = this;
+    util.postJSON('api/author/GetAuthorWorks', { AuthorID: this.props.authorId }, function (res) {
       if(res.success) {
         let data = res.data;
-        console.log(data);
-        let tagList = [];
-        Object.keys(data).forEach(function(k) {
-          let v = data[k];
-          tagList.push({
-            k,
-            v
-          });
-        });
-        self.ref.tag.tagList = tagList;
+        self.ref.tag.tagList = data;
         self.ref.tag.autoWidth();
+      }
+    });
+    ajax = util.postJSON('api/author/SearchWorks', { AuthorID: this.props.authorId, Parameter: '', Skip: 1, Take: 10 }, function(res) {
+      if(res.success) {
+        self.ref.playlist.setData(res.data);
       }
     });
   }

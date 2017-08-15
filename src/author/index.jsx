@@ -50,7 +50,7 @@ jsBridge.ready(function() {
             <Works authorId={ id }/>,
             document.body
           );
-          works.load(id);
+          works.load();
         }
         works.show();
         break;

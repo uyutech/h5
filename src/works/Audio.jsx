@@ -17,7 +17,6 @@ class Audio extends migi.Component {
       <div class="wave1"/>
       <div class="wave2"/>
       <audio
-        controls="controls"
         preload="meta"
         src={ this.props.data[0].FileUrl }>
         your browser does not support the audio tag

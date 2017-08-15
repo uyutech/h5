@@ -47,6 +47,10 @@ class PlayList extends migi.Component {
   click(e, vd, tvd) {
     jsBridge.pushWindow('works.html');
   }
+  setData(data) {
+    this.list = data.data || [];console.log(1)
+  }
+  @bind list = [];
   render() {
     return <div class="cp_playlist">
       <div class="bar">
@@ -62,19 +66,17 @@ class PlayList extends migi.Component {
       </div>
       <ul class="list" onClick={ { '.pic': this.click, '.txt': this.click } }>
         {
-          data.map(function(item) {
+          this.list.map(function(item) {
             return <li>
-              <div class="pic">
-                <img src={ item.pic }/>
-              </div>
+              <div class="pic" style={ `background:url(${item.cover_Pic})` }/>
               <div class="txt">
-                <div class="name">{ item.name }</div>
-                <p class="intro">{ item.intro }</p>
+                <div class="name">{ item.Title }</div>
+                <p class="intro">{ item.sub_Title }</p>
               </div>
               {
-                item.type.map(function(item2) {
-                  return <b class={ item2 }/>;
-                })
+                // item.type.map(function(item2) {
+                //   return <b class={ item2 }/>;
+                // })
               }
             </li>;
           })

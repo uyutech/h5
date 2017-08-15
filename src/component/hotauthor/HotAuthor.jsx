@@ -15,7 +15,7 @@ class HotAuthor extends migi.Component {
     let $ul = $c.find('ul');
     $c.css('width', $ul.width() + 1);
   }
-  @bind dataList = [{ blank: true}]
+  @bind dataList = []
   click(e, vd, tvd) {
     let AuthorID = tvd.props.AuthorID;
     if(AuthorID) {
@@ -30,11 +30,6 @@ class HotAuthor extends migi.Component {
           <ul onClick={ { li: this.click } }>
             {
               this.dataList.map(function(item) {
-                if(item.blank) {
-                  return <li>
-                    <div class="pic"/>
-                  </li>;
-                }
                 let types = item.WorksType || [];
                 return <li AuthorID={ item.AuthorID }>
                   <div class="pic" style={ `background:url(${item.Head_url || 'src/common/blank.png'})` }>

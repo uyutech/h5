@@ -17,7 +17,7 @@ export default {
     //   bridge.showLoading();
     // }
     console.log('ajax: ' + url + ', ' + JSON.stringify(data));
-    $.ajax({
+    return $.ajax({
       url: url,
       data: data,
       dataType: 'json',
@@ -46,7 +46,7 @@ export default {
           //   bridge.hideLoading();
           // }, 20);
         // }
-        console.log('ajax error: ' + url + ', ' + data);
+        console.error('ajax error: ' + url + ', ' + data);
         if(!error.__hasExec) {
           error.__hasExec = true;
           error(data || {});
