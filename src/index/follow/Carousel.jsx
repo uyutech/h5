@@ -16,27 +16,27 @@ let lastCur = 0;
 class Carousel extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.on(migi.Event.DOM, function() {
-      let screen = this.ref.screen;
-      let $screen = $(screen.element);
-      let $ul = this.$ul = $screen.find('ul');
-      let $lis = this.$lis = $ul.find('li');
-      itemWidth = $lis.eq(0).width();
-      $screen.css('-webkit-transform', `translateX(${(screenWidth - itemWidth) / 2}px)`);
-      $screen.css('transform', `translateX(${(screenWidth - itemWidth) / 2}px)`);
-      $lis.eq(0).addClass('cur');
-      
-      let tag = this.ref.tag;
-      let $tag = $(tag.element);
-      let $tagLis = $tag.find('li');
-      this.on('change', function(i) {
-        $tag.find('li').removeClass('cur');
-        $tag.find('li').eq(i).addClass('cur');
-      });
-      $tagLis.eq(0).addClass('cur');
-    });
   }
   @bind list = []
+  init() {
+    let screen = this.ref.screen;
+    let $screen = $(screen.element);
+    let $ul = this.$ul = $screen.find('ul');
+    let $lis = this.$lis = $ul.find('li');
+    itemWidth = $lis.eq(0).width();
+    $screen.css('-webkit-transform', `translateX(${(screenWidth - itemWidth) / 2}px)`);
+    $screen.css('transform', `translateX(${(screenWidth - itemWidth) / 2}px)`);
+    $lis.eq(0).addClass('cur');
+
+    let tag = this.ref.tag;
+    let $tag = $(tag.element);
+    let $tagLis = $tag.find('li');
+    this.on('change', function(i) {
+      $tag.find('li').removeClass('cur');
+      $tag.find('li').eq(i).addClass('cur');
+    });
+    $tagLis.eq(0).addClass('cur');
+  }
   start(e) {
     this.$lis = this.$ul.find('li');
     if(e.touches.length != 1) {
@@ -67,7 +67,7 @@ class Carousel extends migi.Component {
         isMove = true;
         this.$ul.css('-webkit-transform', `translate3d(${curX + diffX}px, 0, 0)`);
         this.$ul.css('transform', `translate3d(${curX + diffX}px, 0, 0)`);
-        jsBridge.swipeRefresh(false);
+        // jsBridge.swipeRefresh(false);
       }
       else {
         isStart = false;
@@ -112,25 +112,26 @@ class Carousel extends migi.Component {
       this.$ul.css('-webkit-transform', `translate3d(${curX}px, 0, 0)`);
       this.$ul.css('transform', `translate3d(${curX}px, 0, 0)`);
     }
-    jsBridge.swipeRefresh(true);
+    // jsBridge.swipeRefresh(true);
   }
   click(e, vd, tvd) {
     e.preventDefault();
     let href = tvd.props.href;
     if(href && href != '#') {
       jsBridge.pushWindow(href, {
-        transparentTitle: true
+        transparentTitle: true,
+        titleBgColor: '#99000000'
       });
     }
   }
   render() {
-    return <div class="carousel">
+    return <div class="carousel" onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
       <div class="screen" ref="screen" onClick={ { 'a': this.click } }>
-        <ul class="fn-clear" onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
+        <ul class="fn-clear">
           {
             this.list.map(function(item) {
-              if(item.cover_Pic) {
-                return <li><a href="works.html?id=1" style={ `background:url(${item.cover_Pic}) no-repeat center` }></a></li>;
+              if(item.Tag_Pic) {
+                return <li><a href="works.html?id=1" style={ `background:url(${item.Tag_Pic}) no-repeat center` }></a></li>;
               }
               return <li><a href={ `works.html?id=${item.ID}` }></a></li>;
             })
