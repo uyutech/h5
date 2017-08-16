@@ -41,6 +41,11 @@ let jsBridge = {
       ZhuanQuanJSBridge.call('setSubTitle', s || '');
     }
   },
+  setTitleBgColor: function(s) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('setTitleBgColor', s || '');
+    }
+  },
   pushWindow: function(url, params) {
     if(this.isInApp) {
       if (window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
@@ -179,13 +184,21 @@ let jsBridge = {
     }
   },
   getPreference: function(key, callback) {
+    callback = callback || function() {};
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('getPreference', key, callback);
     }
+    else {
+      callback();
+    }
   },
   setPreference: function(key, value, callback) {
+    callback = callback || function() {};
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('setPreference', { key, value }, callback);
+    }
+    else {
+      callback();
     }
   },
   showOptionMenu: function() {

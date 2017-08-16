@@ -18,7 +18,6 @@ import Tags from './Tags.jsx';
 import Intro from './Intro.jsx';
 import PlayList from './PlayList.jsx';
 import Comments from './Comments.jsx';
-import Menu from './Menu.jsx';
 import ImageView from './ImageView.jsx';
 import itemTemplate from "./itemTemplate";
 
@@ -33,27 +32,6 @@ jsBridge.ready(function() {
     <Authors/>,
     document.body
   );
-  // let menu = migi.render(
-  //   <Menu/>,
-  //   document.body
-  // );
-  // menu.len(3);
-  // authors.on('choose', function(uid, x, y) {
-  //   menu.pos(x, y);
-  //   menu.hide();
-  //   setTimeout(function() {
-  //     menu.show();
-  //   }, 50);
-  // });
-  // authors.on('chooseNone', function() {
-  //   menu.hide();
-  // });
-  // $(document.body).on('touchstart', function(e) {
-  //   if ($(e.target).closest('.authors')[0]) {
-  //     return;
-  //   }
-  //   menu.hide();
-  // });
 
   let medias = migi.render(
     <div class="medias">
@@ -150,7 +128,7 @@ jsBridge.ready(function() {
           // 先按每个小作品类型排序其作者
           util.sort(item.Works_Item_Author, itemTemplate(item.ItemType).authorSort || function(){});
           // 将每个小作品根据小类型映射到大类型上，再归类
-          let bigType = WorkType.TypeHash[item.ItemType];
+          let bigType = itemTemplate(item.ItemType).bigType;
           workHash[bigType] = workHash[bigType] || [];
           workHash[bigType].push(item);
         });

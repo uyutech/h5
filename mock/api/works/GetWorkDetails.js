@@ -13,7 +13,7 @@ module.exports = {
     "Popular": 0,
     "Works_Items": [{
       "ItemName": "明月舟3",
-      "FileUrl": "http://data.5sing.kgimg.com/G060/M09/0D/07/fA0DAFcTMYuAEkdtAIiYL3sXUsM056.mp3",
+      "FileUrl": "http://192.168.100.117/aaa.mp3",
       "_5SingUrl": "http://5sing.kugou.com/yc/3079008.html",
       "_BaiduUrl": "",
       "_WangyiUrl": "",
@@ -26,7 +26,7 @@ module.exports = {
       }]
     }, {
       "ItemName": "明月舟",
-      "FileUrl": "http://data.5sing.kgimg.com/G060/M09/0D/07/fA0DAFcTMYuAEkdtAIiYL3sXUsM056.mp3",
+      "FileUrl": "http://192.168.100.117/aaa.mp3",
       "_5SingUrl": "http://5sing.kugou.com/yc/3079008.html",
       "_BaiduUrl": "",
       "_WangyiUrl": "",
@@ -59,7 +59,7 @@ module.exports = {
       }]
     }, {
       "ItemName": "明月舟2",
-      "FileUrl": "http://data.5sing.kgimg.com/G060/M09/0D/07/fA0DAFcTMYuAEkdtAIiYL3sXUsM056.mp3",
+      "FileUrl": "http://192.168.100.117/aaa.mp3",
       "_5SingUrl": "http://5sing.kugou.com/yc/3079008.html",
       "_BaiduUrl": "",
       "_WangyiUrl": "",

@@ -98,12 +98,20 @@ class Step2 extends migi.Component {
       self.$list2.find('li').each(function(i, o) {
         tagIds.push(parseInt($(o).attr('tagId')));
       });
-      util.getJSON('register/setFollowTagsOnRegister.json', {
-        tagIds: JSON.stringify(tagIds),
+      jsBridge.showLoading();
+      util.postJSON('api/Users/SaveTagToUser', {
+        tagIds: tagIds.join(','),
       }, function(res) {
-        self.emit('next');
+        jsBridge.hideLoading();
+        if(res.success) {
+          self.emit('next');
+        }
+        else {
+          jsBridge.toast(res.message || '网络错误请稍后再试');
+        }
       }, function(res) {
         self.setDis = false;
+        jsBridge.hideLoading();
         jsBridge.toast(res.message || '网络错误请稍后再试');
       });
     }
@@ -126,20 +134,21 @@ class Step2 extends migi.Component {
     }
     loading = true;
     let self = this;
-    util.getJSON('api/Users/GetTag', {
+    util.postJSON('api/Users/GetTag', {
       Skip: fromIndex,
       Take: limit,
     }, function(res) {
-      if(res.data && res.data.length) {
-        self.list = self.list.concat(res.data);
+      if(res.success) {
+        let data = res.data;
+        self.list = self.list.concat(data.data);
         loading = false;
         fromIndex += limit;
-        // res.data.forEach(function(item) {
-        //   if(item.isDefaultFollowed) {
-        //     self.add(item.tagId, item.tagName);
-        //     self.autoWidth();
-        //   }
-        // });
+        data.data.forEach(function(item) {
+          if(item.isDefaultFollowed) {
+            self.add(item.tagId, item.tagName);
+            self.autoWidth();
+          }
+        });
       }
     });
   }

@@ -46,7 +46,7 @@ export default {
           //   bridge.hideLoading();
           // }, 20);
         // }
-        console.error('ajax error: ' + url + ', ' + data);
+        console.error('ajax error: ' + url + ', ' + JSON.stringify(data));
         if(!error.__hasExec) {
           error.__hasExec = true;
           error(data || {});

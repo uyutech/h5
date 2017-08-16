@@ -119,7 +119,7 @@ class Carousel extends migi.Component {
     let href = tvd.props.href;
     if(href && href != '#') {
       jsBridge.pushWindow(href, {
-        // transparentTitle: true
+        transparentTitle: true
       });
     }
   }
@@ -131,9 +131,9 @@ class Carousel extends migi.Component {
             this.list.map(function(item) {
               if(item.ID) {
                 if(item.cover_Pic) {
-                  return <li><a href="work.html?id=1" style={ `background:url(${item.cover_Pic}) no-repeat center` }></a></li>;
+                  return <li><a href="works.html?id=1" style={ `background:url(${item.cover_Pic}) no-repeat center` }></a></li>;
                 }
-                return <li><a href={ `work.html?id=${item.ID}` }></a></li>;
+                return <li><a href={ `works.html?id=${item.ID}` }></a></li>;
               }
               return <li></li>;
             })

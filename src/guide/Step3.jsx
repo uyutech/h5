@@ -99,12 +99,12 @@ class Step3 extends migi.Component {
     let $vd = $(vd.element);
     if(!$vd.hasClass('dis')) {
       self.setDis = true;
-      let authorIdsStr = [];
+      let Tag_ID = [];
       self.$list2.find('li').each(function(i, o) {
-        authorIdsStr.push(parseInt($(o).attr('authorId')));
+        Tag_ID.push(parseInt($(o).attr('authorId')));
       });
-      util.getJSON('register/setFollowAuthorsOnRegister.json', {
-        authorIdsStr: JSON.stringify(authorIdsStr),
+      util.postJSON('api/Users/SaveAuthorToUser', {
+        Tag_ID: Tag_ID.join(','),
       }, function(res) {
         self.emit('next');
       }, function(res) {
@@ -125,17 +125,18 @@ class Step3 extends migi.Component {
     }
     loading = true;
     let self = this;
-    util.getJSON('author/getSuggestAuthors.json', {
-      fromIndex,
-      limit,
+    util.postJSON('api/Users/GetAuthor', {
+      Skip: fromIndex,
+      Take: limit,
     }, function(res) {
-      if(res.dataList && res.dataList.length) {
-        self.list = self.list.concat(res.dataList);
+      if(res.success) {
+        let data = res.data;
+        self.list = self.list.concat(data.data);
         loading = false;
         fromIndex += limit;
-        res.dataList.forEach(function(item) {
+        data.data.forEach(function(item) {
           if(item.isDefaultFollow) {
-            self.add(item.authorId, item.headUrl);
+            self.add(item.ID, item.Tag_Pic);
             self.autoWidth();
           }
         });
@@ -157,9 +158,9 @@ class Step3 extends migi.Component {
         {
           this.list.map(function(item) {
             if(item.isDefaultFollow) {
-              return <li authorId={ item.authorId } class="sel"><img src={ item.headUrl }/><span>{ item.authorName }</span></li>;
+              return <li authorId={ item.ID } class="sel"><img src={ item.Tag_Pic || 'src/common/blank.png' }/><span>{ item.Tag_Name }</span></li>;
             }
-            return <li authorId={ item.authorId }><img src={ item.headUrl }/><span>{ item.authorName }</span></li>;
+            return <li authorId={ item.ID }><img src={ item.Tag_Pic || 'src/common/blank.png' }/><span>{ item.Tag_Name }</span></li>;
           })
         }
       </ul>

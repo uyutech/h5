@@ -9,7 +9,10 @@ class MediaSwitch extends migi.Component {
   init(data) {
     for(let i = 0, len = data.length; i < len; i++) {
       let item = data[i];
-      <li class={ item.name.toLowerCase() + (i == 0 ? ' cur' : '') } ref={ i }/>.appendTo(this.element);
+      <li class={ 'item ' + item.name.toLowerCase() + (i == 0 ? ' cur' : '') } ref={ i }/>.appendTo(this.element);
+      if(i !== len - 1) {
+        <li class="placeholder"/>.appendTo(this.element);
+      }
     }
   }
   click(e, vd, tvd) {
@@ -22,7 +25,7 @@ class MediaSwitch extends migi.Component {
     }
   }
   render() {
-    return <ul class="switch" onClick={ { li: this.click } }>
+    return <ul class="switch" onClick={ { '.item': this.click } }>
     </ul>;
   }
 }
