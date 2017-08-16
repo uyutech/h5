@@ -134,8 +134,10 @@
               position:relative;
               display:block;
               margin:0 auto 0.02rem;
-              width:0.49rem;
-              height:0.49rem;
+              width:0.5rem;
+              height:0.5rem;
+              border-radius:100%;
+              background:#eee;
               b{
                 position:absolute;
                 right:0;
@@ -147,12 +149,12 @@
                 background-size:cover;
                 overflow:hidden;
               }
-            }
-            img{
-              display:block;
-              width:0.49rem;
-              height:0.49rem;
-              border-radius:0.49rem;
+              img{
+                display:block;
+                width:0.5rem;
+                height:0.5rem;
+                border-radius:100%;
+              }
             }
           }
         }
@@ -165,22 +167,23 @@
         border-width:0.5px;
       }
       .c{
-        width:999rem;
+        width:9999rem;
         ul{
           display:inline-block;
           li{
-            display:inline-block;
+            display:inline-flex;
+            align-items:center;
             margin-right:0.1rem;
             padding:0 0.1rem;
             height:0.24rem;
-            line-height:0.24rem;
             font-size:0.13rem;
             color:#98A1A5;
             border:1px solid #98A1A5;
             .hairlines &{
               border-width:0.5px;
             }
-            border-radius:0.26rem;
+            border-radius:0.24rem;
+            box-sizing:border-box;
           }
         }
       }

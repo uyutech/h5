@@ -36,7 +36,7 @@ class Carousel extends migi.Component {
       $tagLis.eq(0).addClass('cur');
     });
   }
-  @bind list = [{}]
+  @bind list = []
   start(e) {
     this.$lis = this.$ul.find('li');
     if(e.touches.length != 1) {
@@ -129,13 +129,10 @@ class Carousel extends migi.Component {
         <ul class="fn-clear" onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
           {
             this.list.map(function(item) {
-              if(item.ID) {
-                if(item.cover_Pic) {
-                  return <li><a href="works.html?id=1" style={ `background:url(${item.cover_Pic}) no-repeat center` }></a></li>;
-                }
-                return <li><a href={ `works.html?id=${item.ID}` }></a></li>;
+              if(item.cover_Pic) {
+                return <li><a href="works.html?id=1" style={ `background:url(${item.cover_Pic}) no-repeat center` }></a></li>;
               }
-              return <li></li>;
+              return <li><a href={ `works.html?id=${item.ID}` }></a></li>;
             })
           }
         </ul>
