@@ -8,6 +8,11 @@ import './index.less';
 import Login from './Login.jsx';
 import Other from './Other.jsx';
 
+import qs from 'anima-querystring';
+
+let search = qs.parse(location.search.replace(/^\?/, ''));
+let goto = search.goto;
+
 jsBridge.ready(function() {
   let con = migi.render(
     <div class="con">
@@ -15,7 +20,7 @@ jsBridge.ready(function() {
         <div class="bg"></div>
         <div class="tip fn-hide"></div>
       </div>
-      <Login ref="login"/>
+      <Login ref="login" goto={ goto }/>
     </div>,
     document.body
   );
@@ -40,8 +45,9 @@ jsBridge.ready(function() {
   requestAnimationFrame(function() {
     $bg.addClass('alt');
   });
+
   migi.render(
-    <Other/>,
+    <Other goto={ goto }/>,
     document.body
   );
 });

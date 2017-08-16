@@ -236,10 +236,11 @@ class Login extends migi.Component {
     }
   }
   clickLogin(e, vd) {
+    let self = this;
     let $button = $(vd.element);
     if(!$button.hasClass('dis')) {
-      let User_Phone = $(this.ref.name.element).val();
-      let User_Pwd = $(this.ref.pass.element).val();
+      let User_Phone = $(self.ref.name.element).val();
+      let User_Pwd = $(self.ref.pass.element).val();
       jsBridge.showLoading('登录中...');
       util.postJSON('api/Users/Login', { User_Phone, User_Pwd }, function(res) {
         jsBridge.hideLoading();
@@ -248,6 +249,11 @@ class Login extends migi.Component {
           jsBridge.setPreference('sessionid', sessionid, function() {
             let regStat = res.data.User_Reg_Stat;
             if(regStat >= 4) {
+              let goto = self.props.self;
+              if(goto) {
+                location.replace(goto);
+                return;
+              }
               location.replace('index.html');
             }
             else {
@@ -302,12 +308,13 @@ class Login extends migi.Component {
     });
   }
   clickRegister(e, vd) {
+    let self = this;
     let $button = $(vd.element);
     if(!$button.hasClass('dis')) {
       jsBridge.showLoading();
-      let User_Phone = $(this.ref.name2.element).val();
-      let User_Pwd = $(this.ref.pass2.element).val();
-      let YZMCode = $(this.ref.valid.element).val();
+      let User_Phone = $(self.ref.name2.element).val();
+      let User_Pwd = $(self.ref.pass2.element).val();
+      let YZMCode = $(self.ref.valid.element).val();
       util.postJSON('api/Users/Regist', { User_Phone, User_Pwd, YZMCode }, function(res) {
         jsBridge.hideLoading();
         if(res.success) {
@@ -315,6 +322,11 @@ class Login extends migi.Component {
           jsBridge.setPreference('sessionid', sessionid, function() {
             let regStat = res.data.User_Reg_Stat;
             if(regStat >= 4) {
+              let goto = self.props.self;
+              if(goto) {
+                location.replace(goto);
+                return;
+              }
               location.replace('index.html');
             }
             else {

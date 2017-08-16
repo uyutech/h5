@@ -7,6 +7,7 @@ class Other extends migi.Component {
     super(...data);
   }
   weibo() {
+    let self = this;
     jsBridge.showLoading('打开微博中...');
     jsBridge.loginWeibo(function(res) {
       jsBridge.hideLoading();
@@ -19,6 +20,11 @@ class Other extends migi.Component {
             jsBridge.setPreference('sessionid', sessionid, function() {
               let regStat = res2.data.User_Reg_Stat;
               if(regStat >= 4) {
+                let goto = self.props.self;
+                if(goto) {
+                  location.replace(goto);
+                  return;
+                }
                 location.replace('index.html');
               }
               else {

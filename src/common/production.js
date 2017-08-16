@@ -37,6 +37,10 @@ export default {
         //   }, 20);
         // }
         console.log('ajax success: ' + url + ', ' + JSON.stringify(data));
+        if(!data.success && data.code === 1000) {
+          location.replace('login.html?goto=' + encodeURIComponent(location.href));
+          return;
+        }
         success(data, state, xhr);
       },
       error: function(data) {
