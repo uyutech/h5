@@ -46,9 +46,7 @@ class Intro extends migi.Component {
   hide() {
     $(this.element).hide();
   }
-  @bind tags = [{
-    blank: true
-  }]
+  @bind tags = []
   render() {
     return <div class="intro">
       <div class="tag">
@@ -61,9 +59,7 @@ class Intro extends migi.Component {
               return <li><a href={ `#${item.Tag_ID}` }>{ item.Tag_Name }</a></li>;
             })
           }
-          <li class="placeholder"></li>
         </ul>
-        <a href="#" class="config"></a>
       </div>
       <div class="timeline" ref="timeline">
         <b class="line"/>

@@ -48,7 +48,7 @@ class FollowCard extends migi.Component {
     super(...data);
     let self = this;
     this.on(migi.Event.DOM, function() {
-      util.postJSON('api/follow/GetUserFollow', { TagSkip: 0, TagTake: 10, AuthorSkip: 0, AuthorTake: 10, WorksSkip: 0, WorksTake: 10 }, function(res) {
+      util.postJSON('api/follow/GetUserFollow', { TagSkip: 0, TagTake: 10, AuthorSkip: 0, AuthorTake: 10, WorksSkip: 0, WorksTake: 10, DynamicSkip: 0, DynamicTake: 0 }, function(res) {
         if(res.success) {
           let data = res.data;
           self.ref.carousel.list = data.GetUserFollowWorks.data;

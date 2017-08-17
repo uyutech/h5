@@ -7,6 +7,7 @@ import './index.less';
 
 import qs from 'anima-querystring';
 
+import Media from './Media.jsx';
 import WorkType from '../component/work/WorkType.jsx';
 import Authors from './Authors.jsx';
 import Video from './Video.jsx';
@@ -28,29 +29,28 @@ let search = qs.parse(location.search.replace(/^\?/, ''));
 let id = search.id;
 
 jsBridge.ready(function() {
-  let authors = migi.render(
-    <Authors/>,
+  let media = migi.render(
+    <Media/>,
     document.body
   );
 
-  let medias = migi.render(
-    <div class="medias">
-      <div class="c"/>
-      <MediaSwitch/>
-    </div>,
-    document.body
-  );
-  let mediasC = medias.find('.c');
-  let $mediasC = $(mediasC.element);
-  let video, audio, image, link;
-  let mediasList = [];
-  let mediaSwitch = medias.find(MediaSwitch);
-  mediaSwitch.on('change', function(i) {
-    let x = i * winWidth;
-    $mediasC.css('-webkit-transform', `translate3d(${-x}px,0,0)`);
-    $mediasC.css('transform', `translate3d(${-x}px,0,0)`);
-    mediasList[i].show();
-  });
+  // let medias = migi.render(
+  //   <div class="medias">
+  //     <div class="c"/>
+  //   </div>,
+  //   document.body
+  // );
+  // let mediasC = medias.find('.c');
+  // let $mediasC = $(mediasC.element);
+  // let video, audio, image, link;
+  // let mediasList = [];
+  // let mediaSwitch = medias.find(MediaSwitch);
+  // mediaSwitch.on('change', function(i) {
+  //   let x = i * winWidth;
+  //   $mediasC.css('-webkit-transform', `translate3d(${-x}px,0,0)`);
+  //   $mediasC.css('transform', `translate3d(${-x}px,0,0)`);
+  //   mediasList[i].show();
+  // });
   // let medias = migi.render(
   //   <div class="medias">
   //     <div class="c">
@@ -86,11 +86,7 @@ jsBridge.ready(function() {
   // image.on('show', function(i) {
   //   imageView.show(i);
   // });
-  
-  let tags = migi.render(
-    <Tags/>,
-    document.body
-  );
+
   let intro = migi.render(
     <Intro/>,
     document.body
@@ -99,10 +95,10 @@ jsBridge.ready(function() {
     <Comments/>,
     document.body
   );
-  tags.on('change', function(i) {
+  media.on('tagChange', function(i) {
     intro.hide();
     comments.hide();
-    switch(i) {
+    switch (i) {
       case '0':
         intro.show();
         break;
@@ -111,6 +107,18 @@ jsBridge.ready(function() {
         break;
     }
   });
+  // tags.on('change', function(i) {
+  //   intro.hide();
+  //   comments.hide();
+  //   switch(i) {
+  //     case '0':
+  //       intro.show();
+  //       break;
+  //     case '1':
+  //       comments.show();
+  //       break;
+  //   }
+  // });
   // tags.emit('change', 2);
 
   if(id) {
@@ -121,12 +129,20 @@ jsBridge.ready(function() {
         jsBridge.setTitle(data.Title);
         jsBridge.setSubTitle(data.sub_Title || '小标题');
 
+        media.setCover(data.cover_Pic);
+        media.setWorks(data.Works_Items);
+        media.popular = data.Popular;
+
+        intro.tags = data.ReturnTagData || [];
+
+        return;
+
         let workHash = {};
         let workList = [];
 
         data.Works_Items.forEach(function(item) {
           // 先按每个小作品类型排序其作者
-          util.sort(item.Works_Item_Author, itemTemplate(item.ItemType).authorSort || function(){});
+          util.sort(item.Works_Item_Author, itemTemplate(item.ItemType).authorSort || function() {});
           // 将每个小作品根据小类型映射到大类型上，再归类
           let bigType = itemTemplate(item.ItemType).bigType;
           workHash[bigType] = workHash[bigType] || [];
@@ -208,15 +224,10 @@ jsBridge.ready(function() {
 
         // authors.setAuthor(authorList);
         authors.setAuthor(authorList);
+        media.ref.authors.setAuthor(authorList);
 
         count = Math.max(1, count);
         $mediasC.css('width', count * 100 + '%');
-        if(count > 1) {
-          mediaSwitch.init(mediasList);
-        }
-        else {
-          mediaSwitch.clean();
-        }
 
         intro.tags = data.ReturnTagData || [];
 

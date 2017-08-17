@@ -109,7 +109,7 @@ class Authors extends migi.Component {
     }
   }
   click(e, vd, tvd) {
-    location.href = 'author.html?id=' + tvd.props.uid;
+    jsBridge.pushWindow('author.html?id=' + tvd.props.uid);
   }
   alt(e, vd) {
     let $b = $(vd.element);

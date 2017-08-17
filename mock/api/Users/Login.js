@@ -9,7 +9,7 @@ module.exports = {
     "ID": 10,
     "User_Phone": null,
     "sessionid": "asptzvok0rpcqiiwgcbhqg45",
-    "User_Reg_Stat": 0,
+    "User_Reg_Stat": 4,
     "AuthorName": "army8735"
   }
 };

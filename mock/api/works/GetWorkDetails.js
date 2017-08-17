@@ -10,7 +10,7 @@ module.exports = {
     "Title": "明月舟",
     "sub_Title": null,
     "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
-    "Popular": 0,
+    "Popular": 123123,
     "Works_Items": [{
       "ItemName": "明月舟3",
       "FileUrl": "http://192.168.100.117/aaa.mp3",

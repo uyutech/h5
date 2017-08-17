@@ -31,16 +31,18 @@ class Audio extends migi.Component {
   clickPlay(e, vd) {
     let audio = this.ref.audio.element;
     let $play = $(vd.element);
-    if($play.hasClass('pause')) {
-      audio.pause();
+    if(!$play.closest('.c').hasClass('hide-control')) {
+      if($play.hasClass('pause')) {
+        audio.pause();
+      }
+      else {
+        audio.play();
+      }
+      $play.toggleClass('pause');
     }
-    else {
-      audio.play();
-    }
-    $play.toggleClass('pause');
   }
   clickProgress(e) {
-    if(this.canControl && e.target.className !== 'point') {
+    if(this.canControl && e.target.className !== 'point' && !$(this.element).closest('.c').hasClass('hide-control')) {
       let x = e.pageX;
       let percent = x / WIDTH;
       let currentTime = Math.floor(duration * percent);
@@ -48,11 +50,10 @@ class Audio extends migi.Component {
     }
   }
   start(e) {
-    if(e.touches.length === 1) {
+    if(e.touches.length === 1 && !$(this.element).closest('.c').hasClass('hide-control')) {
       isStart = true;
       this.ref.audio.element.pause();
       $(this.ref.play.element).removeClass('pause');
-      jsBridge.swipeRefresh(false);
     }
   }
   move(e) {
@@ -63,8 +64,6 @@ class Audio extends migi.Component {
       let percent = x / WIDTH;
       this.setBarPercent(percent);
       currentTime = Math.floor(duration * percent);
-      // let currentTime = Math.floor(duration * percent);
-      // this.ref.audio.element.currentTime = currentTime;
     }
   }
   end() {
@@ -72,7 +71,6 @@ class Audio extends migi.Component {
       this.ref.audio.element.currentTime = currentTime;
     }
     isStart = isMove = false;
-    jsBridge.swipeRefresh(true);
   }
   setBarPercent(percent) {
     percent *= 100;
@@ -81,9 +79,7 @@ class Audio extends migi.Component {
     $(this.ref.pgb.element).css('transform', `translate3d(${percent}%,0,0)`);
   }
   render() {
-    return <div class="audio">
-      <div class="wave1"/>
-      <div class="wave2"/>
+    return <div class="audio" flag="1">
       <audio ref="audio"
         onTimeupdate={ this.timeupdate }
         onLoadedmetadata={ this.loadedmetadata }
@@ -91,19 +87,12 @@ class Audio extends migi.Component {
         src={ this.props.data[0] }>
         your browser does not support the audio tag
       </audio>
-      <div class={ 'control' + (this.canControl ? '' : ' dis') }>
-        <div class="progress" onClick={ this.clickProgress }>
-          <div class="has" ref="has"/>
-          <div class="pbg" ref="pgb">
-            <div class="point" ref="point" onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end }/>
-          </div>
-        </div>
-        <div class="bar">
-          <div class="prev"/>
-          <div class="play" ref="play" onClick={ this.clickPlay }/>
-          <div class="next"/>
-        </div>
-      </div>
+      <ul class="btn">
+        <li class="like"/>
+        <li class="download"/>
+        <li class="share"/>
+        <li class="origin"/>
+      </ul>
     </div>;
   }
 }

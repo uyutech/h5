@@ -215,6 +215,15 @@ let jsBridge = {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('setOptionMenu', data);
     }
+  },
+  getDensity: function(callback) {
+    callback = callback || function() {};
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('getDensity', callback);
+    }
+    else {
+      callback();
+    }
   }
 };
 

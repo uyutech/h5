@@ -9,7 +9,7 @@ export default function(workType) {
       return {
         bigType: 'audio',
         authorSort: function(a, b) {
-          return weight.indexOf(a.WorksAuthorType) >= weight.indexOf(b.WorksAuthorType);
+          return weight.indexOf(a.WorksAuthorType) > weight.indexOf(b.WorksAuthorType);
         }
       };
     case 2222:
