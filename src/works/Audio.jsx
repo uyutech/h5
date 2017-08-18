@@ -2,84 +2,36 @@
  * Created by army on 2017/6/11.
  */
 
-let WIDTH = $(window).width();
-let currentTime = 0;
-let duration = 0;
-let isStart;
-let isMove;
-
 class Audio extends migi.Component {
   constructor(...data) {
     super(...data);
   }
   show() {
-    let $root = $(this.element);
-    if($root.hasClass('fn-hide')) {
-      $root.removeClass('fn-hide');
-    }
+    $(this.element).removeClass('fn-hide');
   }
-  @bind canControl
+  hide() {
+    $(this.element).addClass('fn-hide');
+  }
   timeupdate(e) {
-    let audio = e.target;
-    let percent = audio.currentTime / duration;
-    this.setBarPercent(percent);
+    this.emit('timeupdate', e.target.currentTime);
   }
   loadedmetadata(e) {
-    duration = e.target.duration;
-    this.canControl = true;
+    let duration = e.target.duration;
+    this.emit('loadedmetadata', {
+      duration,
+    });
   }
-  clickPlay(e, vd) {
-    let audio = this.ref.audio.element;
-    let $play = $(vd.element);
-    if(!$play.closest('.c').hasClass('hide-control')) {
-      if($play.hasClass('pause')) {
-        audio.pause();
-      }
-      else {
-        audio.play();
-      }
-      $play.toggleClass('pause');
-    }
+  play() {
+    this.ref.audio.element.play();
   }
-  clickProgress(e) {
-    if(this.canControl && e.target.className !== 'point' && !$(this.element).closest('.c').hasClass('hide-control')) {
-      let x = e.pageX;
-      let percent = x / WIDTH;
-      let currentTime = Math.floor(duration * percent);
-      this.ref.audio.element.currentTime = currentTime;
-    }
+  pause() {
+    this.ref.audio.element.pause();
   }
-  start(e) {
-    if(e.touches.length === 1 && !$(this.element).closest('.c').hasClass('hide-control')) {
-      isStart = true;
-      this.ref.audio.element.pause();
-      $(this.ref.play.element).removeClass('pause');
-    }
-  }
-  move(e) {
-    if(isStart) {
-      isMove = true;
-      e.preventDefault();
-      let x = e.touches[0].pageX;
-      let percent = x / WIDTH;
-      this.setBarPercent(percent);
-      currentTime = Math.floor(duration * percent);
-    }
-  }
-  end() {
-    if(isMove) {
-      this.ref.audio.element.currentTime = currentTime;
-    }
-    isStart = isMove = false;
-  }
-  setBarPercent(percent) {
-    percent *= 100;
-    $(this.ref.has.element).css('width', percent + '%');
-    $(this.ref.pgb.element).css('-webkit-transform', `translate3d(${percent}%,0,0)`);
-    $(this.ref.pgb.element).css('transform', `translate3d(${percent}%,0,0)`);
+  currentTime(t) {
+    this.ref.audio.element.currentTime = t;
   }
   render() {
-    return <div class="audio" flag="1">
+    return <div class="audio">
       <audio ref="audio"
         onTimeupdate={ this.timeupdate }
         onLoadedmetadata={ this.loadedmetadata }
