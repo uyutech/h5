@@ -13,6 +13,10 @@ import FindCard from './find/FindCard.jsx';
 import MyCard from './my/MyCard.jsx';
 
 jsBridge.ready(function() {
+  jsBridge.on('back', function(e) {
+    e.preventDefault();
+    jsBridge.moveTaskToBack();
+  });
   let nav = migi.render(
     <Nav/>,
     document.body

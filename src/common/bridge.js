@@ -216,13 +216,9 @@ let jsBridge = {
       ZhuanQuanJSBridge.call('setOptionMenu', data);
     }
   },
-  getDensity: function(callback) {
-    callback = callback || function() {};
+  moveTaskToBack: function() {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('getDensity', callback);
-    }
-    else {
-      callback();
+      ZhuanQuanJSBridge.call('moveTaskToBack');
     }
   }
 };

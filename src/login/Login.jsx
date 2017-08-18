@@ -249,11 +249,9 @@ class Login extends migi.Component {
           jsBridge.setPreference('sessionid', sessionid, function() {
             let regStat = res.data.User_Reg_Stat;
             if(regStat >= 4) {
-              let popWindow = self.props.self;
-              if(popWindow) {
-                jsBridge.popWindow({
-                  login: true
-                });
+              let goto = self.props.self;
+              if(goto) {
+                location.replace(goto);
                 return;
               }
               location.replace('index.html');
@@ -324,11 +322,9 @@ class Login extends migi.Component {
           jsBridge.setPreference('sessionid', sessionid, function() {
             let regStat = res.data.User_Reg_Stat;
             if(regStat >= 4) {
-              let popWindow = self.props.self;
-              if(popWindow) {
-                jsBridge.popWindow({
-                  login: true
-                });
+              let goto = self.props.self;
+              if(goto) {
+                location.replace(goto);
                 return;
               }
               location.replace('index.html');

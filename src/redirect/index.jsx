@@ -6,6 +6,10 @@ import './redirect.html';
 import './index.less';
 
 jsBridge.ready(function() {
+  jsBridge.on('back', function(e) {
+    e.preventDefault();
+    jsBridge.moveTaskToBack();
+  });
   util.postJSON('api/Users/ChkCookie', function(res) {
     if(res.success) {
       location.replace('index.html');
