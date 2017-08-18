@@ -18,6 +18,7 @@ jsBridge.ready(function() {
     e.preventDefault();
     jsBridge.moveTaskToBack();
   });
+
   let con = migi.render(
     <div class="con">
       <div class="niang">

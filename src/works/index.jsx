@@ -15,7 +15,7 @@ import Image from './Image.jsx';
 import Link from './Link.jsx';
 import Intro from './Intro.jsx';
 import PlayList from './PlayList.jsx';
-import Comments from './Comments.jsx';
+import WorkComment from './WorkComment.jsx';
 import ImageView from './ImageView.jsx';
 import itemTemplate from "./itemTemplate";
 
@@ -86,7 +86,7 @@ jsBridge.ready(function() {
     document.body
   );
   let comments = migi.render(
-    <Comments/>,
+    <WorkComment workId={ id }/>,
     document.body
   );
   media.on('tagChange', function(i) {
@@ -101,6 +101,7 @@ jsBridge.ready(function() {
         break;
     }
   });
+  media.emit('tagChange', '1');
 
   if(id) {
     util.postJSON('api/works/GetWorkDetails', { WorksID: id }, function(res) {

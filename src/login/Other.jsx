@@ -20,7 +20,7 @@ class Other extends migi.Component {
             jsBridge.setPreference('sessionid', sessionid, function() {
               let regStat = res2.data.User_Reg_Stat;
               if(regStat >= 4) {
-                let goto = self.props.self;
+                let goto = self.props.goto;
                 if(goto) {
                   location.replace(goto);
                   return;
@@ -28,17 +28,17 @@ class Other extends migi.Component {
                 location.replace('index.html');
               }
               else {
-                let AuthorName = res2.data.AuthorName;
-                location.replace('guide.html?step=' + regStat + '&authorName=' + encodeURIComponent(AuthorName));
+                let authorName = res2.data.AuthorName;
+                location.replace('guide.html?step=' + regStat + '&authorName=' + encodeURIComponent(authorName));
               }
             });
           }
           else {
-            jsBridge.toast(res2.message || '人气大爆发，请稍后再试。');
+            jsBridge.toast(res2.message || util.ERROR_MESSAGE);
           }
         }, function() {
           jsBridge.hideLoading();
-          jsBridge.toast('人气大爆发，请稍后再试。');
+          jsBridge.toast(util.ERROR_MESSAGE);
         });
       }
       else {

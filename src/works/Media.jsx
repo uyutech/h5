@@ -89,11 +89,11 @@ class Media extends migi.Component {
 
     workList.forEach(function(item) {
       if(item.bigType === 'audio') {
-        let fileList = item.value.map(function(item2) {
-          return item2.FileUrl;
-        });
+        // let fileList = item.value.map(function(item2) {
+        //   return item2.FileUrl;
+        // });
         audio = migi.render(
-          <Audio data={ fileList }/>,
+          <Audio data={ item.value }/>,
           self.ref.c.element
         );
         audio.on('timeupdate', function(data) {
@@ -107,6 +107,7 @@ class Media extends migi.Component {
         });
       }
     });
+    // this.workList = workList;
   }
   @bind popular = 0
   @bind canControl
@@ -170,7 +171,7 @@ class Media extends migi.Component {
     return <div class="media">
       <Author ref="author"/>
       <div class="c" ref="c">
-        <span class="popular" flag="1">{ this.popular }</span>
+        <span class="popular">{ this.popular }</span>
       </div>
       <div class={ 'progress' + (this.canControl ? '' : ' dis') } onClick={ this.clickProgress }>
         <div class="has" ref="has"/>

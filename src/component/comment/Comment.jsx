@@ -25,6 +25,26 @@ class Comment extends migi.Component {
       $list2.css('height', $ul.height());
     }
   }
+  @bind list = []
+  clickZan(e, vd, tvd) {
+    let $span = $(tvd.element);
+    let CommentID = tvd.props.id;
+    util.postJSON('api/works/AddWorkCommentLike', { CommentID }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        if(data.State === 211) {
+          $span.addClass('has');
+        }
+        else {
+          $span.removeClass('has');
+        }
+        $span.find('small').text(data.LikeCount);
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    });
+  }
   render() {
     return <div class="cp_comment">
       <div class="bar fn-clear">
@@ -33,25 +53,29 @@ class Comment extends migi.Component {
           <li><span>最新</span></li>
         </ul>
       </div>
-      <ul class="list" onClick={ { '.slide': this.slide } }>
-        <li>
-          <div class="t">
-            <div class="profile">
-              <img class="pic" src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
-              <div class="txt">
-                <div><span class="name">海妖小马甲</span><small class="time">3小时前</small></div>
-                <p>我是个马甲</p>
+      <ul class="list" onClick={ { '.slide': this.slide, '.zan': this.clickZan } }>
+        {
+          this.list.map(function(item) {
+            return <li id={ item.Send_ID }>
+              <div class="t">
+                <div class="profile">
+                  <img class="pic" src={ item.Send_UserHeadUrl || 'src/common/blank.png' }/>
+                  <div class="txt">
+                    <div><span class="name">{ item.Send_UserName }</span><small class="time">{ item.Send_Time }</small></div>
+                    <p>我是个马甲</p>
+                  </div>
+                </div>
+                <div class="fn">
+                  <span id={ item.Send_ID } class={ 'zan' + (item.IsLike ? ' has' : '') }><small>{ item.LikeCount }</small></span>
+                </div>
               </div>
-            </div>
-            <div class="fn">
-              <span class="zan has"><small>66</small></span>
-            </div>
-          </div>
-          <div class="c">
-            <pre>前排支持<span class="placeholder"></span></pre>
-            <div class="slide"><small></small><span>收起</span></div>
-          </div>
-        </li>
+              <div class="c">
+                <pre>{ item.Send_Content }<span class="placeholder"/></pre>
+                <div class="slide"><small>{ item.sub_Count }</small><span>收起</span></div>
+              </div>
+            </li>;
+          })
+        }
         <li>
           <div class="t">
             <div class="profile">

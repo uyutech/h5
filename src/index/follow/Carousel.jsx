@@ -38,15 +38,17 @@ class Carousel extends migi.Component {
     $tagLis.eq(0).addClass('cur');
   }
   start(e) {
-    this.$lis = this.$ul.find('li');
-    if(e.touches.length != 1) {
-      isStart = false;
-    }
-    else {
-      isStart = true;
-      startX = e.touches[0].pageX;
-      startY = e.touches[0].pageY;
-      this.$ul.addClass('no_trans');
+    if(this.$ul) {
+      this.$lis = this.$ul.find('li');
+      if(e.touches.length != 1) {
+        isStart = false;
+      }
+      else {
+        isStart = true;
+        startX = e.touches[0].pageX;
+        startY = e.touches[0].pageY;
+        this.$ul.addClass('no_trans');
+      }
     }
   }
   move(e) {

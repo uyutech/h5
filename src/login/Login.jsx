@@ -249,7 +249,7 @@ class Login extends migi.Component {
           jsBridge.setPreference('sessionid', sessionid, function() {
             let regStat = res.data.User_Reg_Stat;
             if(regStat >= 4) {
-              let goto = self.props.self;
+              let goto = self.props.goto;
               if(goto) {
                 location.replace(goto);
                 return;
@@ -263,11 +263,11 @@ class Login extends migi.Component {
           });
         }
         else {
-          jsBridge.toast(res.message || '人气大爆发，请稍后再试。');
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
       }, function() {
         jsBridge.hideLoading();
-        jsBridge.toast('人气大爆发，请稍后再试。');
+        jsBridge.toast(util.ERROR_MESSAGE);
       });
     }
   }
@@ -301,10 +301,10 @@ class Login extends migi.Component {
         jsBridge.toast('发送成功');
       }
       else {
-        jsBridge.toast(res.message || '人气大爆发，请稍后再试。');
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
     }, function() {
-      jsBridge.toast('人气大爆发，请稍后再试。');
+      jsBridge.toast(util.ERROR_MESSAGE);
     });
   }
   clickRegister(e, vd) {
@@ -322,7 +322,7 @@ class Login extends migi.Component {
           jsBridge.setPreference('sessionid', sessionid, function() {
             let regStat = res.data.User_Reg_Stat;
             if(regStat >= 4) {
-              let goto = self.props.self;
+              let goto = self.props.goto;
               if(goto) {
                 location.replace(goto);
                 return;
@@ -336,11 +336,11 @@ class Login extends migi.Component {
           });
         }
         else {
-          jsBridge.toast(res.message || '人气大爆发，请稍后再试。');
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
       }, function() {
         jsBridge.hideLoading();
-        jsBridge.toast('人气大爆发，请稍后再试。');
+        jsBridge.toast(util.ERROR_MESSAGE);
       });
     }
   }

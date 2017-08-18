@@ -35,11 +35,11 @@ class Step1 extends migi.Component {
         }
         else {
           self.setDis = false;
-          jsBridge.toast(res.message || '人气大爆发，请稍后再试。');
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
       }, function(res) {
         self.setDis = false;
-        jsBridge.toast(res.message || '人气大爆发，请稍后再试。');
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
       });
     }
   }
