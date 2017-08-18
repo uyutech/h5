@@ -3,7 +3,6 @@
  */
 
 import $ from 'anima-yocto-ajax';
-import bridge from './bridge';
 
 export default {
   ajax: function(url, data, success, error, type) {
@@ -13,49 +12,50 @@ export default {
       // url = 'http://circling.cc/' + url.replace(/^\//, '');
       // url = 'http://120.26.95.178:8088/' + url.replace(/^\//, '');
     }
-    // if (!cancelLoading) {
-    //   bridge.showLoading();
-    // }
     console.log('ajax: ' + url + ', ' + JSON.stringify(data));
-    return $.ajax({
-      url: url,
-      data: data,
-      dataType: 'json',
-      cache: false,
-      crossDomain: true,
-      timeout: 6000,
-      type: type || 'get',
-      // ajax 跨域设置必须加上
-      beforeSend: function(xhr) {
-        xhr.withCredentials = true;
-      },
-      success: function(data, state, xhr) {
-        // if(!cancelLoading) {
-        //   // ios下面进入页面的时候loading一直不消失，加一个延时处理
-        //   setTimeout(function() {
-        //     bridge.hideLoading();
-        //   }, 20);
-        // }
-        console.log('ajax success: ' + url + ', ' + JSON.stringify(data));
-        if(!data.success && data.code === 1000) {
-          location.replace('login.html?goto=' + encodeURIComponent(location.href));
-          return;
+    // if(first) {
+    //   first = false;
+    //   jsBridge.on('resume', function(data) {
+    //     if(data.login) {}
+    //   });
+    // }
+    function load() {
+      return $.ajax({
+        url: url,
+        data: data,
+        dataType: 'json',
+        cache: false,
+        crossDomain: true,
+        timeout: 6000,
+        type: type || 'get',
+        // ajax 跨域设置必须加上
+        beforeSend: function(xhr) {
+          xhr.withCredentials = true;
+        },
+        success: function(data, state, xhr) {
+          console.log('ajax success: ' + url + ', ' + JSON.stringify(data));
+          if(!data.success && data.code === 1000) {
+            jsBridge.pushWindow('login.html?popWindow=true', {
+              transparentTitle: true,
+            });
+            jsBridge.on('resume', function(data) {
+              if(data.login) {
+                load();
+              }
+            });
+            return;
+          }
+          success(data, state, xhr);
+        },
+        error: function(data) {
+          console.error('ajax error: ' + url + ', ' + JSON.stringify(data));
+          if(!error.__hasExec) {
+            error.__hasExec = true;
+            error(data || {});
+          }
         }
-        success(data, state, xhr);
-      },
-      error: function(data) {
-        // if(!cancelLoading) {
-          // ios下面进入页面的时候loading一直不消失，加一个延时处理
-          // setTimeout(function() {
-          //   bridge.hideLoading();
-          // }, 20);
-        // }
-        console.error('ajax error: ' + url + ', ' + JSON.stringify(data));
-        if(!error.__hasExec) {
-          error.__hasExec = true;
-          error(data || {});
-        }
-      }
-    });
+      });
+    }
+    return load();
   },
 };

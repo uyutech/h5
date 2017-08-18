@@ -20,9 +20,11 @@ class Other extends migi.Component {
             jsBridge.setPreference('sessionid', sessionid, function() {
               let regStat = res2.data.User_Reg_Stat;
               if(regStat >= 4) {
-                let goto = self.props.self;
-                if(goto) {
-                  location.replace(goto);
+                let popWindow = self.props.self;
+                if(popWindow) {
+                  jsBridge.popWindow({
+                    login: true
+                  });
                   return;
                 }
                 location.replace('index.html');

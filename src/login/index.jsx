@@ -11,16 +11,24 @@ import Other from './Other.jsx';
 import qs from 'anima-querystring';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
+let popWindow = search.popWindow;
 let goto = search.goto;
 
 jsBridge.ready(function() {
+  jsBridge.on('back', function(e) {
+    e.preventDefault();
+    jsBridge.popWindow({
+      login: true
+    });
+  });
+
   let con = migi.render(
     <div class="con">
       <div class="niang">
         <div class="bg"></div>
         <div class="tip fn-hide"></div>
       </div>
-      <Login ref="login" goto={ goto }/>
+      <Login ref="login" popWindow={ popWindow }/>
     </div>,
     document.body
   );
@@ -47,7 +55,7 @@ jsBridge.ready(function() {
   });
 
   migi.render(
-    <Other goto={ goto }/>,
+    <Other popWindow={ popWindow }/>,
     document.body
   );
 });

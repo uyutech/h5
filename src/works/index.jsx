@@ -9,21 +9,15 @@ import qs from 'anima-querystring';
 
 import Media from './Media.jsx';
 import WorkType from '../component/work/WorkType.jsx';
-import Authors from './Authors.jsx';
 import Video from './Video.jsx';
 import Audio from './Audio.jsx';
 import Image from './Image.jsx';
 import Link from './Link.jsx';
-import MediaSwitch from './MediaSwitch.jsx';
-import Tags from './Tags.jsx';
 import Intro from './Intro.jsx';
 import PlayList from './PlayList.jsx';
 import Comments from './Comments.jsx';
 import ImageView from './ImageView.jsx';
 import itemTemplate from "./itemTemplate";
-
-let $window = $(window);
-let winWidth = $window.width();
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
 let id = search.id;
@@ -107,19 +101,6 @@ jsBridge.ready(function() {
         break;
     }
   });
-  // tags.on('change', function(i) {
-  //   intro.hide();
-  //   comments.hide();
-  //   switch(i) {
-  //     case '0':
-  //       intro.show();
-  //       break;
-  //     case '1':
-  //       comments.show();
-  //       break;
-  //   }
-  // });
-  // tags.emit('change', 2);
 
   if(id) {
     util.postJSON('api/works/GetWorkDetails', { WorksID: id }, function(res) {
