@@ -85,23 +85,23 @@ jsBridge.ready(function() {
     <Intro/>,
     document.body
   );
-  let comments = migi.render(
+  let workComment = migi.render(
     <WorkComment workId={ id }/>,
     document.body
   );
   media.on('tagChange', function(i) {
-    intro.hide();
-    comments.hide();
+    intro && intro.hide();
+    workComment && workComment.hide();
     switch (i) {
       case '0':
         intro.show();
         break;
       case '1':
-        comments.show();
+        workComment.show();
         break;
     }
   });
-  media.emit('tagChange', '1');
+  // media.emit('tagChange', '1');
 
   if(id) {
     util.postJSON('api/works/GetWorkDetails', { WorksID: id }, function(res) {

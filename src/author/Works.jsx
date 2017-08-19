@@ -5,6 +5,7 @@
 import Tags2 from './Tags2.jsx';
 import PlayList from '../component/playlist/PlayList.jsx';
 
+let init;
 let last = '';
 let ajax;
 
@@ -31,6 +32,16 @@ class Works extends migi.Component {
       });
     });
   }
+  show() {
+    $(this.element).show();
+    if(!init) {
+      init = true;
+      this.load();
+    }
+  }
+  hide() {
+    $(this.element).hide();
+  }
   load() {
     let self = this;
     util.postJSON('api/author/GetAuthorWorks', { AuthorID: this.props.authorId }, function (res) {
@@ -45,13 +56,6 @@ class Works extends migi.Component {
         self.ref.playlist.setData(res.data);
       }
     });
-  }
-  show() {
-    this.element.style.display = 'block';
-    this.ref.tag.autoWidth();
-  }
-  hide() {
-    this.element.style.display = 'none';
   }
   render() {
     return <div class="works">

@@ -32,7 +32,10 @@ export default {
         success: function (data, state, xhr) {
           console.log('ajax success: ' + url + ', ' + JSON.stringify(data));
           if(!data.success && data.code === 1000) {
-            location.replace('login.html?goto=' + encodeURIComponent(location.href));
+            if(jsBridge.isInApp) {}
+            else {
+              location.replace('login.html?goto=' + encodeURIComponent(location.href));
+            }
             // jsBridge.ready(function() {
             //   if(!init) {
             //     init = true;

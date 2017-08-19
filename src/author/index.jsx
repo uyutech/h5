@@ -10,7 +10,7 @@ import qs from 'anima-querystring';
 import Nav from './Nav.jsx';
 import Home from './Home.jsx';
 import Works from './Works.jsx';
-import Comments from './Comments.jsx';
+import AuthorComment from './AuthorComment.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
 let id = search.id;
@@ -31,31 +31,27 @@ jsBridge.ready(function() {
   let hotWork = home.ref.hotWork;
   let hotAuthor = home.ref.hotAuthor;
 
-  let works;
-  let comments = migi.render(
-    <Comments/>,
+  let works = migi.render(
+    <Works authorId={ id }/>,
+    document.body
+  );
+  let authorComment = migi.render(
+    <AuthorComment authorId={ id }/>,
     document.body
   );
   tags.on('change', function(i) {
     home && home.hide();
     works && works.hide();
-    comments && comments.hide();
+    authorComment && authorComment.hide();
     switch (i) {
       case '0':
         home.show();
         break;
       case '1':
-        if(!works) {
-          works = migi.render(
-            <Works authorId={ id }/>,
-            document.body
-          );
-          works.load();
-        }
         works.show();
         break;
       case '2':
-        comments.show();
+        authorComment.show();
         break;
     }
   });
@@ -79,6 +75,9 @@ jsBridge.ready(function() {
         link._WeiboUrl = data._WeiboUrl;
         link.autoWidth();
       }
+      else {
+        jsBridge.toast(util.ERROR_MESSAGE);
+      }
     });
     util.postJSON('api/author/GetAuthorHomePage', { AuthorID: id }, function (res) {
       if(res.success) {
@@ -87,6 +86,9 @@ jsBridge.ready(function() {
         hotWork.autoWidth();
         hotAuthor.dataList = data.AuthorToAuthor;
         hotAuthor.autoWidth();
+      }
+      else {
+        jsBridge.toast(util.ERROR_MESSAGE);
       }
     });
   }
