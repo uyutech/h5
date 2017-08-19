@@ -62,7 +62,7 @@ class Comment extends migi.Component {
                   <img class="pic" src={ item.Send_UserHeadUrl || 'src/common/blank.png' }/>
                   <div class="txt">
                     <div><span class="name">{ item.Send_UserName }</span><small class="time">{ item.Send_Time }</small></div>
-                    <p>我是个马甲</p>
+                    <p>{ item.sign }</p>
                   </div>
                 </div>
                 <div class="fn">
@@ -76,7 +76,7 @@ class Comment extends migi.Component {
             </li>;
           })
         }
-        <li>
+        <li class="fn-hide">
           <div class="t">
             <div class="profile">
               <img class="pic" src="http://tva3.sinaimg.cn/crop.0.0.328.328.50/6924ccf1gw1f889w9il5pj209709e0tx.jpg"/>
