@@ -45,6 +45,11 @@ class Comment extends migi.Component {
       }
     });
   }
+  clickPre(e, vd, tvd) {
+    let CommentID = tvd.props.id;
+    let Send_UserName = tvd.props.name;
+    this.emit('chooseSubComment', CommentID, Send_UserName);
+  }
   render() {
     return <div class="cp_comment">
       <div class="bar fn-clear">
@@ -53,10 +58,10 @@ class Comment extends migi.Component {
           <li><span>最新</span></li>
         </ul>
       </div>
-      <ul class="list" onClick={ { '.slide': this.slide, '.zan': this.clickZan } }>
+      <ul class="list" onClick={ { '.slide': this.slide, '.zan': this.clickZan, 'pre': this.clickPre } }>
         {
           this.list.map(function(item) {
-            return <li id={ item.Send_ID }>
+            return <li>
               <div class="t">
                 <div class="profile">
                   <img class="pic" src={ item.Send_UserHeadUrl || 'src/common/blank.png' }/>
@@ -70,7 +75,7 @@ class Comment extends migi.Component {
                 </div>
               </div>
               <div class="c">
-                <pre>{ item.Send_Content }<span class="placeholder"/></pre>
+                <pre id={ item.Send_ID } name={ item.Send_UserName }>{ item.Send_Content }<span class="placeholder"/></pre>
                 <div class="slide"><small>{ item.sub_Count }</small><span>收起</span></div>
               </div>
             </li>;

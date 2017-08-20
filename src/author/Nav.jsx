@@ -13,7 +13,7 @@ class Nav extends migi.Component {
   render() {
     return <div class="nav">
       <div class="bg"/>
-      <Profile ref="profile"/>
+      <Profile ref="profile" authorId={ this.props.authorId }/>
       <Link ref="link"/>
       <Tags ref="tags"/>
     </div>;

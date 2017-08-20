@@ -84,16 +84,4 @@ jsBridge.ready(function() {
     }
   });
   // bottomNav.emit('change', 3);
-
-  // util.postJSON('api/works/GetWorkList', {
-  //   Skip: 0,
-  //   Take: 10,
-  // }, function(res) {
-  //   if(res.success) {
-  //     let carouselList = res.data;
-  //     if (carouselList.data && carouselList.data.length) {
-  //       followCard.ref.carousel.list = carouselList.data;
-  //     }
-  //   }
-  // });
 });

@@ -13,6 +13,8 @@ class Profile extends migi.Component {
   @bind authorType = []
   @bind headUrl
   @bind fansNumber
+  @bind isLike
+  @bind loading = true
   set type(v) {
     v = v || [];
     let hash = {};
@@ -21,6 +23,43 @@ class Profile extends migi.Component {
       hash[css] = true;
     });
     this.authorType = Object.keys(hash);
+  }
+  click(e) {
+    e.preventDefault();
+    let self = this;
+    self.loading = true;
+    if(self.isLike) {
+      util.postJSON('api/author/RemoveAuthorToUser', { Author: self.props.authorId }, function(res) {
+        if(res.success) {
+          self.isLike = false;
+          self.fansNumber = res.data.followCount;
+          jsBridge.toast('取关成功');
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+        self.loading = false;
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        self.loading = false;
+      });
+    }
+    else {
+      util.postJSON('api/author/SaveAuthorToUser', { Author: self.props.authorId }, function(res) {
+        if(res.success) {
+          self.isLike = true;
+          self.fansNumber = res.data.followCount;
+          jsBridge.toast('关注成功');
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+        self.loading = false;
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        self.loading = false;
+      });
+    }
   }
   render() {
     return <div class="profile">
@@ -50,7 +89,7 @@ class Profile extends migi.Component {
             </div>
             <span>热度</span>
           </div>
-          <a href="#" class="follow">应援</a>
+          <a href="#" class={ (this.isLike ? 'support' : 'follow') + (this.loading ? ' loading' : '') } onClick={ this.click }>{ this.isLike ? '应援' : '关注' }</a>
         </div>
       </div>
     </div>;

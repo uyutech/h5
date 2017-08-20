@@ -17,6 +17,7 @@ module.exports = {
     "_BilibiliUrl": null,
     "_BaiduUrl": null,
     "_WangyiUrl": null,
-    "_WeiboUrl": null
+    "_WeiboUrl": null,
+    "IsLike": true
   }
 };

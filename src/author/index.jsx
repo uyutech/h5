@@ -17,7 +17,7 @@ let id = search.id;
 
 jsBridge.ready(function() {
   let nav = migi.render(
-    <Nav/>,
+    <Nav authorId={ id }/>,
     document.body
   );
   let profile = nav.ref.profile;
@@ -55,7 +55,7 @@ jsBridge.ready(function() {
         break;
     }
   });
-  // tags.emit('change', '1');
+  // tags.emit('change', '2');
 
   if(id) {
     util.postJSON('api/author/GetAuthorDetails', { AuthorID: id }, function (res) {
@@ -67,6 +67,8 @@ jsBridge.ready(function() {
         profile.type = data.Authortype;
         profile.sign = data.Sign;
         profile.fansNumber = data.FansNumber;
+        profile.isLike = data.IsLike;
+        profile.loading = false;
 
         link._5SingUrl = data._5SingUrl;
         link._BilibiliUrl = data._BilibiliUrl;

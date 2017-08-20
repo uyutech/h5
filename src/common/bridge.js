@@ -86,6 +86,9 @@ let jsBridge = {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('toast', s);
     }
+    else {
+      console.log(s);
+    }
   },
   showLoading: function(s) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
