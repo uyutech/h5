@@ -13,7 +13,6 @@ module.exports = {
     guide: './src/guide/index.jsx',
     step1: './src/guide/step1.jpg',
     step2: './src/guide/step2.jpg',
-    work: './src/work/index.jsx',
     works: './src/works/index.jsx',
     author: './src/author/index.jsx',
     search: './src/search/index.jsx'

@@ -5,6 +5,10 @@
 import Comment from '../component/comment/Comment.jsx';
 
 let init;
+let Skip = 0;
+let Take = 10;
+let Size = 0;
+let loadingMore;
 
 class AuthorComment extends migi.Component {
   constructor(...data) {
@@ -16,9 +20,10 @@ class AuthorComment extends migi.Component {
     if(!init) {
       init = true;
       self.load();
-      self.ref.comment.on('chooseSubComment', function(id, name) {
-        console.log(id, name);
-        self.replayId = id;
+      self.ref.comment.on('chooseSubComment', function(rid, cid, name) {
+        console.log(rid, cid, name);
+        self.rootId = rid;
+        self.replayId = cid;
         self.replayName = name;
       });
     }
@@ -26,20 +31,70 @@ class AuthorComment extends migi.Component {
   hide() {
     $(this.element).hide();
   }
-  @bind replayId
+  @bind rootId = null
+  @bind replayId = null
   @bind replayName
   @bind hasContent
   @bind loading
   load() {
     let self = this;
-    util.postJSON('api/author/GetToAuthorMessage_List', { AuthorID: self.props.authorId , Skip: 0, Take: 10 }, function(res) {
+    util.postJSON('api/author/GetToAuthorMessage_List', { AuthorID: self.props.authorId , Skip, Take }, function(res) {
       if(res.success) {
-        self.ref.comment.list = res.data.data;
+        let data = res.data;
+        self.ref.comment.list = data.data || [];
+        Size = data.Size;
+        if(data.data.length) {
+          if(data.data.length >= Size) {
+            self.ref.comment.message = '';
+          }
+          else {
+            self.listenMore();
+          }
+        }
+        else {
+          self.ref.comment.message = '暂无评论';
+        }
+        Skip += Take;
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
     });
+  }
+  listenMore() {
+    let self = this;
+    let $window = $(window);
+    let $body = $(document.body);
+    let WIN_HEIGHT = $window.height();
+    $window.on('scroll', cb);
+    function cb() {
+      if(!loadingMore && $body.scrollTop() + WIN_HEIGHT + 30 > $body.height()) {
+        loadingMore = true;
+        util.postJSON('api/author/GetToAuthorMessage_List', { AuthorID: self.props.authorId , Skip, Take }, function(res) {
+          if(res.success) {
+            Skip += Take;
+            let data = res.data;
+            if(data.data.length) {
+              if(Skip >= Size) {
+                self.ref.comment.message = '';
+                $window.off('scroll', cb);
+              }
+              self.ref.comment.addMore(data.data);
+            }
+            else {
+              self.ref.comment.message = '';
+              $window.off('scroll', cb);
+            }
+          }
+          else {
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          }
+          loadingMore = false;
+        }, function() {
+          loadingMore = false;
+        });
+      }
+    }
   }
   clickReplay() {
     this.replayId = null;
@@ -55,18 +110,23 @@ class AuthorComment extends migi.Component {
     if(self.hasContent) {
       let $input = $(this.ref.input.element);
       let Content = $input.val();
-      let ParentID = self.replayId === null ? self.replayId : -1;
+      let ParentID = self.replayId !== null ? self.replayId : -1;
+      let RootID = self.rootId !== null ? self.rootId : -1;
       self.loading = true;
       util.postJSON('api/comment/AddComment', {
         ParentID,
+        RootID,
         Content,
         commentType: 2,
         commentTypeID: self.props.authorId,
       }, function(res) {
         if(res.success) {
           $input.val('');
-          if(ParentID > -1) {
-            self.ref.comment.list.push(res.data);
+          if(RootID === -1) {
+            self.ref.comment.addNew(res.data);
+          }
+          else {
+            self.ref.comment.addChild(res.data, RootID);
           }
         }
         else {
