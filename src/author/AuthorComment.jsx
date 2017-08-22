@@ -5,7 +5,7 @@
 import Comment from '../component/comment/Comment.jsx';
 
 let init;
-let Skip = 0;
+let Skip = -1;
 let Take = 10;
 let Size = 0;
 let loadingMore;
@@ -44,6 +44,7 @@ class AuthorComment extends migi.Component {
         self.ref.comment.list = data.data || [];
         Size = data.Size;
         if(data.data.length) {
+          Skip = data.data[data.data.length - 1].Send_ID;
           if(data.data.length >= Size) {
             self.ref.comment.message = '';
           }
@@ -54,7 +55,6 @@ class AuthorComment extends migi.Component {
         else {
           self.ref.comment.message = '暂无评论';
         }
-        Skip += Take;
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -72,14 +72,14 @@ class AuthorComment extends migi.Component {
         loadingMore = true;
         util.postJSON('api/author/GetToAuthorMessage_List', { AuthorID: self.props.authorId , Skip, Take }, function(res) {
           if(res.success) {
-            Skip += Take;
             let data = res.data;
             if(data.data.length) {
-              if(Skip >= Size) {
+              Skip = data.data[data.data.length - 1].Send_ID;
+              self.ref.comment.addMore(data.data);
+              if(data.data.length < Take) {
                 self.ref.comment.message = '';
                 $window.off('scroll', cb);
               }
-              self.ref.comment.addMore(data.data);
             }
             else {
               self.ref.comment.message = '';
@@ -126,7 +126,7 @@ class AuthorComment extends migi.Component {
             self.ref.comment.addNew(res.data);
           }
           else {
-            self.ref.comment.addChild(res.data, RootID);
+            self.ref.comment.addChild(res.data);
           }
         }
         else {

@@ -6,10 +6,48 @@ const NOT_LOADED = 0;
 const IS_LOADING = 1;
 const HAS_LOADED = 2;
 let subLoadHash = {};
+let subSkipHash = {};
+let Take = 10;
 
 class Comment extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      $(self.ref.list.element).on('click', '.more', function() {
+        let $message = $(this);
+        let rid = $message.attr('rid');
+        $message.removeClass('more').text('读取中...');
+        util.postJSON('api/author/GetTocomment_T_List', { RootID: rid, Skip: subSkipHash[rid], Take }, function(res) {
+          if(res.success) {
+            let data = res.data;
+            if(data.data.length) {
+              subSkipHash[rid] = data.data[data.data.length - 1].Send_ID;
+              let s = '';
+              data.data.forEach(function (item) {
+                s += self.genChildComment(item);
+              });
+              let $ul = $message.prev();
+              $ul.append(s);
+              if(data.data.length < Take) {
+                $message.addClass('fn-hide');
+              }
+              else {
+                $message.addClass('more').text('点击加载更多');
+              }
+            }
+            else {
+              $message.addClass('fn-hide');
+            }
+          }
+          else {
+            $message.addClass('more').text(res.message || util.ERROR_MESSAGE);
+          }
+        }, function(res) {
+          $message.addClass('more').text(res.message || util.ERROR_MESSAGE);
+        });
+      });
+    });
   }
   @bind list = []
   @bind message = '读取中...'
@@ -23,8 +61,7 @@ class Comment extends migi.Component {
     let $li = $slide.closest('li');
     let $list2 = $li.find('.list2');
     let $ul = $list2.find('ul');
-    let $loading = $list2.find('.loading');
-    let cid = tvd.props.cid;
+    let $message = $list2.find('.message');
     let rid = tvd.props.rid;
     if($slide.hasClass('on')) {
       $slide.removeClass('on');
@@ -33,20 +70,18 @@ class Comment extends migi.Component {
     else {
       $slide.addClass('on');
       let state = subLoadHash[rid];
-      if(state === HAS_LOADED) {
-        $list2.css('height', $ul.height());
-      }
-      else if(state === IS_LOADING) {
-        $list2.css('height', $loading.height());
+      if(state === HAS_LOADED || state === IS_LOADING) {
+        $list2.css('height', 'auto');
       }
       else {
-        $list2.css('height', $loading.height());
+        $list2.css('height', 'auto');
         subLoadHash[rid] = IS_LOADING;
-        util.postJSON('api/author/GetTocomment_T_List', { ParentID: cid, RootID: cid, Skip: 0, Take: 10 }, function(res) {
+        util.postJSON('api/author/GetTocomment_T_List', { RootID: rid, Skip: -1, Take }, function(res) {
           if(res.success) {
             subLoadHash[rid] = HAS_LOADED;
             let s = '';
-            res.data.data.forEach(function(item) {
+            let data = res.data;
+            data.data.forEach(function(item) {
               s += <li>
                 <div class="t">
                   <div class="fn">
@@ -66,14 +101,23 @@ class Comment extends migi.Component {
               </li>;
             });
             $ul.html(s);
-            $loading.addClass('fn-hide');
+            if(data.data.length >= data.Size) {
+              $message.addClass('fn-hide');
+            }
+            else {
+              $message.addClass('more').text('点击加载更多');
+              subSkipHash[rid] = data.data[data.data.length - 1].Send_ID;
+            }
             $ul.removeClass('fn-hide');
-            $list2.css('height', $ul.height());
+            $list2.css('height', 'auto');
           }
           else {
-            subLoadHash[cid] = NOT_LOADED;
+            subLoadHash[rid] = NOT_LOADED;
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
           }
+        }, function(res) {
+          subLoadHash[rid] = NOT_LOADED;
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         });
       }
     }
@@ -139,8 +183,17 @@ class Comment extends migi.Component {
       this.message = '';
     }
   }
-  addChild(item, RootID) {
-    let li = <li>
+  addMore(data) {
+    let self = this;
+    let s = '';
+    data.forEach(function(item) {
+      let li = self.genComment(item);
+      s += li.toString();
+    });
+    $(self.ref.list.element).append(s);
+  }
+  genChildComment(item) {
+    return <li>
       <div class="t">
         <div class="fn">
           <span cid={ item.Send_ID } class={ 'zan' + (item.IsLike ? ' has' : '') }><small>{ item.LikeCount }</small></span>
@@ -157,20 +210,18 @@ class Comment extends migi.Component {
         <pre cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_UserName }>{ item.Send_Content }</pre>
       </div>
     </li>;
-    let $list2 = $('#comment_' + RootID).find('.list2');
+  }
+  addChild(item) {
+    let li = this.genChildComment(item);
+    let $comment = $('#comment_' + item.RootID);
+    let $list2 = $comment.find('.list2');
     let $ul = $list2.find('ul');
     li.prependTo($ul[0]);
     $list2.css('height', $ul.height());
+    let $num = $comment.find('.slide small');
+    $num.text((parseInt($num.text()) || 0) + 1);
   }
-  addMore(data) {
-    let self = this;
-    let s = '';
-    data.forEach(function(item) {
-      let li = self.genComment(item);
-      s += li.toString();
-    });
-    $(self.ref.list.element).append(s);
-  }
+  addMoreChild(item) {}
   render() {
     return <div class="cp_comment">
       <div class="bar fn-clear">
@@ -200,8 +251,8 @@ class Comment extends migi.Component {
                 <div class="slide" cid={ item.Send_ID } rid={ item.Send_ID }><small>{ item.sub_Count }</small><span>收起</span></div>
               </div>
               <div class="list2">
-                <p class="loading">读取中...</p>
                 <ul class="fn-hide"/>
+                <p class="message" cid={ item.Send_ID } rid={ item.Send_ID }>读取中...</p>
               </div>
             </li>;
           })
