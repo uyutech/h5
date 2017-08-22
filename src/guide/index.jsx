@@ -76,6 +76,7 @@ switch (step) {
 }
 
 jsBridge.ready(function() {
+  jsBridge.swipeRefresh(false);
   // jsBridge.userInfo(function(res) {
   //   console.log(JSON.stringify(res));
   // });

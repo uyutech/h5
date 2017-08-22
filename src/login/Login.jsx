@@ -273,6 +273,9 @@ class Login extends migi.Component {
   }
   clickSend(e, vd) {
     let $sendValid = $(vd.element);
+    if($sendValid.hasClass('dis')) {
+      return;
+    }
     $sendValid.addClass('dis');
     let $validGroup = $(this.ref.validGroup.element);
     $validGroup.removeClass('dis');
@@ -356,15 +359,15 @@ class Login extends migi.Component {
         </ul>
         <div class="lgn fn-hide1" ref="lgn">
           <div class="line phone">
-            <b class="icon"></b>
+            <b class="icon"/>
             <input type="number" ref="name" maxlength="11" placeholder="请输入手机号" onKeyDown={ this.keyDown } onInput={ this.inputName } value="15921858411"/>
-            <b class="clear fn-hidden" onClick={ this.clear }></b>
+            <b class="clear fn-hidden" onClick={ this.clear }/>
           </div>
           <div class="line pass">
-            <b class="icon"></b>
+            <b class="icon"/>
             <input type="password" ref="pass" maxlength="16" placeholder="请输入密码" onInput={ this.inputPass } value="aaaaaaa"/>
-            <b class="clear fn-hidden" onClick={ this.clear }></b>
-            <b class="eye" onClick={ this.eye }></b>
+            <b class="clear fn-hidden" onClick={ this.clear }/>
+            <b class="eye" onClick={ this.eye }/>
           </div>
           <div class="forget">
             <a href="#" onClick={ this.clickForget }>忘记密码</a>
@@ -373,19 +376,19 @@ class Login extends migi.Component {
         </div>
         <div class="reg fn-hide" ref="reg">
           <div class="line phone">
-            <b class="icon"></b>
+            <b class="icon"/>
             <input type="number" ref="name2" maxlength="11" placeholder="请输入手机号" onKeyDown={ this.keyDown } onInput={ this.inputName }/>
-            <b class="clear fn-hidden" onClick={ this.clear }></b>
+            <b class="clear fn-hidden" onClick={ this.clear }/>
           </div>
           <div class="line pass">
-            <b class="icon"></b>
+            <b class="icon"/>
             <input type="password" ref="pass2" maxlength="16" placeholder="请输入密码" onInput={ this.inputPass }/>
-            <b class="clear fn-hidden" onClick={ this.clear }></b>
-            <b class="eye" onClick={ this.eye }></b>
+            <b class="clear fn-hidden" onClick={ this.clear }/>
+            <b class="eye" onClick={ this.eye }/>
           </div>
           <div class="line2">
             <div class="valid dis" ref="validGroup">
-              <b class="icon"></b>
+              <b class="icon"/>
               <input type="number" class="dis" ref="valid" maxlength="6" placeholder="请输入验证码" readOnly="readOnly" onInput={ this.inputValid }/>
             </div>
             <button class="send dis" ref="sendValid" onClick={ this.clickSend }>发送验证码</button>

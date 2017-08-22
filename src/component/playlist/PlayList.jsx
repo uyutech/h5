@@ -13,7 +13,10 @@ class PlayList extends migi.Component {
   }
   click(e, vd, tvd) {
     let id = tvd.props.workId;
-    jsBridge.pushWindow('works.html?id=' + id);
+    jsBridge.pushWindow('works.html?id=' + id, {
+      transparentTitle: true,
+      titleBgColor: '#99000000'
+    });
   }
   setData(data) {
     this.list = data.data || [];

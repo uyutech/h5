@@ -19,7 +19,6 @@ let audio;
 class Media extends migi.Component {
   constructor(...data) {
     super(...data);
-    let WIDTH = $(window).width();
     let style = document.createElement('style');
     style.innerText = `body>.media>.c{height:${WIDTH/16*9}px}`;
     document.head.appendChild(style);

@@ -40,7 +40,7 @@ class Carousel extends migi.Component {
   start(e) {
     if(this.$ul) {
       this.$lis = this.$ul.find('li');
-      if(e.touches.length != 1) {
+      if(e.touches.length !== 1) {
         isStart = false;
       }
       else {
@@ -84,7 +84,7 @@ class Carousel extends migi.Component {
       curX += endX - startX;
       if(curX >= -itemWidth / 2) {
         curX = 0;
-        if(lastCur != 0) {
+        if(lastCur !== 0) {
           this.$lis.removeClass('cur');
           this.$lis.eq(0).addClass('cur');
           lastCur = 0;
@@ -93,7 +93,7 @@ class Carousel extends migi.Component {
       }
       else if(curX < -itemWidth * (itemLength - 1)) {
         curX = -itemWidth * (itemLength - 1);
-        if(lastCur != itemLength - 1) {
+        if(lastCur !== itemLength - 1) {
           this.$lis.removeClass('cur');
           this.$lis.eq(itemLength - 1).addClass('cur');
           lastCur = itemLength - 1;
@@ -103,7 +103,7 @@ class Carousel extends migi.Component {
       else {
         let i = Math.abs(Math.round(curX / itemWidth));
         curX = -itemWidth * i;
-        if(lastCur != i) {
+        if(lastCur !== i) {
           this.$lis.removeClass('cur');
           this.$lis.eq(i).addClass('cur');
           lastCur = i;
@@ -119,7 +119,7 @@ class Carousel extends migi.Component {
   click(e, vd, tvd) {
     e.preventDefault();
     let href = tvd.props.href;
-    if(href && href != '#') {
+    if(href && href !== '#') {
       jsBridge.pushWindow(href, {
         transparentTitle: true,
         titleBgColor: '#99000000'
