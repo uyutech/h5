@@ -101,7 +101,7 @@ jsBridge.ready(function() {
         break;
     }
   });
-  media.emit('tagChange', '1');
+  // media.emit('tagChange', '1');
 
   if(id) {
     util.postJSON('api/works/GetWorkDetails', { WorksID: id }, function(res) {
