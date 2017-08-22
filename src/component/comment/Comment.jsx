@@ -168,8 +168,8 @@ class Comment extends migi.Component {
           <span>收起</span></div>
       </div>
       <div class="list2">
-        <p class="loading">读取中...</p>
         <ul class="fn-hide"/>
+        <p class="message" cid={ item.Send_ID } rid={ item.Send_ID }>读取中...</p>
       </div>
     </li>;
   }

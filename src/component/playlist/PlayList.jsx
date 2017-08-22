@@ -1,39 +1,6 @@
 /**
  * Created by army on 2017/7/1.
  */
- 
-let data = [
-  {
-    pic: 'http://bbs.xiguo.net/zq/zp/07.jpeg',
-    name: '前前前世',
-    intro: '《你的名字》主题曲中文版',
-    type: ['video', 'audio']
-  },
-  {
-    pic: 'http://bbs.xiguo.net/zq/zp/02.jpg',
-    name: '机械之心',
-    intro: '《失落的机械城2》',
-    type: ['video', 'audio']
-  },
-  {
-    pic: 'http://bbs.xiguo.net/zq/zp/01.jpg',
-    name: '明月舟(with 慕寒)',
-    intro: '《浮生六记》',
-    type: ['audio']
-  },
-  {
-    pic: 'http://bbs.xiguo.net/zq/zp/03.jpg',
-    name: '晴时雨时',
-    intro: '',
-    type: ['video']
-  },
-  {
-    pic: 'http://bbs.xiguo.net/zq/zp/04.jpg',
-    name: '送郎君',
-    intro: '',
-    type: ['audio']
-  }
-];
 
 class PlayList extends migi.Component {
   constructor(...data) {
@@ -45,10 +12,11 @@ class PlayList extends migi.Component {
     $ul.find('li').toggleClass('cur');
   }
   click(e, vd, tvd) {
-    jsBridge.pushWindow('works.html');
+    let id = tvd.props.workId;
+    jsBridge.pushWindow('works.html?id=' + id);
   }
   setData(data) {
-    this.list = data.data || [];console.log(1)
+    this.list = data.data || [];
   }
   @bind list = [];
   render() {
@@ -68,8 +36,8 @@ class PlayList extends migi.Component {
         {
           this.list.map(function(item) {
             return <li>
-              <div class="pic" style={ `background:url(${item.cover_Pic})` }/>
-              <div class="txt">
+              <div workId={ item.WorksID } class="pic" style={ `background:url(${item.cover_Pic})` }/>
+              <div class="txt" workId={ item.WorksID }>
                 <div class="name">{ item.Title }</div>
                 <p class="intro">{ item.sub_Title }</p>
               </div>

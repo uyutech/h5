@@ -21,7 +21,6 @@ class AuthorComment extends migi.Component {
       init = true;
       self.load();
       self.ref.comment.on('chooseSubComment', function(rid, cid, name) {
-        console.log(rid, cid, name);
         self.rootId = rid;
         self.replayId = cid;
         self.replayName = name;
@@ -59,6 +58,8 @@ class AuthorComment extends migi.Component {
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
   listenMore() {

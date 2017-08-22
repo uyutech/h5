@@ -55,7 +55,7 @@ jsBridge.ready(function() {
         break;
     }
   });
-  tags.emit('change', '2');
+  // tags.emit('change', '2');
 
   if(id) {
     util.postJSON('api/author/GetAuthorDetails', { AuthorID: id }, function (res) {
