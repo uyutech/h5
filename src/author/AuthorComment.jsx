@@ -9,6 +9,8 @@ let Skip = -1;
 let Take = 10;
 let Size = 0;
 let loadingMore;
+let isShow;
+let scrollCb;
 
 class AuthorComment extends migi.Component {
   constructor(...data) {
@@ -16,6 +18,7 @@ class AuthorComment extends migi.Component {
   }
   show() {
     let self = this;
+    isShow = true;
     $(self.element).show();
     if(!init) {
       init = true;
@@ -28,6 +31,7 @@ class AuthorComment extends migi.Component {
     }
   }
   hide() {
+    isShow = false;
     $(this.element).hide();
   }
   @bind rootId = null
@@ -48,7 +52,10 @@ class AuthorComment extends migi.Component {
             self.ref.comment.message = '';
           }
           else {
-            self.listenMore();
+            scrollCb = function() {
+              self.checkMore();
+            };
+            $(window).on('scroll', scrollCb);
           }
         }
         else {
@@ -62,39 +69,36 @@ class AuthorComment extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  listenMore() {
+  checkMore() {
     let self = this;
     let $window = $(window);
     let $body = $(document.body);
     let WIN_HEIGHT = $window.height();
-    $window.on('scroll', cb);
-    function cb() {
-      if(!loadingMore && $body.scrollTop() + WIN_HEIGHT + 30 > $body.height()) {
-        loadingMore = true;
-        util.postJSON('api/author/GetToAuthorMessage_List', { AuthorID: self.props.authorId , Skip, Take }, function(res) {
-          if(res.success) {
-            let data = res.data;
-            if(data.data.length) {
-              Skip = data.data[data.data.length - 1].Send_ID;
-              self.ref.comment.addMore(data.data);
-              if(data.data.length < Take) {
-                self.ref.comment.message = '';
-                $window.off('scroll', cb);
-              }
-            }
-            else {
+    if(isShow && !loadingMore && $body.scrollTop() + WIN_HEIGHT + 30 > $body.height()) {
+      loadingMore = true;
+      util.postJSON('api/author/GetToAuthorMessage_List', { AuthorID: self.props.authorId , Skip, Take }, function(res) {
+        if(res.success) {
+          let data = res.data;
+          if(data.data.length) {
+            Skip = data.data[data.data.length - 1].Send_ID;
+            self.ref.comment.addMore(data.data);
+            if(data.data.length < Take) {
               self.ref.comment.message = '';
-              $window.off('scroll', cb);
+              $window.off('scroll', scrollCb);
             }
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            self.ref.comment.message = '';
+            $window.off('scroll', scrollCb);
           }
-          loadingMore = false;
-        }, function() {
-          loadingMore = false;
-        });
-      }
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+        loadingMore = false;
+      }, function() {
+        loadingMore = false;
+      });
     }
   }
   clickReplay() {
