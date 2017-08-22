@@ -7,12 +7,16 @@ class Dynamics extends migi.Component {
     super(...data);
   }
   @bind list = []
+  click(e, vd, tvd) {
+    let url = tvd.props.href;
+    jsBridge.openUri(url);
+  }
   render() {
     return <div class="cp_dynamic">
-      <ul>
+      <ul onClick={ { li: this.click } }>
         {
           this.list.map(function(item) {
-            return <li>
+            return <li href={ item.DynamicUrl }>
               <div class="con">
                 <div class="user">
                   <div class={ `head fn-clear` }>

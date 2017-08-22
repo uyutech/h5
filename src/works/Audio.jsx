@@ -52,6 +52,9 @@ class Audio extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
+  clickDownload() {
+    jsBridge.openUri(this.data[0].FileUrl);
+  }
   render() {
     return <div class="audio">
       <audio ref="audio"
@@ -63,7 +66,7 @@ class Audio extends migi.Component {
       </audio>
       <ul class="btn">
         <li class={ 'like' + (this.isLike ? ' is' : '') } onClick={ this.clickLike }/>
-        <li class="download"/>
+        <li class="download" onClick={ this.clickDownload }/>
         <li class="share"/>
         <li class="origin"/>
       </ul>

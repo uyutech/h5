@@ -223,6 +223,14 @@ let jsBridge = {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('moveTaskToBack');
     }
+  },
+  openUri: function(uri) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('openUri', uri);
+    }
+    else {
+      window.open(uri);
+    }
   }
 };
 
