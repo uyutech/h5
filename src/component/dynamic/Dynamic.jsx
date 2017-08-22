@@ -5,13 +5,30 @@
 class Dynamics extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.list = this.props.list;
   }
+  @bind list = []
   render() {
     return <div class="cp_dynamic">
       <ul>
         {
           this.list.map(function(item) {
+            return <li>
+              <div class="con">
+                <div class="user">
+                  <div class={ `head fn-clear` }>
+                    <img src={ item.AuthorHeadUrl }/>
+                  </div>
+                  <div class="name">
+                    <p>{ item.AuthorName }</p>
+                    <small>{ item.SendTime }</small>
+                  </div>
+                </div>
+                <p class="info"><b class="weibo"/>{ item.DynamicContent }</p>
+              </div>
+              <div class="preview">
+                <img src={ item.DynamicPic }/>
+              </div>
+            </li>;
             let info;
             let preview;
             if(item.type == 'song') {

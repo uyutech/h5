@@ -60,12 +60,8 @@ module.exports = {
       }]
     },
     "GetUserFollowAuthor": {
-      "Size": 5,
+      "Size": 4,
       "data": [{
-        "ID": 2,
-        "Tag_Name": "司夏",
-        "Tag_Pic": "http://wsing.bssdl.kugou.com/46787a7bb70e9a0f308c5068376240d6.jpg_180_180.jpg"
-      }, {
         "ID": 7,
         "Tag_Name": "红烧狮子头",
         "Tag_Pic": "http://wsing.bssdl.kugou.com/dc12ef0ce0b4924a7e9505be9cc218b2.jpg_180x180.jpg"
@@ -78,6 +74,46 @@ module.exports = {
         "Tag_Name": "司夏",
         "Tag_Pic": "http://wsing.bssdl.kugou.com/46787a7bb70e9a0f308c5068376240d6.jpg_180_180.jpg"
       }, {"ID": 3, "Tag_Name": "喵☆酱", "Tag_Pic": null}]
+    },
+    "GetAuthorDynamic": {
+      "Size": 4,
+      "data": [{
+        "AuthorID": 1,
+        "AuthorHeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+        "AuthorName": "河图",
+        "DynamicContent": "发布了一条微博",
+        "DynamicFrom": "weibo",
+        "DynamicPic": "http://tvax1.sinaimg.cn/crop.0.0.1242.1242.180/006Rjkbvly8fh9fvke1hrj30yi0yitab.jpg",
+        "DynamicUrl": "http://weibo.com/u/1750157883?refer_flag=1001030101_&is_hot=1#_rnd1502956487472",
+        "SendTime": "2017/8/17 15:45:17"
+      }, {
+        "AuthorID": 1,
+        "AuthorHeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+        "AuthorName": "河图",
+        "DynamicContent": "发布了一条微博",
+        "DynamicFrom": "weibo",
+        "DynamicPic": "http://tvax1.sinaimg.cn/crop.0.0.1242.1242.180/006Rjkbvly8fh9fvke1hrj30yi0yitab.jpg",
+        "DynamicUrl": "http://weibo.com/u/1750157883?refer_flag=1001030101_&is_hot=1#_rnd1502956487472",
+        "SendTime": "2017/8/17 15:45:17"
+      }, {
+        "AuthorID": 2,
+        "AuthorHeadUrl": "http://wsing.bssdl.kugou.com/46787a7bb70e9a0f308c5068376240d6.jpg_180_180.jpg",
+        "AuthorName": "司夏",
+        "DynamicContent": "发布了一条微博",
+        "DynamicFrom": "weibo",
+        "DynamicPic": "http://tvax1.sinaimg.cn/crop.0.0.1242.1242.180/006Rjkbvly8fh9fvke1hrj30yi0yitab.jpg",
+        "DynamicUrl": "http://weibo.com/u/1750157883?refer_flag=1001030101_&is_hot=1#_rnd1502956487472",
+        "SendTime": "2017/8/17 15:45:17"
+      }, {
+        "AuthorID": 2,
+        "AuthorHeadUrl": "http://wsing.bssdl.kugou.com/46787a7bb70e9a0f308c5068376240d6.jpg_180_180.jpg",
+        "AuthorName": "司夏",
+        "DynamicContent": "发布了一条微博",
+        "DynamicFrom": "weibo",
+        "DynamicPic": "http://tvax1.sinaimg.cn/crop.0.0.1242.1242.180/006Rjkbvly8fh9fvke1hrj30yi0yitab.jpg",
+        "DynamicUrl": "http://weibo.com/u/1750157883?refer_flag=1001030101_&is_hot=1#_rnd1502956487472",
+        "SendTime": "2017/8/17 15:45:17"
+      }]
     }
   }
 };
