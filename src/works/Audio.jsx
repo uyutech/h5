@@ -17,6 +17,10 @@ class Audio extends migi.Component {
     $(this.element).addClass('fn-hide');
   }
   timeupdate(e) {
+    let duration = e.target.duration;
+    this.emit('loadedmetadata', {
+      duration,
+    });
     this.emit('timeupdate', e.target.currentTime);
   }
   loadedmetadata(e) {
