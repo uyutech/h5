@@ -24,10 +24,10 @@ jsBridge.ready(function() {
 
   let followCard, zhuanquanCard, findCard, myCard;
 
-  followCard = migi.render(
-    <FollowCard/>,
-    document.body
-  );
+  // followCard = migi.render(
+  //   <FollowCard/>,
+  //   document.body
+  // );
 
   let bottomNav = migi.render(
     <BottomNav/>,
@@ -36,7 +36,8 @@ jsBridge.ready(function() {
 
   let last = followCard;
   bottomNav.on('change', function(i) {
-    last.hide();
+    last && last.hide();
+    location.hash = i;
     switch (i) {
       case '0':
         if(!followCard) {
@@ -84,4 +85,6 @@ jsBridge.ready(function() {
     }
   });
   // bottomNav.emit('change', 3);
+
+  bottomNav.setCurrent(location.hash.replace(/^#/, '') || '0');
 });
