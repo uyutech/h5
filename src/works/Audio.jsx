@@ -17,13 +17,15 @@ class Audio extends migi.Component {
     $(this.element).addClass('fn-hide');
   }
   timeupdate(e) {
+    this.emit('timeupdate', e.target.currentTime);
+  }
+  loadedmetadata(e) {
     let duration = e.target.duration;
     this.emit('loadedmetadata', {
       duration,
     });
-    this.emit('timeupdate', e.target.currentTime);
   }
-  loadedmetadata(e) {
+  playing(e) {
     let duration = e.target.duration;
     this.emit('loadedmetadata', {
       duration,
@@ -64,6 +66,7 @@ class Audio extends migi.Component {
       <audio ref="audio"
         onTimeupdate={ this.timeupdate }
         onLoadedmetadata={ this.loadedmetadata }
+        onPlaying={ this.playing }
         preload="meta"
         src={ this.data[0].FileUrl }>
         your browser does not support the audio tag

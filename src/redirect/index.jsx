@@ -6,6 +6,7 @@ import './redirect.html';
 import './index.less';
 
 jsBridge.ready(function() {
+  jsBridge.swipeRefresh(false);
   jsBridge.on('back', function(e) {
     e.preventDefault();
     jsBridge.moveTaskToBack();

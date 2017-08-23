@@ -77,6 +77,10 @@ switch (step) {
 
 jsBridge.ready(function() {
   jsBridge.swipeRefresh(false);
+  jsBridge.on('back', function(e) {
+    e.preventDefault();
+    jsBridge.moveTaskToBack();
+  });
   // jsBridge.userInfo(function(res) {
   //   console.log(JSON.stringify(res));
   // });
