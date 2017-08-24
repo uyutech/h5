@@ -14,6 +14,7 @@ class Profile extends migi.Component {
   }
   render() {
     return <div class="profile" onClick={ { '.card': this.click } }>
+      <div class="bg"/>
       <div class="card">
         <img class="pic" src="http://bbs.xiguo.net/zq/zz/02.png"/>
         <div class="con">

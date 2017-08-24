@@ -8,15 +8,8 @@ class BottomNav extends migi.Component {
   }
   click(e, vd, tvd) {
     var $elem = $(tvd.element);
-    if($elem.hasClass('cur')) {
-      return;
-    }
     let rel = tvd.props.rel;
-    if(rel) {
-      $(this.element).find('.cur').removeClass('cur');
-      $elem.addClass('cur');
-      this.emit('change', rel);
-    }
+    this.cur($elem, rel);
   }
   cur($elem, rel) {
     if($elem.hasClass('cur')) {

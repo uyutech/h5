@@ -15,11 +15,27 @@ class MyCard extends migi.Component {
   hide() {
     $(this.element).hide();
   }
+  clickOut(e) {
+    e.preventDefault();
+    jsBridge.showLoading();
+    util.postJSON('api/users/Cancellation', function(res) {
+      jsBridge.hideLoading();
+      jsBridge.setPreference('sessionid', null, function() {
+        //
+      });
+    }, function(res) {
+      jsBridge.hideLoading();
+      jsBridge.setPreference('sessionid', null, function() {
+        //
+      });
+    });
+  }
   render() {
     return <div class="my_card">
       <Profile/>
       <p class="sign">签名</p>
       <Types/>
+      <a href="#" class="logout" onClick={ this.clickOut }>退出登录</a>
     </div>;
   }
 }
