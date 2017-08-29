@@ -231,6 +231,15 @@ let jsBridge = {
     else {
       window.open(uri);
     }
+  },
+  setCookie: function(key, value, callback) {
+    callback = callback || function() {};
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('setCookie', { key, value }, callback);
+    }
+    else {
+      callback();
+    }
   }
 };
 

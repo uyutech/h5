@@ -241,12 +241,10 @@ class Login extends migi.Component {
     if(!$button.hasClass('dis')) {
       let User_Phone = $(self.ref.name.element).val();
       let User_Pwd = $(self.ref.pass.element).val();
-      jsBridge.showLoading('登录中...');
       util.postJSON('api/Users/Login', { User_Phone, User_Pwd }, function(res) {
-        jsBridge.hideLoading();
         if(res.success) {
           let sessionid = res.data.sessionid;
-          jsBridge.setPreference('sessionid', sessionid, function() {
+          jsBridge.setCookie('sessionid', sessionid, function() {
             let regStat = res.data.User_Reg_Stat;
             if(regStat >= 4) {
               let goto = self.props.goto;
@@ -254,7 +252,9 @@ class Login extends migi.Component {
                 location.replace(goto);
                 return;
               }
-              location.replace('index.html');
+              setTimeout(function() {
+                location.replace('index.html');
+              }, 500);
             }
             else {
               let AuthorName = res.data.AuthorName;
@@ -266,7 +266,6 @@ class Login extends migi.Component {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
       }, function() {
-        jsBridge.hideLoading();
         jsBridge.toast(util.ERROR_MESSAGE);
       });
     }
@@ -314,15 +313,13 @@ class Login extends migi.Component {
     let self = this;
     let $button = $(vd.element);
     if(!$button.hasClass('dis')) {
-      jsBridge.showLoading();
       let User_Phone = $(self.ref.name2.element).val();
       let User_Pwd = $(self.ref.pass2.element).val();
       let YZMCode = $(self.ref.valid.element).val();
       util.postJSON('api/Users/Regist', { User_Phone, User_Pwd, YZMCode }, function(res) {
-        jsBridge.hideLoading();
         if(res.success) {
           let sessionid = res.data.sessionid;
-          jsBridge.setPreference('sessionid', sessionid, function() {
+          jsBridge.setCookie('sessionid', sessionid, function() {
             let regStat = res.data.User_Reg_Stat;
             if(regStat >= 4) {
               let goto = self.props.goto;
@@ -342,7 +339,6 @@ class Login extends migi.Component {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
       }, function() {
-        jsBridge.hideLoading();
         jsBridge.toast(util.ERROR_MESSAGE);
       });
     }

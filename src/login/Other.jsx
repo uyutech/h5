@@ -17,7 +17,7 @@ class Other extends migi.Component {
           jsBridge.hideLoading();
           if(res2.success) {
             let sessionid = res2.data.sessionid;
-            jsBridge.setPreference('sessionid', sessionid, function() {
+            jsBridge.setCookie('sessionid', sessionid, function() {
               let regStat = res2.data.User_Reg_Stat;
               if(regStat >= 4) {
                 let goto = self.props.goto;
