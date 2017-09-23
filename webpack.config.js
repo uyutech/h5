@@ -53,7 +53,7 @@ module.exports = {
       },
       {
         test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)$/,
-        use: 'file-loader?name=[path][name].[ext]'
+        use: 'url-loader?limit=10240&name=[path][name].[ext]'
       },
       {
         test: /\.(html?)|(\.mp4)$/,
