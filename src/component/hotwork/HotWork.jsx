@@ -8,6 +8,7 @@ class HotWork extends migi.Component {
   constructor(...data) {
     super(...data);
   }
+  @bind dataList = []
   autoWidth() {
     this.list = this.ref.list.element;
     this.$list = $(this.list);
@@ -16,7 +17,6 @@ class HotWork extends migi.Component {
     let $ul = $c.find('ul');
     $c.css('width', $ul.width() + 1);
   }
-  @bind dataList = []
   click(e, vd, tvd) {
     let worksID = tvd.props.WorksID;
     if(worksID) {
@@ -32,56 +32,56 @@ class HotWork extends migi.Component {
           <ul onClick={ { li: this.click } }>
             {
               this.dataList.map(function(item) {
-                let myAuthor;
-                let workAuthors = '';
-                let authorList = item.Works_Items[0].Works_Item_Author;
-                authorList.forEach(function(item) {
-                  if(item.ID === authorId) {
-                    myAuthor = item;
-                  }
-                });
-                if(myAuthor) {
-                  // 如果是歌手，将其它歌手&链接并加上with
-                  if(myAuthor.WorksAuthorType === AuthorType.CODE.演唱) {
-                    let authors = [];
-                    authorList.forEach(function(item) {
-                      if(item.ID !== authorId) {
-                        authors.push(item.AuthName);
-                      }
-                    });
-                    if(authors.length) {
-                      workAuthors = 'with ' + authors.join('&');
-                    }
-                  }
-                  // 其它类型将歌手全部展示
-                  else {
-                    let authors = [];
-                    authorList.forEach(function(item) {
-                      if(item.ID !== authorId) {
-                        authors.push(item.AuthName);
-                      }
-                    });
-                    if(authors.length) {
-                      workAuthors = authors.join('&');
-                    }
-                  }
-                }
-                // 其它类型将歌手全部展示
-                else {
-                  let authors = [];
-                  authorList.forEach(function(item) {
-                    if(item.AuthorID !== authorId) {
-                      authors.push(item.AuthName);
-                    }
-                  });
-                  if(authors.length) {
-                    workAuthors = authors.join('&');
-                  }
-                }
+                // let myAuthor;
+                // let workAuthors = '';
+                // let authorList = item.Works_Items[0].Works_Item_Author;
+                // authorList.forEach(function(item) {
+                //   if(item.ID === authorId) {
+                //     myAuthor = item;
+                //   }
+                // });
+                // if(myAuthor) {
+                //   // 如果是歌手，将其它歌手&链接并加上with
+                //   if(myAuthor.WorksAuthorType === AuthorType.CODE.演唱) {
+                //     let authors = [];
+                //     authorList.forEach(function(item) {
+                //       if(item.ID !== authorId) {
+                //         authors.push(item.AuthName);
+                //       }
+                //     });
+                //     if(authors.length) {
+                //       workAuthors = 'with ' + authors.join('&');
+                //     }
+                //   }
+                //   // 其它类型将歌手全部展示
+                //   else {
+                //     let authors = [];
+                //     authorList.forEach(function(item) {
+                //       if(item.ID !== authorId) {
+                //         authors.push(item.AuthName);
+                //       }
+                //     });
+                //     if(authors.length) {
+                //       workAuthors = authors.join('&');
+                //     }
+                //   }
+                // }
+                // // 其它类型将歌手全部展示
+                // else {
+                //   let authors = [];
+                //   authorList.forEach(function(item) {
+                //     if(item.AuthorID !== authorId) {
+                //       authors.push(item.AuthName);
+                //     }
+                //   });
+                //   if(authors.length) {
+                //     workAuthors = authors.join('&');
+                //   }
+                // }
                 return <li worksID={ item.WorksID }>
                   <div class="pic" style={ `background:url(${item.cover_Pic || 'src/common/blank.png'}) no-repeat center` }>
                     <div class="num"><b class="audio"/>{ item.Popular }</div>
-                    <div class="ath">{ workAuthors }</div>
+                    <div class="ath">{ '' }</div>
                   </div>
                   <p class="txt">{ item.Title }</p>
                 </li>;
