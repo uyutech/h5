@@ -8,9 +8,7 @@ export default {
   ajax: function(url, data, success, error, type) {
     // 兼容无host
     if (!/^http(s)?:\/\//.test(url)) {
-      url = 'http://192.168.100.156/' + url.replace(/^\//, '');
-      // url = 'http://circling.cc/' + url.replace(/^\//, '');
-      // url = 'http://139.224.235.70/' + url.replace(/^\//, '');
+      url = 'http://circling.cc/' + url.replace(/^\//, '');
     }
     console.log('ajax: ' + url + ', ' + JSON.stringify(data));
     function load() {
@@ -30,7 +28,9 @@ export default {
           console.log('ajax success: ' + url + ', ' + JSON.stringify(data));
           if(!data.success && data.code === 1000) {
             if(jsBridge.isInApp) {
-              location.replace('login.html?goto=' + encodeURIComponent(location.href));
+              jsBridge.pushWindow('login.html', {
+                transparentTitle: true,
+              });
             }
             else {
               location.replace('login.html?goto=' + encodeURIComponent(location.href));

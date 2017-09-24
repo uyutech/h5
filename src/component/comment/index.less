@@ -1,8 +1,17 @@
 /**
- * Created by army on 2017/7/1.
+ * Created by army8735 on 2017/8/26.
  */
- 
-.cp_comment{
+
+.cp-comment{
+  min-height:2rem;
+  .copy{
+    position:fixed;
+    top:0;
+    left:-1000px;
+    margin:0;
+    padding:0;
+    overflow:hidden;
+  }
   .bar{
     padding:0 0.1rem;
     .type{
@@ -41,13 +50,13 @@
         }
         &.cur{
           color:#4C8DAF;
+          cursor:pointer;
         }
       }
     }
   }
   .list{
     flex:1;
-    padding:0.1rem 0;
     overflow:hidden;
     > li{
       padding:0 0.05rem;
@@ -56,13 +65,16 @@
         color:#999;
       }
       > .t{
-        display:flex;
-        align-items:center;
+        position:relative;
+        padding-right:1rem;
+        //display:flex;
+        //align-items:center;
         > .profile{
-          flex:1;
-          display:flex;
-          align-items:center;
+          //flex:1;
+          //display:flex;
+          //align-items:center;
           .pic{
+            float:left;
             display:block;
             margin-right:0.05rem;
             width:0.3rem;
@@ -71,7 +83,8 @@
             background:#eee;
           }
           .txt{
-            flex:1;
+            float:left;
+            //flex:1;
             line-height:1;
             .name{
               display:inline-block;
@@ -91,15 +104,19 @@
           }
         }
         > .fn{
+          position:absolute;
+          top:0;
+          right:0;
           padding:0 0 0 0.1rem;
           .zan{
-            display:block;
+            float:right;
             padding-left:0.24rem;
             height:0.3rem;
             line-height:0.3rem;
             background:url(zan.png) no-repeat 0.06rem center;
             background-size:0.12rem auto;
             color:#A8A8A8;
+            cursor:pointer;
             &.has{
               color:#4C8DAF;
               background:url(zan_has.png) no-repeat 0.06rem center;
@@ -108,6 +125,29 @@
             small{
               font-size:0.1rem;
             }
+          }
+          .share{
+            display:none;
+            float:right;
+            width:0.3rem;
+            height:0.3rem;
+            background:url(share.png) no-repeat center;
+            background-size:0.18rem;
+            text-indent:999rem;
+            white-space:nowrap;
+            overflow:hidden;
+            cursor:pointer;
+          }
+          .remove{
+            float:right;
+            width:0.3rem;
+            height:0.3rem;
+            background:url(remove.png) no-repeat center;
+            background-size:0.15rem;
+            text-indent:999rem;
+            white-space:nowrap;
+            overflow:hidden;
+            cursor:pointer;
           }
         }
       }
@@ -156,9 +196,10 @@
           height:0.24rem;
           line-height:0.24rem;
           background:#A4D2DF;
-          color:#FFF;
+          color:#fff;
           text-align:center;
           border-radius:0.24rem;
+          cursor:pointer;
           span{
             display:none;
             font-size:0.1rem;
@@ -177,8 +218,8 @@
             transform:translateY(0.03rem);
           }
           &.on{
-            background:#EDF3F7;
-            color:#A4D2DF;
+            //background:#EDF3F7;
+            color:#fff;
             &:after{
               display:none;
             }
@@ -198,15 +239,18 @@
         //transition:height 0.2s;
         li{
           .t{
-            display:flex;
-            align-items:center;
+            position:relative;
+            //display:flex;
+            //align-items:center;
             text-align:right;
-            justify-content:flex-end;
+            //justify-content:flex-end;
             > .profile{
               //flex:1;
-              display:flex;
-              align-items:center;
+              //display:flex;
+              //align-items:center;
+              float:right;
               .pic{
+                float:right;
                 display:block;
                 margin-left:0.05rem;
                 width:0.3rem;
@@ -215,7 +259,8 @@
                 background:#eee;
               }
               .txt{
-                flex:1;
+                float:right;
+                //flex:1;
                 line-height:1;
                 .name{
                   display:inline-block;
@@ -230,6 +275,7 @@
                 }
                 .arrow{
                   display:inline-block;
+                  margin-right:0.1rem;
                   width:0;
                   height:0;
                   border:0.04rem solid #DDD;
@@ -249,15 +295,17 @@
               }
             }
             > .fn{
-              padding:0 0.1rem 0 0;
+              float:right;
+              margin-right:0.2rem;
               .zan{
-                display:block;
+                float:right;
                 padding-left:0.24rem;
                 height:0.3rem;
                 line-height:0.3rem;
                 background:url(zan.png) no-repeat 0.06rem center;
                 background-size:0.12rem auto;
                 color:#A8A8A8;
+                cursor:pointer;
                 &.has{
                   color:#4C8DAF;
                   background:url(zan_has.png) no-repeat 0.06rem center;
@@ -267,6 +315,17 @@
                   font-size:0.1rem;
                 }
               }
+              .remove{
+                float:right;
+                width:0.3rem;
+                height:0.3rem;
+                background:url(remove.png) no-repeat center;
+                background-size:0.15rem;
+                text-indent:999rem;
+                white-space:nowrap;
+                overflow:hidden;
+                cursor:pointer;
+              }
             }
           }
           .c{
@@ -274,9 +333,9 @@
             display:inline-block;
             margin:0.1rem 0;
             padding:0.05rem 0.1rem;
-            color:#555;
+            color:#fff;
             font-size:0.12rem;
-            background:#EDF3F7;
+            background:#4E8EB0;
             border-radius:0.1rem;
             &:after{
               position:absolute;
@@ -285,7 +344,7 @@
               display:block;
               width:0;
               height:0;
-              border:0.08rem solid #EDF3F7;
+              border:0.08rem solid #4E8EB0;
               border-top-color:transparent;
               border-left-color:transparent;
               border-right-color:transparent;
@@ -306,9 +365,9 @@
     }
   }
   .message{
-    padding-bottom:0.05rem;
     color:#999;
-    font-size:0.12rem;
+    font-size:0.14rem;
     text-align:center;
+    line-height:2;
   }
 }

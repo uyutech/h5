@@ -33,8 +33,6 @@ class Nav extends migi.Component {
       <div class="form" onClick={ this.formClick }>
         <input type="text" placeholder="河图新歌发布" readOnly="readOnly"/>
       </div>
-      <b class="comment"/>
-      <b class="play"/>
     </div>;
   }
 }

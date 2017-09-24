@@ -5,7 +5,7 @@
     "anima-querystring": "^2.0.0",
     "anima-yocto-ajax": "~2.0.4",
     "bignumber.js": "^4.0.4",
-    "migi": "~3.8.1",
+    "migi": "~3.8.2",
     "migi-es6-shim": "~0.34.1"
   },
   "devDependencies": {
@@ -27,8 +27,8 @@
   "scripts": {
     "start": "export NODE_ENV=production && rm -rf ./www && webpack",
     "build": "export NODE_ENV=production && rm -rf ./www && webpack -p",
-    "mock": "export NODE_ENV=development && webpack-dev-server --host 0.0.0.0",
-    "dev": "export NODE_ENV=production && webpack-dev-server --host 0.0.0.0",
+    "mock": "export NODE_ENV=mock && webpack-dev-server --host 0.0.0.0 --port 8080",
+    "dev": "export NODE_ENV=dev && webpack-dev-server --host 0.0.0.0 --port 8080",
     "zip": "export NODE_ENV=production && rm -rf dist && mkdir dist && cd www && zip -r ../dist/h5.zip *",
     "pack": "export NODE_ENV=production && npm run build && npm run zip",
     "pack2": "export NODE_ENV=production && npm run start && npm run zip"

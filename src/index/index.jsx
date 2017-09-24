@@ -9,7 +9,7 @@ import Nav from './Nav.jsx';
 import BottomNav from './BottomNav.jsx';
 import FollowCard from './follow/FollowCard.jsx';
 import ZhuanquanCard from './ZhuanquanCard.jsx';
-import FindCard from './find/FindCard.jsx';
+import Find from '../find/Find.jsx';
 import MyCard from './my/MyCard.jsx';
 
 jsBridge.ready(function() {
@@ -19,19 +19,19 @@ jsBridge.ready(function() {
   });
   let nav = migi.render(
     <Nav/>,
-    document.body
+    '#page'
   );
 
   let followCard, zhuanquanCard, findCard, myCard;
 
   // followCard = migi.render(
   //   <FollowCard/>,
-  //   document.body
+  //   '#page'
   // );
 
   let bottomNav = migi.render(
     <BottomNav/>,
-    document.body
+    '#page'
   );
 
   let last = followCard;
@@ -43,7 +43,7 @@ jsBridge.ready(function() {
         if(!followCard) {
           followCard = migi.render(
             <FollowCard/>,
-            document.body
+            '#page'
           );
         }
         last = followCard;
@@ -52,7 +52,7 @@ jsBridge.ready(function() {
         if(!zhuanquanCard) {
           zhuanquanCard = migi.render(
             <ZhuanquanCard/>,
-            document.body
+            '#page'
           );
         }
         last = zhuanquanCard;
@@ -60,9 +60,10 @@ jsBridge.ready(function() {
       case '2':
         if(!findCard) {
           findCard = migi.render(
-            <FindCard/>,
-            document.body
+            <Find/>,
+            '#page'
           );
+          findCard.load();
         }
         last = findCard;
         break;
@@ -70,7 +71,7 @@ jsBridge.ready(function() {
         if(!myCard) {
           myCard = migi.render(
             <MyCard/>,
-            document.body
+            '#page'
           );
         }
         last = myCard;
@@ -84,7 +85,7 @@ jsBridge.ready(function() {
       nav.show();
     }
   });
-  // bottomNav.emit('change', 3);
+  bottomNav.emit('change', '2');
 
   bottomNav.setCurrent(location.hash.replace(/^#/, '') || '0');
 });

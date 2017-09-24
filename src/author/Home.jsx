@@ -2,77 +2,47 @@
  * Created by army on 2017/6/24.
  */
 
-import HotAlbum from '../index/find/HotAlbum.jsx';
 import HotWork from '../component/hotwork/HotWork.jsx';
+import HotCollection from '../component/hotcollection/HotCollection.jsx';
 import HotAuthor from '../component/hotauthor/HotAuthor.jsx';
 import Dynamic from '../component/dynamic/Dynamic.jsx';
-
-let hotAlbum = [
-  {
-    id: 1,
-    img: 'http://bbs.xiguo.net/zq/zj/z002.jpg',
-    name: '漱愿记',
-    num: '33w'
-  }
-];
-
-let list = [
-  {
-    imgs: [
-      'http://bbs.xiguo.net/zq/zz/03.png',
-      'http://bbs.xiguo.net/zq/zz/02.png'
-    ],
-    pic: 'http://bbs.xiguo.net/zq/zp/01.jpg',
-    names: ['慕寒', '司夏'],
-    time: '1小时前',
-    type: 'song',
-    action: '发布了歌曲',
-    song: '《明月舟》'
-  },
-  {
-    imgs: [
-      'http://bbs.xiguo.net/zq/zz/02.png'
-    ],
-    pic: 'http://bbs.xiguo.net/zq/zp/04.jpg',
-    names: ['司夏'],
-    time: '1天前',
-    type: 'song',
-    action: '发布了歌曲',
-    song: '《送郎君》'
-  },
-  {
-    imgs: [
-      'http://bbs.xiguo.net/zq/zz/02.png'
-    ],
-    pic: 'http://bbs.xiguo.net/zq/zp/04.jpg',
-    names: ['司夏'],
-    time: '3天前',
-    type: 'weibo',
-    action: '发布了微博',
-    txt: '小伙伴们高考加油！'
-  }
-];
 
 class Home extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.on(migi.Event.DOM, function() {
-      this.ref.hotAlbum.autoWidth();
-    });
   }
   show() {
-    this.element.style.display = 'block';
+    $(this.element).removeClass('fn-hide');
   }
   hide() {
-    this.element.style.display = 'none';
+    $(this.element).addClass('fn-hide');
+  }
+  load(authorID) {
+    let self = this;
+    let hotWork = self.ref.hotWork;
+    let hotAuthor = self.ref.hotAuthor;
+    util.postJSON('api/author/GetAuthorHomePage', { AuthorID: authorID }, function (res) {
+      if(res.success) {
+        let data = res.data;
+        hotWork.dataList = data.Hot_Works_Items;
+        hotWork.autoWidth();
+        hotAuthor.dataList = data.AuthorToAuthor;
+        hotAuthor.autoWidth();
+      }
+      else {
+        alert(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      // alert(res.message || util.ERROR_MESSAGE);
+    });
   }
   render() {
     return <div class="home">
-      <HotWork authorId={ this.props.authorId } ref="hotWork" title="热门作品"/>
-      <HotAlbum ref="hotAlbum" list={ hotAlbum } title="专辑"/>
+      <HotWork ref="hotWork" title="热门作品"/>
+      <HotCollection ref="hotCollection" title="热门专辑"/>
       <HotAuthor ref="hotAuthor" title="关系"/>
       <h5 class="dynamic">作者动态</h5>
-      <Dynamic list={ list }/>
+      <Dynamic/>
     </div>;
   }
 }

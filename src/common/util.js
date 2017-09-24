@@ -17,10 +17,6 @@ let util = {
     }
     error = error || function() {};
     return env.ajax(url, data, success, error, 'get');
-    // jsBridge.userInfo(function(item) {
-    //   data.uid = item.userId;
-    //   env.ajax(url, data, success, error);
-    // });
   },
   postJSON: function(url, data, success, error) {
     if (typeof data === 'function') {
@@ -30,6 +26,9 @@ let util = {
     }
     error = error || function() {};
     return env.ajax(url, data, success, error, 'post');
+  },
+  goto: function(url) {
+    location.href = url;
   },
   sort,
   ERROR_MESSAGE: '人气大爆发，请稍后再试。'

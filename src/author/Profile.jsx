@@ -8,6 +8,7 @@ class Profile extends migi.Component {
   constructor(...data) {
     super(...data);
   }
+  @bind authorID
   @bind authorName
   @bind sign
   @bind authorType = []
@@ -29,34 +30,40 @@ class Profile extends migi.Component {
     let self = this;
     self.loading = true;
     if(self.isLike) {
-      util.postJSON('api/author/RemoveAuthorToUser', { Author: self.props.authorId }, function(res) {
+      util.postJSON('api/author/RemoveAuthorToUser', { Author: self.authorID }, function(res) {
         if(res.success) {
           self.isLike = false;
           self.fansNumber = res.data.followCount;
-          jsBridge.toast('取关成功');
+          alert('取关成功');
+        }
+        else if(res.code === 1000) {
+          migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          alert(res.message || util.ERROR_MESSAGE);
         }
         self.loading = false;
       }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        alert(res.message || util.ERROR_MESSAGE);
         self.loading = false;
       });
     }
     else {
-      util.postJSON('api/author/SaveAuthorToUser', { Author: self.props.authorId }, function(res) {
+      util.postJSON('api/author/SaveAuthorToUser', { Author: self.authorID }, function(res) {
         if(res.success) {
           self.isLike = true;
           self.fansNumber = res.data.followCount;
-          jsBridge.toast('关注成功');
+          alert('关注成功');
+        }
+        else if(res.code === 1000) {
+          migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          alert(res.message || util.ERROR_MESSAGE);
         }
         self.loading = false;
       }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        alert(res.message || util.ERROR_MESSAGE);
         self.loading = false;
       });
     }
@@ -64,7 +71,7 @@ class Profile extends migi.Component {
   render() {
     return <div class="profile">
       <div class="pic">
-        <img src={ this.headUrl || 'src/common/blank.png' }/>
+        <img src={ this.headUrl || '//zhuanquan.xyz/img/blank.png' }/>
         <b class="v"/>
       </div>
       <div class="txt">
@@ -72,7 +79,7 @@ class Profile extends migi.Component {
           <h3>{ this.authorName || '&nbsp;' }</h3>
           {
             this.authorType.map(function(item) {
-              return <span class={ `cp_author_type_${item}` }></span>;
+              return <span class={ `cp-author-type-${item}` }/>;
             })
           }
         </div>

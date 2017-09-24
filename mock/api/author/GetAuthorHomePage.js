@@ -1,252 +1,2344 @@
 /**
- * Created by army8735 on 2017/8/8.
+ * Created by army8735 on 2017/9/18.
  */
 
-module.exports = {
+export default {
   "success": true,
   "message": "",
+  "code": 0,
   "data": {
     "Hot_Works_Items": [{
-      "WorksID": 1,
-      "Title": "明月舟",
+      "WorksID": 23,
+      "Title": "紫川录",
       "sub_Title": null,
       "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
       "Popular": 0,
       "Works_Items": [{
-        "ItemName": "明月舟",
-        "FileUrl": "http://data.5sing.kgimg.com/G060/M09/0D/07/fA0DAFcTMYuAEkdtAIiYL3sXUsM056.mp3",
-        "_5SingUrl": "http://5sing.kugou.com/yc/3079008.html",
-        "_BaiduUrl": "",
-        "_WangyiUrl": "",
+        "ItemID": 23,
+        "ItemName": "紫川录",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/woYBAFXmjNmAOzVbAGbg1V__TNs390.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/87318.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
         "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
         "Works_Item_Author": [{
           "ID": 1,
-          "AuthName": "司夏",
-          "HeadUrl": "http://wsing.bssdl.kugou.com/46787a7bb70e9a0f308c5068376240d6.jpg_188x188.jpg",
-          "WorksAuthorType": 111
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "编曲", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作曲", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作词",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "混音", "Tips": null}, {
+          "ID": 109,
+          "AuthName": "Crazyman",
+          "HeadUrl": null,
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 36,
+      "Title": "江山此夜",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 36,
+        "ItemName": "江山此夜",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/woYBAFXmZquAY6zNAEE7sW2d9b0311.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1824192.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 37,
+      "Title": "倾尽天下",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 37,
+        "ItemName": "倾尽天下",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/wYYBAFXtfgmAQK_XAF-NO5WDOqs729.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1824198.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 38,
+      "Title": "隐",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 38,
+        "ItemName": "隐",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/Xg0DAFXll3OAJc5AAGaA6mZFUbQ090.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/2252340.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 191, "AuthName": "狐离", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 42,
+      "Title": "NL不分",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 42,
+        "ItemName": "NL不分",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/fQ0DAFbLAAeATnvtAGzf73KHG08247.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/2951594.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 106,
+      "Title": "不见长安",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 106,
+        "ItemName": "不见长安",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/BZQEAFXxpj2ADIK3AINOy5awM-U944.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1705474.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 107,
+      "Title": "第三十八年夏至",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 107,
+        "ItemName": "第三十八年夏至",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/wYYBAFXzHkOAVS1IAF58krRgHAM051.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1705478.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 191, "AuthName": "狐离", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 108,
+      "Title": "华胥引",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 108,
+        "ItemName": "华胥引",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/_pMEAFXzunCAcXGIAGSJexXSh28025.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1705508.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 367, "AuthName": "唐七公子", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 141,
+      "Title": "天岁天岁",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 141,
+        "ItemName": "天岁天岁",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/v4YBAFX2ZuSAM3ZpAF4m9BDZskU975.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1726757.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 162,
+      "Title": "两生契",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 162,
+        "ItemName": "两生契",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/wIYBAFXtiZ6AVnwJAEY8gX9X-dA051.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/2177179.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 206, "AuthName": "腾云驾雾琉璃仙", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 166,
+      "Title": "寸缕",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 166,
+        "ItemName": "寸缕",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/wYYBAFXsRqOAKAtEAF5B5adS5Lg841.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/2032150.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 486, "AuthName": "狐不举", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 168,
+      "Title": "安徒生的事",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 168,
+        "ItemName": "安徒生的事",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/zIYBAFX5TxaAPIU3AGgQA3GDESE795.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1705487.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 123, "AuthName": "EDIQ", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 204,
+      "Title": "命悬一线",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 204,
+        "ItemName": "命悬一线",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/woYBAFXt6-eAA9sBAE1fWQ9Djqk211.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1705480.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 212,
+      "Title": "长歌送魂",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 212,
+        "ItemName": "长歌送魂",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/ApQEAFXvkmWAApeaAHRRPoACZLQ165.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1779590.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 235,
+      "Title": "九龙永镇",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 235,
+        "ItemName": "九龙永镇",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/Yw0DAFXm4kGALo6IADh4bbWrA6Y709.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1703837.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 245,
+      "Title": "千秋莫负",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 245,
+        "ItemName": "千秋莫负",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/A5QEAFXj61yAUENjAFtSDw6rPiQ014.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1824188.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 250,
+      "Title": "江湖·闪蝶",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 250,
+        "ItemName": "江湖·闪蝶",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/y4YBAFX7JZmAQOYJAF2PHtPw5QQ022.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/2510491.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 123, "AuthName": "EDIQ", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 255,
+      "Title": "春风一顾",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 255,
+        "ItemName": "春风一顾",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/wYYBAFXrXLmAbQE2AEdzh6qs57I884.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1824180.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 264,
+      "Title": "唱给你的歌",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 264,
+        "ItemName": "唱给你的歌",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/Xg0DAFXumEmASFc0AF9wLP_2GLw413.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1705505.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 265,
+      "Title": "陌上花早",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 265,
+        "ItemName": "陌上花早",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/Xw0DAFXmEx6AUBo_AFULh_cfh4U426.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1737687.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 296,
+      "Title": "白衣",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 296,
+        "ItemName": "白衣",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/YA0DAFXpmAuAVPZjAHJtZoYa-Pc312.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1705482.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 686, "AuthName": "Darsity", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 309,
+      "Title": "伶仃谣",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 309,
+        "ItemName": "伶仃谣",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/Yg0DAFXtV3aAHLE8AFvk5kmy9F8472.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1705484.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 191, "AuthName": "狐离", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 326,
+      "Title": "老酒街",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 326,
+        "ItemName": "老酒街",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/x4YBAFX1HbmAHKmwAFK3CMeCVz8135.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1705516.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 722, "AuthName": "明河", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 328,
+      "Title": "山河永慕",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 328,
+        "ItemName": "山河永慕",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/A5QEAFXolc2AdmR_AGJGd51Cq6Q981.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1744035.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 344,
+      "Title": "妹在江边洗茼蒿",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 344,
+        "ItemName": "妹在江边洗茼蒿",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/cA0DAFX481qAELrIAFZxFK07WAc012.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1789838.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 359,
+      "Title": "风起天阑",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 359,
+        "ItemName": "风起天阑",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/wIYBAFXwgO-AUafiAHZho0IUvsM673.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1705473.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 371,
+      "Title": "which heaven is mine",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 371,
+        "ItemName": "which heaven is mine",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/T1iHCnBy_T1R47IVrK.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/2551052.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 784, "AuthName": "狐举", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 61,
+          "AuthName": "云の泣",
+          "HeadUrl": "http://wsing.bssdl.kugou.com/190529cacf4c9e36709db160892918c4.jpg_100x100.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 393,
+      "Title": "海棠酒满",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 393,
+        "ItemName": "海棠酒满",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/Xg0DAFXl9cWAIaK0AHDiD4XYwFc475.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/1757761.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 1687,
+      "Title": "Which heaven is mine",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 1687,
+        "ItemName": "Which heaven is mine",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/T1iHCnBy_T1R47IVrK.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/2551096.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 486, "AuthName": "狐不举", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 61,
+          "AuthName": "云の泣",
+          "HeadUrl": "http://wsing.bssdl.kugou.com/190529cacf4c9e36709db160892918c4.jpg_100x100.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 2727,
+      "Title": "「あたしを葬って」",
+      "sub_Title": "《浅浅的》日文版",
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 2741,
+      "Title": "浅浅的",
+      "sub_Title": "《祈愿之诗》CD2-09",
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [],
+      "ReturnTagData": [{"ID": 24, "Tag_Name": "祈愿之诗", "Tag_Pic": null}]
+    }, {
+      "WorksID": 165,
+      "Title": "斗仙",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 165,
+        "ItemName": "斗仙",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/YQ0DAFX26EqAQQ2gAFZE_-WJBVc969.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/2799781.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 150,
+          "AuthName": "tony_ms",
+          "HeadUrl": null,
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 190, "AuthName": "finale", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 253,
+      "Title": "云归处",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 253,
+        "ItemName": "云归处",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/84YBAFfx36CAboTQAMN0zcjikRw518.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/3197197.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 249,
+          "AuthName": "陈鹏杰",
+          "HeadUrl": null,
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 191, "AuthName": "狐离", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 288,
+      "Title": "寻常",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 288,
+        "ItemName": "寻常",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/O5QEAFiC08GAKPTmAFstAvZeLNE041.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/3268045.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 249,
+          "AuthName": "陈鹏杰",
+          "HeadUrl": null,
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 308, "AuthName": "焰三一", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 78,
+      "Title": "山脉",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 78,
+        "ItemName": "山脉",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/5IYBAFegixyAFVSSAKCWM7NMOGk014.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/3156279.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 309,
+          "AuthName": "李建衡",
+          "HeadUrl": null,
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {"ID": 309, "AuthName": "李建衡", "HeadUrl": null, "WorksAuthorType": "作曲", "Tips": null}, {
+          "ID": 308,
+          "AuthName": "焰三一",
+          "HeadUrl": null,
+          "WorksAuthorType": "作词",
+          "Tips": null
+        }, {"ID": 310, "AuthName": "徐驰", "HeadUrl": null, "WorksAuthorType": "混音", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }, {
+          "ID": 14,
+          "AuthName": "小爱的妈",
+          "HeadUrl": "http://img2.5sing.kgimg.com/force/T1lGh_BjZT1RXrhCrK_100_100.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 271,
+      "Title": "大唐游仙记",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 271,
+        "ItemName": "大唐游仙记",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/3YYBAFcMbPOALoFfAKBtq6zSrNE767.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/3074898.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 640,
+          "AuthName": "Litterzy",
+          "HeadUrl": null,
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {"ID": 640, "AuthName": "Litterzy", "HeadUrl": null, "WorksAuthorType": "作曲", "Tips": null}, {
+          "ID": 639,
+          "AuthName": "乘物游心Shire",
+          "HeadUrl": null,
+          "WorksAuthorType": "作词",
+          "Tips": null
+        }, {"ID": 641, "AuthName": "少年E", "HeadUrl": null, "WorksAuthorType": "混音", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 390,
+      "Title": "修罗武神",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 390,
+        "ItemName": "修罗武神",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/JJQEAFeMmiCAMThRAFH_EJ2p7UE909.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/3145172.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 240,
+          "AuthName": "CAT__阿柯",
+          "HeadUrl": null,
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {"ID": 249, "AuthName": "陈鹏杰", "HeadUrl": null, "WorksAuthorType": "作曲", "Tips": null}, {
+          "ID": 190,
+          "AuthName": "finale",
+          "HeadUrl": null,
+          "WorksAuthorType": "作词",
+          "Tips": null
+        }, {"ID": 641, "AuthName": "少年E", "HeadUrl": null, "WorksAuthorType": "混音", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }, {"ID": 3862, "AuthName": "冥月", "HeadUrl": null, "WorksAuthorType": "演唱", "Tips": null}]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 1007,
+      "Title": "儒道至圣",
+      "sub_Title": "儒道至圣主题曲",
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 1007,
+        "ItemName": "儒道至圣",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/8YYBAFhY-YSAI-LlADzsZqEGlcY579.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/3247657.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 549,
+          "AuthName": "Tureleon",
+          "HeadUrl": null,
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {"ID": 549, "AuthName": "Tureleon", "HeadUrl": null, "WorksAuthorType": "作曲", "Tips": null}, {
+          "ID": 44,
+          "AuthName": "纱朵",
+          "HeadUrl": "http://img8.5sing.kgimg.com/force/T1WLd_B7Wv1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "作词",
+          "Tips": null
+        }, {"ID": 376, "AuthName": "紫云纱", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": null}, {
+          "ID": 549,
+          "AuthName": "Tureleon",
+          "HeadUrl": null,
+          "WorksAuthorType": "混音",
+          "Tips": null
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 1544,
+      "Title": "守",
+      "sub_Title": null,
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 1544,
+        "ItemName": "守",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/eg0DAFbFiDWACdJ5ANZvpMeDFio990.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/2916522.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1214,
+          "AuthName": "异新音乐 ",
+          "HeadUrl": null,
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {
+          "ID": 62,
+          "AuthName": "银临",
+          "HeadUrl": "http://wsing.bssdl.kugou.com/b80f67df56fad8d0ca27d33e75b99966.jpg_100x100.jpg",
+          "WorksAuthorType": "作曲",
+          "Tips": null
+        }, {"ID": 401, "AuthName": "灰原穷", "HeadUrl": null, "WorksAuthorType": "作曲", "Tips": null}, {
+          "ID": 452,
+          "AuthName": "锦衣小朋友",
+          "HeadUrl": null,
+          "WorksAuthorType": "作词",
+          "Tips": null
+        }, {"ID": 1214, "AuthName": "异新音乐 ", "HeadUrl": null, "WorksAuthorType": "混音", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": []
+    }, {
+      "WorksID": 1804,
+      "Title": "从爱琴海到埃及 FT.河图",
+      "sub_Title": "玄觞专辑《心弦》⑧",
+      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 1804,
+        "ItemName": "从爱琴海到埃及 FT.河图",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/hg0DAFeDgD-AJRQjAMGUYa7J4NE830.mp3",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/3140175.html",
+        "_BaiduUrl": null,
+        "_WangyiUrl": null,
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 1873,
+          "AuthName": "leeyangkkx",
+          "HeadUrl": null,
+          "WorksAuthorType": "编曲",
+          "Tips": null
+        }, {"ID": 2477, "AuthName": "雪花花", "HeadUrl": null, "WorksAuthorType": "作曲", "Tips": null}, {
+          "ID": 1597,
+          "AuthName": "JC",
+          "HeadUrl": null,
+          "WorksAuthorType": "作词",
+          "Tips": null
+        }, {"ID": 2508, "AuthName": "庄俊业", "HeadUrl": null, "WorksAuthorType": "混音", "Tips": null}, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }, {
+          "ID": 67,
+          "AuthName": "玄觞",
+          "HeadUrl": "http://wsing.bssdl.kugou.com/4bec71a441199104f45f0f73c742de89.jpg_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": null
+        }]
+      }],
+      "ReturnTagData": [{"ID": 57, "Tag_Name": "心弦", "Tag_Pic": null}]
+    }, {
+      "WorksID": 2757,
+      "Title": "燃尽人间色",
+      "sub_Title": "",
+      "cover_Pic": "http://zhuanquan-pic.oss-cn-beijing.aliyuncs.com/rjrjs.jpg",
+      "Popular": 0,
+      "Works_Items": [{
+        "ItemID": 2757,
+        "ItemName": "燃尽人间色",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/rjrjs.mp3",
+        "lrc": "[00:00.00] 作曲 : 月千宸\n[00:01.00] 作词 : 沈行之\n[00:09.47]出品：结梦原创音乐团队\n[00:18.78]编曲：Litterzy\n[00:21.39]笛萧实录：水玥儿\n[00:22.80]古筝实录：墨韵随步摇\n[00:24.08]琵琶实录：乍雨初晴\n[00:25.40]电吉他实录：Litterzy\n[00:26.76]修音：幺唠\n[00:28.04]混音：CuTTleFish、少年E\n[00:29.26]海报：青凌\n[00:30.72]美术设计：念慈NinuE\n[00:32.10]\n[00:36.85]慕寒：世间浮生苦岁暮\n[00:39.31]日月化我梦浮生\n[00:42.21]闻长歌 飒沓穿林过\n[00:45.11]忽现蜃楼沧海\n[00:47.88]司夏：我歌水天接一色\n[00:50.42]万象枯荣弹指间\n[00:52.93]天地为宴 河酒海窖\n[00:56.01]恰是此时开\n[00:58.15]河图：杯酒赐人间\n[01:00.02]笑众生 不曾识蓬莱\n[01:03.39]余下入我袖 披素晖\n[01:06.73]邀友天际来\n[01:08.78]midaho：鬓边沾云色\n[01:10.81]畅快饮罢 月华满杯盏\n[01:13.93]此日却烦忧 酩酊一醉\n[01:17.33]天地也快哉\n[01:19.46]合：快哉意 快哉意\n[01:22.03]流光照彻乾坤来\n[01:24.70]浩然气 浩然气\n[01:27.44]乘风破浪天地开\n[01:29.82]此时生 彼时灭\n[01:32.68]川消山长有时衰\n[01:35.78]点心火 燃尽人间色\n[01:38.72]不夜星天外\n[01:41.39]\n[02:02.20]midaho：是何人谓我 如蜉蝣\n[02:05.38]未敢越东岱\n[02:07.40]司夏：笑我沧海中 似一粟\n[02:10.63]无力排云开\n[02:13.03]河图：怎知他不过 小卒尔尔\n[02:16.05]恰入我梦来\n[02:17.98]慕寒：漏夜一照面 寥寥慰我\n[02:21.42]孤身在高台\n[02:23.36]慕寒河图：且行乐 且行乐\n[02:26.14]万千风物入我怀\n[02:28.88]司夏Midaho:花堪折 花堪折\n[02:31.32]簪花对镜知己拜\n[02:33.87]合：北闻笑 南传哭\n[02:36.60]我自逍遥身自在\n[02:39.81]君可知 风月争相来\n[02:42.76]人间我梦裁\n[02:45.53]\n[03:06.12]河图：快哉意 快哉意\n[03:08.78]流光照彻乾坤来\n[03:11.15]慕寒：浩然气 浩然气\n[03:14.04]乘风破浪天地开\n[03:16.56]合：此时生 彼时灭\n[03:19.52]川消山长有时衰\n[03:22.40]点心火 燃尽人间色\n[03:25.44]不夜星天外\n[03:27.29]且行乐 且行乐\n[03:30.05]万千风物入我怀\n[03:32.37]花堪折 花堪折\n[03:35.62]簪花对镜知己拜\n[03:37.86]北闻笑 南传哭\n[03:40.68]我自逍遥身自在\n[03:43.84]君可知 风月争相来\n[03:46.69]人间我梦裁\n[03:49.81]\n[04:11.84]司夏：却不知 人间梦我\n[04:15.52]我梦人间裁\n[04:23.71]",
+        "_5SingUrl": "http://5sing.kugou.com/yc/3395184.html",
+        "_BaiduUrl": "http://y.baidu.com/song/400690",
+        "_WangyiUrl": "http://music.163.com/#/dj?id=908198223",
+        "ItemType": 1111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": null,
+        "Text": null,
+        "Works_Item_Author": [{
+          "ID": 258,
+          "AuthName": "幺唠",
+          "HeadUrl": null,
+          "WorksAuthorType": "修音",
+          "Tips": "NULL"
+        }, {"ID": 1816, "AuthName": "水玥儿", "HeadUrl": null, "WorksAuthorType": "乐器实录", "Tips": "萧笛"}, {
+          "ID": 4202,
+          "AuthName": "墨韵随步摇",
+          "HeadUrl": null,
+          "WorksAuthorType": "乐器实录",
+          "Tips": "古筝"
+        }, {"ID": 4196, "AuthName": "乍雨初晴", "HeadUrl": null, "WorksAuthorType": "乐器实录", "Tips": "琵琶"}, {
+          "ID": 640,
+          "AuthName": "Litterzy",
+          "HeadUrl": null,
+          "WorksAuthorType": "乐器实录",
+          "Tips": "电吉他"
+        }, {"ID": 3840, "AuthName": "冰镇甜豆浆", "HeadUrl": null, "WorksAuthorType": "视频", "Tips": "NULL"}, {
+          "ID": 4197,
+          "AuthName": "木美人",
+          "HeadUrl": null,
+          "WorksAuthorType": "立绘",
+          "Tips": "NULL"
+        }, {"ID": 4198, "AuthName": "VV丶SAMA", "HeadUrl": null, "WorksAuthorType": "CG", "Tips": "NULL"}, {
+          "ID": 4199,
+          "AuthName": "_LEOX",
+          "HeadUrl": null,
+          "WorksAuthorType": "场景",
+          "Tips": "NULL"
+        }, {"ID": 4200, "AuthName": "念慈", "HeadUrl": null, "WorksAuthorType": "设计", "Tips": "NULL"}, {
+          "ID": 4201,
+          "AuthName": "青凌",
+          "HeadUrl": null,
+          "WorksAuthorType": "海报",
+          "Tips": "NULL"
+        }, {
+          "ID": 1,
+          "AuthName": "河图",
+          "HeadUrl": "http://img5.5sing.kgimg.com/force/T10qdKBXAT1RXrhCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": "NULL"
         }, {
           "ID": 2,
+          "AuthName": "司夏",
+          "HeadUrl": "http://wsing.bssdl.kugou.com/46787a7bb70e9a0f308c5068376240d6.jpg_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": "NULL"
+        }, {
+          "ID": 46,
           "AuthName": "慕寒",
-          "HeadUrl": "http://wsing.bssdl.kugou.com/d63495eb7583ee186edc5e7a234bb83d.jpg_188x188.jpg",
-          "WorksAuthorType": 111
-        }, {"ID": 7, "AuthName": "李洋", "HeadUrl": null, "WorksAuthorType": 122}, {
-          "ID": 6,
-          "AuthName": "安靖羽",
+          "HeadUrl": "http://wsing.bssdl.kugou.com/d63495eb7583ee186edc5e7a234bb83d.jpg_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": "NULL"
+        }, {
+          "ID": 72,
+          "AuthName": "Midaho",
+          "HeadUrl": "http://img9.5sing.kgimg.com/force/T1Kd_vBThT1R4cSCrK_180_180.jpg",
+          "WorksAuthorType": "演唱",
+          "Tips": "NULL"
+        }, {"ID": 924, "AuthName": "沈行之", "HeadUrl": null, "WorksAuthorType": "作词", "Tips": "NULL"}, {
+          "ID": 416,
+          "AuthName": "月千宸",
           "HeadUrl": null,
-          "WorksAuthorType": 121
-        }, {"ID": 5, "AuthName": "乘物游心", "HeadUrl": null, "WorksAuthorType": 411}, {
-          "ID": 8,
+          "WorksAuthorType": "作曲",
+          "Tips": "NULL"
+        }, {"ID": 640, "AuthName": "Litterzy", "HeadUrl": null, "WorksAuthorType": "编曲", "Tips": "NULL"}, {
+          "ID": 207,
           "AuthName": "CuTTleFish",
           "HeadUrl": null,
-          "WorksAuthorType": 131
-        }]
+          "WorksAuthorType": "混音",
+          "Tips": "NULL"
+        }, {"ID": 641, "AuthName": "少年E", "HeadUrl": null, "WorksAuthorType": "混音", "Tips": "NULL"}]
+      }, {
+        "ItemID": 2758,
+        "ItemName": "燃尽人间色",
+        "FileUrl": "http://zhuanquan-music.oss-cn-shanghai.aliyuncs.com/rjrjs.mp4",
+        "lrc": null,
+        "_5SingUrl": "http://5sing.kugou.com/yc/3395184.html",
+        "_BaiduUrl": "http://y.baidu.com/song/400690",
+        "_WangyiUrl": "http://music.163.com/#/dj?id=908198223",
+        "ItemType": 2111,
+        "PlayHis": 0,
+        "LikeHis": 0,
+        "ISLike": false,
+        "ISFavor": false,
+        "DownloadHis": 0,
+        "VideoCoverPic": "http://zhuanquan-pic.oss-cn-beijing.aliyuncs.com/rjrjs_cover.jpg",
+        "Text": null,
+        "Works_Item_Author": []
       }],
-      "ReturnTagData": [{"ID": 1, "Tag_Name": "古风"}, {"ID": 2, "Tag_Name": "国语"}]
-    }, {
-      "WorksID": 2,
-      "Title": "我有一座四色城",
-      "sub_Title": null,
-      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
-      "Popular": 0,
-      "Works_Items": [{
-        "ItemName": "我有一座四色城",
-        "FileUrl": "http://data.5sing.kgimg.com/G099/M06/02/03/Q5QEAFkunQ-AF673AJDJPibBBlA654.mp3",
-        "_5SingUrl": "http://5sing.kugou.com/yc/3354219.html",
-        "_BaiduUrl": "",
-        "_WangyiUrl": "",
-        "ItemType": 1111,
-        "Works_Item_Author": [{
-          "ID": 1,
-          "AuthName": "司夏",
-          "HeadUrl": "http://wsing.bssdl.kugou.com/46787a7bb70e9a0f308c5068376240d6.jpg_188x188.jpg",
-          "WorksAuthorType": 111
-        }, {"ID": 10, "AuthName": "井宿", "HeadUrl": null, "WorksAuthorType": 122}, {
-          "ID": 10,
-          "AuthName": "井宿",
-          "HeadUrl": null,
-          "WorksAuthorType": 121
-        }, {"ID": 9, "AuthName": "苍悟洛书", "HeadUrl": null, "WorksAuthorType": 411}, {
-          "ID": 11,
-          "AuthName": "少年E",
-          "HeadUrl": null,
-          "WorksAuthorType": 131
-        }]
-      }],
-      "ReturnTagData": [{"ID": 2, "Tag_Name": "国语"}, {"ID": 3, "Tag_Name": "小清新"}, {"ID": 8, "Tag_Name": "流行"}]
-    }, {
-      "WorksID": 5,
-      "Title": "念平生",
-      "sub_Title": null,
-      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
-      "Popular": 0,
-      "Works_Items": [{
-        "ItemName": "念平生",
-        "FileUrl": "http://data.5sing.kgimg.com/G079/M00/07/01/74YBAFhncmyAKOk0AJGZYNWtX9U430.mp3",
-        "_5SingUrl": "http://5sing.kugou.com/yc/3254652.html",
-        "_BaiduUrl": "",
-        "_WangyiUrl": "",
-        "ItemType": 1111,
-        "Works_Item_Author": [{
-          "ID": 1,
-          "AuthName": "司夏",
-          "HeadUrl": "http://wsing.bssdl.kugou.com/46787a7bb70e9a0f308c5068376240d6.jpg_188x188.jpg",
-          "WorksAuthorType": 111
-        }, {"ID": 16, "AuthName": "潇梦临", "HeadUrl": null, "WorksAuthorType": 122}, {
-          "ID": 16,
-          "AuthName": "潇梦临",
-          "HeadUrl": null,
-          "WorksAuthorType": 121
-        }, {"ID": 5, "AuthName": "乘物游心", "HeadUrl": null, "WorksAuthorType": 411}, {
-          "ID": 11,
-          "AuthName": "少年E",
-          "HeadUrl": null,
-          "WorksAuthorType": 131
-        }]
-      }],
-      "ReturnTagData": [{"ID": 1, "Tag_Name": "古风"}, {"ID": 2, "Tag_Name": "国语"}]
-    }, {
-      "WorksID": 6,
-      "Title": "年少与少年",
-      "sub_Title": null,
-      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
-      "Popular": 0,
-      "Works_Items": [{
-        "ItemName": "年少与少年",
-        "FileUrl": "http://data.5sing.kgimg.com/G090/M09/08/18/-oYBAFihyi6AJMihALRz7afNnsE998.mp3",
-        "_5SingUrl": "http://5sing.kugou.com/yc/3282209.html",
-        "_BaiduUrl": "",
-        "_WangyiUrl": "",
-        "ItemType": 1111,
-        "Works_Item_Author": [{
-          "ID": 1,
-          "AuthName": "司夏",
-          "HeadUrl": "http://wsing.bssdl.kugou.com/46787a7bb70e9a0f308c5068376240d6.jpg_188x188.jpg",
-          "WorksAuthorType": 111
-        }, {"ID": 17, "AuthName": "梅粮新", "HeadUrl": null, "WorksAuthorType": 111}, {
-          "ID": 17,
-          "AuthName": "梅粮新",
-          "HeadUrl": null,
-          "WorksAuthorType": 122
-        }, {"ID": 17, "AuthName": "梅粮新", "HeadUrl": null, "WorksAuthorType": 121}, {
-          "ID": 1,
-          "AuthName": "司夏",
-          "HeadUrl": "http://wsing.bssdl.kugou.com/46787a7bb70e9a0f308c5068376240d6.jpg_188x188.jpg",
-          "WorksAuthorType": 411
-        }, {"ID": 18, "AuthName": "沈行之", "HeadUrl": null, "WorksAuthorType": 411}, {
-          "ID": 17,
-          "AuthName": "梅粮新",
-          "HeadUrl": null,
-          "WorksAuthorType": 131
-        }]
-      }],
-      "ReturnTagData": [{"ID": 2, "Tag_Name": "国语"}, {"ID": 3, "Tag_Name": "小清新"}]
-    }, {
-      "WorksID": 7,
-      "Title": "送郎君",
-      "sub_Title": null,
-      "cover_Pic": "http://wx2.sinaimg.cn/mw690/006g1aHXly1ffiuk2awk5j30m809gdhp.jpg",
-      "Popular": 0,
-      "Works_Items": [{
-        "ItemName": "送郎君",
-        "FileUrl": "http://data.5sing.kgimg.com/G092/M09/1C/0F/nA0DAFjD0kWAKgxTAIQQEgjeajM802.mp3",
-        "_5SingUrl": "http://5sing.kugou.com/yc/3300500.html",
-        "_BaiduUrl": "",
-        "_WangyiUrl": "",
-        "ItemType": 1111,
-        "Works_Item_Author": [{
-          "ID": 1,
-          "AuthName": "司夏",
-          "HeadUrl": "http://wsing.bssdl.kugou.com/46787a7bb70e9a0f308c5068376240d6.jpg_188x188.jpg",
-          "WorksAuthorType": 111
-        }, {"ID": 19, "AuthName": "蝉悠", "HeadUrl": null, "WorksAuthorType": 122}, {
-          "ID": 19,
-          "AuthName": "蝉悠",
-          "HeadUrl": null,
-          "WorksAuthorType": 121
-        }, {"ID": 18, "AuthName": "沈行之", "HeadUrl": null, "WorksAuthorType": 411}, {
-          "ID": 11,
-          "AuthName": "少年E",
-          "HeadUrl": null,
-          "WorksAuthorType": 131
-        }]
-      }],
-      "ReturnTagData": [{"ID": 1, "Tag_Name": "古风"}, {"ID": 2, "Tag_Name": "国语"}]
+      "ReturnTagData": []
     }],
     "AuthorToAuthor": [{
-      "AuthorID": 17,
-      "AuthorName": "梅粮新",
+      "AuthorID": 190,
+      "AuthorName": "finale",
       "Head_url": null,
-      "CooperationTimes": 4,
-      "WorksType": [{"AuthorTypeID": 111, "AuthorTypeCount": 1}, {
+      "CooperationTimes": 22,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 20}, {
         "AuthorTypeID": 121,
         "AuthorTypeCount": 1
       }, {"AuthorTypeID": 122, "AuthorTypeCount": 1}, {"AuthorTypeID": 131, "AuthorTypeCount": 1}]
     }, {
-      "AuthorID": 11,
+      "AuthorID": 191,
+      "AuthorName": "狐离",
+      "Head_url": null,
+      "CooperationTimes": 4,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 6}]
+    }, {
+      "AuthorID": 640,
+      "AuthorName": "Litterzy",
+      "Head_url": null,
+      "CooperationTimes": 4,
+      "WorksType": [{"AuthorTypeID": 121, "AuthorTypeCount": 38}, {
+        "AuthorTypeID": 122,
+        "AuthorTypeCount": 38
+      }, {"AuthorTypeID": 131, "AuthorTypeCount": 3}, {"AuthorTypeID": 141, "AuthorTypeCount": 1}]
+    }, {
+      "AuthorID": 2,
+      "AuthorName": "司夏",
+      "Head_url": "http://wsing.bssdl.kugou.com/46787a7bb70e9a0f308c5068376240d6.jpg_180_180.jpg",
+      "CooperationTimes": 3,
+      "WorksType": [{"AuthorTypeID": 111, "AuthorTypeCount": 66}, {
+        "AuthorTypeID": 411,
+        "AuthorTypeCount": 9
+      }, {"AuthorTypeID": 131, "AuthorTypeCount": 7}, {"AuthorTypeID": 121, "AuthorTypeCount": 1}]
+    }, {
+      "AuthorID": 249,
+      "AuthorName": "陈鹏杰",
+      "Head_url": null,
+      "CooperationTimes": 3,
+      "WorksType": [{"AuthorTypeID": 121, "AuthorTypeCount": 12}, {
+        "AuthorTypeID": 122,
+        "AuthorTypeCount": 9
+      }, {"AuthorTypeID": 111, "AuthorTypeCount": 5}, {"AuthorTypeID": 141, "AuthorTypeCount": 2}]
+    }, {
+      "AuthorID": 308,
+      "AuthorName": "焰三一",
+      "Head_url": null,
+      "CooperationTimes": 3,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 5}]
+    }, {
+      "AuthorID": 549,
+      "AuthorName": "Tureleon",
+      "Head_url": null,
+      "CooperationTimes": 3,
+      "WorksType": [{"AuthorTypeID": 122, "AuthorTypeCount": 15}, {
+        "AuthorTypeID": 131,
+        "AuthorTypeCount": 11
+      }, {"AuthorTypeID": 121, "AuthorTypeCount": 9}]
+    }, {
+      "AuthorID": 641,
       "AuthorName": "少年E",
       "Head_url": null,
       "CooperationTimes": 3,
-      "WorksType": [{"AuthorTypeID": 131, "AuthorTypeCount": 3}]
+      "WorksType": [{"AuthorTypeID": 131, "AuthorTypeCount": 15}]
     }, {
-      "AuthorID": 5,
-      "AuthorName": "乘物游心",
+      "AuthorID": 61,
+      "AuthorName": "云の泣",
+      "Head_url": "http://wsing.bssdl.kugou.com/190529cacf4c9e36709db160892918c4.jpg_100x100.jpg",
+      "CooperationTimes": 2,
+      "WorksType": [{"AuthorTypeID": 111, "AuthorTypeCount": 70}]
+    }, {
+      "AuthorID": 123,
+      "AuthorName": "EDIQ",
       "Head_url": null,
       "CooperationTimes": 2,
-      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 2}]
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 22}, {"AuthorTypeID": 121, "AuthorTypeCount": 3}]
     }, {
-      "AuthorID": 10,
-      "AuthorName": "井宿",
+      "AuthorID": 309,
+      "AuthorName": "李建衡",
       "Head_url": null,
       "CooperationTimes": 2,
-      "WorksType": [{"AuthorTypeID": 121, "AuthorTypeCount": 1}, {"AuthorTypeID": 122, "AuthorTypeCount": 1}]
+      "WorksType": [{"AuthorTypeID": 121, "AuthorTypeCount": 3}, {"AuthorTypeID": 122, "AuthorTypeCount": 3}]
     }, {
-      "AuthorID": 16,
-      "AuthorName": "潇梦临",
+      "AuthorID": 486,
+      "AuthorName": "狐不举",
       "Head_url": null,
       "CooperationTimes": 2,
-      "WorksType": [{"AuthorTypeID": 121, "AuthorTypeCount": 1}, {"AuthorTypeID": 122, "AuthorTypeCount": 1}]
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 5}]
     }, {
-      "AuthorID": 18,
-      "AuthorName": "沈行之",
+      "AuthorID": 1214,
+      "AuthorName": "异新音乐 ",
       "Head_url": null,
       "CooperationTimes": 2,
-      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 2}]
+      "WorksType": [{"AuthorTypeID": 131, "AuthorTypeCount": 6}, {"AuthorTypeID": 122, "AuthorTypeCount": 5}]
     }, {
-      "AuthorID": 19,
-      "AuthorName": "蝉悠",
-      "Head_url": null,
-      "CooperationTimes": 2,
-      "WorksType": [{"AuthorTypeID": 121, "AuthorTypeCount": 1}, {"AuthorTypeID": 122, "AuthorTypeCount": 1}]
+      "AuthorID": 14,
+      "AuthorName": "小爱的妈",
+      "Head_url": "http://img2.5sing.kgimg.com/force/T1lGh_BjZT1RXrhCrK_100_100.jpg",
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 111, "AuthorTypeCount": 42}, {"AuthorTypeID": 131, "AuthorTypeCount": 1}]
     }, {
-      "AuthorID": 2,
+      "AuthorID": 44,
+      "AuthorName": "纱朵",
+      "Head_url": "http://img8.5sing.kgimg.com/force/T1WLd_B7Wv1RXrhCrK_180_180.jpg",
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 121, "AuthorTypeCount": 82}, {
+        "AuthorTypeID": 111,
+        "AuthorTypeCount": 56
+      }, {"AuthorTypeID": 411, "AuthorTypeCount": 30}, {
+        "AuthorTypeID": 122,
+        "AuthorTypeCount": 26
+      }, {"AuthorTypeID": 131, "AuthorTypeCount": 11}]
+    }, {
+      "AuthorID": 46,
       "AuthorName": "慕寒",
-      "Head_url": "http://wsing.bssdl.kugou.com/d63495eb7583ee186edc5e7a234bb83d.jpg_188x188.jpg",
+      "Head_url": "http://wsing.bssdl.kugou.com/d63495eb7583ee186edc5e7a234bb83d.jpg_180_180.jpg",
       "CooperationTimes": 1,
-      "WorksType": [{"AuthorTypeID": 111, "AuthorTypeCount": 2}]
+      "WorksType": [{"AuthorTypeID": 111, "AuthorTypeCount": 57}]
     }, {
-      "AuthorID": 6,
-      "AuthorName": "安靖羽",
+      "AuthorID": 62,
+      "AuthorName": "银临",
+      "Head_url": "http://wsing.bssdl.kugou.com/b80f67df56fad8d0ca27d33e75b99966.jpg_100x100.jpg",
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 111, "AuthorTypeCount": 71}, {
+        "AuthorTypeID": 121,
+        "AuthorTypeCount": 71
+      }, {"AuthorTypeID": 131, "AuthorTypeCount": 14}, {"AuthorTypeID": 122, "AuthorTypeCount": 9}]
+    }, {
+      "AuthorID": 67,
+      "AuthorName": "玄觞",
+      "Head_url": "http://wsing.bssdl.kugou.com/4bec71a441199104f45f0f73c742de89.jpg_180_180.jpg",
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 111, "AuthorTypeCount": 86}, {
+        "AuthorTypeID": 131,
+        "AuthorTypeCount": 22
+      }, {"AuthorTypeID": 121, "AuthorTypeCount": 5}, {"AuthorTypeID": 411, "AuthorTypeCount": 3}, {
+        "AuthorTypeID": 122,
+        "AuthorTypeCount": 1
+      }]
+    }, {
+      "AuthorID": 72,
+      "AuthorName": "Midaho",
+      "Head_url": "http://img9.5sing.kgimg.com/force/T1Kd_vBThT1R4cSCrK_180_180.jpg",
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 131, "AuthorTypeCount": 10}, {
+        "AuthorTypeID": 111,
+        "AuthorTypeCount": 9
+      }, {"AuthorTypeID": 112, "AuthorTypeCount": 2}, {"AuthorTypeID": 411, "AuthorTypeCount": 2}]
+    }, {
+      "AuthorID": 109,
+      "AuthorName": "Crazyman",
       "Head_url": null,
       "CooperationTimes": 1,
-      "WorksType": [{"AuthorTypeID": 121, "AuthorTypeCount": 1}]
+      "WorksType": [{"AuthorTypeID": 111, "AuthorTypeCount": 21}, {"AuthorTypeID": 121, "AuthorTypeCount": 1}]
     }, {
-      "AuthorID": 7,
-      "AuthorName": "李洋",
+      "AuthorID": 150,
+      "AuthorName": "tony_ms",
       "Head_url": null,
       "CooperationTimes": 1,
-      "WorksType": [{"AuthorTypeID": 122, "AuthorTypeCount": 1}]
+      "WorksType": [{"AuthorTypeID": 122, "AuthorTypeCount": 10}, {
+        "AuthorTypeID": 121,
+        "AuthorTypeCount": 8
+      }, {"AuthorTypeID": 131, "AuthorTypeCount": 4}, {"AuthorTypeID": 411, "AuthorTypeCount": 2}]
     }, {
-      "AuthorID": 8,
+      "AuthorID": 206,
+      "AuthorName": "腾云驾雾琉璃仙",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 12}, {"AuthorTypeID": 121, "AuthorTypeCount": 1}]
+    }, {
+      "AuthorID": 207,
       "AuthorName": "CuTTleFish",
       "Head_url": null,
       "CooperationTimes": 1,
-      "WorksType": [{"AuthorTypeID": 131, "AuthorTypeCount": 1}]
+      "WorksType": [{"AuthorTypeID": 131, "AuthorTypeCount": 100}, {
+        "AuthorTypeID": 122,
+        "AuthorTypeCount": 10
+      }, {"AuthorTypeID": 121, "AuthorTypeCount": 3}]
     }, {
-      "AuthorID": 9,
-      "AuthorName": "苍悟洛书",
+      "AuthorID": 218,
+      "AuthorName": "TurtleIzzy",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 9}]
+    }, {
+      "AuthorID": 240,
+      "AuthorName": "CAT__阿柯",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 122, "AuthorTypeCount": 15}, {"AuthorTypeID": 121, "AuthorTypeCount": 3}]
+    }, {
+      "AuthorID": 258,
+      "AuthorName": "幺唠",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 131, "AuthorTypeCount": 31}, {"AuthorTypeID": 134, "AuthorTypeCount": 3}]
+    }, {
+      "AuthorID": 310,
+      "AuthorName": "徐驰",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 131, "AuthorTypeCount": 2}]
+    }, {
+      "AuthorID": 367,
+      "AuthorName": "唐七公子",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 2}]
+    }, {
+      "AuthorID": 376,
+      "AuthorName": "紫云纱",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 41}, {"AuthorTypeID": 121, "AuthorTypeCount": 10}]
+    }, {
+      "AuthorID": 401,
+      "AuthorName": "灰原穷",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 122, "AuthorTypeCount": 143}, {
+        "AuthorTypeID": 131,
+        "AuthorTypeCount": 99
+      }, {"AuthorTypeID": 121, "AuthorTypeCount": 29}, {
+        "AuthorTypeID": 111,
+        "AuthorTypeCount": 5
+      }, {"AuthorTypeID": 411, "AuthorTypeCount": 2}]
+    }, {
+      "AuthorID": 416,
+      "AuthorName": "月千宸",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 122, "AuthorTypeCount": 11}, {"AuthorTypeID": 121, "AuthorTypeCount": 7}]
+    }, {
+      "AuthorID": 452,
+      "AuthorName": "锦衣小朋友",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 28}, {"AuthorTypeID": 121, "AuthorTypeCount": 16}]
+    }, {
+      "AuthorID": 639,
+      "AuthorName": "乘物游心Shire",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 27}]
+    }, {
+      "AuthorID": 686,
+      "AuthorName": "Darsity",
       "Head_url": null,
       "CooperationTimes": 1,
       "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 1}]
+    }, {
+      "AuthorID": 722,
+      "AuthorName": "明河",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 1}]
+    }, {
+      "AuthorID": 784,
+      "AuthorName": "狐举",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 1}]
+    }, {
+      "AuthorID": 924,
+      "AuthorName": "沈行之",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 12}]
+    }, {
+      "AuthorID": 1597,
+      "AuthorName": "JC",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 411, "AuthorTypeCount": 6}]
+    }, {
+      "AuthorID": 1816,
+      "AuthorName": "水玥儿",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 141, "AuthorTypeCount": 3}, {
+        "AuthorTypeID": 111,
+        "AuthorTypeCount": 1
+      }, {"AuthorTypeID": 131, "AuthorTypeCount": 1}]
+    }, {
+      "AuthorID": 1873,
+      "AuthorName": "leeyangkkx",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 122, "AuthorTypeCount": 5}, {"AuthorTypeID": 121, "AuthorTypeCount": 2}]
+    }, {
+      "AuthorID": 2477,
+      "AuthorName": "雪花花",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 121, "AuthorTypeCount": 17}, {
+        "AuthorTypeID": 122,
+        "AuthorTypeCount": 11
+      }, {"AuthorTypeID": 411, "AuthorTypeCount": 9}, {"AuthorTypeID": 111, "AuthorTypeCount": 3}]
+    }, {
+      "AuthorID": 2508,
+      "AuthorName": "庄俊业",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 131, "AuthorTypeCount": 11}]
+    }, {
+      "AuthorID": 2947,
+      "AuthorName": "elunxp",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 131, "AuthorTypeCount": 19}]
+    }, {
+      "AuthorID": 3840,
+      "AuthorName": "冰镇甜豆浆",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 211, "AuthorTypeCount": 2}, {"AuthorTypeID": 411, "AuthorTypeCount": 1}]
+    }, {
+      "AuthorID": 3862,
+      "AuthorName": "冥月",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 111, "AuthorTypeCount": 4}]
+    }, {
+      "AuthorID": 4196,
+      "AuthorName": "乍雨初晴",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 141, "AuthorTypeCount": 1}]
+    }, {
+      "AuthorID": 4197,
+      "AuthorName": "木美人",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 311, "AuthorTypeCount": 2}]
+    }, {
+      "AuthorID": 4198,
+      "AuthorName": "VV丶SAMA",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 312, "AuthorTypeCount": 3}]
+    }, {
+      "AuthorID": 4199,
+      "AuthorName": "_LEOX",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 313, "AuthorTypeCount": 2}]
+    }, {
+      "AuthorID": 4200,
+      "AuthorName": "念慈",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 331, "AuthorTypeCount": 1}]
+    }, {
+      "AuthorID": 4201,
+      "AuthorName": "青凌",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 332, "AuthorTypeCount": 2}]
+    }, {
+      "AuthorID": 4202,
+      "AuthorName": "墨韵随步摇",
+      "Head_url": null,
+      "CooperationTimes": 1,
+      "WorksType": [{"AuthorTypeID": 141, "AuthorTypeCount": 1}]
     }]
   }
 };
