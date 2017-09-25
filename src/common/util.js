@@ -30,6 +30,9 @@ let util = {
   goto: function(url) {
     location.href = url;
   },
+  img150_150: function(url) {
+    return url ? url + '-150_150' : url;
+  },
   sort,
   ERROR_MESSAGE: '人气大爆发，请稍后再试。'
 };

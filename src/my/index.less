@@ -1,9 +1,11 @@
 /**
- * Created by army on 2017/7/16.
+ * Created by army8735 on 2017/9/20.
  */
- 
-.my_card{
+
+.top-nav .user{
   display:none;
+}
+.my{
   > .profile {
     position:relative;
     height:1.7rem;
@@ -14,7 +16,7 @@
       top:-10%;
       width:120%;
       height:120%;
-      background:url(../../author/bg.png) no-repeat;
+      background:url(//zhuanquan.xyz/img/8476e8a946918ca008f91704fe3049f5.png) no-repeat;
       background-size:cover;
       filter:blur(0.07rem);
       &:after{
@@ -58,12 +60,15 @@
         box-sizing:border-box;
         border-radius:100%;
         border:1px solid #fff;
+        background:rgba(255,255,255,0.5);
         overflow:hidden;
       }
       .con{
         position:relative;
+        display:flex;
         flex:1;
         color:#fff;
+        align-items:center;
         h3{
           font-size:0.16rem;
           height:0.2rem;
@@ -80,7 +85,17 @@
             overflow:hidden;
             background:rgba(255,255,255,0.5);
             border-radius:0.2rem;
-            vertical-align:middle;
+            vertical-align:top;
+          }
+          .edit{
+            display:inline-block;
+            margin-left:0.1rem;
+            width:0.2rem;
+            height:0.2rem;
+            background:url(edit.png) no-repeat center;
+            background-size:contain;
+            text-indent:999rem;
+            overflow:hidden;
           }
         }
         ul{
@@ -125,6 +140,17 @@
     > .item{
       position:relative;
       padding-left:0.5rem;
+      &:before{
+        position:absolute;
+        left:0;
+        top:0;
+        display:block;
+        width:0.5rem;
+        height:0.5rem;
+        background:url(finance.png) no-repeat center;
+        background-size:0.25rem auto;
+        content:' ';
+      }
       h4{
         position:relative;
         font-size:0.14rem;
@@ -165,21 +191,21 @@
         transition:height 0.2s;
         .c{
           padding:0.15rem;
+          button{
+            display:block;
+            margin-top:0.1rem;
+            width:100%;
+            height:0.32rem;
+            background:#4E8EB0;
+            border-radius:0.32rem;
+            border:none;
+            color:#fff;
+            font-size:0.14rem;
+          }
         }
       }
     }
     > .finance{
-      &:before{
-        position:absolute;
-        left:0.12rem;
-        top:0;
-        display:block;
-        width:0.24rem;
-        height:0.5rem;
-        background:url(finance.png) no-repeat center;
-        background-size:contain;
-        content:' ';
-      }
       > .more{
         .c{
           ul{
@@ -210,8 +236,7 @@
                 }
                 span{
                   color:#4E8EB0;
-                  font-size:0.12rem;
-                  transform:scale(0.833);
+                  font-size:0.1rem;
                 }
               }
               strong{
@@ -220,31 +245,12 @@
               }
             }
           }
-          button{
-            display:block;
-            margin-top:0.1rem;
-            width:100%;
-            height:0.32rem;
-            background:#4E8EB0;
-            border-radius:0.32rem;
-            border:none;
-            color:#fff;
-            font-size:0.14rem;
-          }
         }
       }
     }
     > .success{
       &:before{
-        position:absolute;
-        left:0.12rem;
-        top:0;
-        display:block;
-        width:0.24rem;
-        height:0.5rem;
-        background:url(success.png) no-repeat center;
-        background-size:contain;
-        content:' ';
+        background-image:url(success.png);
       }
       > .more{
         .c{
@@ -273,31 +279,17 @@
               }
             }
           }
-          button{
-            display:block;
-            margin-top:0.1rem;
-            width:100%;
-            height:0.32rem;
-            background:#4E8EB0;
-            border-radius:0.32rem;
-            border:none;
-            color:#fff;
-            font-size:0.14rem;
-          }
         }
       }
     }
     > .follow{
       &:before{
-        position:absolute;
-        left:0.12rem;
-        top:0;
-        display:block;
-        width:0.24rem;
-        height:0.5rem;
-        background:url(follow.png) no-repeat center;
-        background-size:contain;
-        content:' ';
+        background-image:url(follow.png);
+      }
+    }
+    > .favor{
+      &:before{
+        background-image:url(favor.png);
       }
     }
   }

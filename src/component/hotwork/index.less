@@ -2,16 +2,16 @@
  * Created by army8735 on 2017/8/8.
  */
 
-.cp_hotwork{
+.cp-hotwork{
   position:relative;
-  padding-top:0.1rem;
+  padding-top:0;
   padding-left:0.25rem;
   min-height:0.75rem;
   background:#fff;
   h3{
     position:absolute;
     left:0;
-    top:0.1rem;
+    top:0;
     display:flex;
     padding-left:0.02rem;
     width:0.16rem;
@@ -27,39 +27,45 @@
     align-items:center;
   }
   .list{
-    overflow:scroll;
-    transition:transform 0.2s;
+    overflow:auto;
+    transform:translate3d(0,0,0);
     &.no_trans{
       transition:none;
     }
     .c{
-      width:9999rem;
-      overflow:hidden;
+      //width:9999rem;
+      //height:1rem;
+      //overflow:hidden;
+      .empty{
+        width:0.75rem;
+        height:0.75rem;
+        background:url(works_bg_no.png) no-repeat center;
+        background-size:contain;
+        border-radius:0.05rem;
+      }
       ul{
         display:inline-block;
         li{
           display:inline-block;
           margin-right:0.05rem;
           width:0.75rem;
+          height:1rem;
           vertical-align:top;
           overflow:hidden;
           .pic{
             position:relative;
+            display:block;
             width:0.75rem;
             height:0.75rem;
-            background-size:cover!important;
+            background:url(works_bg.png) no-repeat center;
+            background-size:contain;
             border-radius:0.05rem;
             color:#fff;
             overflow:hidden;
-            &:before{
-              position:absolute;
-              left:0;
-              top:0;
+            img{
+              display:block;
               width:100%;
               height:100%;
-              background-color:rgba(0,0,0,0.3)!important;
-              content:' ';
-              border-radius:0.05rem;
             }
             .num{
               position:absolute;
@@ -77,7 +83,7 @@
                 height:100%;
                 background:url(audio.png) no-repeat center;
                 background-size:contain;
-                transform:translateY(-0.02rem);
+                transform:translateY(-0.01rem);
               }
               .video{
                 position:absolute;
@@ -102,8 +108,13 @@
             }
           }
           .txt{
-            padding:0.05rem 0;
+            display:block;
             font-size:0.1rem;
+            white-space:nowrap;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            line-height:0.25rem;
+            color:#000;
           }
         }
       }

@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta charset="UTF-8"/>
-  <title>搜索</title>
+  <title>我的</title>
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
   <meta name="renderer" content="webkit"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
@@ -13,13 +13,13 @@
   <meta name="wap-font-scale" content="no"/>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
   <link rel="stylesheet" href="/common.css"/>
-  <link rel="stylesheet" href="/search.css"/>
+  <link rel="stylesheet" href="/my.css"/>
 </head>
 <body>
 <div id="page"></div>
 <script>
   var $CONFIG = {
-    kw: 'f',
+    kw: 'kw',
     worksID: '2757',
     authorID: '1',
     isLogin: 'True',
@@ -28,9 +28,8 @@
     userPic: '',
     loginUrl: 'http://circling.cc/oauth/weibo'
   };
-  $CONFIG.kw = decodeURIComponent(/[^/]+$/.exec(location.pathname)[0]);
 </script>
 <script src="/common.js"></script>
-<script src="/search.js"></script>
+<script src="/my.js"></script>
 </body>
 </html>

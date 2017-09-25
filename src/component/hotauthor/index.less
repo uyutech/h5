@@ -27,15 +27,17 @@
     align-items:center;
   }
   .list{
-    overflow:scroll;
-    transition:transform 0.2s;
-    &.no_trans{
-      transition:none;
-    }
+    overflow:auto;
     .c{
-      width:9999rem;
-      height:0.85rem;
-      overflow:hidden;
+      //width:9999rem;
+      //height:0.85rem;
+      //overflow:hidden;
+      .empty{
+        width:0.45rem;
+        height:0.45rem;
+        background-color:#E1E3E4;
+        border-radius:100%;
+      }
       ul{
         display:inline-block;
         li{
@@ -47,12 +49,18 @@
           overflow:hidden;
           .pic{
             position:relative;
+            display:block;
             margin:0 auto;
             width:0.45rem;
             height:0.45rem;
-            background-color:rgba(0,0,0,0.3)!important;
-            background-size:cover!important;
+            background-color:#E1E3E4;
             border-radius:100%;
+            overflow:hidden;
+            img{
+              display:block;
+              width:0.45rem;
+              height:0.45rem;
+            }
             b{
               position:absolute;
               display:block;
@@ -75,6 +83,7 @@
             }
           }
           .txt{
+            display:block;
             margin-top:0.04rem;
             font-size:0.1rem;
             color:#2A2A2A;

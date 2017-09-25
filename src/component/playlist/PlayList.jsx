@@ -24,9 +24,11 @@ class PlayList extends migi.Component {
   }
   genItem(item) {
     return <li>
-      <div worksId={ item.WorksID || item.WorkID } class="pic" style={ `background:url(${item.cover_Pic || item.CoverPic || '//zhuanquan.xyz/img/blank.png'})` }/>
+      <a href={ `works.html?id=${item.WorksID}` } class="pic">
+        <img src={ item.cover_Pic || '//zhuanquan.xyz/img/blank.png' }/>
+      </a>
       <div class="txt" worksId={ item.WorksID || item.WorkID }>
-        <div class="name">{ item.Title }</div>
+        <a href={ `works.html?id=${item.WorksID}` } class="name">{ item.Title }</a>
         <p class="intro">{ item.sub_Title }</p>
       </div>
     </li>;
@@ -37,12 +39,12 @@ class PlayList extends migi.Component {
       //}
   }
   click(e, vd, tvd) {
-    let id = tvd.props.worksId;
-    jsBridge.pushWindow(`works.html?id=${id}`);
+    e.preventDefault();
+    jsBridge.pushWindow(tvd.props.href);
   }
   render() {
     return <div class="cp-playlist">
-      <ul class="list" ref="list" onClick={ { '.pic': this.click, '.txt': this.click } }/>
+      <ul class="list" ref="list" onClick={ { a: this.click } }/>
     </div>;
   }
 }

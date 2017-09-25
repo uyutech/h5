@@ -75,6 +75,8 @@ class Works extends migi.Component {
     ajax = util.postJSON('api/works/GetWorkDetails', { WorksID: self.worksID }, function(res) {
       if(res.success) {
         let data = res.data;
+        jsBridge.setTitle(data.Title);
+        jsBridge.setSubTitle(data.sub_Title);
         media.setCover(data.cover_Pic);
         media.setWorks(data.Works_Items);
         media.popular = data.Popular;

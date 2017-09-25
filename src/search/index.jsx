@@ -1,25 +1,17 @@
 /**
- * Created by army on 2017/7/16.
+ * Created by army8735 on 2017/9/21.
  */
 
 import './search.html';
 import './index.less';
 
-import Nav from './Nav.jsx';
-import History from './History.jsx';
-import Hot from './Hot.jsx';
+import Search from './Search.jsx';
 
-migi.render(
-  <Nav/>,
-  document.body
+let search = migi.render(
+  <Search/>,
+  '#page'
 );
 
-migi.render(
-  <History/>,
-  document.body
-);
-
-migi.render(
-  <Hot/>,
-  document.body
-);
+if(window.$CONFIG.kw && window.$CONFIG.kw.length) {
+  search.load(window.$CONFIG.kw);
+}

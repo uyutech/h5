@@ -304,7 +304,7 @@ class Media extends migi.Component {
                onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end }/>
         </div>
       </div>
-      <div class={ 'bar' + (this.canControl ? '' : ' dis') }>
+      <div class="bar">
         <div class="prev dis"/>
         <div class="play" ref="play" onClick={ this.clickPlay }/>
         <div class="next dis"/>

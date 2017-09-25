@@ -10,7 +10,7 @@ import BottomNav from './BottomNav.jsx';
 import FollowCard from './follow/FollowCard.jsx';
 import ZhuanquanCard from './ZhuanquanCard.jsx';
 import Find from '../find/Find.jsx';
-import MyCard from './my/MyCard.jsx';
+import My from '../my/My.jsx';
 
 jsBridge.ready(function() {
   jsBridge.on('back', function(e) {
@@ -70,7 +70,7 @@ jsBridge.ready(function() {
       case '3':
         if(!myCard) {
           myCard = migi.render(
-            <MyCard/>,
+            <My/>,
             '#page'
           );
         }
@@ -85,7 +85,7 @@ jsBridge.ready(function() {
       nav.show();
     }
   });
-  bottomNav.emit('change', '2');
+  // bottomNav.emit('change', '3');
 
   bottomNav.setCurrent(location.hash.replace(/^#/, '') || '0');
 });
