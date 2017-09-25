@@ -153,7 +153,7 @@ class WorkComment extends migi.Component {
     this.load();
   }
   render() {
-    return <div class="comments fn-hide">
+    return <div class="comments">
       <ul class="type2 fn-clear" onClick={ { li: this.switchType2 } }>
         <li class="cur" rel="0">全部</li>
         <li rel="1">我的</li>

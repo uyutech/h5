@@ -315,8 +315,7 @@ class Media extends migi.Component {
       </ul>
       <div class="tags" ref="tags" onClick={ { li: this.clickTag } }>
         <ul>
-          <li class="cur" rel="0"><span>简介</span></li>
-          <li rel="1"><span>评论</span></li>
+          <li class="cur" rel="1"><span>评论</span></li>
         </ul>
       </div>
     </div>;

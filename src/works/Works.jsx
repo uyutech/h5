@@ -80,13 +80,14 @@ class Works extends migi.Component {
         media.setCover(data.cover_Pic);
         media.setWorks(data.Works_Items);
         media.popular = data.Popular;
-        intro.tags = data.ReturnTagData || [];
+        // intro.tags = data.ReturnTagData || [];
         $(self.ref.form.element).removeClass('fn-hide');
       }
       else {
         alert(res.message);
       }
     });
+    self.ref.workComment.load();
   }
   clickReplay() {
     this.replayId = null;
