@@ -110,7 +110,7 @@ class FollowList extends migi.Component {
                 return <li>
                   <a href={ `author.html?id=${item.ID}` }>
                     <div class="pic">
-                      <img src={ item.Tag_Pic || 'src/common/blank.png' }/>
+                      <img src={ item.Tag_Pic || '//zhuanquan.xyz/img/blank.png' }/>
                       { item.vip ? <b/> : '' }
                     </div>
                     <span>{ item.Tag_Name }</span><b/>

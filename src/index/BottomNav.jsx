@@ -27,22 +27,14 @@ class BottomNav extends migi.Component {
   render() {
     return <div class="bottom_nav" onClick={ { li: this.click } }>
       <ul>
-        <li class="follow" rel="0">
+        <li class="find" rel="0">
           <b class="icon"/>
-          <span>关注</span>
-        </li>
-        <li class="zhuanquan" rel="1">
-          <b class="icon"/>
-          <span>转圈</span>
+          <span>发现</span>
         </li>
         <li class="new cur">
           <b class="icon"/>
         </li>
-        <li class="find" rel="2">
-          <b class="icon"/>
-          <span>发现</span>
-        </li>
-        <li class="my" rel="3">
+        <li class="my" rel="1">
           <b class="icon"/>
           <span>我的</span>
         </li>

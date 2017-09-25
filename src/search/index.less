@@ -3,6 +3,7 @@
  */
 
 @import '../common/var.less';
+@import '../component/topnav/index.less';
 @import '../component/author/index.less';
 
 .search{
@@ -11,16 +12,16 @@
     > li{
       position:relative;
       display:flex;
-      padding:0.1rem;
       box-sizing:border-box;
       align-items:center;
+      height:0.75rem;
+      border-bottom:1px solid #4E8EB0;
       &.author{
-        height:0.75rem;
-        border-bottom:1px solid #4E8EB0;
         .pic{
           display:block;
-          width:0.45rem;
-          height:0.45rem;
+          margin-left:0.05rem;
+          width:0.6rem;
+          height:0.6rem;
           border-radius:100%;
           overflow:hidden;
           background:#eee;
@@ -30,9 +31,10 @@
           }
         }
         .info{
+          flex:1;
           margin:0 0.1rem;
-          width:1.1rem;
-          overflow:hidden;
+          //width:1.1rem;
+          //overflow:hidden;
           .name{
             display:block;
             white-space:nowrap;
@@ -95,6 +97,31 @@
                   }
                 }
               }
+            }
+          }
+        }
+      }
+      &.audio{
+        .pic{
+          display:block;
+          width:0.74rem;
+          height:0.74rem;
+          overflow:hidden;
+          background:url(../component/hotwork/works_bg.png) no-repeat center;
+          background-size:contain;
+          img{
+            display:block;
+            width:100%;
+          }
+        }
+        .info{
+          flex:1;
+          margin:0 0.1rem;
+          a{
+            color:#000;
+            strong{
+              color:#4E8EB0;
+              font-weight:400;
             }
           }
         }

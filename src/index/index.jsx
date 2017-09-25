@@ -5,10 +5,11 @@
 import './index.html';
 import './index.less';
 
-import Nav from './Nav.jsx';
+// import Nav from './Nav.jsx';
+import TopNav from '../component/topnav/TopNav.jsx';
 import BottomNav from './BottomNav.jsx';
-import FollowCard from './follow/FollowCard.jsx';
-import ZhuanquanCard from './ZhuanquanCard.jsx';
+// import FollowCard from './follow/FollowCard.jsx';
+// import ZhuanquanCard from './ZhuanquanCard.jsx';
 import Find from '../find/Find.jsx';
 import My from '../my/My.jsx';
 
@@ -17,10 +18,14 @@ jsBridge.ready(function() {
     e.preventDefault();
     jsBridge.moveTaskToBack();
   });
-  let nav = migi.render(
-    <Nav/>,
+  let topNav = migi.render(
+    <TopNav/>,
     '#page'
   );
+
+  topNav.on('search', function(kw) {
+    jsBridge.pushWindow('search.html?kw=' + encodeURIComponent(kw));
+  });
 
   let followCard, zhuanquanCard, findCard, myCard;
 
@@ -39,25 +44,25 @@ jsBridge.ready(function() {
     last && last.hide();
     location.hash = i;
     switch (i) {
+      // case '0':
+      //   if(!followCard) {
+      //     followCard = migi.render(
+      //       <FollowCard/>,
+      //       '#page'
+      //     );
+      //   }
+      //   last = followCard;
+      //   break;
+      // case '1':
+      //   if(!zhuanquanCard) {
+      //     zhuanquanCard = migi.render(
+      //       <ZhuanquanCard/>,
+      //       '#page'
+      //     );
+      //   }
+      //   last = zhuanquanCard;
+      //   break;
       case '0':
-        if(!followCard) {
-          followCard = migi.render(
-            <FollowCard/>,
-            '#page'
-          );
-        }
-        last = followCard;
-        break;
-      case '1':
-        if(!zhuanquanCard) {
-          zhuanquanCard = migi.render(
-            <ZhuanquanCard/>,
-            '#page'
-          );
-        }
-        last = zhuanquanCard;
-        break;
-      case '2':
         if(!findCard) {
           findCard = migi.render(
             <Find/>,
@@ -67,7 +72,7 @@ jsBridge.ready(function() {
         }
         last = findCard;
         break;
-      case '3':
+      case '1':
         if(!myCard) {
           myCard = migi.render(
             <My/>,
@@ -78,12 +83,6 @@ jsBridge.ready(function() {
         break;
     }
     last.show();
-    if(i == 3) {
-      nav.hide();
-    }
-    else {
-      nav.show();
-    }
   });
   // bottomNav.emit('change', '3');
 

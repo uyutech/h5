@@ -76,11 +76,11 @@ class Search extends migi.Component {
               });
               let authorType = Object.keys(hash);
               return <li class="author">
-                <a href={ `/author/${value.AuthorID}` } class="pic" >
+                <a href={ `author.html?id=${value.AuthorID}` } class="pic" >
                   <img src={ value.Head_url || '//zhuanquan.xyz/img/f59284bd66f39bcfc70ef62eee10e186.png' }/>
                 </a>
                 <div class="info">
-                  <a href={ `/author/${value.AuthorID}` } class="name">
+                  <a href={ `author.html?id=${value.AuthorID}` } class="name">
                     <h4 dangerouslySetInnerHTML={ name }/>
                     {
                       authorType.map(function(item) {
@@ -90,22 +90,28 @@ class Search extends migi.Component {
                   </a>
                   <p>粉丝：{ value.FansNumber }</p>
                 </div>
-                <div class="works">
-                  <h5>代表作</h5>
-                  <div class="list">
-                    <div class="c">
-                      <ul>
-                        <li><a href="#">123</a></li>
-                        <li><a href="#">123</a></li>
-                      </ul>
-                    </div>
-                  </div>
+              </li>;
+            }
+            else if(key === 'audio') {
+              let name = value.workName || '';
+              let i = name.indexOf(self.kw);
+              if(i > -1) {
+                name = migi.util.encodeHtml(name.slice(0, i))
+                  + '<strong>' + name.slice(i, i + self.kw.length) + '</strong>'
+                  + migi.util.encodeHtml(name.slice(i + self.kw.length));
+              }
+              else {
+                name = migi.util.encodeHtml(name);
+              }
+              return <li class="audio">
+                <a href={ `/works/${value.workID}` } class="pic" >
+                  <img src={ value.CoverPic || '//zhuanquan.xyz/img/blank.png' }/>
+                </a>
+                <div class="info">
+                  <a href={ `/works/${value.workID}` } class="name" dangerouslySetInnerHTML={ name }/>
                 </div>
               </li>;
             }
-            return <li>
-              123
-            </li>;
           })
         }
       </ul>
