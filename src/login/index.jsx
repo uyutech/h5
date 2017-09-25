@@ -15,10 +15,6 @@ let goto = search.goto;
 
 jsBridge.ready(function() {
   jsBridge.swipeRefresh(false);
-  jsBridge.on('back', function(e) {
-    e.preventDefault();
-    jsBridge.moveTaskToBack();
-  });
 
   let con = migi.render(
     <div class="con">

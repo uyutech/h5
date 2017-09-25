@@ -120,10 +120,7 @@ class Carousel extends migi.Component {
     e.preventDefault();
     let href = tvd.props.href;
     if(href && href !== '#') {
-      jsBridge.pushWindow(href, {
-        transparentTitle: true,
-        titleBgColor: '#99000000'
-      });
+      jsBridge.pushWindow(href);
     }
   }
   render() {
