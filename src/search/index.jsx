@@ -27,5 +27,6 @@ let search = migi.render(
 );
 
 if(kw && kw.length) {
+  topNav.kw = kw;
   search.load(kw);
 }

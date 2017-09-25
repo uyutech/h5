@@ -24,7 +24,9 @@ jsBridge.ready(function() {
   );
 
   topNav.on('search', function(kw) {
-    jsBridge.pushWindow('search.html?kw=' + encodeURIComponent(kw));
+    jsBridge.pushWindow('search.html?kw=' + encodeURIComponent(kw), {
+      transparentTitle: true,
+    });
   });
 
   let followCard, zhuanquanCard, findCard, myCard;
