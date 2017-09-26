@@ -12,7 +12,7 @@ class Banner extends migi.Component {
   }
   render() {
     return <div class="banner">
-      <a href="works.html?id=2015000000000001" onClick={ this.click }><img src="http://zhuanquan.xyz/pic/e34cc1fb3102e63b507293f6e5a20515.jpg-750_"/></a>
+      <a href="works.html?id=2015000000000001" onClick={ this.click }><img src="http://zhuanquan.xin/pic/e34cc1fb3102e63b507293f6e5a20515.jpg-750_"/></a>
     </div>;
   }
 }

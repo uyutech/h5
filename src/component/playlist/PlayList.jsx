@@ -25,7 +25,7 @@ class PlayList extends migi.Component {
   genItem(item) {
     return <li>
       <a href={ `works.html?id=${item.WorksID}` } class="pic">
-        <img src={ util.img100_100(item.cover_Pic) || '//zhuanquan.xyz/img/blank.png' }/>
+        <img src={ util.img100_100(item.cover_Pic) || '//zhuanquan.xin/img/blank.png' }/>
       </a>
       <div class="txt" worksId={ item.WorksID || item.WorkID }>
         <a href={ `works.html?id=${item.WorksID}` } class="name">{ item.Title }</a>

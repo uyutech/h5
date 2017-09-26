@@ -77,7 +77,7 @@ class Search extends migi.Component {
               let authorType = Object.keys(hash);
               return <li class="author">
                 <a href={ `author.html?id=${value.AuthorID}` } class="pic" >
-                  <img src={ value.Head_url || '//zhuanquan.xyz/img/f59284bd66f39bcfc70ef62eee10e186.png' }/>
+                  <img src={ value.Head_url || '//zhuanquan.xin/img/f59284bd66f39bcfc70ef62eee10e186.png' }/>
                 </a>
                 <div class="info">
                   <a href={ `author.html?id=${value.AuthorID}` } class="name">
@@ -105,7 +105,7 @@ class Search extends migi.Component {
               }
               return <li class="audio">
                 <a href={ `/works/${value.workID}` } class="pic" >
-                  <img src={ value.CoverPic || '//zhuanquan.xyz/img/blank.png' }/>
+                  <img src={ value.CoverPic || '//zhuanquan.xin/img/blank.png' }/>
                 </a>
                 <div class="info">
                   <a href={ `/works/${value.workID}` } class="name" dangerouslySetInnerHTML={ name }/>

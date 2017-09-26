@@ -183,7 +183,7 @@ class Video extends migi.Component {
         your browser does not support the audio tag
       </video>
       <div ref="poster" class="poster"
-        style={ 'background-image:url(' + (this.cover || '//zhuanquan.xyz/img/blank.png') + ')' }
+        style={ 'background-image:url(' + (this.cover || '//zhuanquan.xin/img/blank.png') + ')' }
         onClick={ this.clickPoster }/>
       <ul class="btn" ref="btn">
         <li class={ 'like' + (this.isLike ? ' has' : '') } onClick={ this.clickLike }/>
