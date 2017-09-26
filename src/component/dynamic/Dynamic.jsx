@@ -66,7 +66,7 @@ class Dynamics extends migi.Component {
           })
         }
       </ul>
-      <div class={ 'no' + (this.list.length ? ' fn-hide' : '') }>暂无动态</div>
+      <div class={ 'no' + (this.list.length ? ' fn-hide' : '') }></div>
     </div>;
   }
 }

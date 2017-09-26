@@ -12,6 +12,7 @@ class Link extends migi.Component {
   autoWidth() {
     let $root = $(this.element);
     let $c = $root.find('.c');
+    $c.css('width', '9999rem');
     let $ul = $c.find('ul');
     $c.css('width', $ul.width() + 1);
   }

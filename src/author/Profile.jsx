@@ -96,7 +96,7 @@ class Profile extends migi.Component {
             </div>
             <span>热度</span>
           </div>
-          <a href="#" class={ (this.isLike ? 'support' : 'follow') + (this.loading ? ' loading' : '') } onClick={ this.click }>{ this.isLike ? '应援' : '关注' }</a>
+          <a href="#" class={ (this.isLike ? 'support' : 'follow') + (this.loading ? ' loading' : '') } onClick={ this.click }>{ this.isLike ? '取关' : '关注' }</a>
         </div>
       </div>
     </div>;
