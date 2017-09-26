@@ -15,8 +15,10 @@ class TopNav extends migi.Component {
   }
   submit(e) {
     e && e.preventDefault();
-    let v = this.ref.input.element.value;
-    this.emit('search', v);
+    let v = this.ref.input.element.value.trim();
+    if(v) {
+      this.emit('search', v);
+    }
   }
   render() {
     return <div class="top-nav">
