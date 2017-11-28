@@ -2,57 +2,70 @@
  * Created by army8735 on 2017/9/19.
  */
 
-@import '../../common/var.less';
-
 .top-nav{
-  //position:fixed;
-  //top:0;
-  //left:0;
+  position:fixed;
+  top:0;
+  left:0;
   display:flex;
-  padding:0.3rem 0.1rem 0.07rem;
+  padding:0 0.1rem;
+  box-sizing:border-box;
   width:100%;
-  background:@bgLinearGradientTopLeft;
+  height:0.44rem;
+  background:#8BC4E7;
   align-items:center;
   z-index:1000;
-  color:#fff;
   box-shadow:0 0 5px rgba(0,0,0,0.3);
   .logo{
-    width:1rem;
+    flex:1;
     height:0.3rem;
-    background:url(logo-beta.png) no-repeat 0 center;
+    background:url(logo.png) no-repeat 0 center;
     background-size:auto 0.3rem;
   }
-  .form{
-    flex:1;
-    height:0.28rem;
-    background:url(nav_find.png) no-repeat 0.1rem center;
-    background-size:0.18rem auto;
-    input{
+  .message{
+    position:relative;
+    margin-right:0.05rem;
+    width:0.32rem;
+    height:0.32rem;
+    background:url(message.png) no-repeat center;
+    background-size:contain;
+    span{
+      position:absolute;
+      bottom:0.18rem;
       display:block;
-      width:100%;
-      margin:0;
-      padding:0 0.1rem 0 0.35rem;
-      height:0.28rem;
-      border-radius:0.3rem;
-      border:none;
       box-sizing:border-box;
-      background:rgba(255,255,255,0.3);
-      font-size:0.12rem;
-      color:#fff;
-      &::placeholder{
-        font-size:0.12rem;
-        color:#fff;
-        opacity:0.5;
-      }
+      padding:0 0.05rem;
+      right:0.18rem;
+      min-width:0.18rem;
+      color:#FFF;
+      text-align:center;
+      background:#B65A58;
+      border-radius:0.18rem;
     }
   }
-  button{
-    margin:0 0.1rem 0 0.05rem;
-    padding:0;
-    width:0.3rem;
-    background:none;
-    border:none;
-    color:#fff;
+  > .public{
+    margin-right:0.05rem;
+    font-size:0.1rem;
+  }
+  .user{
+    text-align:right;
     font-size:0.12rem;
+    .name{
+      display:inline-block;
+      height:0.32rem;
+      color:@thirdTextColor;
+      text-shadow:0 0 2px rgba(0, 0, 0, 0.2);
+      line-height:0.32rem;
+      &.public{
+        color:#FD0;
+      }
+    }
+    img{
+      display:inline-block;
+      width:0.32rem;
+      height:0.32rem;
+      background:#eee;
+      border-radius:100%;
+      vertical-align:middle;
+    }
   }
 }

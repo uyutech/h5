@@ -1,17 +1,17 @@
 /**
- * Created by army8735 on 2017/8/9.
+ * Created by army8735 on 2017/11/12.
  */
 
 'use strict';
 
 import util from '../../common/util';
 
-class HotAuthor extends migi.Component {
+class HotCircle extends migi.Component {
   constructor(...data) {
     super(...data);
   }
   @bind hasData
-  @bind dataList
+  @bind dataList = []
   autoWidth() {
     let $list = $(this.element).find('.list');
     let $c = $list.find('.c');
@@ -20,7 +20,7 @@ class HotAuthor extends migi.Component {
     $c.css('width', $ul.width() + 1);
   }
   render() {
-    return <div class="cp-hotauthor">
+    return <div class="cp-hotcircle">
       {
         this.hasData
           ? <div class="list">
@@ -31,15 +31,14 @@ class HotAuthor extends migi.Component {
                       {
                         this.dataList.map(function(item) {
                           return <li>
-                            <a href={ `/author/${item.AuthorID}` } class="pic">
-                              <img src={ util.autoSsl(util.img120_120_80(item.Head_url || '//zhuanquan.xin/img/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
+                            <a href={ `/circle/${item.TagID}` } class="pic">
+                              <img src={ util.autoSsl(util.img288_288_80(item.TagCover)) || '/src/common/blank.png' }/>
                             </a>
-                            <a href={ `/author/${item.AuthorID}` } class="txt">
-                              <span class="name">{ item.AuthorName }</span>
+                            <a href={ `/circle/${item.TagID}` } class="txt">
+                              <span class="name">{ item.TagName }</span>
                               <span class="fans">{ item.FansNumber || 0 }</span>
                               <span class="comment">{ item.Popular || 0 }</span>
                             </a>
-                            <div class="info">合作{ item.CooperationTimes }次</div>
                           </li>;
                         })
                       }
@@ -47,11 +46,12 @@ class HotAuthor extends migi.Component {
                     : <div class="empty">暂无数据</div>
                 }
               </div>
-          </div>
+            </div>
           : <div class="placeholder"/>
       }
+
     </div>;
   }
 }
 
-export default HotAuthor;
+export default HotCircle;

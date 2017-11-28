@@ -6,21 +6,29 @@ import $ from 'anima-yocto-ajax';
 import qs from 'anima-querystring';
 
 export default {
-  ajax: function(url, data, success, error, type) {
+  ajax: function(url, data, success, error, type, timeout) {
     // 兼容无host
     if (!/^http(s)?:\/\//.test(url)) {
-      url = 'http://test.circling.cc/' + url.replace(/^\//, '');
-      // url = '/' + url.replace(/^\//, '');
+      url = 'http://circling.cc3/' + url.replace(/^\//, '');
     }
-    // console.log('ajax: ' + url + ', ' + JSON.stringify(data));
+    Object.keys(data).forEach(function(k) {
+      if(data[k] === undefined || data[k] === null) {
+        delete data[k];
+      }
+    });
+    if(url.indexOf('?') === -1) {
+      url += '?_=' + Date.now();
+    }
+    else {
+      url += '&_=' + Date.now();
+    }
     function load() {
       return $.ajax({
         url: url,
         data: data,
         dataType: 'json',
-        cache: false,
         crossDomain: true,
-        timeout: 6000,
+        timeout: timeout || 30000,
         type: type || 'get',
         // ajax 跨域设置必须加上
         beforeSend: function (xhr) {
@@ -30,7 +38,6 @@ export default {
           success(data, state, xhr);
         },
         error: function (data) {
-          // console.error('ajax error: ' + url + ', ' + JSON.stringify(data));
           if(!error.__hasExec) {
             error.__hasExec = true;
             error(data || {});

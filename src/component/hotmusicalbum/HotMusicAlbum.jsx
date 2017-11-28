@@ -1,17 +1,17 @@
 /**
- * Created by army8735 on 2017/8/9.
+ * Created by army8735 on 2017/10/29.
  */
 
 'use strict';
 
 import util from '../../common/util';
 
-class HotAuthor extends migi.Component {
+class HotMusicAlbum extends migi.Component {
   constructor(...data) {
     super(...data);
   }
   @bind hasData
-  @bind dataList
+  @bind dataList = []
   autoWidth() {
     let $list = $(this.element).find('.list');
     let $c = $list.find('.c');
@@ -20,7 +20,7 @@ class HotAuthor extends migi.Component {
     $c.css('width', $ul.width() + 1);
   }
   render() {
-    return <div class="cp-hotauthor">
+    return <div class="cp-hotmusicalbum">
       {
         this.hasData
           ? <div class="list">
@@ -30,16 +30,17 @@ class HotAuthor extends migi.Component {
                     ? <ul>
                       {
                         this.dataList.map(function(item) {
+                          let url = `/works/${item.WorksID}`;
                           return <li>
-                            <a href={ `/author/${item.AuthorID}` } class="pic">
-                              <img src={ util.autoSsl(util.img120_120_80(item.Head_url || '//zhuanquan.xin/img/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
+                            <b class="bg"/>
+                            <a href={ url } class="pic">
+                              <img src={ util.autoSsl(util.img200_200_80(item.cover_Pic)) || '/src/common/blank.png' }/>
+                              <span class="num">{ item.Popular || 0 }</span>
                             </a>
-                            <a href={ `/author/${item.AuthorID}` } class="txt">
-                              <span class="name">{ item.AuthorName }</span>
-                              <span class="fans">{ item.FansNumber || 0 }</span>
-                              <span class="comment">{ item.Popular || 0 }</span>
+                            <a href={ url } class="txt">
+                              <span>{ item.Title }</span>
+                              <span class="author">{ (item.SingerName || []).join(' ') }</span>
                             </a>
-                            <div class="info">合作{ item.CooperationTimes }次</div>
                           </li>;
                         })
                       }
@@ -47,11 +48,11 @@ class HotAuthor extends migi.Component {
                     : <div class="empty">暂无数据</div>
                 }
               </div>
-          </div>
+            </div>
           : <div class="placeholder"/>
       }
     </div>;
   }
 }
 
-export default HotAuthor;
+export default HotMusicAlbum;

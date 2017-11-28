@@ -6,27 +6,19 @@ class TopNav extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  @bind kw
-  focus() {
-    this.emit('focus');
-  }
-  click() {
-    this.submit();
-  }
-  submit(e) {
-    e && e.preventDefault();
-    let v = this.ref.input.element.value.trim();
-    if(v) {
-      this.emit('search', v);
-    }
-  }
+  @bind isPublic
+  @bind head
   render() {
-    return <div class="top-nav">
-      <span class="logo"/>
-      <form class="form" ref="form" onSubmit={ this.submit } action="/search/">
-        <input ref="input" type="text" maxlength="16" placeholder="新歌《燃尽人间色发布》" value={ this.kw } onFocus={ this.focus }/>
-      </form>
-      <button onClick={ this.click }>确认</button>
+    return <div class="top-nav" id="topNav">
+      <a href="/" class="logo"/>
+      <a class="message" href="/my/message">
+        <span>123</span>
+      </a>
+      <span class="public">[{ this.isPublic ? '切换到马甲' : '切换到作者身份' }]</span>
+      <a href="/my" class="user">
+        <span class="${'name' + (isPublic ? ' public' : '')}">{ this.isPublic ? 111 : 222 }</span>
+        <img src={ this.head || '../../common/head.png' }/>
+      </a>
     </div>;
   }
 }

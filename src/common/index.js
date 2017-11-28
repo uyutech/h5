@@ -6,9 +6,10 @@
 import 'migi-es6-shim';
 import 'migi';
 import $ from 'anima-yocto-ajax';
-import util from './util';
-import './index.less';
+import './global.jsx';
 import './bridge.js';
+
+import './index.less';
 
 if(/iP(hone|od|ad)/.test(navigator.userAgent)) {
   var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/),
@@ -27,9 +28,4 @@ window.requestAnimationFrame = function() {
     };
 }();
 
-// document.domain = 'circling.cc';
-console.log('ua: ' + navigator.userAgent);
-console.log('cookie: ' + document.cookie);
-
 window.$ = $;
-window.util = util;

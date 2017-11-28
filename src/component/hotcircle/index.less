@@ -1,8 +1,8 @@
 /**
- * Created by army8735 on 2017/8/8.
+ * Created by army8735 on 2017/11/12.
  */
 
-.cp-hotwork{
+.cp-hotcircle{
   position:relative;
   > .placeholder{
     margin-top:0.05rem;
@@ -10,7 +10,7 @@
     width:1rem;
     height:1rem;
     background:@placeholderColor;
-    border-radius:0.1rem;
+    border-radius:100%;
     opacity:0.5;
   }
   .list{
@@ -39,48 +39,25 @@
             display:block;
             width:1rem;
             height:1rem;
-            background:url(works_bg.png) no-repeat center;
+            background:url(../hotwork/works_bg.png) no-repeat center;
             background-size:contain;
-            border-radius:0.05rem;
+            border-radius:100%;
             color:#fff;
             overflow:hidden;
-            &:before{
-              position:absolute;
-              left:0;
-              bottom:0;
-              display:block;
-              width:100%;
-              height:0.3rem;
-              background:rgba(0,0,0,0.5);
-              content:' ';
-              z-index:1;
-            }
             img{
               display:block;
               width:100%;
               height:100%;
             }
-            .type{
+            .ath{
               position:absolute;
-              top:0.05rem;
-              right:0.05rem;
-              display:block;
-              padding:0 0.1rem;
-              line-height:0.24rem;
-              background:@mainColor;
-              border-radius:0.24rem;
-              box-shadow:@picShadow;
-            }
-            .num{
-              position:absolute;
-              left:0;
+              left:0.02rem;
+              right:0.02rem;
               bottom:0;
-              display:block;
-              padding-left:0.32rem;
-              line-height:0.3rem;
-              background:url(../../component/hotpost/comment-white.png) no-repeat 0.05rem center;
-              background-size:0.24rem auto;
-              z-index:1;
+              font-size:0.1rem;
+              overflow:hidden;
+              text-overflow:ellipsis;
+              white-space:nowrap;
             }
           }
           .txt{
@@ -90,15 +67,29 @@
             white-space:nowrap;
             overflow:hidden;
             text-overflow:ellipsis;
-            color:#000;
-            span{
+            .name{
               display:block;
-              text-overflow:ellipsis;
+              text-align:center;
+              white-space:nowrap;
               overflow:hidden;
+              text-overflow:ellipsis;
             }
-            .author{
-              font-size:0.1rem;
+            .fans{
+              display:inline-block;
+              margin-right:0.1rem;
+              padding-left:0.2rem;
+              background:url(../../component/hotauthor/fans.png) no-repeat 0 center;
+              background-size:0.16rem auto;
               color:@fourthTextColor;
+              font-size:0.1rem;
+            }
+            .comment{
+              display:inline-block;
+              padding-left:0.2rem;
+              background:url(../../component/hotauthor/comment.png) no-repeat 0 center;
+              background-size:0.16rem auto;
+              color:@fourthTextColor;
+              font-size:0.1rem;
             }
           }
         }

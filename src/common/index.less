@@ -2,10 +2,12 @@
  * Created by army on 2017/3/19.
  */
 
+@import './var';
+
 *,
 :after,
-:before {
-  -webkit-tap-highlight-color: transparent;
+:before{
+  -webkit-tap-highlight-color:transparent;
   -webkit-overflow-scrolling:touch;
 }
 
@@ -31,143 +33,152 @@ p,
 td,
 textarea,
 th,
-ul {
-  margin: 0;
-  padding: 0;
+ul,
+pre{
+  margin:0;
+  padding:0;
 }
 
 *::-webkit-scrollbar{
   display:none;
 }
 
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
+table{
+  border-collapse:collapse;
+  border-spacing:0;
 }
 
 fieldset,
-img {
-  border: 0;
+img{
+  border:0;
 }
 
-li {
-  list-style: none;
+li{
+  list-style:none;
 }
 
 caption,
-th {
-  text-align: left;
+th{
+  text-align:left;
 }
 
 q:after,
-q:before {
-  content: "";
+q:before{
+  content:"";
 }
 
-input:password,input[type="password"] {
-  ime-mode: disabled;
+input:password, input[type="password"]{
+  ime-mode:disabled;
 }
 
-:focus {
-  outline: 0;
+:focus{
+  outline:0;
 }
 
-html {
+html{
   margin:0;
   padding:0;
   width:100%;
-  min-height:100%;
+  height:100%;
   overflow-x:hidden;
   font-size:100px;
 }
 
-body {
+body{
+  display:flex;
+  flex-direction:column;
   margin:0;
   padding:0;
-  user-select: none;
+  user-select:none;
   box-sizing:border-box;
   width:100%;
-  min-height: 100%;
+  min-height:100%;
   overflow-x:hidden;
-  &::-webkit-scrollbar{
-    display:block;
-  }
+  background:#FFF;
 }
 
 a,
-img {
-  -webkit-touch-callout: none;
+img{
+  -webkit-touch-callout:none;
 }
 
 body,
 button,
 input,
 select,
-textarea{
-  font-size:0.16rem;
+textarea,
+pre{
+  font-size:0.12rem;
   line-height:1.5;
-  font-family:
-    // System Font            // https://www.webkit.org/blog/3709/using-the-system-font-in-web-content/
-    -apple-system,            // OSX ^10.11 & iOS ^9  San Francisco & 苹方
+  font-family:// System Font            // https://www.webkit.org/blog/3709/using-the-system-font-in-web-content/
+    -apple-system, // OSX ^10.11 & iOS ^9  San Francisco & 苹方
 
       // English First
-    "Helvetica Neue",         // OSX
-    "Arial",                  // Win "Helvetica"
+    "Helvetica Neue", // OSX
+    "Arial", // Win "Helvetica"
       //" Segoe UI",            // Win ^8
 
       // Chinese Fallback
-    "PingFang SC",            // OSX ^10.11 & iOS ^9  苹方（华康信凭黑）
-    "Hiragino Sans GB",       // OSX ^10.6            冬青黑体
-    "STHeiti",                // OSX <10.6  & iOS <9  华文黑体
-    "Microsoft YaHei",        // Win                  微软雅黑
-    "Microsoft JhengHei",     // Win                  微软正黑
-    "Source Han Sans SC",     // SourceHan - begin    思源黑体
+    "PingFang SC", // OSX ^10.11 & iOS ^9  苹方（华康信凭黑）
+    "Hiragino Sans GB", // OSX ^10.6            冬青黑体
+    "STHeiti", // OSX <10.6  & iOS <9  华文黑体
+    "Microsoft YaHei", // Win                  微软雅黑
+    "Microsoft JhengHei", // Win                  微软正黑
+    "Source Han Sans SC", // SourceHan - begin    思源黑体
     "Noto Sans CJK SC",
     "Source Han Sans CN",
     "Noto Sans SC",
     "Source Han Sans TC",
-    "Noto Sans CJK TC",       // SourceHan - end
-    "WenQuanYi Micro Hei",    // Linux                文泉驿微米黑
-    SimSun,                   // Win old              中易宋体
-    sans-serif;               // System Fallback
+    "Noto Sans CJK TC", // SourceHan - end
+    "WenQuanYi Micro Hei", // Linux                文泉驿微米黑
+    SimSun, // Win old              中易宋体
+    sans-serif; // System Fallback
 }
 
-input {
-  line-height: normal;
+body, button, input, select, textarea{
+  color:@mainTextColor;
 }
 
-a {
-  color: #0ae;
-  text-decoration: none;
+input[type=button], input[type=submit], input[type=file], button{
+  cursor:pointer;
+  -webkit-appearance:none;
 }
 
-.fn-clear:after {
-  visibility: hidden;
-  display: block;
-  font-size: 0;
-  content: " ";
-  clear: both;
-  height: 0;
+input{
+  line-height:normal;
 }
 
-.fn-hide {
-  display: none!important;
+a{
+  color:@mainLinkColor;
+  text-decoration:none;
+  &:hover{
+    color:@mainHoverColor;
+    text-decoration:underline;
+  }
+}
+
+.fn-clear:after{
+  visibility:hidden;
+  display:block;
+  font-size:0;
+  content:" ";
+  clear:both;
+  height:0;
+}
+
+.fn-hide{
+  display:none !important;
 }
 
 .fn-hidden{
-  visibility:hidden!important;
+  visibility:hidden !important;
 }
 
 .fn-zero{
-  height:0!important;
-  overflow:hidden!important;
+  height:0 !important;
+  overflow:hidden !important;
 }
 
-//@media screen and (max-device-width:320px){
-//  html{
-//    font-size:84px;
-//  }
-//}
 @media screen and (min-device-width:414px){
   html{
     font-size:110px;
