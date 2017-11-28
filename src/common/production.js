@@ -8,7 +8,7 @@ export default {
   ajax: function(url, data, success, error, type) {
     // 兼容无host
     if (!/^http(s)?:\/\//.test(url)) {
-      url = 'http://test.circling.cc/' + url.replace(/^\//, '');
+      url = 'http://manage.circling.cc/' + url.replace(/^\//, '');
     }
     console.log('ajax: ' + url + ', ' + JSON.stringify(data));
     function load() {

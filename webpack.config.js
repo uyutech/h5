@@ -49,7 +49,9 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        use: extractLESS.extract([ 'css-loader', 'autoprefixer-loader', 'less-loader' ])
+        use: extractLESS.extract([{
+          loader: 'css-loader', options: { minimize: true }
+        }, 'autoprefixer-loader', 'less-loader'])
       },
       {
         test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)$/,
@@ -62,9 +64,6 @@ module.exports = {
     ]
   },
   plugins: [
-    // new webpack.DefinePlugin({
-    //   ENV: JSON.stringify(process.env.NODE_ENV || 'production')
-    // }),
     extractLESS
   ],
   resolve: {
