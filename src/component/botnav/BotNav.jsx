@@ -15,7 +15,7 @@ class BotNav extends migi.Component {
     if($elem.hasClass('cur')) {
       return;
     }
-    if(rel) {
+    if(rel !== undefined) {
       $(this.element).find('.cur').removeClass('cur');
       $elem.addClass('cur');
       this.emit('change', rel);
@@ -27,22 +27,22 @@ class BotNav extends migi.Component {
   render() {
     return <div class="bot-nav" onClick={ { li: this.click } }>
       <ul>
-        <li class="find cur" rel="0">
+        <li class="find cur" rel={ 0 }>
           <b class="icon"/>
           <span>发现</span>
         </li>
-        <li class="zhuanquan" rel="1">
+        <li class="zhuanquan" rel={ 1 }>
           <b class="icon"/>
           <span>转圈</span>
         </li>
         <li class="new cur">
           <b class="icon"/>
         </li>
-        <li class="follow" rel="2">
+        <li class="follow" rel={ 2 }>
           <b class="icon"/>
           <span>关注</span>
         </li>
-        <li class="my" rel="3">
+        <li class="my" rel={ 3 }>
           <b class="icon"/>
           <span>我的</span>
         </li>

@@ -27,13 +27,17 @@
     "webstorm-disable-index": "^1.2.0"
   },
   "scripts": {
-    "start": "export NODE_ENV=production && rm -rf ./www && webpack && webpack --config webpack.img.js",
+    "build-src": "export NODE_ENV=production && rm -rf ./www && webpack && webpack --config webpack.img.js",
     "build": "export NODE_ENV=production && rm -rf ./www && webpack -p && webpack --config webpack.img.js",
+    "build-dev-src": "export NODE_ENV=dev && rm -rf ./www && webpack && webpack --config webpack.img.js",
+    "build-dev": "export NODE_ENV=dev && rm -rf ./www && webpack -p && webpack --config webpack.img.js",
     "img": "webpack --config webpack.img.js",
     "mock": "export NODE_ENV=mock && webpack-dev-server --host 0.0.0.0 --port 8080",
     "dev": "export NODE_ENV=dev && webpack-dev-server --host 0.0.0.0 --port 8080",
     "zip": "export NODE_ENV=production && rm -rf dist && mkdir dist && cd www && zip -r ../dist/h5.zip *",
-    "pack": "export NODE_ENV=production && npm run build && npm run zip",
-    "pack2": "export NODE_ENV=production && npm run start && npm run zip"
+    "pack-src": "npm run build-src && npm run zip",
+    "pack": "npm run build && npm run zip",
+    "pack-dev-src" : "npm run build-dev-src && npm run zip",
+    "pack-dev": "npm run build-dev && npm run zip"
   }
 }

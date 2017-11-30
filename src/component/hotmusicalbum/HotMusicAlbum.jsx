@@ -45,11 +45,11 @@ class HotMusicAlbum extends migi.Component {
                         })
                       }
                     </ul>
-                    : <div class="empty">暂无数据</div>
+                    : <div class="empty">{ this.props.empty || '暂无数据' }</div>
                 }
               </div>
             </div>
-          : <div class="placeholder"/>
+          : <div class="fn-placeholder"/>
       }
     </div>;
   }

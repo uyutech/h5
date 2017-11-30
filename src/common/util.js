@@ -2,8 +2,6 @@
  * Created by army on 2017/5/20.
  */
 
-import env from 'ENV';
-
 let util = {
   isIPhone: function(){
     return navigator.appVersion.match(/iphone/gi);
@@ -185,6 +183,12 @@ let util = {
     }
     return url ? url + '-120_120_80' : url;
   },
+  img108_108_80: function(url) {
+    if(!/\/\/zhuanquan\./i.test(url)) {
+      return url;
+    }
+    return url ? url + '-108_108_80' : url;
+  },
   img100_100: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {
       return url;
@@ -287,42 +291,6 @@ let util = {
     return '刚刚';
   },
   ERROR_MESSAGE: '人气大爆发，请稍后再试。',
-  getJSON: function(url, data, success, error, type, timeout) {
-    if(typeof data === 'function') {
-      timeout = error;
-      error = success;
-      success = data;
-      data = {};
-    }
-    if(typeof success !== 'function') {
-      success = function() {};
-      timeout = error;
-      error = success;
-    }
-    if(typeof error !== 'function') {
-      timeout = error;
-      error = function() {};
-    }
-    return env.ajax(url, data, success, error, 'GET', timeout);
-  },
-  postJSON: function(url, data, success, error, type, timeout) {
-    if(typeof data === 'function') {
-      timeout = error;
-      error = success;
-      success = data;
-      data = {};
-    }
-    if(typeof success !== 'function') {
-      success = function() {};
-      timeout = error;
-      error = success;
-    }
-    if(typeof error !== 'function') {
-      timeout = error;
-      error = function() {};
-    }
-    return env.ajax(url, data, success, error, 'POST', timeout);
-  },
 };
 
 export default util;

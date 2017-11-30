@@ -36,19 +36,19 @@ class HotAuthor extends migi.Component {
                             </a>
                             <a href={ `/author/${item.AuthorID}` } class="txt">
                               <span class="name">{ item.AuthorName }</span>
-                              <span class="fans">{ item.FansNumber || 0 }</span>
-                              <span class="comment">{ item.Popular || 0 }</span>
+                              <span class="fans">粉丝 { item.FansNumber || 0 }</span>
+                              <span class="comment">留言 { item.Popular || 0 }</span>
                             </a>
                             <div class="info">合作{ item.CooperationTimes }次</div>
                           </li>;
                         })
                       }
                     </ul>
-                    : <div class="empty">暂无数据</div>
+                    : <div class="empty">{ this.props.empty || '暂无数据' }</div>
                 }
               </div>
           </div>
-          : <div class="placeholder"/>
+          : <div class="fn-placeholder"/>
       }
     </div>;
   }

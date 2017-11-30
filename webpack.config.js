@@ -53,7 +53,7 @@ module.exports = {
         }, 'autoprefixer-loader', 'less-loader'])
       },
       {
-        test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)$/,
+        test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)|(\.ico)$/,
         use: 'url-loader?limit=10240&name=[path][name].[ext]'
       },
       // {

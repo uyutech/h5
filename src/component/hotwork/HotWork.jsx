@@ -17,6 +17,9 @@ class HotWork extends migi.Component {
     let $ul = $c.find('ul');
     $c.css('width', $ul.width() + 1);
   }
+  setData(data) {
+    this.dataList = data;
+  }
   render() {
     return <div class="cp-hotwork">
       {
@@ -41,11 +44,11 @@ class HotWork extends migi.Component {
                         })
                       }
                     </ul>
-                    : <div class="empty">暂无数据</div>
+                    : <div class="empty">{ this.props.empty || '暂无数据' }</div>
                 }
               </div>
             </div>
-          : <div class="placeholder"/>
+          : <div class="fn-placeholder"/>
       }
     </div>;
   }

@@ -6,6 +6,7 @@ module.exports = {
   entry: {
     head: './src/common/head.png',
     blank: './src/common/blank.png',
+    favicon: './src/common/favicon.ico',
   },
   output: {
     path: __dirname + '/www',
@@ -17,7 +18,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)$/,
+        test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)|(\.ico)$/,
         use: 'file-loader?name=[path][name].[ext]'
       },
     ]

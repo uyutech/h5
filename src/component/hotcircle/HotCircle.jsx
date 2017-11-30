@@ -30,24 +30,25 @@ class HotCircle extends migi.Component {
                     ? <ul>
                       {
                         this.dataList.map(function(item) {
+                          let n = item.Popular ? (item.Popular > 999 ? '999+' : item.Popular) : 0;
                           return <li>
                             <a href={ `/circle/${item.TagID}` } class="pic">
-                              <img src={ util.autoSsl(util.img288_288_80(item.TagCover)) || '/src/common/blank.png' }/>
+                              <img src={ util.autoSsl(util.img288_288_80(item.TagCover)) || '//zhuanquan.xin/img/blank.png' }/>
                             </a>
                             <a href={ `/circle/${item.TagID}` } class="txt">
                               <span class="name">{ item.TagName }</span>
-                              <span class="fans">{ item.FansNumber || 0 }</span>
-                              <span class="comment">{ item.Popular || 0 }</span>
+                              <span class="fans">成员 { item.FansNumber || 0 }</span>
+                              <span class="comment">画圈 { n }</span>
                             </a>
                           </li>;
                         })
                       }
                     </ul>
-                    : <div class="empty">暂无数据</div>
+                    : <div class="empty">{ this.props.empty || '暂无数据' }</div>
                 }
               </div>
             </div>
-          : <div class="placeholder"/>
+          : <div class="fn-placeholder"/>
       }
 
     </div>;

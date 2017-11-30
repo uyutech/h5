@@ -3,16 +3,6 @@
  */
 
 .cp-hotcircle{
-  position:relative;
-  > .placeholder{
-    margin-top:0.05rem;
-    margin-left:0.1rem;
-    width:1rem;
-    height:1rem;
-    background:@placeholderColor;
-    border-radius:100%;
-    opacity:0.5;
-  }
   .list{
     margin-top:0.05rem;
     overflow:auto;
@@ -67,6 +57,8 @@
             white-space:nowrap;
             overflow:hidden;
             text-overflow:ellipsis;
+            text-align:center;
+            line-height:1.2;
             .name{
               display:block;
               text-align:center;
@@ -76,20 +68,17 @@
             }
             .fans{
               display:inline-block;
-              margin-right:0.1rem;
-              padding-left:0.2rem;
-              background:url(../../component/hotauthor/fans.png) no-repeat 0 center;
-              background-size:0.16rem auto;
-              color:@fourthTextColor;
+              color:@secondTextColor;
               font-size:0.1rem;
             }
             .comment{
               display:inline-block;
-              padding-left:0.2rem;
-              background:url(../../component/hotauthor/comment.png) no-repeat 0 center;
-              background-size:0.16rem auto;
-              color:@fourthTextColor;
+              padding-left:0.03rem;
+              color:@secondTextColor;
               font-size:0.1rem;
+              &:before{
+                content:'/ ';
+              }
             }
           }
         }

@@ -179,6 +179,27 @@ a{
   overflow:hidden !important;
 }
 
+.fn-placeholder{
+  margin:0.2rem;
+  opacity:0.5;
+  &:before{
+    display:block;
+    margin-bottom:0.1rem;
+    width:50%;
+    height:0.2rem;
+    background:@placeholderColor;
+    border-radius:0.02rem;
+    content:' ';
+  }
+  &:after{
+    display:block;
+    height:0.2rem;
+    background:@placeholderColor;
+    border-radius:0.02rem;
+    content:' ';
+  }
+}
+
 @media screen and (min-device-width:414px){
   html{
     font-size:110px;

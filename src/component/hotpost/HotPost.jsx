@@ -4,6 +4,7 @@
 
 'use strict';
 
+import net from '../../common/net';
 import util from '../../common/util';
 
 let take = 30;
@@ -62,7 +63,7 @@ class HotPost extends migi.Component {
         if($li.hasClass('has')) {
           url = '/api/post/unFavor';
         }
-        util.postJSON(url, { postID }, function(res) {
+        net.postJSON(url, { postID }, function(res) {
           if(res.success) {
             let data = res.data;
             if(data.State === 'favorWork') {
@@ -93,7 +94,7 @@ class HotPost extends migi.Component {
         }
         $li.addClass('loading');
         let postID = $li.attr('rel');
-        util.postJSON('/api/post/like', { postID }, function(res) {
+        net.postJSON('/api/post/like', { postID }, function(res) {
           if(res.success) {
             let data = res.data;
             if(data.ISLike) {
@@ -121,7 +122,7 @@ class HotPost extends migi.Component {
         if(window.confirm('确认删除吗？')) {
           let postID = $(this).attr('rel');
           let $li = $(this).closest('.wrap').closest('li');
-          util.postJSON('/api/post/del', { postID }, function(res) {
+          net.postJSON('/api/post/del', { postID }, function(res) {
             if(res.success) {
               $li.remove();
             }
