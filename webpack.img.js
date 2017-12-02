@@ -1,5 +1,3 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const extractLESS = new ExtractTextPlugin('[name].css');
 const webpack = require("webpack");
 
 module.exports = {

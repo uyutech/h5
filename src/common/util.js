@@ -5,6 +5,9 @@
 import BigNumber from 'bignumber.js';
 
 let util = {
+  isIPhone: function(){
+    return navigator.appVersion.match(/iphone/gi);
+  },
   goto: function(url) {
     location.href = url;
   },

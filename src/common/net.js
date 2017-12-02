@@ -4,8 +4,6 @@
 
 'use strict';
 
-import env from 'ENV';
-
 let net = {
   getJSON: function(url, data, success, error, type, timeout) {
     if(typeof data === 'function') {
@@ -23,7 +21,7 @@ let net = {
       timeout = error;
       error = function() {};
     }
-    return env.ajax(url, data, success, error, 'GET', timeout);
+    return $.ajax2(url, data, success, error, 'GET', timeout);
   },
   postJSON: function(url, data, success, error, type, timeout) {
     if(typeof data === 'function') {
@@ -41,7 +39,7 @@ let net = {
       timeout = error;
       error = function() {};
     }
-    return env.ajax(url, data, success, error, 'POST', timeout);
+    return $.ajax2(url, data, success, error, 'POST', timeout);
   },
 };
 

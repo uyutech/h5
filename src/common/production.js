@@ -6,10 +6,10 @@ import $ from 'anima-yocto-ajax';
 
 export default {
   ajax: function(url, data, success, error, type, timeout) {
+    // 兼容无host
     if (!/^http(s)?:\/\//.test(url)) {
-      url = 'http://circling.com.cn/' + url.replace(/^\//, '');
+      url = 'http://h5.circling.cc/' + url.replace(/^\//, '');
     }
-    console.log('ajax: ' + url + ', ' + JSON.stringify(data));
     Object.keys(data).forEach(function(k) {
       if(data[k] === undefined || data[k] === null) {
         delete data[k];
@@ -26,26 +26,14 @@ export default {
         url: url,
         data: data,
         dataType: 'json',
-        cache: false,
         crossDomain: true,
         timeout: timeout || 30000,
         type: type || 'get',
+        // ajax 跨域设置必须加上
         beforeSend: function (xhr) {
           xhr.withCredentials = true;
         },
         success: function (data, state, xhr) {
-          console.log('ajax success: ' + url + ', ' + JSON.stringify(data));
-          if(!data.success && data.code === 1000) {
-            if(jsBridge.isInApp) {
-              jsBridge.pushWindow('login.html', {
-                transparentTitle: true,
-              });
-            }
-            else {
-              location.replace('login.html?goto=' + encodeURIComponent(location.href));
-            }
-            return;
-          }
           success(data, state, xhr);
         },
         error: function (data) {

@@ -4,7 +4,6 @@ const webpack = require("webpack");
 
 module.exports = {
   entry: {
-    // pre: './src/common/pre.js',
     common: './src/common/index.js',
     // redirect: './src/redirect/index.jsx',
     // login: './src/login/index.jsx',

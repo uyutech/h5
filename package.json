@@ -16,6 +16,7 @@
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.10.1",
+    "glob": "^7.1.2",
     "html-withimg-loader": "^0.1.16",
     "json-loader": "^0.5.4",
     "less": "^2.7.2",
@@ -27,17 +28,20 @@
     "webstorm-disable-index": "^1.2.0"
   },
   "scripts": {
-    "build-src": "export NODE_ENV=production && rm -rf ./www && webpack && webpack --config webpack.img.js",
-    "build": "export NODE_ENV=production && rm -rf ./www && webpack -p && webpack --config webpack.img.js",
-    "build-dev-src": "export NODE_ENV=dev && rm -rf ./www && webpack && webpack --config webpack.img.js",
-    "build-dev": "export NODE_ENV=dev && rm -rf ./www && webpack -p && webpack --config webpack.img.js",
+    "build-src": "export NODE_ENV=production && rm -rf ./www && webpack && npm run img && npm run pre-src && npm run preRender",
+    "build": "export NODE_ENV=production && rm -rf ./www && webpack -p && npm run img && npm run pre && npm run preRender",
+    "build-dev-src": "export NODE_ENV=dev && rm -rf ./www && webpack && npm run img && npm run pre-src && npm run preRender",
+    "build-dev": "export NODE_ENV=dev && rm -rf ./www && webpack -p && npm run img && npm run pre && npm run preRender",
     "img": "webpack --config webpack.img.js",
+    "pre-src": "webpack --config webpack.pre.js",
+    "pre": "webpack -p --config webpack.pre.js",
+    "preRender": "node pre",
     "mock": "export NODE_ENV=mock && webpack-dev-server --host 0.0.0.0 --port 8080",
     "dev": "export NODE_ENV=dev && webpack-dev-server --host 0.0.0.0 --port 8080",
-    "zip": "export NODE_ENV=production && rm -rf dist && mkdir dist && cd www && zip -r ../dist/h5.zip *",
+    "zip": "rm -rf dist && mkdir dist && cd www && zip -r ../dist/h5.zip *",
     "pack-src": "npm run build-src && npm run zip",
     "pack": "npm run build && npm run zip",
-    "pack-dev-src" : "npm run build-dev-src && npm run zip",
+    "pack-dev-src": "npm run build-dev-src && npm run zip",
     "pack-dev": "npm run build-dev && npm run zip"
   }
 }

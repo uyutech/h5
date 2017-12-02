@@ -5,9 +5,10 @@
 
 import 'migi-es6-shim';
 import 'migi';
-import $ from 'anima-yocto-ajax';
-import './global.jsx';
 import './bridge.js';
+import $ from 'anima-yocto-ajax';
+import env from 'ENV';
+import './global.jsx';
 
 import './index.less';
 
@@ -32,4 +33,5 @@ window.requestAnimationFrame = function() {
     };
 }();
 
+$.ajax2 = env.ajax;
 window.$ = $;

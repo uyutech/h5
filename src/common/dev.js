@@ -2,8 +2,32 @@
  * Created by army8735 on 2017/9/15.
  */
 
+import migi from 'migi';
 import $ from 'anima-yocto-ajax';
-import qs from 'anima-querystring';
+
+// 开发环境在线浏览的时候，因不存在preRender的过程，所以将preExist替换为render，此时就降级为没有预渲染直接即时渲染
+if(location.hostname === 'army8735.circling.cc') {
+  migi.preExist = migi.render;
+  jsBridge.ready(function() {
+    if(jsBridge.isInApp) {
+      return;
+    }
+    let nav = document.createElement('div');
+    nav.style.position = 'fixed';
+    nav.style.zIndex = 9999;
+    nav.style.left = 0;
+    nav.style.top = 0;
+    nav.style.padding = '0 0.1rem';
+    nav.style.boxSizing = 'border-box';
+    nav.style.width = '100%';
+    nav.style.height = '0.23rem';
+    nav.style.lineHeight = '0.23rem';
+    nav.style.color = '#FFF';
+    nav.style.backgroundColor = 'rgba(0,0,0,0.3)';
+    nav.innerHTML = '== mock native navigator ==';
+    document.body.appendChild(nav);
+  });
+}
 
 export default {
   ajax: function(url, data, success, error, type, timeout) {

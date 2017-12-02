@@ -18,12 +18,11 @@ jsBridge.ready(function() {
     jsBridge.moveTaskToBack();
   });
 
-  let find = migi.render(<Find/>, '#page');
-  // let my = migi.render(<My/>, '#page');
+  let find = migi.preExist(<Find/>, '#page');
   let my;
   let last = find;
-  let topNav = migi.render(<TopNav/>, '#page');
-  let botNav = migi.render(<BotNav/>, '#page');
+  let topNav = migi.preExist(<TopNav/>, '#page');
+  let botNav = migi.preExist(<BotNav/>, '#page');
 
   botNav.on('change', function(i) {
     last.hide();
