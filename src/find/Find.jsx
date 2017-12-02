@@ -25,6 +25,22 @@ class Find extends migi.Component {
       net.postJSON('/h5/find/index', function(res) {
         if(res.success) {
           self.setData(res.data);
+          let $window = $(window);
+          let $type = $(self.ref.type.element);
+          let WIN_HEIGHT = $window.height();
+          let show;
+          $window.on('scroll', function() {
+            if(show) {
+              return;
+            }
+            let HEIGHT = $(document.body).height();
+            let bool = $window.scrollTop() + WIN_HEIGHT + 60 > HEIGHT;
+            if(bool) {
+              $type.removeClass('fn-hide');
+              show = true;
+              self.ref.hotPlayList.hasData = true;
+            }
+          });
         }
         else {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -34,8 +50,6 @@ class Find extends migi.Component {
       });
     });
   }
-  @bind loading
-  @bind loadEnd
   show() {
     $(this.element).removeClass('fn-hide');
   }
@@ -50,22 +64,20 @@ class Find extends migi.Component {
 
     self.ref.hotCircle.dataList = data.hotCircleList;
     self.ref.hotCircle.hasData = true;
-    self.ref.hotCircle.autoWidth();
 
     self.ref.hotWork.dataList = data.hotWorkList;
     self.ref.hotWork.hasData = true;
-    self.ref.hotWork.autoWidth();
+    $(self.ref.changeWork.element).removeClass('fn-hide');
 
     self.ref.hotMusiceAlbum.dataList = data.hotMusicAlbumList;
     self.ref.hotMusiceAlbum.hasData = true;
-    self.ref.hotMusiceAlbum.autoWidth();
 
     self.ref.hotAuthor.dataList = data.hotAuthorList;
     self.ref.hotAuthor.hasData = true;
     self.ref.hotAuthor.autoWidth();
 
     self.ref.hotPlayList.dataList = data.hotPlayList.data;
-    self.ref.hotPlayList.hasData = true;
+    // self.ref.hotPlayList.hasData = true;
   }
   clickChangeWork() {
     let self = this;
@@ -87,13 +99,13 @@ class Find extends migi.Component {
       <Banner ref="banner"/>
       <h4>热门圈子</h4>
       <HotCircle ref="hotCircle"/>
-      <h4>热门作品<small onClick={ this.clickChangeWork }>换一换</small></h4>
+      <h4>热门作品<small class="fn-hide" ref="changeWork" onClick={ this.clickChangeWork }>换一换</small></h4>
       <HotWork ref="hotWork"/>
       <h4>热门专辑</h4>
       <HotMusiceAlbum ref="hotMusiceAlbum"/>
       <h4>入驻作者</h4>
       <HotAuthor ref="hotAuthor"/>
-      <ul class="type fn-clear" ref="type" onClick={ { li: this.clickType } }>
+      <ul class="type fn-clear fn-hide" ref="type" onClick={ { li: this.clickType } }>
         <li class="ma cur">音乐</li>
         <li class="pic">美图</li>
       </ul>

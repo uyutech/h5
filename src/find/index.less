@@ -9,6 +9,7 @@
 @import '../component/hotauthor/index';
 @import '../component/hotpost/index';
 @import '../component/hotplaylist/index';
+@import '../component/hotpic/index';
 
 #page > .find{
   > .banner{
@@ -58,17 +59,6 @@
     margin:0.1rem 0.1rem 0.05rem;
     padding-left:0.05rem;
     font-size:0.16rem;
-    &:before{
-      position:absolute;
-      left:0;
-      top:50%;
-      width:0.02rem;
-      height:0.14rem;
-      background:@mainColor;
-      content:' ';
-      border-radius:0.02rem;
-      transform:translateY(-50%);
-    }
     small{
       position:absolute;
       top:0;
@@ -92,12 +82,21 @@
         content:' ';
       }
     }
+    &:before{
+      position:absolute;
+      left:0;
+      top:50%;
+      width:0.02rem;
+      height:0.14rem;
+      background:@mainColor;
+      content:' ';
+      border-radius:0.02rem;
+      transform:translateY(-50%);
+    }
   }
   .cp-hotauthor{
-    .list .c ul li{
-      .comment,.info{
-        display:none;
-      }
+    .comment,.info{
+      display:none;
     }
   }
   > .type{
@@ -123,20 +122,18 @@
       text-align:right;
       background-color:rgba(255, 255, 255, 0.7);
       background-repeat:no-repeat;
+      background-size:0.24rem auto;
+      background-position:0.15rem 0.12rem;
       &.ma{
-        background-image:url(tag-ma.png);
-        background-size:0.18rem auto;
-        background-position:0.2rem 0.17rem;
+        background-image:url(../icon/tag-ma.png);
         &.cur{
-          background-image:url(tag-ma-cur.png);
+          background-image:url(../icon/tag-ma-cur.png);
         }
       }
       &.pic{
-        background-image:url(tag-pic.png);
-        background-size:0.18rem auto;
-        background-position:0.2rem 0.16rem;
+        background-image:url(../icon/tag-pic.png);
         &.cur{
-          background-image:url(tag-pic-cur.png);
+          background-image:url(../icon/tag-pic-cur.png);
         }
       }
       &.cur{

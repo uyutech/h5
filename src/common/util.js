@@ -2,10 +2,9 @@
  * Created by army on 2017/5/20.
  */
 
+import BigNumber from 'bignumber.js';
+
 let util = {
-  isIPhone: function(){
-    return navigator.appVersion.match(/iphone/gi);
-  },
   goto: function(url) {
     location.href = url;
   },
@@ -26,7 +25,7 @@ let util = {
       return url;
     }
     return url ? url + '-1600__80' : url;
-    },
+  },
   img1296_1296_80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {
       return url;
@@ -75,12 +74,18 @@ let util = {
     }
     return url ? url + '-480_480_80' : url;
   },
+  img336__80: function(url) {
+    if(!/\/\/zhuanquan\./i.test(url)) {
+      return url;
+    }
+    return url ? url + '-336__80' : url;
+  },
   img332_332_80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {
       return url;
     }
     return url ? url + '-332_332_80' : url;
-    },
+  },
   img288__80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {
       return url;
@@ -134,6 +139,12 @@ let util = {
       return url;
     }
     return url ? url + '-172_172_80' : url;
+  },
+  img168__80: function(url) {
+    if(!/\/\/zhuanquan\./i.test(url)) {
+      return url;
+    }
+    return url ? url + '-168__80' : url;
   },
   img150_150_80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {
@@ -240,7 +251,6 @@ let util = {
   decode: function(str) {
     return str.replace(/&lt;/g, '<').replace(/&amp;/g, '&');
   },
-  formatPost: function(str) {},
   formatTime: function(time) {
     if(!time) {
       return '00:00';
@@ -290,7 +300,28 @@ let util = {
     }
     return '刚刚';
   },
+  abbrNum: function(n, fix) {
+    if(!n) {
+      return 0;
+    }
+    if(n >= 10000) {
+      n = new BigNumber(n).div(10000).toFixed(fix || 1);
+      n = n.replace(/(\.[1-9]*)0+$/, '$1');
+      n = n.replace(/\.0$/, '');
+      n += 'w';
+    }
+    if(n >= 1000) {
+      n = new BigNumber(n).div(1000).toFixed(fix || 1);
+      n = n.replace(/(\.[1-9]*)0+$/, '$1');
+      n = n.replace(/\.0$/, '');
+      n += 'k';
+    }
+    return n;
+  },
   ERROR_MESSAGE: '人气大爆发，请稍后再试。',
+  scrollTop: function(y) {
+    $(window).scrollTop(y - 70);
+  },
 };
 
 export default util;

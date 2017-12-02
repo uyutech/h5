@@ -1,0 +1,77 @@
+/**
+ * Created by army8735 on 2017/11/30.
+ */
+
+.cp-hotpic{
+  .c{
+    display:flex;
+    padding:0.1rem;
+    justify-content:center;
+    div{
+      &:first-child{
+        margin-right:0.1rem;
+      }
+    }
+    ul{
+      width:1.68rem;
+      li{
+        position:relative;
+        display:block;
+        margin-bottom:0.1rem;
+        width:100%;
+        border-radius:0.06rem;
+        box-shadow:@boxShadow;
+        text-align:right;
+        img{
+          display:block;
+          margin-bottom:0.05rem;
+          max-width:100%;
+          border-top-left-radius:0.06rem;
+          border-top-right-radius:0.06rem;
+          background:#D9D9D9;
+        }
+        .like{
+          display:inline-block;
+          width:0.18rem;
+          height:0.18rem;
+          background:url(../../icon/slike.png) no-repeat;
+          background-size:contain;
+          cursor:pointer;
+          &:hover{
+            background-image:url(../../icon/slike-hover.png);
+          }
+          &.has{
+            background-image:url(../../icon/sliked.png);
+            &:hover{
+              background-image:url(../../icon/sliked-hover.png);
+            }
+          }
+        }
+        .favor{
+          display:inline-block;
+          margin:0 0.05rem;
+          width:0.18rem;
+          height:0.18rem;
+          background:url(../../icon/sfavor.png) no-repeat;
+          background-size:contain;
+          cursor:pointer;
+          &:hover{
+            background-image:url(../../icon/sfavor-hover.png);
+          }
+          &.has{
+            background-image:url(../../icon/sfavored.png);
+            &:hover{
+              background-image:url(../../icon/sfavored-hover.png);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-device-width:320px){
+  .cp-hotpic > .c ul{
+    width:1.44rem;
+  }
+}

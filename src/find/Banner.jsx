@@ -58,7 +58,7 @@ class Banner extends migi.Component {
   }
   render() {
     return <div class="banner" onSwipeLeft={ this.left } onSwipeRight={ this.right }>
-      <ul class={ 'list fn-clear' + (this.hasData ? '' : ' fn-hide') } ref="list">
+      <ul class={ 'list fn-clear' + (this.hasData ? '' : ' fn-hide') } ref="list" style={ 'width:' + this.dataList.length * 100 + '%' }>
         {
           this.dataList.map(function(item) {
             return <li><a href={ item.url } target="_blank"><img src={ item.pic }/></a></li>;
@@ -72,7 +72,7 @@ class Banner extends migi.Component {
           }.bind(this))
         }
       </ul>
-      <div class="fn-placeholder"/>
+      <div class={ 'fn-placeholder' + (this.hasData ? ' fn-hide' : '') }/>
     </div>;
   }
 }
