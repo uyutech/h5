@@ -47,9 +47,7 @@ module.exports = {
       },
       {
         test: /\.less$/,
-        use: extractLESS.extract([{
-          loader: 'css-loader', options: { minimize: true }
-        }, 'autoprefixer-loader', 'less-loader'])
+        use: extractLESS.extract(['css-loader', 'autoprefixer-loader', 'less-loader'])
       },
       {
         test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)|(\.ico)$/,

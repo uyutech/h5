@@ -29,11 +29,6 @@ jsBridge.ready(function() {
     if(i === 0) {
       if(!find) {
         find = migi.render(<Find/>, '#page');
-        net.postJSON('/h5/find/index', function(res) {
-          if(res.success) {
-            find.setData(res.data);
-          }
-        });
       }
       last = find;
     }
