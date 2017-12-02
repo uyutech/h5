@@ -49,7 +49,6 @@ class My extends migi.Component {
     profile.sign = userInfo.User_Sign || '';
     profile.updateNickNameTimeDiff = data.updateNickNameTimeDiff || 0;
     profile.updateHeadTimeDiff = data.updateHeadTimeDiff || 0;
-
   }
   clickWeibo() {
     let self = this;
@@ -58,21 +57,21 @@ class My extends migi.Component {
         jsBridge.showLoading('正在登录...');
         let openID = res.openID;
         let token = res.token;
-        net.postJSON('/h5/oauth/weibo', { openID, token }, function(res) {
+        jsBridge.weiboLogin({ openID, token }, function(res) {
           jsBridge.hideLoading();
           if(res.success) {
             self.setData(res.data);
+            // jsBridge.setPreference('userInfo', res.data, function(res) {
+            //   console.log(res);
+            //   jsBridge.getPreference('userInfo', function(data) {
+            //     console.log(data);
+            //   });
+            // });
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message);
           }
-        }, function(res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         });
-      }
-      else {
-        jsBridge.hideLoading();
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
     });
   }
@@ -80,6 +79,8 @@ class My extends migi.Component {
     let self = this;
     net.postJSON('/h5/login/loginOut', function() {
       self.isLogin = false;
+      jsBridge.delPreference('userInfo');
+      jsBridge.loginOut();
     }, function(res) {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });

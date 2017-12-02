@@ -168,14 +168,6 @@ let jsBridge = {
       history.go(-1);
     }
   },
-  userInfo: function(callback) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('userInfo', callback);
-    }
-    else {
-      callback();
-    }
-  },
   swipeRefresh: function(state) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('swipeRefresh', state);
@@ -184,6 +176,16 @@ let jsBridge = {
   loginWeibo: function(callback) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('loginWeibo', callback);
+    }
+  },
+  weiboLogin: function(data, callback) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('weiboLogin', data, callback);
+    }
+  },
+  loginOut: function(callback) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('loginOut', callback);
     }
   },
   getPreference: function(key, callback) {
@@ -199,6 +201,15 @@ let jsBridge = {
     callback = callback || function() {};
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('setPreference', { key, value }, callback);
+    }
+    else {
+      callback();
+    }
+  },
+  delPreference: function(key, callback) {
+    callback = callback || function() {};
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('setPreference', { key, value: null }, callback);
     }
     else {
       callback();
