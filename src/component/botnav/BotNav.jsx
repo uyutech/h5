@@ -35,7 +35,7 @@ class BotNav extends migi.Component {
           <b class="icon"/>
           <span>转圈</span>
         </li>
-        <li class="new cur">
+        <li class="new">
           <b class="icon"/>
         </li>
         <li class="follow" rel={ 2 }>

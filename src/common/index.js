@@ -12,11 +12,15 @@ import './bridge.js';
 import './index.less';
 
 if(/iP(hone|od|ad)/.test(navigator.userAgent)) {
-  var v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/),
+  let v = (navigator.appVersion).match(/OS (\d+)_(\d+)_?(\d+)?/),
     version = parseInt(v[1], 10);
+  document.documentElement.classList.add('ios');
   if(version >= 8){
     document.documentElement.classList.add('hairlines');
   }
+}
+else {
+  document.documentElement.classList.add('android');
 }
 
 window.requestAnimationFrame = function() {

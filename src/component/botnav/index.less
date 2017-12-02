@@ -34,6 +34,12 @@
       }
       &.cur{
         color:#6C7275;
+        b{
+          animation:cur 0.2s;
+        }
+      }
+      &:active{
+        color:#6C7275;
       }
       .icon{
         display:block;
@@ -48,7 +54,7 @@
         background:url(follow_off.png) no-repeat center;
         background-size:contain;
       }
-      &.follow.cur .icon{
+      &.follow.cur .icon, &.follow:active .icon{
         background:url(follow_on.png) no-repeat center;
         background-size:contain;
       }
@@ -60,7 +66,7 @@
         background:url(zhuanquan_off.png) no-repeat center;
         background-size:contain;
       }
-      &.zhuanquan.cur .icon{
+      &.zhuanquan.cur .icon, &.zhuanquan:active .icon{
         width:0.25rem;
         background:url(zhuanquan_on.png) no-repeat center;
         background-size:contain;
@@ -73,7 +79,7 @@
         background:url(find_off.png) no-repeat center;
         background-size:contain;
       }
-      &.find.cur .icon{
+      &.find.cur .icon, &.find:active .icon{
         width:0.29rem;
         background:url(find_on.png) no-repeat center;
         background-size:contain;
@@ -87,7 +93,7 @@
         background:url(my_off.png) no-repeat center;
         background-size:contain;
       }
-      &.my.cur .icon{
+      &.my.cur .icon, &.my:active .icon{
         width:0.17rem;
         height:0.22rem;
         background:url(my_on.png) no-repeat center;
@@ -126,5 +132,17 @@
         }
       }
     }
+  }
+}
+
+@keyframes cur{
+  0%{
+    transform:scale(1);
+  }
+  50%{
+    transform:scale(1.1);
+  }
+  100%{
+    transform:scale(1);
   }
 }

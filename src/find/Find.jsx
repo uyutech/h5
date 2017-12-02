@@ -34,7 +34,7 @@ class Find extends migi.Component {
               return;
             }
             let HEIGHT = $(document.body).height();
-            let bool = $window.scrollTop() + WIN_HEIGHT + 60 > HEIGHT;
+            let bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
             if(bool) {
               $type.removeClass('fn-hide');
               show = true;
@@ -50,6 +50,7 @@ class Find extends migi.Component {
       });
     });
   }
+  @bind hasData
   show() {
     $(this.element).removeClass('fn-hide');
   }
@@ -74,18 +75,16 @@ class Find extends migi.Component {
 
     self.ref.hotAuthor.dataList = data.hotAuthorList;
     self.ref.hotAuthor.hasData = true;
-    self.ref.hotAuthor.autoWidth();
 
     self.ref.hotPlayList.dataList = data.hotPlayList.data;
-    // self.ref.hotPlayList.hasData = true;
+
+    self.hasData = true;
   }
   clickChangeWork() {
     let self = this;
     net.postJSON('/h5/find/hotWorkList', function(res) {
       if(res.success) {
-        self.ref.hotWork.setData(res.data);
-        self.ref.hotWork.hasData = true;
-        self.ref.hotWork.autoWidth();
+        self.ref.hotWork.dataList = (res.data);
       }
       else {
         alert(res.message || util.ERROR_MESSAGE);
@@ -95,11 +94,11 @@ class Find extends migi.Component {
     });
   }
   render() {
-    return <div class="find">
+    return <div class={ 'find' + (this.hasData ? ' hasData' : '') }>
       <Banner ref="banner"/>
       <h4>热门圈子</h4>
       <HotCircle ref="hotCircle"/>
-      <h4>热门作品<small class="fn-hide" ref="changeWork" onClick={ this.clickChangeWork }>换一换</small></h4>
+      <h4>热门作品<small ref="changeWork" onClick={ this.clickChangeWork }>换一换</small></h4>
       <HotWork ref="hotWork"/>
       <h4>热门专辑</h4>
       <HotMusiceAlbum ref="hotMusiceAlbum"/>
