@@ -13,20 +13,27 @@ class HotMusicAlbum extends migi.Component {
   }
   @bind hasData
   @bind dataList = []
+  click(e, vd, tvd) {
+    e.preventDefault();
+    let href = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(href, {
+      title,
+    });
+  }
   render() {
-    return <div class="cp-hotmusicalbum">
+    return <div class="cp-hotmusicalbum" onClick={ { a: this.click } }>
       {
         this.hasData
           ? this.dataList && this.dataList.length
             ? <ul>
               {
                 this.dataList.map(function(item) {
-                  let url = `/works/${item.WorksID}`;
+                  let url = `/works.html?worksID=${item.WorksID}`;
                   return <li>
                     <b class="bg"/>
-                    <a href={ url } class="pic">
-                      <img src={ util.autoSsl(util.img200_200_80(item.cover_Pic
-                        || '//zhuanquan.xin/img/blank.png')) }/>
+                    <a href={ url } class="pic" title={ item.Title }>
+                      <img src={ util.autoSsl(util.img200_200_80(item.cover_Pic || '/src/common/blank.png')) }/>
                       <span class="type">{ WorksTypeEnum.NAME[item.WorkType] }</span>
                       <span class="num">{ util.abbrNum(item.Popular) }</span>
                       {
@@ -35,7 +42,7 @@ class HotMusicAlbum extends migi.Component {
                           : ''
                       }
                     </a>
-                    <a href={ url } class="txt">
+                    <a href={ url } class="txt" title={ item.Title }>
                       <span>{ item.Title }</span>
                       <span class="author">{ (item.SingerName || []).join(' ') }</span>
                     </a>

@@ -1,0 +1,367 @@
+/**
+ * Created by army8735 on 2017/10/24.
+ */
+
+.mod.mod-media{
+  position:relative;
+  background:@secondTextColor;
+  background-size:cover;
+  background-repeat:no-repeat;
+  background-position:center;
+  &.no-type .fn{
+    padding-bottom:0.4rem;
+  }
+  .c{
+    position:relative;
+    padding-top:56.25%;
+    video{
+      position:absolute;
+      left:0;
+      top:0;
+      display:block;
+      width:100%;
+      height:100%;
+      opacity:0.75;
+    }
+    &.playing{
+      video{
+        opacity:1;
+      }
+    }
+    .start{
+      position:absolute;
+      left:50%;
+      top:50%;
+      display:block;
+      width:100%;
+      height:100%;
+      background:url(start.png) no-repeat center;
+      background-size:1.2rem auto;
+      transform:translate(-50%, -50%);
+      z-index:4;
+    }
+  }
+  .lyrics{
+    position:absolute;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    color:@mainTextColor;
+    text-shadow:0 0 1px rgba(255, 255, 255, 0.7);
+    .roll{
+      position:absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      &:before{
+        position:absolute;
+        left:0;
+        top:0;
+        width:100%;
+        height:100%;
+        background:linear-gradient(rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0.7) 40%, rgba(255, 255, 255, 0.7) 60%, rgba(255, 255, 255, 0) 100%);
+        content:' ';
+      }
+      &:after{
+        position:absolute;
+        left:0;
+        top:50%;
+        width:100%;
+        height:0.2rem;
+        background:linear-gradient(90deg, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
+        content:' ';
+        transform:translateY(-0.1rem);
+      }
+      .c{
+        position:relative;
+        top:50%;
+        padding:0;
+        transition:transform 0.2s ease-out;
+        z-index:3;
+        pre{
+          margin:0;
+          font-size:0.12rem;
+          line-height:0.2rem;
+          text-align:center;
+          word-break:break-all;
+          word-wrap:break-word;
+          white-space:pre-wrap;
+          transform:translateY(-0.1rem);
+        }
+      }
+    }
+    .line{
+      position:absolute;
+      left:0;
+      width:100%;
+      bottom:-0.2rem;
+      margin:0;
+      height:0.2rem;
+      overflow:hidden;
+      text-align:center;
+      word-break:break-all;
+      word-wrap:break-word;
+      white-space:pre-wrap;
+      text-shadow:0 0 1px rgba(255, 255, 255, 0.7);
+      &:before{
+        position:absolute;
+        left:0;
+        top:0;
+        width:100%;
+        height:0.2rem;
+        background:linear-gradient(90deg, rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
+        content:' ';
+      }
+      pre{
+        margin:0;
+        padding:0;
+        display:block;
+        font-size:0.12rem;
+        line-height:0.2rem;
+        transition:transform 0.2s ease-out;
+      }
+    }
+  }
+  .fn{
+    padding:0.1rem 0.1rem 0;
+    background:linear-gradient(rgba(255, 255, 255, 0) 0, rgba(255, 255, 255, 0.7) 30%, rgba(255, 255, 255, 0.7) 100%);
+    .control{
+      position:relative;
+      height:0.24rem;
+      .lyrics{
+        position:absolute;
+        top:0;
+        left:0;
+        display:block;
+        width:0.24rem;
+        height:0.24rem;
+        background:url(../icon/lyrics.png) no-repeat center;
+        background-size:contain;
+        cursor:pointer;
+        &:active{
+          background-image:url(../icon/lyrics-hover.png);
+        }
+        &.roll{
+          background-image:url(../icon/lyrics-roll.png);
+          &:active{
+            background-image:url(../icon/lyrics-roll-hover.png);
+          }
+        }
+      }
+      .time{
+        position:absolute;
+        top:0;
+        left:0.4rem;
+        display:block;
+        line-height:0.24rem;
+        font-size:0.12rem;
+      }
+      .full{
+        position:absolute;
+        top:0;
+        right:0;
+        display:block;
+        width:0.24rem;
+        height:0.24rem;
+        background:url(../icon/fullscreen.png) no-repeat center;
+        background-size:contain;
+        cursor:pointer;
+        &:active{
+          background-image:url(../icon/fullscreen-hover.png);
+        }
+      }
+    }
+    .bar{
+      position:relative;
+      .play{
+        display:block;
+        width:0.24rem;
+        height:0.24rem;
+        background:url(play.png) no-repeat center;
+        background-size:contain;
+        cursor:pointer;
+        &:active{
+          background:url(play-hover.png);
+        }
+        &.pause{
+          background-image:url(pause.png);
+          &:active{
+            background:url(pause-hover.png);
+          }
+        }
+      }
+      .progress{
+        position:absolute;
+        top:0.08rem;
+        left:0.4rem;
+        right:0;
+        height:0.07rem;
+        background:#FFF;
+        border-radius:0.07rem;
+        border:1px solid rgba(78, 142, 176, 0.5);
+        cursor:pointer;
+        .load{
+          position:absolute;
+          left:0;
+          top:0;
+          display:block;
+          width:100%;
+          height:100%;
+          overflow:hidden;
+          b{
+            position:absolute;
+            left:0;
+            top:0;
+            bottom:0;
+            display:block;
+            box-sizing:border-box;
+            width:0;
+            background:@secondTextColor;
+            border-radius:0.05rem;
+            border:1px solid #FFF;
+          }
+        }
+        .vol{
+          position:absolute;
+          left:0;
+          top:1px;
+          display:block;
+          width:0;
+          height:0.05rem;
+          background:@mainColor;
+          border-radius:0.05rem;
+          box-sizing:border-box;
+          border-left:1px solid #FFF;
+          border-right:1px solid #FFF;
+        }
+        .p{
+          position:absolute;
+          left:0;
+          top:-0.03rem;
+          width:100%;
+          overflow:visible;
+          &:before{
+            position:absolute;
+            left:-0.055rem;
+            top:0;
+            display:block;
+            width:0.12rem;
+            height:0.12rem;
+            border:1px solid #4E8EB0;
+            border-radius:100%;
+            box-sizing:border-box;
+            background:#FFF;
+            content:' ';
+            cursor:move;
+          }
+        }
+      }
+    }
+    .btn{
+      display:flex;
+      justify-content:space-around;
+      li{
+        width:0.24rem;
+        height:0.24rem;
+        cursor:pointer;
+        a{
+          display:block;
+          height:100%;
+        }
+        &:last-child{
+          margin-right:0;
+        }
+        &.like{
+          background:url(../icon/bold-like.png) no-repeat center;
+          background-size:contain;
+          &:active{
+            background-image:url(../icon/bold-like-hover.png);
+          }
+          &.has{
+            background-image:url(../icon/bold-liked.png);
+            &:active{
+              background-image:url(../icon/bold-liked-hover.png);
+            }
+          }
+        }
+        &.favor{
+          background:url(../icon/bold-favor.png) no-repeat center;
+          background-size:contain;
+          &:active{
+            background-image:url(../icon/bold-favor-hover.png);
+          }
+          &.has{
+            background-image:url(../icon/bold-favored.png);
+            &:active{
+              background-image:url(../icon/bold-favored-hover.png);
+            }
+          }
+        }
+        &.download{
+          background:url(../icon/download.png) no-repeat center;
+          background-size:contain;
+          &:active{
+            background-image:url(../icon/download-hover.png);
+          }
+        }
+        &.share{
+          background:url(../icon/bold-share.png) no-repeat center;
+          background-size:contain;
+          &:active{
+            background-image:url(../icon/bold-share-hover.png);
+          }
+        }
+      }
+    }
+  }
+  .audio, .video{
+    &.empty{
+      .start{
+        display:none;
+      }
+      .fn{
+        visibility:hidden;
+      }
+    }
+  }
+  .type{
+    padding:0.1rem 0.1rem 0.4rem;
+    background:rgba(255, 255, 255, 0.7);
+    dl{
+      float:left;
+      &.cur{
+        dt{
+          background:@mainColor;
+          color:#FFF;
+        }
+        dd{
+          &.cur{
+            text-decoration:underline;
+            opacity:1;
+          }
+        }
+      }
+      dt{
+        float:left;
+        margin-right:0.05rem;
+        padding:0 0.1rem;
+        height:0.22rem;
+        line-height:0.22rem;
+        border:1px solid @mainColor;
+        color:@mainTextColor;
+        border-radius:0.22rem;
+      }
+      dd{
+        float:left;
+        margin-right:0.05rem;
+        line-height:0.24rem;
+        color:@mainTextColor;
+        opacity:0.5;
+      }
+    }
+  }
+}

@@ -12,13 +12,22 @@ class HotPlayList extends migi.Component {
   }
   @bind hasData
   @bind dataList
+  click(e, vd, tvd) {
+    e.preventDefault();
+    let href = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(href, {
+      title,
+    });
+  }
   render() {
-    return <div class="cp-hotplaylist">
+    return <div class="cp-hotplaylist" onClick={ { a: this.click } }>
       {
         this.hasData
           ? <ol class="list" ref="list">
             {
               (this.dataList || []).map(function(item, i) {
+                let url = '/works.html?worksID=' + item.WorksID + '&workID=' + item.ItemID;
                 let type = '';
                 if(item.ItemType === 1111 || item.ItemType === 1113) {
                   type = 'audio';
@@ -33,17 +42,21 @@ class HotPlayList extends migi.Component {
                 }
                 if(item.WorksState === 2) {
                   return <li class={ type + ' rel' }>
-                    <a href={ '/works/' + item.WorksID + '/' + item.ItemID } class="pic">
-                      <img src={ util.autoSsl(util.img108_108_80(item.WorksCoverPic || this.props.cover)) || '//zhuanquan.xin/img/blank.png' }/>
+                    <a href={ url } class="pic" title={ item.ItemName }>
+                      <img src={ util.autoSsl(util.img108_108_80(item.WorksCoverPic || this.props.cover))
+                      || '//zhuanquan.xin/img/blank.png' }/>
                     </a>
-                    <a href={ '/works/' + item.WorksID + '/' + item.ItemID } class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
+                    <a href={ url } class={ 'name' + (item.ItemName ? '' : ' empty') }
+                       title={ item.ItemName }>{ item.ItemName || '待揭秘' }</a>
                   </li>;
                 }
                 return <li class={ type + ' rel' }>
-                  <a href={ '/works/' + item.WorksID + '/' + item.ItemID } class="pic">
-                    <img src={ util.autoSsl(util.img108_108_80(item.WorksCoverPic || this.props.cover)) || '//zhuanquan.xin/img/blank.png' }/>
+                  <a href={ url } class="pic" title={ item.ItemName }>
+                    <img src={ util.autoSsl(util.img108_108_80(item.WorksCoverPic || this.props.cover))
+                    || '//zhuanquan.xin/img/blank.png' }/>
                   </a>
-                  <a href={ '/works/' + item.WorksID + '/' + item.ItemID } class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
+                  <a href={ url } class={ 'name' + (item.ItemName ? '' : ' empty') }
+                     title={ item.ItemName }>{ item.ItemName || '待揭秘' }</a>
                   <span class="icon"/>
                 </li>;
               }.bind(this))

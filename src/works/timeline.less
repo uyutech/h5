@@ -1,0 +1,72 @@
+/**
+ * Created by army8735 on 2017/10/18.
+ */
+
+.mod.mod-timeline{
+  position:relative;
+  .c{
+    padding:0 0.1rem;
+    white-space:nowrap;
+    &:before{
+      position:absolute;
+      top:0.02rem;
+      left:0.1rem;
+      display:block;
+      width:0.04rem;
+      height:0.04rem;
+      border-radius:100%;
+      background:#9ECDDB;
+      content:' ';
+    }
+    li{
+      float:left;
+      position:relative;
+      padding:0.1rem;
+      text-align:center;
+      &:before{
+        position:absolute;
+        left:0;
+        top:0.03rem;
+        display:block;
+        width:100%;
+        height:0.02rem;
+        background:#9ECDDB;
+        content:' ';
+      }
+      &:after{
+        position:absolute;
+        left:50%;
+        top:0;
+        display:block;
+        width:0.08rem;
+        height:0.08rem;
+        background:#4E8EB0;
+        border-radius:100%;
+        content:' ';
+        transform:translateX(-50%);
+      }
+      span{
+        position:relative;
+        display:block;
+        font-size:0.14rem;
+      }
+      small{
+        position:relative;
+        color:@secondTextColor;
+        font-size:0.12rem;
+      }
+      &:last-child span:before{
+        position:absolute;
+        right:-0.12rem;
+        top:-0.11rem;
+        width:0.06rem;
+        height:0.02rem;
+        background:#9ECDDB;
+        border-radius:0.02rem;
+        content:' ';
+        transform:rotateZ(45deg);
+        transform-origin:0 center;
+      }
+    }
+  }
+}

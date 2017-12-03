@@ -61,12 +61,7 @@ class My extends migi.Component {
           jsBridge.hideLoading();
           if(res.success) {
             self.setData(res.data);
-            // jsBridge.setPreference('userInfo', res.data, function(res) {
-            //   console.log(res);
-            //   jsBridge.getPreference('userInfo', function(data) {
-            //     console.log(data);
-            //   });
-            // });
+            jsBridge.setPreference('userInfo', res.data);
           }
           else {
             jsBridge.toast(res.message);

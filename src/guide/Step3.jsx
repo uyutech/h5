@@ -158,7 +158,7 @@ class Step3 extends migi.Component {
         {
           this.list.map(function(item) {
             if(item.isDefaultFollow) {
-              return <li authorId={ item.ID } class="sel"><img src={ item.Tag_Pic || 'src/common/blank.png' }/><span>{ item.Tag_Name }</span></li>;
+              return <li authorId={ item.ID } class="sel"><img src={ item.Tag_Pic || '/src/common/blank.png' }/><span>{ item.Tag_Name }</span></li>;
             }
             return <li authorId={ item.ID }><img src={ item.Tag_Pic || 'src/common/blank.png' }/><span>{ item.Tag_Name }</span></li>;
           })

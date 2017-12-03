@@ -54,7 +54,7 @@ let jsBridge = {
           if (/^\w+:\/\//i.test(url)) {
           }
           else if (/^\//.test(url)) {
-            url = location.protocol + location.host + url;
+            url = location.origin + url;
           }
           else {
             let i = location.href.lastIndexOf('/');
