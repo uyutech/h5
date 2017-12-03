@@ -9,12 +9,13 @@ let interval;
 class Banner extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.on(migi.Event.DOM, function() {
-      this.addInterval();
+    let self = this;
+    self.dataList = self.props.dataList || [];
+    self.on(migi.Event.DOM, function() {
+      self.addInterval();
     });
   }
-  @bind hasData
-  @bind dataList = [];
+  @bind dataList;
   @bind index = 0;
   clickTag(e, vd, tvd) {
     this.index = tvd.props.rel;
@@ -58,21 +59,20 @@ class Banner extends migi.Component {
   }
   render() {
     return <div class="banner" onSwipeLeft={ this.left } onSwipeRight={ this.right }>
-      <ul class={ 'list fn-clear' + (this.hasData ? '' : ' fn-hide') } ref="list" style={ 'width:' + this.dataList.length * 100 + '%' }>
+      <ul class="list fn-clear" ref="list" style={ 'width:' + this.dataList.length * 100 + '%' }>
         {
           this.dataList.map(function(item) {
             return <li><a href={ item.url } target="_blank"><img src={ item.pic }/></a></li>;
           })
         }
       </ul>
-      <ul class={ 'tags' + (this.hasData ? '' : ' fn-hide') } ref="tags" onClick={ { li: this.clickTag } }>
+      <ul class="tags" ref="tags" onClick={ { li: this.clickTag } }>
         {
           (this.index, this.dataList).map(function(item, index) {
             return <li class={ index === this.index ? 'cur' : '' } rel={ index }>{ index + 1 }</li>;
           }.bind(this))
         }
       </ul>
-      <div class={ 'fn-placeholder' + (this.hasData ? ' fn-hide' : '') }/>
     </div>;
   }
 }

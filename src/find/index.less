@@ -11,144 +11,138 @@
 @import '../component/hotpic/index';
 
 #page > .find{
-  > .banner{
-    position:relative;
-    height:1rem;
-    overflow:hidden;
-    .list{
-      display:flex;
-      width:400%;
-      height:100%;
-      transition:transform 0.2s;
-      li{
-        flex:1;
-        height:100%;
-        img{
-          display:block;
-          width:100%;
-          height:100%;
-        }
-      }
-    }
-    .tags{
-      position:absolute;
-      left:0;
-      bottom:0.1rem;
-      width:100%;
-      text-align:center;
-      li{
-        display:inline-block;
-        margin:0 0.05rem;
-        width:0.06rem;
-        height:0.06rem;
-        border:1px solid @mainColor;
-        background:#FFF;
-        border-radius:0.1rem;
-        text-indent:99rem;
-        overflow:hidden;
-        &.cur{
-          width:0.1rem;
-          background:@mainColor;
-        }
-      }
-    }
-  }
-  > h4{
-    position:relative;
-    margin:0.1rem 0.1rem 0.05rem;
-    padding-left:0.05rem;
-    font-size:0.16rem;
-    small{
-      position:absolute;
-      top:0;
-      right:0;
-      display:none;
-      padding-right:0.08rem;
-      font-size:0.12rem;
-      font-weight:400;
-      color:#B1C0C9;
-      &:active{
-        color:@mainHoverColor;
-      }
-      &:after{
-        position:absolute;
-        top:50%;
-        right:0;
-        width:0.07rem;
-        height:0.07rem;
-        border-top:1px solid #B1C0C9;
-        border-right:1px solid #B1C0C9;
-        transform:translateY(-50%) rotateZ(45deg);
-        content:' ';
-      }
-    }
-    &:before{
-      position:absolute;
-      left:0;
-      top:50%;
-      width:0.02rem;
-      height:0.14rem;
-      background:@mainColor;
-      content:' ';
-      border-radius:0.02rem;
-      transform:translateY(-50%);
-    }
-  }
-  .cp-hotauthor{
-    .comment,.info{
-      display:none;
-    }
-  }
-  > .type{
-    display:none;
-    margin-top:0.1rem;
-    margin-bottom:1px;
-    padding-top:0.01rem;
-    height:0.4rem;
-    border-bottom:0.08rem solid @mainColor;
-    overflow:hidden;
-    li{
+  > div{
+    > .banner{
       position:relative;
-      padding:0 0.2rem 0 0.4rem;
-      width:0.3rem;
-      height:100%;
-      box-shadow:@tagShadow;
-      border-top-left-radius:0.24rem;
-      border-top-right-radius:0.24rem;
-      color:@secondTextColor;
-      line-height:0.48rem;
-      font-size:0.14rem;
-      cursor:pointer;
-      text-align:right;
-      background-color:rgba(255, 255, 255, 0.7);
-      background-repeat:no-repeat;
-      background-size:0.24rem auto;
-      background-position:0.15rem 0.12rem;
-      &.ma{
-        background-image:url(../icon/tag-ma.png);
-        &.cur{
-          background-image:url(../icon/tag-ma-cur.png);
+      height:1rem;
+      overflow:hidden;
+      .list{
+        display:flex;
+        width:400%;
+        height:100%;
+        transition:transform 0.2s;
+        li{
+          flex:1;
+          height:100%;
+          img{
+            display:block;
+            width:100%;
+            height:100%;
+          }
         }
       }
-      &.pic{
-        background-image:url(../icon/tag-pic.png);
-        &.cur{
-          background-image:url(../icon/tag-pic-cur.png);
+      .tags{
+        position:absolute;
+        left:0;
+        bottom:0.1rem;
+        width:100%;
+        text-align:center;
+        li{
+          display:inline-block;
+          margin:0 0.05rem;
+          width:0.06rem;
+          height:0.06rem;
+          border:1px solid @mainColor;
+          background:#FFF;
+          border-radius:0.1rem;
+          text-indent:99rem;
+          overflow:hidden;
+          &.cur{
+            width:0.1rem;
+            background:@mainColor;
+          }
         }
-      }
-      &.cur{
-        background-color:@mainColor;
-        color:@mainTextColor;
-        z-index:10;
       }
     }
-  }
-  &.hasData{
-    > h4 small{
-      display:block;
+    > h4{
+      position:relative;
+      margin:0.1rem 0.1rem 0.05rem;
+      padding-left:0.05rem;
+      font-size:0.16rem;
+      small{
+        position:absolute;
+        top:0;
+        right:0;
+        display:none;
+        padding-right:0.08rem;
+        font-size:0.12rem;
+        font-weight:400;
+        color:#B1C0C9;
+        &:active{
+          color:@mainHoverColor;
+        }
+        &:after{
+          position:absolute;
+          top:50%;
+          right:0;
+          width:0.07rem;
+          height:0.07rem;
+          border-top:1px solid #B1C0C9;
+          border-right:1px solid #B1C0C9;
+          transform:translateY(-50%) rotateZ(45deg);
+          content:' ';
+        }
+      }
+      &:before{
+        position:absolute;
+        left:0;
+        top:50%;
+        width:0.02rem;
+        height:0.14rem;
+        background:@mainColor;
+        content:' ';
+        border-radius:0.02rem;
+        transform:translateY(-50%);
+      }
+    }
+    .cp-hotauthor{
+      .comment, .info{
+        display:none;
+      }
     }
     > .type{
       display:flex;
+      margin-top:0.1rem;
+      margin-bottom:1px;
+      padding-top:0.01rem;
+      height:0.4rem;
+      border-bottom:0.08rem solid @mainColor;
+      overflow:hidden;
+      li{
+        position:relative;
+        padding:0 0.2rem 0 0.4rem;
+        width:0.3rem;
+        height:100%;
+        box-shadow:@tagShadow;
+        border-top-left-radius:0.24rem;
+        border-top-right-radius:0.24rem;
+        color:@secondTextColor;
+        line-height:0.48rem;
+        font-size:0.14rem;
+        cursor:pointer;
+        text-align:right;
+        background-color:rgba(255, 255, 255, 0.7);
+        background-repeat:no-repeat;
+        background-size:0.24rem auto;
+        background-position:0.15rem 0.12rem;
+        &.ma{
+          background-image:url(../icon/tag-ma.png);
+          &.cur{
+            background-image:url(../icon/tag-ma-cur.png);
+          }
+        }
+        &.pic{
+          background-image:url(../icon/tag-pic.png);
+          &.cur{
+            background-image:url(../icon/tag-pic-cur.png);
+          }
+        }
+        &.cur{
+          background-color:@mainColor;
+          color:@mainTextColor;
+          z-index:10;
+        }
+      }
     }
   }
 }

@@ -180,7 +180,7 @@ a{
 }
 
 .fn-placeholder{
-  margin:0.2rem;
+  margin:0.15rem;
   &:before{
     display:block;
     margin-bottom:0.1rem;
@@ -198,8 +198,53 @@ a{
     content:' ';
   }
 }
+.fn-placeholder-circle{
+  margin:0.15rem;
+  width:1rem;
+  height:1rem;
+  background:@placeholderColor;
+  border-radius:100%;
+}
+.fn-placeholder-circles{
+  margin:0.15rem;
+  &:before,&:after{
+    display:inline-block;
+    margin-right:0.1rem;
+    width:1rem;
+    height:1rem;
+    background:@placeholderColor;
+    border-radius:100%;
+    content:' ';
+  }
+}
+.fn-placeholder-square{
+  margin:0.15rem;
+  width:1rem;
+  height:1rem;
+  background:@placeholderColor;
+  border-radius:0.1rem;
+}
+.fn-placeholder-squares{
+  margin:0.15rem;
+  &:before,&:after{
+    display:inline-block;
+    margin-right:0.1rem;
+    width:1rem;
+    height:1rem;
+    background:@placeholderColor;
+    border-radius:0.1rem;
+    content:' ';
+  }
+}
 .fn-placeholder-tag{
-  margin:0.2rem;
+  margin:0.15rem;
+  width:0.5rem;
+  height:0.24rem;
+  background:@placeholderColor;
+  border-radius:0.24rem;
+}
+.fn-placeholder-tags{
+  margin:0.15rem;
   &:before,&:after{
     display:inline-block;
     margin-right:0.1rem;
@@ -211,7 +256,7 @@ a{
   }
 }
 .fn-placeholder-pic{
-  margin:0.2rem;
+  margin:0.15rem;
   padding-top:56.25%;
   background:rgba(0,0,0,0.05);
   border-radius:0.05rem;

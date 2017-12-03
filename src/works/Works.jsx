@@ -317,7 +317,7 @@ class Works extends migi.Component {
         {
           self.textData && self.textData.value && self.textData.value.length
             ? <Text datas={ self.textData }/>
-            : '123'
+            : ''
         }
         {
           self.lyricData && self.lyricData.value && self.lyricData.value.length && self.lyricData.value[0].Text
@@ -345,7 +345,7 @@ class Works extends migi.Component {
           ? this.genDom()
           : <div>
               <div class="fn-placeholder-pic"/>
-              <div class="fn-placeholder-tag"/>
+              <div class="fn-placeholder-tags"/>
               <div class="fn-placeholder"/>
               <div class="fn-placeholder"/>
             </div>

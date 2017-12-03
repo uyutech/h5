@@ -7,9 +7,9 @@ import util from '../../common/util';
 class HotWork extends migi.Component {
   constructor(...data) {
     super(...data);
+    this.dataList = this.props.dataList;
   }
-  @bind hasData
-  @bind dataList = []
+  @bind dataList
   click(e, vd, tvd) {
     e.preventDefault();
     let href = tvd.props.href;
@@ -21,33 +21,31 @@ class HotWork extends migi.Component {
   render() {
     return <div class="cp-hotwork" onClick={ { a: this.click } }>
       {
-        this.hasData
-          ? this.dataList && this.dataList.length
-            ? <ul>
-              {
-                this.dataList.map(function(item) {
-                  let url = `/works.html?worksID=${item.WorksID}`;
-                  return <li>
-                    <a href={ url } class="pic" title={ item.Title }>
-                      <img src={ util.autoSsl(util.img200_200_80(item.cover_Pic)) || '/src/common/blank.png' }/>
-                      <span class="type">原创音乐</span>
-                      <span class="num">{ util.abbrNum(item.Popular) }</span>
-                      {
-                        item.WorkState === 2 || item.WorkState === 3
-                          ? <span class="state">填坑中</span>
-                          : ''
-                      }
-                    </a>
-                    <a href={ url } class="txt" title={ item.Title }>
-                      <span>{ item.Title }</span>
-                      <span class="author">{ (item.SingerName || []).join(' ') }</span>
-                    </a>
-                  </li>;
-                })
-              }
-            </ul>
-            : <div class="empty">暂无数据</div>
-          : <div class="fn-placeholder"/>
+        this.dataList && this.dataList.length
+          ? <ul>
+            {
+              this.dataList.map(function(item) {
+                let url = `/works.html?worksID=${item.WorksID}`;
+                return <li>
+                  <a href={ url } class="pic" title={ item.Title }>
+                    <img src={ util.autoSsl(util.img200_200_80(item.cover_Pic)) || '/src/common/blank.png' }/>
+                    <span class="type">原创音乐</span>
+                    <span class="num">{ util.abbrNum(item.Popular) }</span>
+                    {
+                      item.WorkState === 2 || item.WorkState === 3
+                        ? <span class="state">填坑中</span>
+                        : ''
+                    }
+                  </a>
+                  <a href={ url } class="txt" title={ item.Title }>
+                    <span>{ item.Title }</span>
+                    <span class="author">{ (item.SingerName || []).join(' ') }</span>
+                  </a>
+                </li>;
+              })
+            }
+          </ul>
+          : <div class="empty">暂无数据</div>
       }
     </div>;
   }
