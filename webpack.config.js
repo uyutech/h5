@@ -5,15 +5,9 @@ const webpack = require("webpack");
 module.exports = {
   entry: {
     common: './src/common/index.js',
-    // redirect: './src/redirect/index.jsx',
-    // login: './src/login/index.jsx',
     index: './src/index/index.jsx',
-    // guide: './src/guide/index.jsx',
-    // step1: './src/guide/step1.jpg',
-    // step2: './src/guide/step2.jpg',
     works: './src/works/index.jsx',
-    // author: './src/author/index.jsx',
-    // search: './src/search/index.jsx'
+    circle: './src/circle/index.jsx',
   },
   output: {
     path: __dirname + '/www',
@@ -53,10 +47,6 @@ module.exports = {
         test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)|(\.ico)$/,
         use: 'url-loader?limit=10240&name=[path][name].[ext]'
       },
-      // {
-      //   test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)$/,
-      //   use: 'file-loader?name=[path][name].[ext]'
-      // },
       {
         test: /\.(html?)|(\.mp4)$/,
         use: 'file-loader?name=[name].[ext]'

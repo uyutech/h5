@@ -23,7 +23,6 @@ let first;
 class Works extends migi.Component {
   constructor(...data) {
     super(...data);
-    let self = this;
   }
   @bind hasData
   @bind worksID
@@ -284,7 +283,7 @@ class Works extends migi.Component {
       }
     }
   }
-  genWorks() {
+  genDom() {
     let self = this;
     let state = worksState.getStateStr(self.worksType, self.worksDetail.WorkState);
     if(self.worksType === WorksTypeEnum.TYPE.musicAlbum) {
@@ -343,9 +342,11 @@ class Works extends migi.Component {
     return <div class="works">
       {
         this.hasData
-          ? this.genWorks()
-          : <div class="placeholder">
-              <div class="pic"/>
+          ? this.genDom()
+          : <div>
+              <div class="fn-placeholder-pic"/>
+              <div class="fn-placeholder-tag"/>
+              <div class="fn-placeholder"/>
               <div class="fn-placeholder"/>
             </div>
       }

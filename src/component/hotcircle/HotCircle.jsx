@@ -12,19 +12,28 @@ class HotCircle extends migi.Component {
   }
   @bind hasData
   @bind dataList = []
+  click(e, vd, tvd) {
+    e.preventDefault();
+    let href = tvd.props.href;
+    let title = tvd.props.title + '圈';
+    jsBridge.pushWindow(href, {
+      title,
+    });
+  }
   render() {
-    return <div class="cp-hotcircle">
+    return <div class="cp-hotcircle" onClick={ { a: this.click } }>
       {
         this.hasData
           ? this.dataList && this.dataList.length
             ? <ul>
               {
                 this.dataList.map(function(item) {
+                  let url = `/circle.html?circleID=${item.TagID}`;
                   return <li>
-                    <a href={ `/circle/${item.TagID}` } class="pic">
+                    <a href={ url } class="pic" title={ item.TagName }>
                       <img src={ util.autoSsl(util.img288_288_80(item.TagCover)) || '//zhuanquan.xin/img/blank.png' }/>
                     </a>
-                    <a href={ `/circle/${item.TagID}` } class="txt">
+                    <a href={ url } class="txt" title={ item.TagName }>
                       <span class="name">{ item.TagName }</span>
                       <span class="fans">成员 { util.abbrNum(item.FansNumber) }</span>
                       <span class="comment">画圈 { util.abbrNum(item.Popular) }</span>
