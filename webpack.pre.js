@@ -5,6 +5,8 @@ module.exports = {
     index: './src/index/pre.jsx',
     works: './src/works/pre.jsx',
     author: './src/author/pre.jsx',
+    circle: './src/circle/pre.jsx',
+    subpost: './src/subpost/pre.jsx',
   },
   output: {
     path: __dirname + '/www',

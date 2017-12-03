@@ -9,7 +9,7 @@ module.exports = {
     works: './src/works/index.jsx',
     circle: './src/circle/index.jsx',
     author: './src/author/index.jsx',
-    circling: './src/circling/index.jsx',
+    subpost: './src/subpost/index.jsx',
   },
   output: {
     path: __dirname + '/www',

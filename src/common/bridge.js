@@ -199,6 +199,9 @@ let jsBridge = {
   },
   setPreference: function(key, value, callback) {
     callback = callback || function() {};
+    if(value === undefined) {
+      value = null;
+    }
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('setPreference', { key, value }, callback);
     }

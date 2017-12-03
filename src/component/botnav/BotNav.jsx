@@ -7,6 +7,12 @@ class BotNav extends migi.Component {
     super(...data);
   }
   click(e, vd, tvd) {
+    if(tvd.props.class === 'new') {
+      jsBridge.pushWindow('/subpost.html', {
+        title: '画圈',
+      });
+      return;
+    }
     var $elem = $(tvd.element);
     let rel = tvd.props.rel;
     this.cur($elem, rel);
