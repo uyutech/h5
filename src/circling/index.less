@@ -1,0 +1,46 @@
+/**
+ * Created by army8735 on 2017/12/3.
+ */
+
+@import '../common/var';
+@import '../component/hotpost/index';
+
+#page > .circling{
+  > div{
+    .circles{
+      display:flex;
+      margin:0.1rem 0 0;
+      padding-left:0.1rem;
+      align-items:start;
+      overflow-x:auto;
+      transform:translate3d(0, 0, 0);
+      li{
+        display:block;
+        margin-right:0.05rem;
+        margin-bottom:0.02rem;
+        padding:0 0.1rem;
+        line-height:0.22rem;
+        border:1px solid @mainColor;
+        color:@mainColor;
+        border-radius:0.22rem;
+        white-space:nowrap;
+        &:active{
+          color:@secondColor;
+          border-color:@secondColor;
+        }
+        &.cur{
+          background:@mainColor;
+          color:@thirdTextColor;
+          &:active{
+            background:@secondColor;
+          }
+        }
+      }
+    }
+    .cinfo{
+      margin-bottom:0.1rem;
+      padding:0 0.1rem;
+      color:@secondTextColor;
+    }
+  }
+}

@@ -1,0 +1,72 @@
+/**
+ * Created by army8735 on 2017/12/3.
+ */
+
+@import '../common/var';
+@import '../component/hotauthor/index';
+@import '../component/hotuser/index';
+@import '../component/hotpost/index';
+
+#page > .follow{
+  > div{
+    h4{
+      position:relative;
+      margin:0.1rem;
+      padding-left:0.05rem;
+      font-size:0.12rem;
+      &:before{
+        position:absolute;
+        left:0;
+        top:0.02rem;
+        bottom:0.02rem;
+        width:0.02rem;
+        background:@secondColor;
+        content:' ';
+        border-radius:0.05rem;
+      }
+    }
+    .circles{
+      display:flex;
+      padding-left:0.1rem;
+      overflow-x:auto;
+      transform:translate3d(0,0,0);
+      li{
+        display:block;
+        margin-right:0.05rem;
+        padding:0 0.1rem;
+        line-height:0.22rem;
+        border:1px solid @mainColor;
+        color:@mainColor;
+        border-radius:0.22rem;
+        white-space:nowrap;
+        flex-shrink:0;
+        a{
+          color:@mainColor;
+          white-space:nowrap;
+        }
+        &:active{
+          a{
+            color:@secondColor;
+          }
+          border-color:@secondColor;
+        }
+      }
+    }
+    > p{
+      padding:0.1rem 0.1rem 0;
+      color:@secondTextColor;
+      font-size:0.11rem;
+      small{
+        font-size:0.11rem;
+      }
+    }
+    .cp-hotauthor{
+      .txt{
+        text-align:center;
+      }
+      .info,.comment{
+        display:none;
+      }
+    }
+  }
+}

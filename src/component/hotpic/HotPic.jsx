@@ -4,8 +4,8 @@
 
 'use strict';
 
-import util from "../../../d/common/util";
-import net from "../../../d/common/net";
+import util from "../../common/util";
+import net from "../../common/net";
 
 let pool = [];
 let list = [];
@@ -17,6 +17,9 @@ class HotPic extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.on(migi.Event.DOM, function() {
+      if(self.props.dataList) {
+        self.appendData(self.props.dataList);
+      }
       let $root = $(self.element);
       $root.on('click', '.like', function() {
         let $b = $(this);
@@ -143,7 +146,7 @@ class HotPic extends migi.Component {
   genItem(data) {
     if(data.Width <= 336) {
       return <li id={ 'photo_' + data.ItemID }>
-        <img src={ util.autoSsl(util.img336__80(data.FileUrl)) || '//zhuanquan.xin/img/blank.png' }
+        <img src={ util.autoSsl(util.img336__80(data.FileUrl)) || '/src/common/blank.png' }
              rel={ index++ } height={ data.Height / 2 }/>
         <b class={ 'like' + (data.ISLike ? ' has' : '') } itemID={ data.ItemID }/>
         <b class={ 'favor' + (data.ISFavor ? ' has' : '') } itemID={ data.ItemID }/>
@@ -151,7 +154,7 @@ class HotPic extends migi.Component {
     }
     let height = data.Height * 336 / data.Width;
     return <li id={ 'photo_' + data.ItemID }>
-      <img src={ util.autoSsl(util.img336__80(data.FileUrl)) || '//zhuanquan.xin/img/blank.png' }
+      <img src={ util.autoSsl(util.img336__80(data.FileUrl)) || '/src/common/blank.png' }
            rel={ index++ } height={ height / 2 }/>
       <b class={ 'like' + (data.ISLike ? ' has' : '') } itemID={ data.ItemID }/>
       <b class={ 'favor' + (data.ISFavor ? ' has' : '') } itemID={ data.ItemID }/>

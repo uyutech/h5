@@ -12,9 +12,9 @@ class HotPost extends migi.Component {
     super(...data);
     let self = this;
     self.message = self.props.message;
-    if(self.props.data && self.props.data.length) {
+    if(self.props.dataList && self.props.dataList.length) {
       let html = '';
-      self.props.data.forEach(function(item) {
+      self.props.dataList.forEach(function(item) {
         html += self.genItem(item);
       });
       self.html = html;
@@ -350,11 +350,7 @@ class HotPost extends migi.Component {
   }
   render() {
     return <div class="cp-hotpost">
-      {
-        this.props.data && this.props.data.length
-          ? <ol class="list" ref="list" dangerouslySetInnerHTML={ this.html }/>
-          : <div class="empty">暂无内容</div>
-      }
+      <ol class="list" ref="list" dangerouslySetInnerHTML={ this.html }/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') } >{ this.message }</div>
     </div>;
   }

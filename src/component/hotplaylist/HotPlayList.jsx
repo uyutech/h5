@@ -13,6 +13,12 @@ class HotPlayList extends migi.Component {
   }
   @bind hasData
   @bind dataList
+  show() {
+    $(this.element).removeClass('fn-hide');
+  }
+  hide() {
+    $(this.element).addClass('fn-hide');
+  }
   click(e, vd, tvd) {
     e.preventDefault();
     let href = tvd.props.href;

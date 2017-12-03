@@ -4,3 +4,9 @@
 
 'use strict';
 
+import Author from './Author.jsx';
+
+let s = '';
+s += migi.preRender(<Author/>);
+
+export default s;

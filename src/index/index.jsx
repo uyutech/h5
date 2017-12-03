@@ -10,6 +10,8 @@ import util from '../common/util';
 import BotNav from '../component/botnav/BotNav.jsx';
 import TopNav from '../component/topnav/TopNav.jsx';
 import Find from '../find/Find.jsx';
+import Circling from '../circling/Circling.jsx';
+import Follow from '../follow/Follow.jsx';
 import My from '../my/My.jsx';
 
 jsBridge.ready(function() {
@@ -20,6 +22,8 @@ jsBridge.ready(function() {
 
   let find = migi.preExist(<Find/>, '#page');
   let my;
+  let circling;
+  let follow;
   let last = find;
   let topNav = migi.preExist(<TopNav/>, '#page');
   let botNav = migi.preExist(<BotNav/>, '#page');
@@ -31,6 +35,18 @@ jsBridge.ready(function() {
         find = migi.render(<Find/>, '#page');
       }
       last = find;
+    }
+    else if(i === 1) {
+      if(!circling) {
+        circling = migi.render(<Circling/>, '#page');
+      }
+      last = circling;
+    }
+    else if(i === 2) {
+      if(!follow) {
+        follow = migi.render(<Follow/>, '#page');
+      }
+      last = follow;
     }
     else if(i === 3) {
       if(!my) {

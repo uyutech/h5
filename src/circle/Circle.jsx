@@ -89,7 +89,7 @@ class Circle extends migi.Component {
       <Title ref="title"
              circleDetail={ self.circleDetail }/>
       <HotPost ref="hotPost"
-               data={ self.postList.data }
+               dataList={ self.postList.data }
                message={ self.postList.Size > take ? '' : '已经到底了' }/>
     </div>;
   }
