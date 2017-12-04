@@ -25,10 +25,8 @@ class Comment extends migi.Component {
       html += self.genComment(item);
     });
     self.html = html;
-    if(self.props.message !== undefined) {
-      self.message = self.props.message;
-    }
-    if(self.props.data && self.props.data.length === 0) {
+    self.message = self.props.message;
+    if(!self.props.data || self.props.data.length === 0) {
       self.empty = true;
     }
 
@@ -128,6 +126,15 @@ class Comment extends migi.Component {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
           });
         }
+      });
+      $root.on('click', 'a', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+        });
       });
       migi.eventBus.on('subCmtDelTo', function() {
         if($last && $last.hasClass('on')) {
@@ -267,11 +274,11 @@ class Comment extends migi.Component {
       return <li class="author" id={ 'comment_' + item.Send_ID }>
         <div class="t fn-clear">
           <div class="profile fn-clear">
-            <a class="pic" href={ '/author/' + item.IsAuthor }>
+            <a class="pic" href={ '/author.html?authorID=' + item.IsAuthor } title={ item.Send_AuthorName }>
               <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
             </a>
             <div class="txt">
-              <a class="name" href={ '/author/' + item.IsAuthor }>{ item.Send_AuthorName }</a>
+              <a class="name" href={ '/author?authorID=' + item.IsAuthor } title={ item.Send_AuthorName }>{ item.Send_AuthorName }</a>
               <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
             </div>
           </div>
@@ -299,11 +306,11 @@ class Comment extends migi.Component {
     return <li id={ 'comment_' + item.Send_ID }>
       <div class="t fn-clear">
         <div class="profile fn-clear">
-          <a class="pic" href={ '/user/' + item.Send_UserID }>
+          <a class="pic" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>
             <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_UserHeadUrl || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
           </a>
           <div class="txt">
-            <a class="name" href={ '/user/' + item.Send_UserID }>{ item.Send_UserName }</a>
+            <a class="name" href={ '/user?userID=' + item.Send_UserID } title={ item.Send_UserName }>{ item.Send_UserName }</a>
             <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
           </div>
         </div>
@@ -332,13 +339,13 @@ class Comment extends migi.Component {
     if(item.IsAuthor) {
       return <li class="author" id={ 'comment_' + item.Send_ID }>
         <div class="t fn-clear">
-          <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_AuthorName }>
-            <a class="pic" href={ '/author/' + item.IsAuthor }>
+          <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } title={ item.Send_AuthorName }>
+            <a class="pic" href={ '/author.html?authorID=' + item.IsAuthor } name={ item.Send_AuthorName }>
               <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
             </a>
             <div class="txt">
               <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
-              <a class="name" href={ '/author/' + item.IsAuthor }>{ item.Send_AuthorName }</a>
+              <a class="name" href={ '/author.html?authorID=' + item.IsAuthor } title={ item.Send_AuthorName }>{ item.Send_AuthorName }</a>
             </div>
           </div>
           <div class="fn fn-clear">
@@ -368,12 +375,12 @@ class Comment extends migi.Component {
     return <li id={ 'comment_' + item.Send_ID }>
       <div class="t fn-clear">
         <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_UserName }>
-          <a class="pic" href={ '/user/' + item.Send_UserID }>
+          <a class="pic" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>
             <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_UserHeadUrl || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
           </a>
           <div class="txt">
             <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
-            <a class="name" href={ '/user/' + item.Send_UserID }>{ item.Send_UserName }</a>
+            <a class="name" href={ '/user?userID=' + item.Send_UserID } title={ item.Send_UserName }>{ item.Send_UserName }</a>
           </div>
         </div>
         <div class="fn fn-clear">

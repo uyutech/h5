@@ -51,9 +51,9 @@ class HotPost extends migi.Component {
           }
           $li.addClass('loading');
           let postID = $li.attr('rel');
-          let url = '/api/post/favor';
+          let url = '/h5/post/favor';
           if($li.hasClass('has')) {
-            url = '/api/post/unFavor';
+            url = '/h5/post/unFavor';
           }
           net.postJSON(url, { postID }, function(res) {
             if(res.success) {
@@ -77,7 +77,7 @@ class HotPost extends migi.Component {
         });
         $list.on('click', '.share', function() {
           let postID = $(this).attr('rel');
-          migi.eventBus.emit('SHARE', location.origin + '/post/' + postID);
+          migi.eventBus.emit('SHARE', '/post/' + postID);
         });
         $list.on('click', '.like', function() {
           let $li = $(this);
@@ -86,7 +86,7 @@ class HotPost extends migi.Component {
           }
           $li.addClass('loading');
           let postID = $li.attr('rel');
-          net.postJSON('/api/post/like', { postID }, function(res) {
+          net.postJSON('/h5/post/like', { postID }, function(res) {
             if(res.success) {
               let data = res.data;
               if(data.ISLike) {
@@ -120,7 +120,7 @@ class HotPost extends migi.Component {
           if(window.confirm('确认删除吗？')) {
             let postID = $(this).attr('rel');
             let $li = $(this).closest('.wrap').closest('li');
-            net.postJSON('/api/post/del', { postID }, function(res) {
+            net.postJSON('/h5/post/del', { postID }, function(res) {
               if(res.success) {
                 $li.remove();
               }
@@ -131,6 +131,16 @@ class HotPost extends migi.Component {
               jsBridge.toast(res.message || util.ERROR_MESSAGE);
             });
           }
+        });
+        $list.on('click', 'a', function(e) {
+          e.preventDefault();
+          let $this = $(this);
+          let type = $this.attr('type');
+          let title = $this.attr('title');
+          let url = $this.attr('href');
+          jsBridge.pushWindow(url, {
+            title,
+          });
         });
       });
     }
@@ -153,22 +163,24 @@ class HotPost extends migi.Component {
       let full = this.encode(item.Content) + '<span class="placeholder"></span><span class="shrink">收起全文</span>';
       html = '<p class="snap">' + html + '</p><p class="full">' + full + '</p>';
     }
+    let url = '/post.html?postID=' + id;
     if(item.IsAuthor) {
+      let authorUrl = '/author.html?authorID=' + item.AuthorID;
       return <li class="author">
         <div class="profile fn-clear">
-          <a class="pic" href={ '/author/' + item.AuthorID }>
+          <a class="pic" href={ authorUrl } type="2" title={ item.SendUserNickName }>
             <img src={ util.autoSsl(util.img208_208_80(item.SendUserHead_Url
-              || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
+              || '/src/common/blank.png')) }/>
           </a>
           <div class="txt">
-            <a href={ '/author/' + item.AuthorID } class="name">{ item.SendUserNickName }</a>
-            <a class="time" href={ '/post/' + id }>{ util.formatDate(item.Createtime) }</a>
+            <a href={ authorUrl } class="name" type="2" title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
+            <a class="time" href={ url } type="1" title="画圈正文">{ util.formatDate(item.Createtime) }</a>
           </div>
           <div class="circle">
             <ul>
               {
                 (item.Taglist || []).map(function(item) {
-                  return <li><a href={ '/circle/' + item.TagID }>{ item.TagName }圈</a></li>;
+                  return <li><a href={ '/circle.html?circleID=' + item.TagID }>{ item.TagName }圈</a></li>;
                 })
               }
             </ul>
@@ -177,7 +189,7 @@ class HotPost extends migi.Component {
         <div class="wrap">
           {
             item.Title
-              ? <a href={ '/post/' + id } class="t">{ item.Title }</a>
+              ? <a href={ url } class="t" type="1" title="画圈正文">{ item.Title }</a>
               : ''
           }
           <div class="con" dangerouslySetInnerHTML={ html }/>
@@ -195,7 +207,7 @@ class HotPost extends migi.Component {
                         return <li class={ 'all ' + cn }
                                    style={ 'background-image:url(' + util.autoSsl(util.img208_208_80(item.FileUrl)) + ')' }>
                           <img src={ util.autoSsl(util.img208_208_80(item.FileUrl)) }/>
-                          <a href={ '/post/' + id }>查看全部</a>
+                          <a href={ url } type="1" title="画圈正文">查看全部</a>
                         </li>;
                       }
                       return <li class={ cn }
@@ -245,21 +257,22 @@ class HotPost extends migi.Component {
         </ul>
       </li>;
     }
+    let userUrl = '/user.html?userID=' + item.SendUserID;
     return <li>
       <div class="profile fn-clear">
-        <a class="pic" href={ '/user/' + item.SendUserID }>
+        <a class="pic" href={ userUrl } type="3" title={ item.SendUserNickName }>
           <img src={ util.autoSsl(util.img208_208_80(item.SendUserHead_Url
-            || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
+            || '/src/common/head.png')) }/>
         </a>
         <div class="txt">
-          <a class="name" href={ '/user/' + item.SendUserID }>{ item.SendUserNickName }</a>
-          <a class="time" href={ '/post/' + id }>{ util.formatDate(item.Createtime) }</a>
+          <a class="name" href={ userUrl } type="3" title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
+          <a class="time" href={ url } type="1" title="画圈正文">{ util.formatDate(item.Createtime) }</a>
         </div>
         <div class="circle">
           <ul>
             {
               (item.Taglist || []).map(function(item) {
-                return <li><a href={ '/circle/' + item.TagID }>{ item.TagName }圈</a></li>;
+                return <li><a href={ '/circle.html?circleID=' + item.TagID }>{ item.TagName }圈</a></li>;
               })
             }
           </ul>
@@ -268,7 +281,7 @@ class HotPost extends migi.Component {
       <div class="wrap">
         {
           item.Title
-            ? <a href={ '/post/' + id } class="t">{ item.Title }</a>
+            ? <a href={ url } class="t" type="1" title="画圈正文">{ item.Title }</a>
             : ''
         }
         <div class="con" dangerouslySetInnerHTML={ html }/>
@@ -286,7 +299,7 @@ class HotPost extends migi.Component {
                       return <li class={ 'all ' + cn }
                                  style={ 'background-image:url(' + util.autoSsl(util.img208_208_80(item.FileUrl)) + ')' }>
                         <img src={ util.autoSsl(util.img208_208_80(item.FileUrl)) }/>
-                        <a href={ '/post/' + id }>查看全部</a>
+                        <a href={ url } type="1" title="画圈正文">查看全部</a>
                       </li>;
                     }
                     return <li class={ cn }

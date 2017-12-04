@@ -69,8 +69,7 @@ class Author extends migi.Component {
           self.ref.maList = maList = migi.render(
             <MAList ref="maList" authorID={ self.authorID }
                     dataList={ self.hotPlayList }/>);
-          maList.after(home.element
-          );
+          maList.after(self.ref.type.element);
         }
         maList && maList.show();
         break;
@@ -91,7 +90,7 @@ class Author extends migi.Component {
                 authorID={ self.authorID }
                 commentData={ self.commentData }/>
     );
-    self.ref.comments.after(self.ref.home.element);
+    self.ref.comments.after(self.ref.type.element);
 
     let comment = comments.ref.comment;
     let subCmt = self.ref.subCmt;
@@ -122,13 +121,49 @@ class Author extends migi.Component {
       && !self.homeDetail.Hot_Works_Items.length
       && !self.homeDetail.AuthorToAuthor.length;
     if(!self.authorDetail.ISSettled) {
-      return <div></div>;
+      return <div>
+        <Nav ref="nav"
+             authorID={ self.authorID }
+             authorDetail={ self.authorDetail }/>
+        <ul class="type fn-clear" ref="type">
+          <li class="comments cur">留言</li>
+        </ul>
+        <Comments ref="comments"
+                  isLogin={ $.cookie('isLogin') === 'true' }
+                  authorID={ self.authorID }
+                  commentData={ self.commentData }/>
+        <SubCmt ref="subCmt"
+                originTo={ self.authorDetail.AuthorName }
+                subText="发送"
+                tipText="-${n}"
+                readOnly={ true }
+                placeholder={ '给' + self.authorDetail.AuthorName + '留个言吧' }/>
+      </div>;
+    }
+    if(empty) {
+      return <div>
+        <Nav ref="nav"
+             authorID={ self.authorID }
+             authorDetail={ self.authorDetail }/>
+        <ul class="type fn-clear" ref="type" onClick={ { li: this.clickType } }>
+          <li class="ma cur" rel="ma">音乐</li>
+          <li class="comments" rel="comments">留言</li>
+        </ul>
+        <MAList ref="maList" authorID={ self.authorID }
+                dataList={ self.hotPlayList }/>
+        <SubCmt ref="subCmt"
+                originTo={ self.authorDetail.AuthorName }
+                subText="发送"
+                tipText="-${n}"
+                readOnly={ true }
+                placeholder={ '给' + self.authorDetail.AuthorName + '留个言吧' }/>
+      </div>;
     }
     return <div>
       <Nav ref="nav"
            authorID={ self.authorID }
            authorDetail={ self.authorDetail }/>
-      <ul class="type fn-clear" onClick={ { li: this.clickType } }>
+      <ul class="type fn-clear" ref="type" onClick={ { li: this.clickType } }>
         <li class="home cur" rel="home">主页</li>
         <li class="ma" rel="ma">音乐</li>
         <li class="comments" rel="comments">留言</li>

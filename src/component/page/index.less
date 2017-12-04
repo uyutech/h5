@@ -1,0 +1,127 @@
+/**
+ * Created by army8735 on 2017/9/21.
+ */
+
+.cp-page{
+  position:relative;
+  > *{
+    display:inline-block;
+    vertical-align:middle;
+  }
+  .prev,.next{
+    height:0.2rem;
+    text-align:center;
+    line-height:0.2rem;
+  }
+  .prev.dis,.next.dis{
+    opacity:0.5;
+    color:@mainTextColor;
+    text-decoration:none;
+    cursor:default;
+  }
+  .prev b,.next b{
+    display:inline-block;
+    width:0.06rem;
+    height:0.08rem;
+    background:url(arrow.png) no-repeat;
+    background-size:contain;
+  }
+  .prev b{
+    margin-right:0.02rem;
+  }
+  .next b{
+    margin-left:0.02rem;
+    transform:rotateZ(180deg);
+  }
+  ol{
+    margin:0 0.1rem;
+    padding:0;
+  }
+  li{
+    display:inline-block;
+    margin:0 0.05rem;
+    height:0.2rem;
+    text-align:center;
+    line-height:0.2rem;
+  }
+  li span{
+    display:inline-block;
+    padding:0 0.05rem;
+    height:100%;
+    line-height:0.18rem;
+    box-sizing:border-box;
+    border:1px solid #D9D9D9;
+    border-radius:0.04rem;
+  }
+  > span{
+    margin:0 0.1rem;
+  }
+  //input{
+  //  text-align:center;
+  //  box-sizing:content-box;
+  //  padding:0;
+  //  width:34px;
+  //  height:0.18rem;
+  //  background:transparent;
+  //  border:1px solid #D9D9D9;
+  //  color:#666;
+  //  font-size:0.12rem;
+  //}
+  .num{
+    margin-right:0.05rem;
+    padding:0 0.05rem;
+    width:0.24rem;
+    height:0.18rem;
+    border:1px solid #D9D9D9;
+    border-radius:0.04rem;
+    -webkit-appearance:textfield;
+  }
+  .sub{
+    border:none;
+    background:transparent;
+    cursor:pointer;
+    &:hover{
+      color:@mainHoverColor;
+    }
+  }
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance:none;
+  }
+}
+
+@media screen and (max-device-width:414px){
+  .cp-page{
+    ol{
+      margin:0;
+    }
+    .prev{
+      position:relative;
+      width:0.2rem;
+      height:0.2rem;
+      text-indent:999rem;
+      overflow:hidden;
+      white-space:nowrap;
+      b{
+        margin:0;
+        position:absolute;
+        left:0.07rem;
+        top:0.06rem;
+      }
+    }
+    .next{
+      position:relative;
+      width:0.2rem;
+      height:0.2rem;
+      text-indent:999rem;
+      overflow:hidden;
+      white-space:nowrap;
+      b{
+        margin:0;
+        position:absolute;
+        left:0.07rem;
+        top:0.06rem;
+      }
+    }
+  }
+}

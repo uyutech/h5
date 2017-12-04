@@ -12,6 +12,7 @@ module.exports = {
     subpost: './src/subpost/index.jsx',
     post: './src/post/index.jsx',
     subcomment: './src/subcomment/index.jsx',
+    user: './src/user/index.jsx',
   },
   output: {
     path: __dirname + '/www',
