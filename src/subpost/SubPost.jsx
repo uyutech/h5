@@ -117,9 +117,6 @@ class SubPost extends migi.Component {
     self.warnLength = content.length > MAX_TEXT_LENGTH;
     jsBridge.setPreference(self.getContentKey(), content);
   }
-  focus() {
-    this.ref.form.element.scrollIntoView(true);
-  }
   submit(e) {
     e.preventDefault();
     let self = this;
@@ -150,11 +147,7 @@ class SubPost extends migi.Component {
           self.invalid = true;
           self.num = 0;
           self.list = [];
-          let key = self.getImgKey();
-          jsBridge.setPreference(self.getImgKey(), null);
-          let key2 = self.getContentKey();
-          jsBridge.setPreference(self.getContentKey(), null);
-          location.href = '/post/' + res.data.ID;
+          self.clearCache();
         }
         else {
           alert(res.message || util.ERROR_MESSAGE);
@@ -323,8 +316,8 @@ class SubPost extends migi.Component {
   }
   clearCache() {
     let self = this;
-    let key = self.getImgKey();
-    jsBridge.setPreference(key, null);
+    jsBridge.setPreference(self.getImgKey(), null);
+    jsBridge.setPreference(self.getContentKey(), null);
   }
   clickImg(e, vd, tvd) {
     let self = this;
@@ -403,7 +396,7 @@ class SubPost extends migi.Component {
       </div>
       <div class="c">
         <textarea class="text" ref="input" placeholder={ this.placeholder || '夸夸这个圈子吧' }
-                  onInput={ this.input } onFocus={ this.focus }>{ this.value }</textarea>
+                  onInput={ this.input }>{ this.value }</textarea>
       </div>
       <ul class="list" onClick={ { li: this.clickImg } }>
         {

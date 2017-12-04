@@ -9,8 +9,8 @@ import TopNav from '../component/topnav/TopNav.jsx';
 import Find from '../find/Find.jsx';
 
 let s = '';
-s += migi.preRender(<Find/>);
 s += migi.preRender(<TopNav/>);
 s += migi.preRender(<BotNav/>);
+s += migi.preRender(<Find/>);
 
 export default s;

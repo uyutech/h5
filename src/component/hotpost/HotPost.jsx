@@ -107,8 +107,14 @@ class HotPost extends migi.Component {
           });
         });
         $list.on('click', '.comment', function() {
-          let id = $(this).attr('rel');
-          location.href = '/post/' + id + '#comment';
+          let $this = $(this);
+          let id = $this.attr('rel');
+          let count = $this.attr('count');
+          let url = count === '0' ? `/subcomment.html?type=1&id=${id}` : `/post.html?postID=${id}`;
+          let title = count === '0' ? '回复画圈' : '画圈正文';
+          jsBridge.pushWindow(url, {
+            title,
+          });
         });
         $list.on('click', '.del', function() {
           if(window.confirm('确认删除吗？')) {
@@ -232,10 +238,8 @@ class HotPost extends migi.Component {
           <li class={ 'like' + (item.ISLike ? ' has' : '') } rel={ id }>
             <b/><span>{ item.LikeCount || '点赞' }</span>
           </li>
-          <li class="comment" rel={ id }>
-            <a href={ item.CommentCount ? '/post/' + id + '#comment' : '/subComment?type=1&id=' + id }>
-              <b/><span>{ item.CommentCount || '评论' }</span>
-            </a>
+          <li class="comment" rel={ id } count={ item.CommentCount }>
+            <b/><span>{ item.CommentCount || '评论' }</span>
           </li>
           { item.IsOwn ? <li class="del" rel={ id }><b/></li> : '' }
         </ul>
@@ -323,10 +327,8 @@ class HotPost extends migi.Component {
           <b/><span>{ item.FavorCount || '收藏' }</span></li>
         <li class={ 'like' + (item.ISLike ? ' has' : '') } rel={ id }><b/><span>{ item.LikeCount || '点赞' }</span>
         </li>
-        <li class="comment" rel={ id }>
-          <a href={ item.CommentCount ? '/post/' + id + '#comment' : '/subComment?type=1&id=' + id }>
-            <b/><span>{ item.CommentCount || '评论' }</span>
-          </a>
+        <li class="comment" rel={ id } count={ item.CommentCount }>
+          <b/><span>{ item.CommentCount || '评论' }</span>
         </li>
         { item.IsOwn ? <li class="del" rel={ id }><b/></li> : '' }
       </ul>
