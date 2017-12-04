@@ -5,21 +5,37 @@
 class TopNav extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      migi.eventBus.on('LOGIN', function(userInfo) {
+        self.name = userInfo.NickName;
+        self.authorName = userInfo.AuthorName;
+        self.isAuthor = userInfo.ISAuthor;
+        self.head = userInfo.Head_Url;
+        self.isPublic = userInfo.ISOpen;
+        self.isLogin = true;
+      });
+      migi.eventBus.on('LOGIN_OUT', function() {
+        self.isLogin = false;
+      });
+    });
   }
-  @bind hasData
   @bind isLogin
   @bind isPublic
+  @bind name
   @bind head
+  @bind isAuthor
+  @bind authorName
   render() {
     return <div class="top-nav" id="topNav">
       <b class="logo"/>
-      <div class={ 'message' + (this.hasData && this.isLogin ? '' : ' fn-hide') } href="/my/message">
+      <div class={ 'message' + (this.isLogin ? '' : ' fn-hide') } href="/my/message">
         <span></span>
       </div>
-      <span class={ (this.hasData && this.isLogin ? '' : 'fn-hide') + ' public' }>[{ this.isPublic ? '切换到马甲' : '切换到作者身份' }]</span>
+      <span class={ (this.isLogin && this.isAuthor ? '' : 'fn-hide') + ' public' }>[{ this.isPublic ? '切换到马甲' : '切换到作者身份' }]</span>
       <div class="user">
-        <span class={ 'name' + (this.isPublic ? ' public' : '') }>{ this.hasData && this.isLogin ? (this.isPublic ? 111 : 222) : '' }</span>
-        <img src={ this.head || 'src/common/head.png' }/>
+        <span class={ 'name' + (this.isPublic ? ' public' : '') }>{ this.isLogin ? (this.isPublic ? this.authorName : this.name) : '' }</span>
+        <img src={ (this.isLogin && this.head) || 'src/common/head.png' }/>
       </div>
     </div>;
   }

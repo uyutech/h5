@@ -236,6 +236,25 @@ a{
     content:' ';
   }
 }
+.fn-placeholder-roundlet{
+  margin:0.15rem;
+  width:0.6rem;
+  height:0.6rem;
+  background:@placeholderColor;
+  border-radius:100%;
+}
+.fn-placeholder-roundlets{
+  margin:0.15rem;
+  &:before,&:after{
+    display:inline-block;
+    margin-right:0.1rem;
+    width:0.6rem;
+    height:0.6rem;
+    background:@placeholderColor;
+    border-radius:100%;
+    content:' ';
+  }
+}
 .fn-placeholder-tag{
   margin:0.15rem;
   width:0.5rem;

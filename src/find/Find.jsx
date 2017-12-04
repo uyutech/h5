@@ -121,8 +121,8 @@ class Find extends migi.Component {
                     dataList={ self.hotPicList.data }/>
           );
           hotPic.on('poolEnd', function() {
-            hotPic.messag
-          })
+            hotPic.message = '';
+          });
           hotPic.after(hotPlayList.element);
         }
         hotPic.show();

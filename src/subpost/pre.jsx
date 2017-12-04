@@ -7,6 +7,6 @@
 import SubPost from './SubPost.jsx';
 
 let s = '';
-s += migi.preRender(<SubPost/>);
+s += migi.preRender(<SubPost placeholder="在转圈圈画个圈吧"/>);
 
 export default s;

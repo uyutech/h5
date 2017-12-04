@@ -3,86 +3,148 @@
  */
 
 #page > .my{
-  .weibo{
-    display:block;
-    margin:1rem auto 0;
-    padding-top:0.4rem;
-    width:1rem;
-    background:url(../component/mlogin/login_weibo.png) no-repeat center 0;
-    background-size:0.36rem auto;
-    text-align:center;
-    color:#919191;
-    font-size:0.16rem;
-  }
-  h4{
-    position:relative;
-    margin:0.1rem;
-    padding-left:0.05rem;
-    font-size:0.14rem;
-    font-weight:400;
-    &:before{
-      position:absolute;
-      left:0;
-      top:0.02rem;
-      bottom:0.02rem;
-      width:0.02rem;
-      background:@secondColor;
-      content:' ';
-      border-radius:0.05rem;
+  > div{
+    .weibo{
+      display:block;
+      margin:1rem auto 0;
+      padding-top:0.4rem;
+      width:1rem;
+      background:url(../component/mlogin/login_weibo.png) no-repeat center 0;
+      background-size:0.36rem auto;
+      text-align:center;
+      color:#919191;
+      font-size:0.16rem;
     }
-  }
-  .profile{
-    margin-top:0.1rem;
-    .c{
-      display:flex;
-      align-items:center;
-    }
-    .pic{
+    h4{
       position:relative;
-      margin-left:0.1rem;
-      width:0.75rem;
-      height:0.75rem;
-      overflow:hidden;
-      img{
-        display:block;
-        width:100%;
-        height:100%;
-        border-radius:100%;
-      }
-      .upload{
+      margin:0.1rem;
+      padding-left:0.05rem;
+      font-size:0.14rem;
+      font-weight:400;
+      &:before{
         position:absolute;
-        right:0;
-        bottom:0;
-        width:0.24rem;
-        height:0.24rem;
-        background:rgba(0, 0, 0, 0.1) url(upload.png) no-repeat center;
-        background-size:contain;
+        left:0;
+        top:0.02rem;
+        bottom:0.02rem;
+        width:0.02rem;
+        background:@secondColor;
+        content:' ';
         border-radius:0.05rem;
-        input{
-          height:100%;
-          opacity:0;
-        }
       }
     }
-    .txt{
-      flex:1;
-      margin-left:0.1rem;
-      strong{
-        margin-right:0.1rem;
-        font-size:0.18rem;
-        font-weight:400;
+    .profile{
+      margin-top:0.1rem;
+      .c{
+        display:flex;
+        align-items:center;
       }
-      input{
-        width:1rem;
-        font-size:0.18rem;
-        border:1px solid #EEE;
-        &.input2{
-          margin-top:0.05rem;
-          height:0.2rem;
-          font-size:0.12rem;
+      .pic{
+        position:relative;
+        margin-left:0.1rem;
+        width:0.75rem;
+        height:0.75rem;
+        overflow:hidden;
+        img{
+          display:block;
+          width:100%;
+          height:100%;
+          border-radius:100%;
+        }
+        .upload{
+          position:absolute;
+          right:0;
+          bottom:0;
+          width:0.24rem;
+          height:0.24rem;
+          background:rgba(0, 0, 0, 0.1) url(upload.png) no-repeat center;
+          background-size:contain;
+          border-radius:0.05rem;
+          input{
+            height:100%;
+            opacity:0;
+          }
         }
       }
-      .edit{
+      .txt{
+        flex:1;
+        margin-left:0.1rem;
+        strong{
+          margin-right:0.1rem;
+          font-size:0.18rem;
+          font-weight:400;
+        }
+        input{
+          width:1rem;
+          font-size:0.18rem;
+          border:1px solid #EEE;
+          &.input2{
+            margin-top:0.05rem;
+            height:0.2rem;
+            font-size:0.12rem;
+          }
+        }
+        .edit{
+          display:inline-block;
+          width:0.2rem;
+          height:0.2rem;
+          background:url(edit.png) no-repeat center;
+          background-size:contain;
+          text-indent:999rem;
+          overflow:hidden;
+          cursor:pointer;
+          &.edit2{
+            transform:translateY(0.03rem);
+          }
+          &.edit3{
+            transform:translateY(0.06rem);
+            vertical-align:top;
+          }
+        }
+        button{
+          margin-left:0.1rem;
+          vertical-align:bottom;
+        }
+        .sign{
+          display:inline-block;
+          margin-right:0.1rem;
+          height:0.2rem;
+          line-height:0.2rem;
+          color:@fourthTextColor;
+          vertical-align:middle;
+          &.empty{
+            color:#CCC;
+          }
+        }
+      }
+      label{
+        display:inline-block;
+        color:@secondTextColor;
+      }
+      textarea{
+        display:inline-block;
+        margin-top:0.1rem;
+        padding:0.05rem;
+        width:2rem;
+        vertical-align:top;
+        resize:none;
+        border:1px solid #CCC;
+        border-radius:0.05rem;
+      }
+      .address{
+        display:inline-block;
+        margin-right:0.1rem;
+        margin-top:0.1rem;
+        max-width:2rem;
+        color:@fourthTextColor;
+        vertical-align:top;
+        white-space:pre-wrap;
+        word-break:break-all;
+        word-wrap:break-word;
+        &.empty{
+          color:#CCC;
+        }
+      }
+      .edit3{
         display:inline-block;
         width:0.2rem;
         height:0.2rem;
@@ -91,115 +153,63 @@
         text-indent:999rem;
         overflow:hidden;
         cursor:pointer;
-        &.edit2{
-          transform:translateY(0.03rem);
-        }
-        &.edit3{
-          transform:translateY(0.06rem);
-          vertical-align:top;
-        }
+        transform:translateY(0.06rem);
+        vertical-align:top;
       }
       button{
         margin-left:0.1rem;
         vertical-align:bottom;
       }
-      .sign{
-        display:inline-block;
-        margin-right:0.1rem;
-        height:0.2rem;
-        line-height:0.2rem;
-        color:@fourthTextColor;
-        vertical-align:middle;
-        &.empty{
-          color:#CCC;
+    }
+    .list{
+      margin-top:0.2rem;
+      a{
+        position:relative;
+        display:block;
+        margin:0.1rem;
+        padding-left:0.32rem;
+        line-height:0.3rem;
+        font-size:0.14rem;
+        border-radius:0.05rem;
+        &.relation{
+          background:#F3F3F3 url(../icon/my-relation.png) no-repeat 0.05rem center;
+          background-size:0.24rem auto;
+        }
+        &.message{
+          background:#F3F3F3 url(../icon/my-message.png) no-repeat 0.05rem center;
+          background-size:0.24rem auto;
+        }
+        &.post{
+          background:#F3F3F3 url(../icon/my-post.png) no-repeat 0.05rem center;
+          background-size:0.24rem auto;
+        }
+        &.favor{
+          background:#F3F3F3 url(../icon/my-favor.png) no-repeat 0.05rem center;
+          background-size:0.24rem auto;
         }
       }
     }
-    label{
-      display:inline-block;
-      color:@secondTextColor;
-    }
-    textarea{
-      display:inline-block;
+    > .bp{
       margin-top:0.1rem;
-      padding:0.05rem;
-      width:2rem;
-      vertical-align:top;
-      resize:none;
-      border:1px solid #CCC;
-      border-radius:0.05rem;
-    }
-    .address{
-      display:inline-block;
-      margin-right:0.1rem;
-      margin-top:0.1rem;
-      max-width:2rem;
-      color:@fourthTextColor;
-      vertical-align:top;
-      white-space:pre-wrap;
-      word-break:break-all;
-      word-wrap:break-word;
-      &.empty{
-        color:#CCC;
+      padding:0 0.1rem;
+      font-size:0.12rem;
+      small{
+        font-size:0.1rem;
       }
     }
-    .edit3{
-      display:inline-block;
-      width:0.2rem;
-      height:0.2rem;
-      background:url(edit.png) no-repeat center;
-      background-size:contain;
-      text-indent:999rem;
-      overflow:hidden;
-      cursor:pointer;
-      transform:translateY(0.06rem);
-      vertical-align:top;
-    }
-    button{
-      margin-left:0.1rem;
-      vertical-align:bottom;
-    }
-  }
-  .list{
-    margin-top:0.2rem;
-    a{
-      position:relative;
+    .loginout{
       display:block;
-      margin:0.1rem;
-      padding-left:0.32rem;
-      line-height:0.3rem;
-      font-size:0.14rem;
-      border-radius:0.05rem;
-      &.relation{
-        background:#F3F3F3 url(../icon/my-relation.png) no-repeat 0.05rem center;
-        background-size:0.24rem auto;
+      margin:0.2rem auto;
+      width:1.5rem;
+      line-height:0.42rem;
+      font-size:0.16rem;
+      color:#FFF;
+      border-radius:0.12rem;
+      background:#B65A58;
+      text-align:center;
+      &:active{
+        color:#0AE;
       }
-      &.message{
-        background:#F3F3F3 url(../icon/my-message.png) no-repeat 0.05rem center;
-        background-size:0.24rem auto;
-      }
-      &.post{
-        background:#F3F3F3 url(../icon/my-post.png) no-repeat 0.05rem center;
-        background-size:0.24rem auto;
-      }
-      &.favor{
-        background:#F3F3F3 url(../icon/my-favor.png) no-repeat 0.05rem center;
-        background-size:0.24rem auto;
-      }
-    }
-  }
-  .loginout{
-    display:block;
-    margin:0.2rem auto;
-    width:1.5rem;
-    line-height:0.42rem;
-    font-size:0.16rem;
-    color:#FFF;
-    border-radius:0.12rem;
-    background:#B65A58;
-    text-align:center;
-    &:active{
-      color:#0AE;
     }
   }
 }

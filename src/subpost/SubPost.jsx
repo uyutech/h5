@@ -358,8 +358,11 @@ class SubPost extends migi.Component {
   render() {
     return <form class="mod-sub" ref="form" onSubmit={ this.submit }>
       <div class="ti">
-        <a onClick={ this.clickClose } class="close" title="返回"
-           href={ this.props.circleID ? ('/circle/' + this.props.circleID) : '/' }/>
+        <div class={ 'upload' + (this.disableUpload ? ' dis' : '') }>
+          图片
+          <input type="file" ref="file" class="file" onChange={ this.change } disabled={ !!this.disableUpload }
+                 multiple="multiple" accept="image/gif, image/jpeg, image/png"/>
+        </div>
         <span class={ 'limit' + (this.warnLength ? ' warn' : '') }><strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }</span>
         <input type="submit"
                class={ 'submit' + (this.sending || this.invalid || this.disableUpload ? ' dis' : '') }
@@ -370,20 +373,13 @@ class SubPost extends migi.Component {
                  : '发送' }/>
       </div>
       <div class="ti2">
-        <div class="label" ref="label">
-          <ul>
-            {
-              (this.to || []).map(function(item) {
-                return <li rel={ item.TagID } class={ item.TagID.toString() === (this.props.circleID || '').toString() ? 'on' : '' }>{ item.TagName }圈</li>;
-              }.bind(this))
-            }
-          </ul>
-        </div>
-        <div class={ 'upload' + (this.disableUpload ? ' dis' : '') }>
-          图片
-          <input type="file" ref="file" class="file" onChange={ this.change } disabled={ !!this.disableUpload }
-                 multiple="multiple" accept="image/gif, image/jpeg, image/png"/>
-        </div>
+        <ul ref="label">
+          {
+            (this.to || []).map(function(item) {
+              return <li rel={ item.TagID } class={ item.TagID.toString() === (this.props.circleID || '').toString() ? 'on' : '' }>{ item.TagName }圈</li>;
+            }.bind(this))
+          }
+        </ul>
       </div>
       <div class={ 'ti3' + (this.tagList.length ? '' : ' fn-hide') } onClick={ { li: this.clickTag }}>
         <ul>

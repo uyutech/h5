@@ -20,12 +20,29 @@
     position:relative;
     display:flex;
     align-items:center;
-    .close{
-      display:block;
-      width:0.4rem;
+
+    .upload{
+      position:relative;
+      padding-left:0.25rem;
+      width:1rem;
       height:0.4rem;
-      background:url(close.png) no-repeat center;
-      background-size:0.2rem auto;
+      box-sizing:border-box;
+      line-height:0.4rem;
+      background:#9ECDDB url(image.png) no-repeat 0.15rem center;
+      background-size:0.3rem auto;
+      color:#FFF;
+      border-radius:0.3rem;
+      text-align:center;
+      font-size:0.14rem;
+      .file{
+        position:absolute;
+        left:0;
+        top:0;
+        display:block;
+        width:100%;
+        height:100%;
+        opacity:0;
+      }
     }
     img{
       display:block;
@@ -61,75 +78,35 @@
   }
   > .ti2{
     position:relative;
-    display:flex;
     margin-top:0.1rem;
-    align-items:center;
-    justify-content:space-between;
-    &:after{
-      position:absolute;
-      top:0;
-      right:1.1rem;
-      display:block;
-      width:0.2rem;
-      height:100%;
-      background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,1));
-      content:' ';
-    }
-    .label{
-      flex:1;
+    ul{
+      display:flex;
       height:0.24rem;
       overflow-x:auto;
       transform:translate3d(0,0,0);
-      ul{
-        display:flex;
-      }
-      li{
-        margin-right:0.05rem;
-        padding:0 0.1rem;
-        max-width:0.9rem;
-        height:0.22rem;
-        line-height:0.22rem;
-        border-radius:0.22rem;
-        border:1px solid @mainColor;
-        white-space:nowrap;
-        text-align:center;
-        color:@mainColor;
-        cursor:pointer;
-        &.cur{
-          background:@mainColor;
-          color:#FFF;
-        }
-        &.on{
-          background:@mainColor;
-          color:#FFF;
-        }
-        &:active{
-          text-decoration:underline;
-        }
-      }
     }
-    .upload{
-      position:relative;
-      margin-left:0.1rem;
-      padding-left:0.25rem;
-      width:1rem;
-      height:0.4rem;
-      box-sizing:border-box;
-      line-height:0.4rem;
-      background:#9ECDDB url(image.png) no-repeat 0.15rem center;
-      background-size:0.3rem auto;
-      color:#FFF;
-      border-radius:0.3rem;
+    li{
+      margin-right:0.05rem;
+      padding:0 0.1rem;
+      max-width:0.9rem;
+      height:0.22rem;
+      line-height:0.22rem;
+      border-radius:0.22rem;
+      border:1px solid @mainColor;
+      white-space:nowrap;
       text-align:center;
-      font-size:0.14rem;
-      .file{
-        position:absolute;
-        left:0;
-        top:0;
-        display:block;
-        width:100%;
-        height:100%;
-        opacity:0;
+      color:@mainColor;
+      cursor:pointer;
+      &.cur{
+        background:@mainColor;
+        color:#FFF;
+      }
+      &.on{
+        background:@mainColor;
+        color:#FFF;
+      }
+      &:active{
+        text-decoration:underline;
       }
     }
   }

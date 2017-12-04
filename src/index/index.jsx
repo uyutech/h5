@@ -15,9 +15,25 @@ import Follow from '../follow/Follow.jsx';
 import My from '../my/My.jsx';
 
 jsBridge.ready(function() {
+  jsBridge.swipeRefresh(false);
   jsBridge.on('back', function(e) {
     e.preventDefault();
     jsBridge.moveTaskToBack();
+  });
+
+  let topNav = migi.preExist(<TopNav/>, '#page');
+  let botNav = migi.preExist(<BotNav/>, '#page');
+
+  let userInfo;
+  let bonusPoint;
+  jsBridge.getPreference('userInfo', function(res) {
+    userInfo = JSON.parse(res);
+    if(userInfo) {
+      migi.eventBus.emit('LOGIN', userInfo);
+    }
+  });
+  jsBridge.getPreference('bonusPoint', function(res) {
+    bonusPoint = JSON.parse(res);
   });
 
   let find = migi.preExist(<Find/>, '#page');
@@ -25,8 +41,6 @@ jsBridge.ready(function() {
   let circling;
   let follow;
   let last = find;
-  let topNav = migi.preExist(<TopNav/>, '#page');
-  let botNav = migi.preExist(<BotNav/>, '#page');
 
   botNav.on('change', function(i) {
     last.hide();
@@ -50,7 +64,7 @@ jsBridge.ready(function() {
     }
     else if(i === 3) {
       if(!my) {
-        my = migi.render(<My/>, '#page');
+        my = migi.render(<My userInfo={ userInfo } bonusPoint={ bonusPoint }/>, '#page');
       }
       last = my;
     }

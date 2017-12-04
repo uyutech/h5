@@ -10,11 +10,16 @@ import util from '../common/util';
 class Profile extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    if(self.props.userInfo) {
+      self.head = self.props.userInfo.Head_Url;
+      self.sname = self.props.userInfo.NickName;
+      self.sign = self.props.userInfo.User_Sign;
+    }
   }
   @bind head
   @bind sname
   @bind sign
-  @bind address
   @bind updateNickNameTimeDiff
   @bind updateHeadTimeDiff
   click() {
@@ -129,44 +134,6 @@ class Profile extends migi.Component {
       net.postJSON('/api/my/updateSign', { sign: newSign }, function(res) {
         if(res.success) {
           self.sign = newSign;
-        }
-        else {
-          alert(res.message || util.ERROR_MESSAGE);
-        }
-        $edit.removeClass('fn-hide');
-      }, function(res) {
-        alert(res.message || util.ERROR_MESSAGE);
-        $edit.removeClass('fn-hide');
-      });
-    }
-    else {
-      $edit.removeClass('fn-hide');
-    }
-  }
-  click3() {
-    let self = this;
-    $(self.ref.address.element).addClass('fn-hide');
-    $(self.ref.edit3.element).addClass('fn-hide');
-    $(self.ref.input3.element).removeClass('fn-hide').focus().val(self.address);
-    $(self.ref.ok3.element).removeClass('fn-hide')
-  }
-  clickOk3() {
-    let self = this;
-    $(self.ref.address.element).removeClass('fn-hide');
-    $(self.ref.input3.element).addClass('fn-hide');
-    $(self.ref.ok3.element).addClass('fn-hide');
-    let $edit = $(self.ref.edit3.element);
-    let newAddress = $(self.ref.input3.element).val().trim();
-    let length = newAddress.length;
-    if(length > 256) {
-      alert('地址长度不能超过256个字哦~');
-      $edit.removeClass('fn-hide');
-      return;
-    }
-    if(newAddress !== self.address) {
-      net.postJSON('/api/my/updateAddress', { address: newAddress }, function(res) {
-        if(res.success) {
-          self.address = newAddress;
         }
         else {
           alert(res.message || util.ERROR_MESSAGE);

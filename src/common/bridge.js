@@ -194,7 +194,7 @@ let jsBridge = {
       ZhuanQuanJSBridge.call('getPreference', key, callback);
     }
     else {
-      callback();
+      callback(localStorage[key]);
     }
   },
   setPreference: function(key, value, callback) {
@@ -206,6 +206,12 @@ let jsBridge = {
       ZhuanQuanJSBridge.call('setPreference', { key, value }, callback);
     }
     else {
+      if(value === null) {
+        delete localStorage[key];
+      }
+      else {
+        localStorage[key] = value;
+      }
       callback();
     }
   },
@@ -215,6 +221,7 @@ let jsBridge = {
       ZhuanQuanJSBridge.call('setPreference', { key, value: null }, callback);
     }
     else {
+      delete localStorage[key];
       callback();
     }
   },
