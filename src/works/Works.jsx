@@ -17,6 +17,12 @@ import Insp from './Insp.jsx';
 import Poster from './Poster.jsx';
 import Comments from './Comments.jsx';
 import Text from './Text.jsx';
+import SubCmt from '../component/subcmt/SubCmt.jsx';
+import LyricsParser from './LyricsParser.jsx';
+import MusicAlbum from './MusicAlbum.jsx';
+import PlayList from './PlayList.jsx';
+import Describe from './Describe.jsx';
+import PhotoAlbum from './PhotoAlbum.jsx';
 
 let first;
 
@@ -38,6 +44,22 @@ class Works extends migi.Component {
     self.setWorks(data.worksDetail);
 
     self.hasData = true;
+
+    let subCmt = self.ref.subCmt;
+    subCmt.on('click', function() {
+      if(subCmt.to) {
+        jsBridge.pushWindow('/subcomment.html?type=3&id='
+          + self.worksID + '&sid=' + (self.workID || '') + '&cid=' + self.cid + '&rid=' + self.rid, {
+          title: '评论',
+        });
+      }
+      else {
+        jsBridge.pushWindow('/subcomment.html?type=3&id='
+          + self.worksID + '&sid=' + (self.workID || ''), {
+          title: '评论',
+        });
+      }
+    });
   }
   setWorks(worksDetail) {
     let self = this;
@@ -70,7 +92,7 @@ class Works extends migi.Component {
       return;
     }
     else if(self.worksType === WorksTypeEnum.TYPE.photoAlbum) {
-      self.setAuthors(self.props.worksDetail.Works_Author || []);
+      self.setAuthors(self.worksDetail.Works_Author || []);
       return;
     }
     let workHash = {};
@@ -200,28 +222,17 @@ class Works extends migi.Component {
       let rel = tvd.props.rel;
       if(self.worksType === WorksTypeEnum.TYPE.musicAlbum) {
         if(rel === 'playList') {
-          $(self.ref.comments.element).addClass('fn-hide');
+          self.ref.comments && $(self.ref.comments.element).addClass('fn-hide');
           $(self.ref.intro.element).addClass('fn-hide');
           $(self.ref.playList.element).removeClass('fn-hide');
         }
         else if(rel === 'intro') {
-          $(self.ref.comments.element).addClass('fn-hide');
+          self.ref.comments && $(self.ref.comments.element).addClass('fn-hide');
           $(self.ref.playList.element).addClass('fn-hide');
           $(self.ref.intro.element).removeClass('fn-hide');
         }
         else if(rel === 'comment') {
-          if(!self.ref.comments) {
-            self.ref.comments = migi.render(
-              <Comments ref="comments"
-                        hidden={ true }
-                        isLogin={ self.props.isLogin }
-                        worksID={ self.worksID }
-                        workID={ self.workID }
-                        originTo={ self.worksDetail.Title }
-                        commentData={ self.commentData }/>
-            );
-            self.ref.comments.after(self.ref.intro.element);
-          }
+          self.addComment();
           $(self.ref.intro.element).addClass('fn-hide');
           $(self.ref.playList.element).addClass('fn-hide');
           $(self.ref.comments.element).removeClass('fn-hide');
@@ -229,7 +240,7 @@ class Works extends migi.Component {
       }
       else if(self.worksType === WorksTypeEnum.TYPE.photoAlbum) {
         if(rel === 'photoAlbum') {
-          $(self.ref.comments.element).addClass('fn-hide');
+          self.ref.comments && $(self.ref.comments.element).addClass('fn-hide');
           $(self.ref.intro.element).addClass('fn-hide');
           $(self.ref.photoAlbum.element).removeClass('fn-hide');
           if(self.props.tag !== 'intro' && self.props.tag !== 'comment') {
@@ -237,23 +248,12 @@ class Works extends migi.Component {
           }
         }
         else if(rel === 'intro') {
-          $(self.ref.comments.element).addClass('fn-hide');
+          self.ref.comments && $(self.ref.comments.element).addClass('fn-hide');
           $(self.ref.photoAlbum.element).addClass('fn-hide');
           $(self.ref.intro.element).removeClass('fn-hide');
         }
         else if(rel === 'comment') {
-          if(!self.ref.comments) {
-            self.ref.comments = migi.render(
-              <Comments ref="comments"
-                        hidden={ true }
-                        isLogin={ self.props.isLogin }
-                        worksID={ self.worksID }
-                        workID={ self.workID }
-                        originTo={ self.worksDetail.Title }
-                        commentData={ self.commentData }/>
-            );
-            self.ref.comments.after(self.ref.intro.element);
-          }
+          self.addComment();
           $(self.ref.intro.element).addClass('fn-hide');
           $(self.ref.photoAlbum.element).addClass('fn-hide');
           $(self.ref.comments.element).removeClass('fn-hide');
@@ -261,36 +261,136 @@ class Works extends migi.Component {
       }
       else if(self.worksType === WorksTypeEnum.TYPE.originMusic) {
         if(rel === 'intro') {
-          $(self.ref.comments.element).addClass('fn-hide');
+          self.ref.comments && $(self.ref.comments.element).addClass('fn-hide');
           $(self.ref.intro.element).removeClass('fn-hide');
         }
         else if(rel === 'comment') {
-          if(!self.ref.comments) {
-            self.ref.comments = migi.render(
-              <Comments ref="comments"
-                        hidden={ true }
-                        isLogin={ self.props.isLogin }
-                        worksID={ self.worksID }
-                        workID={ self.workID }
-                        originTo={ self.worksDetail.Title }
-                        commentData={ self.commentData }/>
-            );
-            self.ref.comments.after(self.ref.intro.element);
-          }
+          self.addComment();
           $(self.ref.intro.element).addClass('fn-hide');
           $(self.ref.comments.element).removeClass('fn-hide');
         }
       }
     }
   }
+  addComment() {
+    let self = this;
+    if(self.ref.comments) {
+      return;
+    }
+    let comments = self.ref.comments = migi.render(
+      <Comments ref="comments"
+                hidden={ true }
+                isLogin={ $.cookie('isLogin') === 'true' }
+                worksID={ self.worksID }
+                workID={ self.workID }
+                originTo={ self.worksDetail.Title }
+                commentData={ self.commentData }/>
+    );
+    self.ref.comments.after(self.ref.intro.element);
+
+    let comment = comments.ref.comment;
+    let subCmt = self.ref.subCmt;
+    if(self.worksType === WorksTypeEnum.TYPE.originMusic) {
+      let media = self.ref.media;
+      media.on('switchTo', function(data) {
+        comments.workID = data.ItemID;
+      });
+    }
+    comment.on('chooseSubComment', function(rid, cid, name, n) {
+      subCmt.to = name;
+      self.rid = rid;
+      self.cid = cid;
+      if(!n || n === '0') {
+        jsBridge.pushWindow('/subcomment.html?type=3&id='
+          + self.worksID + '&sid=' + (self.workID || '') + '&cid=' + cid + '&rid=' + rid, {
+          title: '评论',
+        });
+      }
+    });
+    comment.on('closeSubComment', function() {
+      subCmt.to = '';
+    });
+  }
   genDom() {
     let self = this;
     let state = worksState.getStateStr(self.worksType, self.worksDetail.WorkState);
     if(self.worksType === WorksTypeEnum.TYPE.musicAlbum) {
-      return <div class={ 't' + self.worksType }>111</div>;
+      return <div class={ 't' + self.worksType }>
+        <MusicAlbum ref="musicAlbum"
+                    worksID={ self.worksID }
+                    workID={ self.workID }
+                    cover={ self.worksDetail.cover_Pic }
+                    workList={ self.workList }/>
+        <ul class="sel fn-clear" ref="sel" onClick={ { li: this.clickSel } }>
+          <li class="cur" rel="playList">曲目</li>
+          <li rel="intro">简介</li>
+          <li rel="comment">留言</li>
+          {
+            state ? <li class="state">{ state }</li> : ''
+          }
+        </ul>
+        <PlayList ref="playList" cover={ self.worksDetail.cover_Pic }
+                  worksID={ this.worksID } workID={ this.workID } workList={ this.workList }/>
+        <div class="intro fn-hide" ref="intro">
+          <Describe data={ self.worksDetail.Describe }/>
+          <Author authorList={ self.authorList }/>
+          {
+            self.worksDetail.WorkTimeLine && self.worksDetail.WorkTimeLine.length
+              ? <Timeline datas={ self.worksDetail.WorkTimeLine }/>
+              : ''
+          }
+          {
+            self.worksDetail.WorksAuthorComment
+              ? <Insp ref="inspComment"
+                      commentData={ self.worksDetail.WorksAuthorComment }/>
+              : ''
+          }
+        </div>
+        <SubCmt ref="subCmt"
+                originTo={ self.worksDetail.Title }
+                subText="发送"
+                tipText="-${n}"
+                readOnly={ true }
+                placeholder="夸夸这个作品吧"/>
+      </div>;
     }
     if(self.worksType === WorksTypeEnum.TYPE.photoAlbum) {
-      return <div class={ 't' + self.worksType }>222</div>;
+      return <div class={ 't' + self.worksType }>
+        <ul class="sel fn-clear" ref="sel" onClick={ { li: this.clickSel } }>
+          <li class="cur" rel="photoAlbum">相册</li>
+          <li rel="intro">简介</li>
+          <li rel="comment">留言</li>
+          {
+            state ? <li class="state">{ state }</li> : ''
+          }
+        </ul>
+        <PhotoAlbum ref="photoAlbum" worksID={ this.worksID } labelList={ self.labelList }/>
+        <div class="intro fn-hide" ref="intro">
+          <Author authorList={ self.authorList }/>
+          {
+            self.worksDetail.WorkTimeLine && self.worksDetail.WorkTimeLine.length
+              ? <Timeline datas={ self.worksDetail.WorkTimeLine }/>
+              : ''
+          }
+          {
+            self.textData && self.textData.value && self.textData.value.length
+              ? <Text datas={ self.textData }/>
+              : ''
+          }
+          {
+            self.worksDetail.WorksAuthorComment
+              ? <Insp ref="inspComment"
+                      commentData={ self.worksDetail.WorksAuthorComment }/>
+              : ''
+          }
+        </div>
+        <SubCmt ref="subCmt"
+                originTo={ self.worksDetail.Title }
+                subText="发送"
+                tipText="-${n}"
+                readOnly={ true }
+                placeholder="夸夸这个作品吧"/>
+      </div>;
     }
     return <div class={ 't' + self.worksType }>
       <Media ref="media"
@@ -327,7 +427,7 @@ class Works extends migi.Component {
         {
           self.worksDetail.WorksAuthorComment
             ? <Insp ref="insp"
-                           commentData={ self.worksDetail.WorksAuthorComment }/>
+                    commentData={ self.worksDetail.WorksAuthorComment }/>
             : ''
         }
         {
@@ -336,6 +436,12 @@ class Works extends migi.Component {
             : ''
         }
       </div>
+      <SubCmt ref="subCmt"
+              originTo={ self.worksDetail.Title }
+              subText="发送"
+              tipText="-${n}"
+              readOnly={ true }
+              placeholder="夸夸这个作品吧"/>
     </div>;
   }
   render() {

@@ -4,6 +4,8 @@
 
 import $ from 'anima-yocto-ajax';
 
+window.ROOT_DOMAIN = 'http://circling.cc';
+
 export default {
   ajax: function(url, data, success, error, type, timeout) {
     // 兼容无host

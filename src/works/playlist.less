@@ -1,0 +1,186 @@
+/**
+ * Created by army8735 on 2017/10/19.
+ */
+
+.mod.mod-playlist{
+  position:relative;
+  .type{
+    padding:0 0.1rem;
+    height:0.35rem;
+    background:@mainColor;
+    li{
+      float:right;
+      margin-top:0.07rem;
+      padding:0 0.1rem 0 0.3rem;
+      height:0.22rem;
+      line-height:0.22rem;
+      color:@thirdTextColor;
+      background-position:0.08rem center;
+      background-repeat:no-repeat;
+      border-radius:0.2rem;
+      cursor:pointer;
+      &:hover{
+        text-decoration:underline;
+      }
+      &.cur{
+        background-color:@secondColor;
+        cursor:default;
+        &:hover{
+          text-decoration:none;
+        }
+      }
+      //&.music{
+      //  background-image:url(music.png);
+      //  background-size:0.14rem auto;
+      //}
+      //&.audio{
+      //  background-image:url(audio.png);
+      //  background-size:0.14rem auto;
+      //}
+      //&.video{
+      //  padding-left:0.2rem;
+      //  background-image:url(video.png);
+      //  background-size:0.07rem auto;
+      //}
+    }
+  }
+  .list{
+    overflow:hidden;
+    li{
+      position:relative;
+      padding:0 0.2rem;
+      height:0.46rem;
+      line-height:0.46rem;
+      cursor:pointer;
+      transition:transform 0.2s;
+      //list-style:decimal inside;
+      color:#919191;
+      overflow:hidden;
+      &:after{
+        position:absolute;
+        left:0.1rem;
+        right:0.1rem;
+        bottom:0;
+        height:2px;
+        background:#EDF3F7;
+        content:' ';
+      }
+      &:last-child,&.cur{
+        &:after{
+          display:none;
+          content:'';
+        }
+      }
+      &.private{
+        padding-left:0.5rem;
+        opacity:0.7;
+        cursor:default;
+        &:hover{
+          transform:none;
+        }
+        .name{
+          color:@fourthTextColor;
+        }
+      }
+      &.empty{
+        cursor:default;
+        &:hover{
+          transform:none;
+        }
+        .icon{
+          display:none;
+        }
+        .name{
+          color:@secondTextColor;
+        }
+      }
+      &.rel{
+        padding-left:0.5rem;
+      }
+      .pic{
+        position:absolute;
+        left:0.1rem;
+        top:0.06rem;
+        display:block;
+        width:0.32rem;
+        height:0.32rem;
+        border-radius:0.05rem;
+        overflow:hidden;
+        box-shadow:@picShadow;
+        &:hover{
+          box-shadow:@picHoverShadow;
+        }
+        img{
+          display:block;
+          width:100%;
+          height:100%;
+        }
+      }
+      .name{
+        margin-left:0.05rem;
+        font-size:0.14rem;
+        white-space:nowrap;
+        color:@mainTextColor;
+        &.empty{
+          font-size:0.12rem;
+        }
+      }
+      a.name{
+        color:@mainLinkColor;
+      }
+      .icon{
+        position:absolute;
+        top:0.14rem;
+        right:0.1rem;
+        display:block;
+        width:0.18rem;
+        height:0.18rem;
+        background:url(pl-icon.png) no-repeat center;
+        background-size:contain;
+        b{
+          display:none;
+        }
+      }
+      &:hover{
+        transform:scale(1.02);
+      }
+      &.cur{
+        background:#EDF3F7;
+        cursor:default;
+        transform:none;
+        .icon{
+          background:none;
+          b{
+            position:absolute;
+            left:0;
+            bottom:0;
+            display:block;
+            width:0.04rem;
+            height:100%;
+            background:@secondColor;
+            border-radius:2px;
+            transform:scaleY(0.1);
+            transform-origin:center bottom;
+            transition:transform 0.2s;
+            &.l2{
+              left:0.07rem;
+            }
+            &.l3{
+              left:0.14rem;
+            }
+          }
+        }
+      }
+    }
+    &.audio{
+      .video{
+        display:none;
+      }
+    }
+    &.video{
+      .audio{
+        display:none;
+      }
+    }
+  }
+}

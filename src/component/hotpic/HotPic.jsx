@@ -28,7 +28,7 @@ class HotPic extends migi.Component {
         }
         $b.addClass('loading');
         let id = $b.attr('itemID');
-        net.postJSON('/api/works/likeWork', { workID: id }, function(res) {
+        net.postJSON('/h5/works/likeWork', { workID: id }, function(res) {
           if(res.success) {
             if(res.data === 211) {
               $b.addClass('has');
@@ -41,11 +41,11 @@ class HotPic extends migi.Component {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            alert(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
           }
           $b.removeClass('loading');
         }, function (res) {
-          alert(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
           $b.removeClass('loading');
         });
       });
@@ -56,10 +56,10 @@ class HotPic extends migi.Component {
         }
         $b.addClass('loading');
         let id = $b.attr('itemID');
-        let url = $b.hasClass('has') ? '/api/works/unFavorWork' : '/api/works/favorWork';
+        let url = $b.hasClass('has') ? '/h5/works/unFavorWork' : '/h5/works/favorWork';
         net.postJSON(url, { workID: id }, function(res) {
           if(res.success) {
-            if(url === '/api/works/favorWork') {
+            if(url === '/h5/works/favorWork') {
               $b.addClass('has');
             }
             else {
@@ -70,11 +70,11 @@ class HotPic extends migi.Component {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            alert(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
           }
           $b.removeClass('loading');
         }, function (res) {
-          alert(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
           $b.removeClass('loading');
         });
       });

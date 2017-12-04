@@ -14,9 +14,13 @@ class TopNav extends migi.Component {
         self.head = userInfo.Head_Url;
         self.isPublic = userInfo.ISOpen;
         self.isLogin = true;
+        $.cookie('isLogin', true);
+        $.cookie('uid', userInfo.UID);
       });
       migi.eventBus.on('LOGIN_OUT', function() {
         self.isLogin = false;
+        $.cookie('isLogin', false);
+        $.cookie('uid', null);
       });
     });
   }

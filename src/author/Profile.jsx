@@ -38,7 +38,7 @@ class Profile extends migi.Component {
   }
   click(e) {
     e.preventDefault();
-    if(!$CONFIG.isLogin) {
+    if(!$.cookie('isLogin')) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -55,11 +55,11 @@ class Profile extends migi.Component {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            alert(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
           }
           self.loading = false;
         }, function(res) {
-          alert(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
           self.loading = false;
         });
       }
@@ -74,11 +74,11 @@ class Profile extends migi.Component {
           migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          alert(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
         self.loading = false;
       }, function(res) {
-        alert(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
         self.loading = false;
       });
     }

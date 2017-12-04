@@ -18,7 +18,7 @@ class Title extends migi.Component {
   @bind loading
   click(e) {
     e.preventDefault();
-    if(!$CONFIG.isLogin) {
+    if(!$.cookie('isLogin')) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -33,11 +33,11 @@ class Title extends migi.Component {
         self.count = res.data.FansNumber;
       }
       else {
-        alert(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
       self.loading = false;
     }, function(res) {
-      alert(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
       self.loading = false;
     });
   }

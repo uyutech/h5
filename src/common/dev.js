@@ -10,6 +10,8 @@ if(location.hostname === 'army8735.circling.cc') {
   migi.preExist = migi.render;
 }
 
+window.ROOT_DOMAIN = 'http://dev.circling.cc2';
+
 export default {
   ajax: function(url, data, success, error, type, timeout) {
     // 兼容无host

@@ -97,10 +97,10 @@ class Find extends migi.Component {
         self.ref.hotWork.dataList = res.data;
       }
       else {
-        alert(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
     }, function(res) {
-      alert(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
   clickType(e, vd, tvd) {

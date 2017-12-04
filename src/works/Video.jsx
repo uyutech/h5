@@ -49,6 +49,7 @@ class Video extends migi.Component {
   }
   addMedia() {
     let video = <video ref="video"
+                       poster="/src/common/blank.png"
                        src={ this.datas[this.index].FileUrl }
                        onClick={ this.clickPlay.bind(this) }
                        onTimeupdate={ this.onTimeupdate.bind(this) }
@@ -207,7 +208,7 @@ class Video extends migi.Component {
     this.isPlaying ? this.pause() : this.play();
   }
   clickLike(e, vd) {
-    if(!$CONFIG.isLogin) {
+    if(!$.cookie('isLogin')) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -216,7 +217,7 @@ class Video extends migi.Component {
     if(!$vd.hasClass('loading')) {
       $vd.addClass('loading');
       let data = self.datas[self.index];
-      net.postJSON('/api/works/likeWork', { workID: data.ItemID }, function (res) {
+      net.postJSON('/h5/works/likeWork', { workID: data.ItemID }, function (res) {
         if(res.success) {
           data.ISLike = res.data === 211;
           self.fnLike = null;
@@ -225,17 +226,17 @@ class Video extends migi.Component {
           migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          alert(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
         $vd.removeClass('loading');
-      }, function () {
-        alert(res.message || util.ERROR_MESSAGE);
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
         $vd.removeClass('loading');
       });
     }
   }
   clickFavor(e, vd) {
-    if(!$CONFIG.isLogin) {
+    if(!$.cookie('isLogin')) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -246,7 +247,7 @@ class Video extends migi.Component {
       //
     }
     else if($vd.hasClass('has')) {
-      net.postJSON('/api/works/unFavorWork', { workID: data.ItemID }, function (res) {
+      net.postJSON('/h5/works/unFavorWork', { workID: data.ItemID }, function (res) {
         if(res.success) {
           data.ISFavor = false;
           self.fnFavor = null;
@@ -255,16 +256,16 @@ class Video extends migi.Component {
           migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          alert(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
         $vd.removeClass('loading');
-      }, function () {
-        alert(res.message || util.ERROR_MESSAGE);
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
         $vd.removeClass('loading');
       });
     }
     else {
-      net.postJSON('/api/works/favorWork', { workID: data.ItemID }, function (res) {
+      net.postJSON('/h5/works/favorWork', { workID: data.ItemID }, function (res) {
         if(res.success) {
           data.ISFavor = true;
           self.fnFavor = null;
@@ -273,23 +274,23 @@ class Video extends migi.Component {
           migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          alert(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
         $vd.removeClass('loading');
-      }, function () {
-        alert(res.message || util.ERROR_MESSAGE);
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
         $vd.removeClass('loading');
       });
     }
   }
   clickDownload(e) {
-    if(!$CONFIG.isLogin) {
+    if(!$.cookie('isLogin')) {
       e.preventDefault();
       migi.eventBus.emit('NEED_LOGIN');
     }
   }
   clickShare() {
-    migi.eventBus.emit('SHARE', location.href);
+    migi.eventBus.emit('SHARE', '/works/' + this.props.worksID + '/' + this.props.workID);
   }
   render() {
     return <div class={ 'video' + (this.props.show ? '' : ' fn-hide') + (this.datas[this.index || 0].FileUrl ? '' : ' empty') }>

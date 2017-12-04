@@ -75,11 +75,11 @@ class SubComment extends migi.Component {
           }
         }
         else {
-          alert(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
         self.sending = false;
       }, function(res) {
-        alert(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
         self.sending = false;
       });
     }

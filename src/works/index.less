@@ -11,6 +11,11 @@
 @import './poster';
 @import './comments';
 @import './text';
+@import '../component/subcmt/index';
+@import './musicalbum';
+@import './playlist';
+@import './describe';
+@import './photoalbum';
 
 #page > .works{
   > .placeholder{
@@ -42,12 +47,21 @@
         line-height:0.32rem;
         cursor:pointer;
         font-size:0.12rem;
+        &:first-child{
+          z-index:9;
+        }
+        &:nth-child(2) {
+          z-index:8;
+        }
+        &:nth-child(3) {
+          z-index:7;
+        }
         &.cur{
           background-color:@mainColor;
           color:@mainTextColor;
           cursor:default;
           font-size:0.14rem;
-          z-index:2;
+          z-index:10;
         }
       }
       .state{
@@ -79,7 +93,10 @@
     }
     pre{
       margin:0;
-      padding:0;
+    }
+    h1.private{
+      text-align:center;
+      line-height:3;
     }
   }
 }

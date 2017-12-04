@@ -53,11 +53,11 @@ class Profile extends migi.Component {
           self.updateNickNameTimeDiff = 0;
         }
         else {
-          alert(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
         $edit.removeClass('fn-hide');
       }, function(res) {
-        alert(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
         $edit.removeClass('fn-hide');
       });
     }
@@ -92,11 +92,11 @@ class Profile extends migi.Component {
               self.head = res.url;
             }
             else {
-              alert(res.message || util.ERROR_MESSAGE);
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
             }
             $upload.removeClass('fn-hide');
           }, function(res) {
-            alert(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
             $upload.removeClass('fn-hide');
           });
         };
@@ -136,11 +136,11 @@ class Profile extends migi.Component {
           self.sign = newSign;
         }
         else {
-          alert(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
         $edit.removeClass('fn-hide');
       }, function(res) {
-        alert(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
         $edit.removeClass('fn-hide');
       });
     }

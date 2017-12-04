@@ -12,6 +12,14 @@ class Author extends migi.Component {
     self.setAuthor(self.props.authorList);
   }
   @bind list = []
+  click(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+    });
+  }
   setAuthor(data) {
     let list = [];
     (data || []).forEach(function(item) {
@@ -20,6 +28,7 @@ class Author extends migi.Component {
       let last = '';
       let lastTips = '';
       item.forEach(function(item) {
+        let url = `/author.html?authorID=${item.ID}`;
         if(item.WorksAuthorType !== last || item.Tips !== lastTips) {
           if(temp.length) {
             let li = <li>
@@ -36,16 +45,16 @@ class Author extends migi.Component {
           let label = item.Tips || (type ? type.display : '其它');
           temp.push(<span class="item">
             <small>{ label }</small>
-            <a class="item" href={ `/author/${item.ID}` } title={ item.AuthName }>
-              <img src={ util.autoSsl(util.img48_48_80(item.HeadUrl || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
+            <a class="item" href={ url } title={ item.AuthName }>
+              <img src={ util.autoSsl(util.img48_48_80(item.HeadUrl || '/src/common/head.png')) }/>
               <span>{ item.AuthName }</span>
             </a>
           </span>);
         }
         else {
           temp.push(
-            <a class="item" href={ `/author/${item.ID}` } title={ item.AuthName }>
-              <img src={ util.autoSsl(util.img48_48_80(item.HeadUrl || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
+            <a class="item" href={ url } title={ item.AuthName }>
+              <img src={ util.autoSsl(util.img48_48_80(item.HeadUrl || '/src/common/head.png')) }/>
               <span>{ item.AuthName }</span>
             </a>
           );
@@ -78,7 +87,7 @@ class Author extends migi.Component {
   render() {
     return <div class="mod mod-author">
       <h5>作者</h5>
-      <div class="c">
+      <div class="c" onClick={ { a: this.click } }>
         {
           (this.list || []).map(function(item) {
             return item;

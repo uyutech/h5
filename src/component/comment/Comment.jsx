@@ -52,7 +52,7 @@ class Comment extends migi.Component {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            alert(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
           }
         });
       });
@@ -122,10 +122,10 @@ class Comment extends migi.Component {
               migi.eventBus.emit('NEED_LOGIN');
             }
             else {
-              alert(res.message || util.ERROR_MESSAGE);
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
             }
           }, function(res) {
-            alert(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
           });
         }
       });

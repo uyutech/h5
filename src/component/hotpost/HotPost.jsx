@@ -41,7 +41,7 @@ class HotPost extends migi.Component {
           migi.eventBus.emit('choosePic', urls, index);
         });
         $list.on('click', '.favor', function() {
-          if(!$CONFIG.isLogin) {
+          if(!$.cookie('isLogin')) {
             migi.eventBus.emit('NEED_LOGIN');
             return;
           }
@@ -67,11 +67,11 @@ class HotPost extends migi.Component {
               $li.find('span').text(data.FavorCount || '收藏');
             }
             else {
-              alert(res.message || util.ERROR_MESSAGE);
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
             }
             $li.removeClass('loading');
           }, function(res) {
-            alert(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
             $li.removeClass('loading');
           });
         });
@@ -98,11 +98,11 @@ class HotPost extends migi.Component {
               $li.find('span').text(data.LikeCount || '点赞');
             }
             else {
-              alert(res.message || util.ERROR_MESSAGE);
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
             }
             $li.removeClass('loading');
           }, function(res) {
-            alert(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
             $li.removeClass('loading');
           });
         });
@@ -125,10 +125,10 @@ class HotPost extends migi.Component {
                 $li.remove();
               }
               else {
-                alert(res.message || util.ERROR_MESSAGE);
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
               }
             }, function(res) {
-              alert(res.message || util.ERROR_MESSAGE);
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
             });
           }
         });
