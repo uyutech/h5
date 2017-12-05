@@ -141,13 +141,20 @@ class SubPost extends migi.Component {
       $(self.ref.label.element).find('.cur,.on').each(function(i, li) {
         circleID.push($(li).attr('rel'));
       });
-      net.postJSON('/api/circle/add', { content: self.value, imgs, widths, heights, circleID: circleID.join(',') }, function(res) {
+      net.postJSON('/h5/circle/post', { content: self.value, imgs, widths, heights, circleID: circleID.join(',') }, function(res) {
         if(res.success) {
           self.value = '';
           self.invalid = true;
           self.num = 0;
           self.list = [];
           self.clearCache();
+          jsBridge.notify({
+            title: '画圈成功',
+            url: '/post.html?postID=' + res.data.ID,
+          }, {
+            title: '画圈正文'
+          });
+          jsBridge.popWindow();
         }
         else {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);

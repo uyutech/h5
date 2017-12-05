@@ -277,7 +277,31 @@ let jsBridge = {
     else {
       callback();
     }
-  }
+  },
+  notify: function(data, params) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      if(isString(data)) {
+        data = {
+          title: data,
+        };
+      }
+      if(data.url) {
+        if (/^\w+:\/\//i.test(data.url)) {
+        }
+        else if (/^\//.test(data.url)) {
+          data.url = location.origin + data.url;
+        }
+        else {
+          let i = location.href.lastIndexOf('/');
+          data.url = location.href.slice(0, i) + '/' + data.url;
+        }
+      }
+      ZhuanQuanJSBridge.call('notify', {
+        data,
+        params,
+      });
+    }
+  },
 };
 
 window.jsBridge = jsBridge;

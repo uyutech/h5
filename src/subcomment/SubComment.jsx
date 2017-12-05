@@ -30,6 +30,10 @@ class SubComment extends migi.Component {
   @bind invalid = true
   @bind warnLength
   @bind sending
+  @bind sid
+  @bind type
+  @bind rid
+  @bind cid
   getContentKey() {
     return '_subcmt_content';
   }
@@ -49,30 +53,17 @@ class SubComment extends migi.Component {
     let self = this;
     if(!self.sending && !self.invalid) {
       self.sending = true;
-      net.postJSON('/api/subComment', {
+      net.postJSON('/h5/comment/sub', {
         content: self.value,
-        id: self.props.id,
-        type: self.props.type,
-        cid: self.props.cid,
-        rid: self.props.rid
+        id: self.sid,
+        type: self.type,
+        cid: self.cid,
+        rid: self.rid
       }, function(res) {
         if(res.success) {
           let key2 = self.getContentKey();
           localStorage[key2] = '';
-          switch(self.props.type) {
-            case '1':
-              location.href = '/post/' + self.props.id + '#comment';
-              break;
-            case '2':
-              location.href = '/author/' + self.props.id + '?tag=comment';
-              break;
-            case '3':
-              location.href = '/works/' + self.props.id + '?tag=comment';
-              break;
-            default:
-              location.href = '/';
-              break;
-          }
+          jsBridge.popWindow(res.data);
         }
         else {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);

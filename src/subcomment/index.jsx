@@ -7,26 +7,25 @@
 import './subcomment.html';
 import './index.less';
 
+import qs from 'anima-querystring';
+
 import net from '../common/net';
 import util from '../common/util';
-
 import SubComment from './SubComment.jsx';
+
+let search = qs.parse(location.search.replace(/^\?/, ''));
+let id = search.id;
+let type = search.type;
+let rid = search.rid;
+let cid = search.cid;
 
 jsBridge.ready(function() {
   let subComment = migi.preExist(
-    <SubComment placeholder="评论"/>,
+    <SubComment/>,
     '#page'
   );
-  // net.postJSON('/h5/subcomment/index', function(res) {
-  //   if(res.success) {
-  //     // subPost.to = res.data.hotCircleList.data;
-  //     // subPost.activityLabel = res.data.activityLabel;
-  //     // subPost.tagList = res.data.activityLabel['0'] || [];
-  //   }
-  //   else {
-  //     jsBridge.toast(res.message || util.ERROR_MESSAGE);
-  //   }
-  // }, function(res) {
-  //   jsBridge.toast(res.message || util.ERROR_MESSAGE);
-  // });
+  subComment.sid = id;
+  subComment.type = type;
+  subComment.rid = rid;
+  subComment.cid = cid;
 });

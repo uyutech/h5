@@ -4,3 +4,9 @@
 
 'use strict';
 
+import Message from './Message.jsx';
+
+let s = '';
+s += migi.preRender(<Message/>);
+
+export default s;

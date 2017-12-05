@@ -4,3 +4,9 @@
 
 'use strict';
 
+import MyFavor from './MyFavor.jsx';
+
+let s = '';
+s += migi.preRender(<MyFavor/>);
+
+export default s;

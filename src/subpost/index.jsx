@@ -7,6 +7,8 @@
 import './subpost.html';
 import './index.less';
 
+import qs from 'anima-querystring';
+
 import net from '../common/net';
 import util from '../common/util';
 

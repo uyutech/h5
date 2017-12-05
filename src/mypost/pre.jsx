@@ -4,3 +4,9 @@
 
 'use strict';
 
+import MyPost from './MyPost.jsx';
+
+let s = '';
+s += migi.preRender(<MyPost/>);
+
+export default s;
