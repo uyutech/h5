@@ -11,6 +11,7 @@ module.exports = {
     subcomment: './src/subcomment/pre.jsx',
     user: './src/user/pre.jsx',
     relation: './src/relation/pre.jsx',
+    message: './src/message/pre.jsx',
   },
   output: {
     path: __dirname + '/www',
