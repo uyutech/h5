@@ -15,6 +15,7 @@ module.exports = {
     user: './src/user/index.jsx',
     relation: './src/relation/index.jsx',
     message: './src/message/index.jsx',
+    mypost: './src/mypost/index.jsx',
   },
   output: {
     path: __dirname + '/www',
