@@ -5,6 +5,9 @@
 import BigNumber from 'bignumber.js';
 
 let util = {
+  isLogin: function() {
+    return $.cookie('isLogin') === 'true';
+  },
   isIPhone: function(){
     return navigator.appVersion.match(/iphone/gi);
   },

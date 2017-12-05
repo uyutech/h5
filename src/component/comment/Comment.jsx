@@ -216,26 +216,26 @@ class Comment extends migi.Component {
       $slide.find('.sub').click();
     }
   }
-  clearData() {
+  clearData(noEmpty) {
     if(ajax) {
       ajax.abort();
     }
     this.message = '';
-    this.setData();
+    this.setData(null, noEmpty);
     subLoadHash = {};
     subSkipHash = {};
     $last = null;
   }
-  setData(data) {
+  setData(data, noEmpty) {
     let self = this;
     let s = '';
     (data || []).forEach(function(item) {
       s += self.genComment(item);
     });
     $(self.ref.list.element).html(s);
-    self.empty = !s;
+    self.empty = !noEmpty && !s;
   }
-  appendData(data) {
+  appendData(data, noEmpty) {
     let self = this;
     let s = '';
     (data || []).forEach(function(item) {
@@ -243,7 +243,7 @@ class Comment extends migi.Component {
     });
     $(self.ref.list.element).append(s);
     if(s) {
-      self.empty = false;
+      self.empty = !noEmpty;
     }
   }
   prependData(item) {

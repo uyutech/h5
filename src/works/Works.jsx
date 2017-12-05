@@ -280,7 +280,7 @@ class Works extends migi.Component {
     let comments = self.ref.comments = migi.render(
       <Comments ref="comments"
                 hidden={ true }
-                isLogin={ $.cookie('isLogin') === 'true' }
+                isLogin={ util.isLogin() }
                 worksID={ self.worksID }
                 workID={ self.workID }
                 originTo={ self.worksDetail.Title }

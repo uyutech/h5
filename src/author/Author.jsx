@@ -86,7 +86,7 @@ class Author extends migi.Component {
     }
     let comments = self.ref.comments = migi.render(
       <Comments ref="comments"
-                isLogin={ $.cookie('isLogin') === 'true' }
+                isLogin={ util.isLogin() }
                 authorID={ self.authorID }
                 commentData={ self.commentData }/>
     );
@@ -129,7 +129,7 @@ class Author extends migi.Component {
           <li class="comments cur">留言</li>
         </ul>
         <Comments ref="comments"
-                  isLogin={ $.cookie('isLogin') === 'true' }
+                  isLogin={ util.isLogin() }
                   authorID={ self.authorID }
                   commentData={ self.commentData }/>
         <SubCmt ref="subCmt"

@@ -38,7 +38,7 @@ class Profile extends migi.Component {
   }
   click(e) {
     e.preventDefault();
-    if(!$.cookie('isLogin')) {
+    if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }

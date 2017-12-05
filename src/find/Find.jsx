@@ -69,7 +69,7 @@ class Find extends migi.Component {
         return;
       }
       let HEIGHT = $(document.body).height();
-      let bool = $window.scrollTop() + WIN_HEIGHT + 20 > HEIGHT;
+      let bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
       if(bool) {
         show = true;
         $window.off('scroll', onScroll);

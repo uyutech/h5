@@ -18,7 +18,7 @@ class Title extends migi.Component {
   @bind loading
   click(e) {
     e.preventDefault();
-    if(!$.cookie('isLogin')) {
+    if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -27,7 +27,7 @@ class Title extends migi.Component {
       return;
     }
     self.loading = true;
-    net.postJSON('/api/circle/join', { circleID: this.props.circleDetail.TagID, state: self.joined }, function(res) {
+    net.postJSON('/h5/circle/join', { circleID: this.props.circleDetail.TagID, state: self.joined }, function(res) {
       if(res.success) {
         self.joined = !!res.data.ISLike;
         self.count = res.data.FansNumber;

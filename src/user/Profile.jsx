@@ -28,7 +28,7 @@ class Profile extends migi.Component {
   @bind followState
   clickFollow() {
     let self = this;
-    if(!$.cookie('isLogin') === 'true') {
+    if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }

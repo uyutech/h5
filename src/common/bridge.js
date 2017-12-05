@@ -133,7 +133,7 @@ let jsBridge = {
   },
   confirm: function(s, callback) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      if (isString(s)) {
+      if(isString(s)) {
         s = {
           title: '',
           message: s || '确认吗？'
@@ -145,6 +145,22 @@ let jsBridge = {
         s.message = s.message || '确认吗？';
       }
       ZhuanQuanJSBridge.call('confirm', s, callback);
+    }
+    else {
+      if(isString(s)) {
+        s = {
+          title: '',
+          message: s || '确认吗？'
+        };
+      }
+      else {
+        s = s || {};
+        s.title = s.title || '';
+        s.message = s.message || '确认吗？';
+      }
+      if(window.confirm(s.message)) {
+        callback();
+      }
     }
   },
   hideBackButton: function() {

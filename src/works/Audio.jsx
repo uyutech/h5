@@ -219,7 +219,7 @@ class Audio extends migi.Component {
     this.isPlaying ? this.pause() : this.play();
   }
   clickLike(e, vd) {
-    if(!$.cookie('isLogin')) {
+    if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -247,7 +247,7 @@ class Audio extends migi.Component {
     }
   }
   clickFavor(e, vd) {
-    if(!$.cookie('isLogin')) {
+    if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -295,7 +295,7 @@ class Audio extends migi.Component {
     }
   }
   clickDownload(e) {
-    if(!$.cookie('isLogin')) {
+    if(!util.isLogin()) {
       e.preventDefault();
       migi.eventBus.emit('NEED_LOGIN');
     }

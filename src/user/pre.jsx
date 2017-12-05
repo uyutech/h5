@@ -4,3 +4,9 @@
 
 'use strict';
 
+import User from './User.jsx';
+
+let s = '';
+s += migi.preRender(<User/>);
+
+export default s;

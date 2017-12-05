@@ -41,7 +41,7 @@ class HotPost extends migi.Component {
           migi.eventBus.emit('choosePic', urls, index);
         });
         $list.on('click', '.favor', function() {
-          if(!$.cookie('isLogin')) {
+          if(!util.isLogin()) {
             migi.eventBus.emit('NEED_LOGIN');
             return;
           }
@@ -117,7 +117,7 @@ class HotPost extends migi.Component {
           });
         });
         $list.on('click', '.del', function() {
-          if(window.confirm('确认删除吗？')) {
+          if(jsBridge.confirm('确认删除吗？')) {
             let postID = $(this).attr('rel');
             let $li = $(this).closest('.wrap').closest('li');
             net.postJSON('/h5/post/del', { postID }, function(res) {
