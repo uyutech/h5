@@ -235,15 +235,17 @@ class Comment extends migi.Component {
     $(self.ref.list.element).html(s);
     self.empty = !noEmpty && !s;
   }
-  appendData(data, noEmpty) {
+  appendData(data) {
     let self = this;
     let s = '';
     (data || []).forEach(function(item) {
       s += self.genComment(item);
     });
     $(self.ref.list.element).append(s);
-    if(s) {
-      self.empty = !noEmpty;
+    if(self.empty) {
+      if(s) {
+        self.empty = false;
+      }
     }
   }
   prependData(item) {

@@ -108,6 +108,7 @@ class MusicAlbum extends migi.Component {
       case 2110:
         if(!self.video) {
           self.video = <video ref="video"
+                              poster="/src/common/blank.png"
                               src={ self.url }
                               onClick={ self.clickPlay.bind(self) }
                               onTimeupdate={ self.onTimeupdate.bind(self) }
