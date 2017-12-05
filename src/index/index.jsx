@@ -22,6 +22,13 @@ jsBridge.ready(function() {
   });
 
   let topNav = migi.preExist(<TopNav/>, '#page');
+
+  net.postJSON('/h5/my/message', function(res) {
+    if(res.success) {
+      topNav.setNum(res.data);
+    }
+  });
+
   let botNav = migi.preExist(<BotNav/>, '#page');
 
   let userInfo;

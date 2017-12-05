@@ -35,6 +35,10 @@ class TopNav extends migi.Component {
   @bind head
   @bind isAuthor
   @bind authorName
+  @bind messageNum
+  setNum(data) {
+    this.messageNum = data.Count;
+  }
   click() {
     if(loading) {
       return;
@@ -63,7 +67,7 @@ class TopNav extends migi.Component {
     return <div class="top-nav" id="topNav">
       <b class="logo"/>
       <div class={ 'message' + (this.isLogin ? '' : ' fn-hide') } href="/my/message">
-        <span></span>
+        <span>{ this.messageNum || '' }</span>
       </div>
       <span class={ 'public' + (this.isLogin && this.isAuthor ? '' : 'fn-hide') }
             onClick={ this.click }>[{ this.isPublic ? '切换到马甲' : '切换到作者身份' }]</span>
