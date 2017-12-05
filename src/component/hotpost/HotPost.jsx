@@ -130,6 +130,12 @@ class HotPost extends migi.Component {
     }
   }
   @bind message
+  show() {
+    $(this.element).removeClass('fn-hide');
+  }
+  hide() {
+    $(this.element).addClass('fn-hide');
+  }
   like(postID, cb) {
     let $li = $('#post_' + postID).find('.like');
     net.postJSON('/h5/post/like', { postID }, function(res) {

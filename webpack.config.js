@@ -16,6 +16,7 @@ module.exports = {
     relation: './src/relation/index.jsx',
     message: './src/message/index.jsx',
     mypost: './src/mypost/index.jsx',
+    myfavor: './src/myfavor/index.jsx',
   },
   output: {
     path: __dirname + '/www',

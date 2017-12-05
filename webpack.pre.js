@@ -13,6 +13,7 @@ module.exports = {
     relation: './src/relation/pre.jsx',
     message: './src/message/pre.jsx',
     mypost: './src/mypost/pre.jsx',
+    myfavor: './src/myfavor/pre.jsx',
   },
   output: {
     path: __dirname + '/www',
