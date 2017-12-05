@@ -10,6 +10,7 @@ module.exports = {
     post: './src/post/pre.jsx',
     subcomment: './src/subcomment/pre.jsx',
     user: './src/user/pre.jsx',
+    relation: './src/relation/pre.jsx',
   },
   output: {
     path: __dirname + '/www',

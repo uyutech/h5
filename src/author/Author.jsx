@@ -4,6 +4,7 @@
 
 'use strict';
 
+import util from '../common/util';
 import Nav from './Nav.jsx';
 import Home from './Home.jsx';
 import MAList from './MAList.jsx';

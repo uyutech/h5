@@ -110,15 +110,23 @@ class My extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
+  clickLink(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.children[0];
+    jsBridge.pushWindow(url, {
+      title,
+    });
+  }
   genDom() {
     let self = this;
     return <div>
       <Profile ref="profile" userInfo={ self.userInfo }/>
-      <ul class="list">
-        <li><a href="/my/relation" class="relation">圈关系</a></li>
-        <li><a href="/my/message" class="message">圈消息</a></li>
-        <li><a href="/my/post" class="post">我画的圈</a></li>
-        <li><a href="/my/favor" class="favor">我的收藏</a></li>
+      <ul class="list" onClick={ { a: self.clickLink.bind(self) } }>
+        <li><a href="/relation.html" class="relation">圈关系</a></li>
+        <li><a href="/message.html" class="message">圈消息</a></li>
+        <li><a href="/mypost.html" class="post">我画的圈</a></li>
+        <li><a href="/myfavor.html" class="favor">我的收藏</a></li>
       </ul>
       {
         self.bonusPoint && self.bonusPoint.ranking

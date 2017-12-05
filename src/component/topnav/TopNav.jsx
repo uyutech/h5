@@ -2,6 +2,11 @@
  * Created by army8735 on 2017/9/19.
  */
 
+import net from '../../common/net';
+import util from '../../common/util';
+
+let loading;
+
 class TopNav extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -30,15 +35,42 @@ class TopNav extends migi.Component {
   @bind head
   @bind isAuthor
   @bind authorName
+  click() {
+    if(loading) {
+      return;
+    }
+    loading = true;
+    let self = this;
+    net.postJSON('/h5/my/altSettle', { public: !self.isPublic }, function(res) {
+      if(res.success) {
+        self.isPublic = !self.isPublic;
+        jsBridge.getPreference('userInfo', function(userInfo) {
+          userInfo = JSON.parse(userInfo);
+          userInfo.ISOpen = self.isPublic;
+          jsBridge.setPreference('userInfo', JSON.stringify(userInfo));
+        });
+      }
+      else {
+        alert(res.message || util.ERROR_MESSAGE);
+      }
+      loading = false;
+    }, function(res) {
+      alert(res.message || util.ERROR_MESSAGE);
+      loading = false;
+    });
+  }
   render() {
     return <div class="top-nav" id="topNav">
       <b class="logo"/>
       <div class={ 'message' + (this.isLogin ? '' : ' fn-hide') } href="/my/message">
         <span></span>
       </div>
-      <span class={ (this.isLogin && this.isAuthor ? '' : 'fn-hide') + ' public' }>[{ this.isPublic ? '切换到马甲' : '切换到作者身份' }]</span>
+      <span class={ 'public' + (this.isLogin && this.isAuthor ? '' : 'fn-hide') }
+            onClick={ this.click }>[{ this.isPublic ? '切换到马甲' : '切换到作者身份' }]</span>
       <div class="user">
-        <span class={ 'name' + (this.isPublic ? ' public' : '') }>{ this.isLogin ? (this.isPublic ? this.authorName : this.name) : '' }</span>
+        <span class={ 'name' + (this.isPublic ? ' public' : '') }>
+          { this.isLogin ? (this.isPublic ? this.authorName : this.name) : '' }
+          </span>
         <img src={ (this.isLogin && this.head) || 'src/common/head.png' }/>
       </div>
     </div>;
