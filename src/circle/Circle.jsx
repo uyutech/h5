@@ -4,10 +4,11 @@
 
 'use strict';
 
+import net from '../common/net';
+import util from '../common/util';
 import Title from './Title.jsx';
 import HotPost from '../component/hotpost/HotPost.jsx';
-import net from "../common/net";
-import util from "../common/util";
+import ImageView from '../post/ImageView.jsx';
 
 let take = 10;
 let skip = take;
@@ -35,6 +36,14 @@ class Circle extends migi.Component {
         self.checkMore($window);
       });
     }
+
+    let hotPost = self.ref.hotPost;
+    let imageView = self.ref.imageView;
+    imageView.on('clickLike', function(sid) {
+      hotPost.like(sid, function(res) {
+        imageView.isLike = res.ISLike;
+      });
+    });
   }
   checkMore($window) {
     if(loading || loadEnd) {
@@ -91,6 +100,7 @@ class Circle extends migi.Component {
       <HotPost ref="hotPost"
                dataList={ self.postList.data }
                message={ self.postList.Size > take ? '' : '已经到底了' }/>
+      <ImageView ref="imageView"/>
     </div>;
   }
   render() {

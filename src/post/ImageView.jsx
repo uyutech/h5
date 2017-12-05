@@ -14,8 +14,11 @@ class ImageView extends migi.Component {
     self.isLike = self.props.isLike;
     self.on(migi.Event.DOM, function() {
       let $window = $(window);
-      migi.eventBus.on('choosePic', function(i) {
+      migi.eventBus.on('choosePic', function(dataList, i, isLike, sid) {
+        self.dataList = dataList;
         self.idx = i;
+        self.isLike = isLike;
+        self.sid = sid;
         self.show();
         self.tops = $window.scrollTop();
       });
@@ -25,6 +28,7 @@ class ImageView extends migi.Component {
   @bind idx = 0
   @bind tops = 0
   @bind isLike
+  @bind sid
   show() {
     $(this.element).removeClass('fn-hide');
     let parent = window.parent;
@@ -55,7 +59,7 @@ class ImageView extends migi.Component {
     this.hide();
   }
   clickLike() {
-    this.emit('clickLike');
+    this.emit('clickLike', this.sid);
   }
   clickDownload(e) {
     if(!$CONFIG.isLogin) {
@@ -64,17 +68,17 @@ class ImageView extends migi.Component {
     }
   }
   render() {
-    if(!this.dataList.length) {
-      return <div class="mod-iv fn-hide"/>;
-    }
     return <div class="mod-iv fn-hide">
       <div class="c" style={ 'top:' + this.tops + 'px' }>
-        <img style={ 'background-image:url("' + util.autoSsl(util.img720__80(this.dataList[this.idx].FileUrl)) || '//zhuanquan.xin/img/blank.png' + '")'}
-             src={ util.autoSsl(util.img720__80(this.dataList[this.idx].FileUrl)) || '//zhuanquan.xin/img/blank.png' }/>
+        <img src={ this.dataList && this.dataList[this.idx]
+            ? util.autoSsl(util.img720__80(this.dataList[this.idx].FileUrl)) || '//zhuanquan.xin/img/blank.png'
+            : '//zhuanquan.xin/img/blank.png' }/>
         <ul class="btn">
           <li class={ 'like' + (this.isLike ? ' has' : '') } onClick={ this.clickLike }/>
           <li class="download">
-            <a href={ this.dataList[this.idx].FileUrl }
+            <a href={ this.dataList && this.dataList[this.idx]
+              ? this.dataList[this.idx].FileUrl
+              : ''}
                target="_blank"
                onClick={ this.clickDownload }/>
           </li>

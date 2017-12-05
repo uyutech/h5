@@ -36,9 +36,11 @@ class HotPost extends migi.Component {
           let index = $this.attr('rel');
           let urls = [];
           $this.parent().find('img').each(function(i, img) {
-            urls.push($(img).attr('src'));
+            urls.push({ FileUrl: $(img).attr('src') });
           });
-          migi.eventBus.emit('choosePic', urls, index);
+          let $like = $this.closest('li').find('li.like');
+          let id = $this.closest('div').attr('rel');
+          migi.eventBus.emit('choosePic', urls, index, $like.hasClass('has'), id);
         });
         $list.on('click', '.favor', function() {
           if(!util.isLogin()) {
@@ -86,25 +88,7 @@ class HotPost extends migi.Component {
           }
           $li.addClass('loading');
           let postID = $li.attr('rel');
-          net.postJSON('/h5/post/like', { postID }, function(res) {
-            if(res.success) {
-              let data = res.data;
-              if(data.ISLike) {
-                $li.addClass('has');
-              }
-              else {
-                $li.removeClass('has');
-              }
-              $li.find('span').text(data.LikeCount || '点赞');
-            }
-            else {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
-            }
-            $li.removeClass('loading');
-          }, function(res) {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
-            $li.removeClass('loading');
-          });
+          self.like(postID);
         });
         $list.on('click', '.comment', function() {
           let $this = $(this);
@@ -146,6 +130,34 @@ class HotPost extends migi.Component {
     }
   }
   @bind message
+  like(postID, cb) {
+    let $li = $('#post_' + postID).find('.like');
+    net.postJSON('/h5/post/like', { postID }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        if(data.ISLike) {
+          $li.addClass('has');
+        }
+        else {
+          $li.removeClass('has');
+        }
+        $li.find('span').text(data.LikeCount || '点赞');
+        if(cb) {
+          cb(data);
+        }
+      }
+      else if(res.code === 1000) {
+        migi.eventBus.emit('NEED_LOGIN');
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+      $li.removeClass('loading');
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      $li.removeClass('loading');
+    });
+  }
   encode(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/#(\S.*?)#/g, `<strong>#$1#</strong>`)
@@ -166,7 +178,7 @@ class HotPost extends migi.Component {
     let url = '/post.html?postID=' + id;
     if(item.IsAuthor) {
       let authorUrl = '/author.html?authorID=' + item.AuthorID;
-      return <li class="author">
+      return <li class="author" id={ 'post_' + id}>
         <div class="profile fn-clear">
           <a class="pic" href={ authorUrl } type="2" title={ item.SendUserNickName }>
             <img src={ util.autoSsl(util.img208_208_80(item.SendUserHead_Url
@@ -231,10 +243,10 @@ class HotPost extends migi.Component {
           }
           {
             item.Image_Post && imgLen
-              ? <div class="imgs2">
+              ? <div class="imgs2" rel={ id }>
                 {
                   item.Image_Post.map(function(item, i) {
-                    return <img src={ util.autoSsl(util.img1200__80(item.FileUrl)) } rel={ i }/>;
+                    return <img src={ util.autoSsl(util.img720__80(item.FileUrl)) } rel={ i }/>;
                   })
                 }
               </div>
@@ -258,7 +270,7 @@ class HotPost extends migi.Component {
       </li>;
     }
     let userUrl = '/user.html?userID=' + item.SendUserID;
-    return <li>
+    return <li id={ 'post_' + id}>
       <div class="profile fn-clear">
         <a class="pic" href={ userUrl } type="3" title={ item.SendUserNickName }>
           <img src={ util.autoSsl(util.img208_208_80(item.SendUserHead_Url
@@ -323,10 +335,10 @@ class HotPost extends migi.Component {
         }
         {
           item.Image_Post && imgLen
-            ? <div class="imgs2">
+            ? <div class="imgs2" rel={ id }>
               {
                 item.Image_Post.map(function(item, i) {
-                  return <img src={ util.autoSsl(util.img1200__80(item.FileUrl)) } rel={ i }/>;
+                  return <img src={ util.autoSsl(util.img720__80(item.FileUrl)) } rel={ i }/>;
                 })
               }
             </div>

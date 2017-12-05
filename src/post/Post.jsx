@@ -72,6 +72,13 @@ class Post extends migi.Component {
         });
       }
     });
+    let imageView = self.ref.imageView;
+    $root.on('click', '.imgs img', function() {
+      migi.eventBus.emit('choosePic', self.postData.Image_Post, $(this).attr('rel'), self.isLike);
+    });
+    imageView.on('clickLike', function() {
+      self.clickLike();
+    });
   }
   checkMore($window) {
     let self = this;
@@ -349,7 +356,7 @@ class Post extends migi.Component {
               readOnly={ true }
               originTo={ postData.SendUserNickName }
               placeholder="交流一下吧~"/>
-      <ImageView ref="imageView" dataList={ postData.Image_Post } isLike={ self.isLike }/>
+      <ImageView ref="imageView"/>
     </div>;
   }
   render() {
