@@ -43,6 +43,9 @@ class Profile extends migi.Component {
               self.sname = newName;
               self.updateNickNameTimeDiff = 0;
               jsBridge.getPreference('userInfo', function(userInfo) {
+                if(!userInfo) {
+                  return;
+                }
                 userInfo = JSON.parse(userInfo);
                 if(userInfo) {
                   userInfo.NickName = newName;
@@ -76,6 +79,9 @@ class Profile extends migi.Component {
             self.head = res.url;
             self.updateHeadTimeDiff = 0;
             jsBridge.getPreference('userInfo', function(userInfo) {
+              if(!userInfo) {
+                return;
+              }
               userInfo = JSON.parse(userInfo);
               if(userInfo) {
                 userInfo.Head_Url = res.url;
@@ -109,6 +115,9 @@ class Profile extends migi.Component {
             if(res.success) {
               self.sign = newSign;
               jsBridge.getPreference('userInfo', function(userInfo) {
+                if(!userInfo) {
+                  return;
+                }
                 userInfo = JSON.parse(userInfo);
                 if(userInfo) {
                   userInfo.User_Sign = newSign;

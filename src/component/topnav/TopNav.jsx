@@ -49,6 +49,9 @@ class TopNav extends migi.Component {
       if(res.success) {
         self.isPublic = !self.isPublic;
         jsBridge.getPreference('userInfo', function(userInfo) {
+          if(!userInfo) {
+            return;
+          }
           userInfo = JSON.parse(userInfo);
           userInfo.ISOpen = self.isPublic;
           jsBridge.setPreference('userInfo', JSON.stringify(userInfo));

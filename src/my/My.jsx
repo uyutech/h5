@@ -24,6 +24,9 @@ class My extends migi.Component {
       self.init();
       migi.eventBus.on('LOGIN', function(userInfo) {
         jsBridge.getPreference('bonusPoint', function(bonusPoint) {
+          if(!bonusPoint) {
+            return;
+          }
           bonusPoint = JSON.parse(bonusPoint);
           self.setData({
             userInfo,

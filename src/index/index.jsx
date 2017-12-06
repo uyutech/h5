@@ -34,12 +34,18 @@ jsBridge.ready(function() {
   let userInfo;
   let bonusPoint;
   jsBridge.getPreference('userInfo', function(res) {
+    if(!res) {
+      return;
+    }
     userInfo = JSON.parse(res);
     if(userInfo) {
       migi.eventBus.emit('LOGIN', userInfo);
     }
   });
   jsBridge.getPreference('bonusPoint', function(res) {
+    if(!res) {
+      return;
+    }
     bonusPoint = JSON.parse(res);
   });
 
