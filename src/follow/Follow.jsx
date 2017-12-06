@@ -20,24 +20,37 @@ class Follow extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      net.postJSON('/h5/follow/index', function(res) {
-        if(res.success) {
-          self.setData(res.data);
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      self.init();
+      migi.eventBus.on('LOGIN_OUT', function() {
+        self.hasData = false;
       });
     });
   }
   @bind hasData
   show() {
     $(this.element).removeClass('fn-hide');
+    if(!this.hasData) {
+      this.init();
+    }
   }
   hide() {
     $(this.element).addClass('fn-hide');
+  }
+  init() {
+    let self = this;
+    net.postJSON('/h5/follow/index', function(res) {
+      if(res.success) {
+        self.setData(res.data);
+      }
+      else if(res.code === 1000) {
+        migi.eventBus.emit('NEED_LOGIN');
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
   }
   setData(data) {
     let self = this;

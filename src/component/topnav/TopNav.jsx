@@ -69,7 +69,7 @@ class TopNav extends migi.Component {
       <div class={ 'message' + (this.isLogin ? '' : ' fn-hide') } href="/my/message">
         <span>{ this.messageNum || '' }</span>
       </div>
-      <span class={ 'public' + (this.isLogin && this.isAuthor ? '' : 'fn-hide') }
+      <span class={ 'public' + (this.isLogin && this.isAuthor ? '' : ' fn-hide') }
             onClick={ this.click }>[{ this.isPublic ? '切换到马甲' : '切换到作者身份' }]</span>
       <div class="user">
         <span class={ 'name' + (this.isPublic ? ' public' : '') }>

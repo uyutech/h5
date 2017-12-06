@@ -122,6 +122,7 @@ class My extends migi.Component {
     net.postJSON('/h5/login/loginOut', function() {
       self.isLogin = false;
       migi.eventBus.emit('LOGIN_OUT');
+      $.cookie('isLogin', null);
       jsBridge.delPreference('userInfo');
       jsBridge.delPreference('bonusPoint');
       jsBridge.loginOut();
