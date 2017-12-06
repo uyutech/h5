@@ -75,7 +75,7 @@ class TopNav extends migi.Component {
         <span class={ 'name' + (this.isPublic ? ' public' : '') }>
           { this.isLogin ? (this.isPublic ? this.authorName : this.name) : '' }
           </span>
-        <img src={ (this.isLogin && this.head) || 'src/common/head.png' }/>
+        <img src={ this.isLogin ? util.autoSsl(util.img64_64_80(this.head)) || 'src/common/head.png' : 'src/common/head.png' }/>
       </div>
     </div>;
   }

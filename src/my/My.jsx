@@ -63,8 +63,27 @@ class My extends migi.Component {
     profile.head = self.userInfo.Head_Url;
     profile.sname = self.userInfo.NickName;
     profile.sign = self.userInfo.User_Sign || '';
-    profile.updateNickNameTimeDiff = data.updateNickNameTimeDiff || 0;
-    profile.updateHeadTimeDiff = data.updateHeadTimeDiff || 0;
+
+    let now = Date.now();
+    let lastUpdateNickNameTime = data.lastUpdateNickNameTime;
+    if(lastUpdateNickNameTime) {
+      lastUpdateNickNameTime = new Date(lastUpdateNickNameTime);
+    }
+    else {
+      lastUpdateNickNameTime = 0;
+    }
+    let updateNickNameTimeDiff = now - lastUpdateNickNameTime;
+    let lastUpdateHeadTime = data.lastUpdateHeadTime;
+    if(lastUpdateHeadTime) {
+      lastUpdateHeadTime = new Date(lastUpdateHeadTime);
+    }
+    else {
+      lastUpdateHeadTime = 0;
+    }
+    let updateHeadTimeDiff = now - lastUpdateHeadTime;
+
+    profile.updateNickNameTimeDiff = updateNickNameTimeDiff;
+    profile.updateHeadTimeDiff = updateHeadTimeDiff;
 
     if(self.bonusPoint && self.bonusPoint.ranking) {
       $(self.element).find('.bp .rank').html(`全站排名 ${ self.bonusPoint.ranking } 名`);

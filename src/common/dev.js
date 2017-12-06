@@ -16,7 +16,7 @@ export default {
   ajax: function(url, data, success, error, type, timeout) {
     // 兼容无host
     if (!/^http(s)?:\/\//.test(url)) {
-      url = 'http://h5.dev.circling.cc2/' + url.replace(/^\//, '');
+      url = 'http://dev.circling.cc2/' + url.replace(/^\//, '');
     }
     Object.keys(data).forEach(function(k) {
       if(data[k] === undefined || data[k] === null) {

@@ -163,6 +163,28 @@ let jsBridge = {
       }
     }
   },
+  prompt: function(s, callback) {
+    if(isString(s)) {
+      s = {
+        title: '',
+        message: '请输入',
+        value: s,
+      };
+    }
+    else {
+      s = s || {};
+      s.title = s.title || '';
+      s.message = s.message || '请输入';
+      s.value = s.value || '';
+    }
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('prompt', s, callback);
+    }
+    else {
+      let res = window.prompt(s.message, s.value);
+      callback(res);
+    }
+  },
   hideBackButton: function() {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('hideBackButton');
