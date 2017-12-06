@@ -1,3 +1,5 @@
+import util from "../../common/util";
+
 /**
  * Created by army8735 on 2017/9/14.
  */
@@ -17,16 +19,42 @@ class NeedLogin extends migi.Component {
     e.preventDefault();
     this.hide();
   }
-  clickWeibo(e) {
-    e.preventDefault();
-    location.href = '/oauth/weibo?goto=' + encodeURIComponent(location.href);
+  clickWeibo() {
+    let self = this;
+    jsBridge.loginWeibo(function(res) {
+      res = JSON.parse(res);
+      if(res.success) {
+        jsBridge.showLoading('正在登录...');
+        let openID = res.openID;
+        let token = res.token;
+        jsBridge.weiboLogin({ openID, token }, function(res) {
+          res = JSON.parse(res);
+          jsBridge.hideLoading();
+          if(res.success) {
+            let data = res.data;
+            jsBridge.setPreference('userInfo', JSON.stringify(data.userInfo), function() {
+              jsBridge.setPreference('bonusPoint', JSON.stringify(data.bonusPoint), function() {
+                migi.eventBus.emit('LOGIN', data.userInfo);
+                self.hide();
+              });
+            });
+          }
+          else {
+            jsBridge.toast(res.message);
+          }
+        });
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    });
   }
   render() {
     return <div class="cp-mlogin fn-hide">
       <div class="c">
         <h3>您尚未登录...</h3>
         <p>{ this.message || '登录后即可进行相关操作~' }</p>
-        <a href="/oauth/weibo" class="weibo" onClick={ this.clickWeibo }>微博登录</a>
+        <span class="weibo" onClick={ this.clickWeibo }>微博登录</span>
         <a href="#" class="close" onClick={ this.clickClose }/>
       </div>
     </div>;

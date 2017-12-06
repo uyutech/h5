@@ -39,7 +39,6 @@ export default {
           success(data, state, xhr);
         },
         error: function (data) {
-          console.error('ajax error: ' + url + ', ' + JSON.stringify(data));
           if(!error.__hasExec) {
             error.__hasExec = true;
             error(data || {});

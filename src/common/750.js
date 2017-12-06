@@ -24,6 +24,6 @@ if (!metaEl) {
   doc.head.appendChild(metaEl);
 }
 let v = `width=device-width,user-scalable=0,initial-scale=${scale},maximum-scale=${scale},minimum-scale=${scale}`;
-console.log(v);
+
 metaEl.setAttribute('content', v);
 doc.documentElement.style.fontSize = baseFont / 2 * dpr + 'px';

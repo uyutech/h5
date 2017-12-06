@@ -24,6 +24,11 @@ class Follow extends migi.Component {
       migi.eventBus.on('LOGIN_OUT', function() {
         self.hasData = false;
       });
+      migi.eventBus.on('LOGIN', function() {
+        if(!$(self.element).hasClass('fn-hide')) {
+          self.show();
+        }
+      });
     });
   }
   @bind hasData

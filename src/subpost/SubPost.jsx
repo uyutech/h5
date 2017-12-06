@@ -196,7 +196,7 @@ class SubPost extends migi.Component {
           document.body.removeChild(node);
         };
         document.body.appendChild(node);
-        net.postJSON('/h5/my/uploadPic', { img }, function(res) {console.log(res);
+        net.postJSON('/h5/my/uploadPic', { img }, function(res) {
           let url = res.data;
           let has;
           self.list.forEach(function(item) {

@@ -21,25 +21,15 @@ class My extends migi.Component {
       self.bonusPoint = self.props.bonusPoint;
     }
     self.on(migi.Event.DOM, function() {
-      net.postJSON('/h5/my/index', function(res) {
-        if(res.success) {
-          let data = res.data;
-          self.setData(data);
-          migi.eventBus.emit('LOGIN', data.userInfo);
-          jsBridge.setPreference('userInfo', JSON.stringify(data.userInfo));
-          jsBridge.setPreference('bonusPoint', JSON.stringify(data.bonusPoint));
-        }
-        else if(res.code === 1000) {
-          self.isLogin = false;
-          self.hasData = true;
-          jsBridge.delPreference('userInfo');
-          jsBridge.delPreference('bonusPoint');
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      self.init();
+      migi.eventBus.on('LOGIN', function(userInfo) {
+        jsBridge.getPreference('bonusPoint', function(bonusPoint) {
+          bonusPoint = JSON.parse(bonusPoint);
+          self.setData({
+            userInfo,
+            bonusPoint,
+          });
+        });
       });
     });
   }
@@ -50,6 +40,29 @@ class My extends migi.Component {
   }
   hide() {
     $(this.element).addClass('fn-hide');
+  }
+  init() {
+    let self = this;
+    net.postJSON('/h5/my/index', function(res) {
+      if(res.success) {
+        let data = res.data;
+        self.setData(data);
+        migi.eventBus.emit('LOGIN', data.userInfo);
+        jsBridge.setPreference('userInfo', JSON.stringify(data.userInfo));
+        jsBridge.setPreference('bonusPoint', JSON.stringify(data.bonusPoint));
+      }
+      else if(res.code === 1000) {
+        self.isLogin = false;
+        self.hasData = true;
+        jsBridge.delPreference('userInfo');
+        jsBridge.delPreference('bonusPoint');
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
   }
   setData(data) {
     let self = this;
