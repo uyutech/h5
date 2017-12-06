@@ -31,6 +31,15 @@ class Messages extends migi.Component {
         $li.addClass('cur');
         self.emit('comment', $li.attr('id'), $comment.attr('rid'), $comment.attr('cid'), $comment.attr('name'), parseInt($comment.attr('type')), $comment.attr('tid'));
       });
+      $list.on('click', 'a', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+        });
+      });
     });
   }
   @bind message
@@ -38,26 +47,30 @@ class Messages extends migi.Component {
   genItem(item) {
     let type = item.TargetType;
     let url = '#';
+    let title = '';
     if(type === 1) {
-      url = '/author/' + item.urlID;
+      url = '/author.html?authorID=' + item.urlID;
+      title = item.Send_UserName;
     }
     else if(type === 2) {
-      url = '/works/' + item.urlID;
+      url = '/works.html?worksID=' + item.urlID;
+      title = '作品详情';
     }
     else if(type === 3 || type === 4) {
-      url = '/post/' + item.urlID;
+      url = '/post.html?postID=' + item.urlID;
+      title = '画圈正文';
     }
     if(item.Send_UserISAuthor) {
       return <li class="author" id={ 'message_' + item.NotifyID }>
         <div class="profile fn-clear">
-          <img class="pic" src={ util.autoSsl(util.img96_96_80(item.Send_UserHeadUrl || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
+          <img class="pic" src={ util.autoSsl(util.img96_96_80(item.Send_UserHeadUrl || '/src/common/head.png')) }/>
           <div class="txt">
-            <a href={ '/author/' + item.Send_UserID } class="name">{ item.Send_UserName }</a>
-            <a class="time" href={ url }>{ util.formatDate(item.Send_Time) }</a>
+            <a href={ '/author.html?authorID=' + item.Send_UserID } class="name" title={ item.Send_UserName }>{ item.Send_UserName }</a>
+            <a class="time" href={ url } title={ title }>{ util.formatDate(item.Send_Time) }</a>
           </div>
         </div>
         <div class="wrap">
-          <a class="quote" href={ url }>
+          <a class="quote" href={ url } title={ title }>
             <label>{ item.Action }：</label>
             <span>{ item.Content }</span>
           </a>
@@ -71,14 +84,14 @@ class Messages extends migi.Component {
     }
     return <li id={ 'message_' + item.NotifyID }>
       <div class="profile fn-clear">
-        <img class="pic" src={ util.autoSsl(util.img96_96_80(item.Send_UserHeadUrl || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
+        <img class="pic" src={ util.autoSsl(util.img96_96_80(item.Send_UserHeadUrl || '/src/common/head.png')) }/>
         <div class="txt">
-          <a href={ '/user/' + item.Send_UserID } class="name">{ item.Send_UserName }</a>
-          <a class="time" href={ url }>{ util.formatDate(item.Send_Time) }</a>
+          <a href={ '/user.html?userID=' + item.Send_UserID } class="name" title={ item.Send_UserName }>{ item.Send_UserName }</a>
+          <a class="time" href={ url } title={ title }>{ util.formatDate(item.Send_Time) }</a>
         </div>
       </div>
       <div class="wrap">
-        <a class="quote" href={ url }>
+        <a class="quote" href={ url } title={ title }>
           <label>{ item.Action }：</label>
           <span>{ item.Content }</span>
         </a>

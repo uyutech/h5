@@ -66,10 +66,15 @@ class TopNav extends migi.Component {
       loading = false;
     });
   }
+  clickMessage() {
+    jsBridge.pushWindow('/message.html', {
+      title: '圈消息',
+    });
+  }
   render() {
     return <div class="top-nav" id="topNav">
       <b class="logo"/>
-      <div class={ 'message' + (this.isLogin ? '' : ' fn-hide') } href="/my/message">
+      <div class={ 'message' + (this.isLogin ? '' : ' fn-hide') } onClick={ this.clickMessage }>
         <span>{ this.messageNum || '' }</span>
       </div>
       <span class={ 'public' + (this.isLogin && this.isAuthor ? '' : ' fn-hide') }
