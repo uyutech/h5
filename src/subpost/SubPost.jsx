@@ -21,6 +21,7 @@ const TEXT = {
 };
 const MAX_IMG_NUM = 10;
 const MAX_TEXT_LENGTH = 4096;
+const hash = {};
 
 class SubPost extends migi.Component {
   constructor(...data) {
@@ -166,126 +167,69 @@ class SubPost extends migi.Component {
       });
     }
   }
-  change(e) {
+  change(e, vd) {
     let self = this;
-    if(window.FileReader) {
-      let files = e.target.files;
-      let res = [];
-      let sizeLimit;
-      let spliceLimit;
-      for(let i = 0, len = files.length; i < len; i++) {
-        let file = files[i];
-        let size = file.size;
-        if(size && size !== 0 && size < 1024 * 1024 * 15) {
-          res.push(file);
-        }
-        else {
-          sizeLimit = true;
-        }
-      }
-      if(res.length + self.imgNum > MAX_IMG_NUM) {
-        res.splice(MAX_IMG_NUM - self.imgNum);
-        spliceLimit = true;
-      }
-      if(files.length !== res.length) {
-        if(sizeLimit && spliceLimit) {
-          alert('图片最大不能超过3M哦，超过的将自动过滤。图片最多不能超过' + MAX_IMG_NUM + '张哦，超过的将自动忽略。');
-        }
-        else if(spliceLimit) {
-          alert('图片最多不能超过' + MAX_IMG_NUM + '张哦，超过的将自动忽略。');
-        }
-        else if(sizeLimit) {
-          alert('图片最大不能超过3M哦，超过的将自动过滤。');
-        }
-      }
-      if(!res.length) {
-        return;
-      }
-      self.disableUpload = true;
-      let num = res.length;
-      let count = 0;
-      let hasUpload;
-      res.forEach(function(file, i) {
+    if(self.disableUpload) {
+      return;
+    }
+    if(self.imgNum > MAX_IMG_NUM) {
+      jsBridge('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
+      return;
+    }
+    self.disableUpload = true;
+    jsBridge.album(function(res) {
+      res = JSON.parse(res);
+      if(res.success) {
+        let img = res.base64;
         self.list.push({
           state: STATE.LOADING,
-          url: '',
+          url: /^data:image\/(\w+);base64,/.test(img) ? img : 'data:image/jpeg;base64,' + img,
         });
-        let fileReader = new FileReader();
-        fileReader.onload = function() {
-          self.list[i + self.imgNum].state = STATE.SENDING;
-          self.list[i + self.imgNum].url = fileReader.result;
-          self.list = self.list;
-          let img = fileReader.result;
-          let node = document.createElement('img');
-          node.style.position = 'absolute';
-          node.style.left = '-9999rem';
-          node.style.top = '-9999rem';
-          node.src = img;
-          node.onload = function() {
-            self.list[i + self.imgNum].width = node.width;
-            self.list[i + self.imgNum].height = node.height;
-            document.body.removeChild(node);
-          };
-          document.body.appendChild(node);
-          net.postJSON('/api/user/uploadPic', { img }, function(res) {
-            if(res.success) {
-              let url = res.data;
-              let has;
-              self.list.forEach(function(item) {
-                if(item.url === url) {
-                  hasUpload = has = true;
-                }
-              });
-              if(!has) {
-                self.list[i + self.imgNum].state = STATE.LOADED;
-                self.list[i + self.imgNum].url = url;
-                self.addCache(url);
-              }
-              else {
-                self.list[i + self.imgNum].state = STATE.ERROR;
-              }
-            }
-            else {
-              self.list[i + self.imgNum] = null;
-            }
-            self.list = self.list;
-            count++;
-            if(count === num) {
-              self.disableUpload = false;
-              for(let j = self.list.length - 1; j >= 0; j--) {
-                if(self.list[j] === null) {
-                  self.list.splice(j, 1);
-                }
-              }
-              self.imgNum = self.list.length;
-              if(hasUpload) {
-                alert('有图片已经重复上传过啦，已自动忽略。');
-              }
-            }
-          }, function(res) {
-            self.list[i + self.imgNum].state = STATE.ERROR;
-            self.list = self.list;
-            count++;
-            if(count === num) {
-              self.disableUpload = false;
-              for(let j = self.list.length - 1; j >= 0; j--) {
-                if(self.list[j] === null) {
-                  self.list.splice(j, 1);
-                }
-              }
-              self.imgNum = self.list.length;
-              if(hasUpload) {
-                alert('有图片已经重复上传过啦，已自动忽略。');
-              }
-            }
-          }, 1000 * 60 * 10);
+        let node = document.createElement('img');
+        node.style.position = 'absolute';
+        node.style.left = '-9999rem';
+        node.style.top = '-9999rem';
+        node.src = img;
+        node.onload = function() {
+          self.list[self.imgNum].width = node.width;
+          self.list[self.imgNum].height = node.height;
+          document.body.removeChild(node);
         };
-        fileReader.readAsDataURL(file);
-      });
-    }
-    else {
-      alert('您的浏览器暂不支持上传，请暂时使用Chrome或者IE10以上浏览器或者极速模式。');
-    }
+        document.body.appendChild(node);
+        net.postJSON('/h5/my/uploadPic', { img }, function(res) {console.log(res);
+          let url = res.data;
+          let has;
+          self.list.forEach(function(item) {
+            if(item.url === url) {
+              has = true;
+            }
+          });
+          if(!has) {
+            self.list[self.imgNum].state = STATE.LOADED;
+            self.list[self.imgNum].url = url;
+            self.addCache(url);
+            self.imgNum++;
+            self.list = self.list;
+          }
+          else {
+            self.list.pop();
+            jsBridge.toast('有图片已经重复上传过啦，已自动忽略~');
+          }
+          self.disableUpload = false;
+        }, function() {
+          self.list[self.imgNum].state = STATE.ERROR;
+          self.list = self.list;
+          self.disableUpload = false;
+        }, 1000 * 60 * 10);
+      }
+      else if(res.cancel) {
+        self.disableUpload = false;
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        self.disableUpload = false;
+      }
+    });
   }
   getImgKey() {
     return '_circle_img';
@@ -358,11 +302,7 @@ class SubPost extends migi.Component {
   render() {
     return <form class="mod-sub" ref="form" onSubmit={ this.submit }>
       <div class="ti">
-        <div class={ 'upload' + (this.disableUpload ? ' dis' : '') }>
-          图片
-          <input type="file" ref="file" class="file" onChange={ this.change } disabled={ !!this.disableUpload }
-                 multiple="multiple" accept="image/gif, image/jpeg, image/png"/>
-        </div>
+        <div class={ 'upload' + (this.disableUpload ? ' dis' : '') } onClick={ this.change }>图片</div>
         <span class={ 'limit' + (this.warnLength ? ' warn' : '') }><strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }</span>
         <input type="submit"
                class={ 'submit' + (this.sending || this.invalid || this.disableUpload ? ' dis' : '') }

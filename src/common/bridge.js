@@ -302,6 +302,12 @@ let jsBridge = {
       });
     }
   },
+  album: function(callback) {
+    callback = callback || function() {};
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('album', callback);
+    }
+  },
 };
 
 window.jsBridge = jsBridge;
