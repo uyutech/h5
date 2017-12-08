@@ -339,6 +339,19 @@ let jsBridge = {
       ZhuanQuanJSBridge.call('album', callback);
     }
   },
+  download: function(data) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      if(isString(data)) {
+        data = {
+          url: data,
+        };
+      }
+      if(!data.name) {
+        data.name = url;
+      }
+      ZhuanQuanJSBridge.call('download', data);
+    }
+  }
 };
 
 window.jsBridge = jsBridge;

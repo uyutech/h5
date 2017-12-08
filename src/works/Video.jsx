@@ -284,10 +284,17 @@ class Video extends migi.Component {
     }
   }
   clickDownload(e) {
+    e.preventDefault();
     if(!util.isLogin()) {
-      e.preventDefault();
       migi.eventBus.emit('NEED_LOGIN');
+      return;
     }
+    let url = vd.props.href.v;
+    let name = vd.props.download.v;
+    jsBridge.download({
+      url,
+      name,
+    });
   }
   clickShare() {
     migi.eventBus.emit('SHARE', '/works/' + this.props.worksID + '/' + this.props.workID);
