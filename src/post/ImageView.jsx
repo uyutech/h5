@@ -31,17 +31,9 @@ class ImageView extends migi.Component {
   @bind sid
   show() {
     $(this.element).removeClass('fn-hide');
-    let parent = window.parent;
-    if(parent !== window && parent.upZIndex) {
-      parent.upZIndex();
-    }
   }
   hide() {
     $(this.element).addClass('fn-hide');
-    let parent = window.parent;
-    if(parent !== window && parent.downZIndex) {
-      parent.downZIndex();
-    }
   }
   clickPrev() {
     let self = this;
