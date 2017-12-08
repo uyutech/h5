@@ -69,11 +69,11 @@ class Message extends migi.Component {
           subCmt.invalid = false;
         }
         else {
-          alert(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
           subCmt.invalid = false;
         }
       }, function(res) {
-        alert(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
         subCmt.invalid = false;
       });
     });

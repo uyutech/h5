@@ -70,8 +70,8 @@ class Circling extends migi.Component {
     }
   }
   load() {
-    let self = this;
-    if(loading) {
+    let self = this;console.log(1, loading, loadEnd)
+    if(loading || loadEnd) {
       return;
     }
     let hotPost = self.ref.hotPost;
@@ -102,10 +102,21 @@ class Circling extends migi.Component {
       loading = false;
     });
   }
+  clickTag(e, vd, tvd) {
+    let $li = $(tvd.element);
+    if(!$li.hasClass('cur')) {
+      $(vd.element).find('.cur').removeClass('cur');
+      $li.addClass('cur');
+      circleID = tvd.props.rel;
+      this.ref.hotPost.setData();
+      skip = 0;
+      this.load();
+    }
+  }
   genDom() {
     let self = this;
     return <div>
-      <ul class="circles" onClick={ { li: self.clickTag } }>
+      <ul class="circles" onClick={ { li: self.clickTag.bind(self) } }>
         <li class="cur">全部</li>
         {
           (self.hotCircle.data || []).map(function(item) {

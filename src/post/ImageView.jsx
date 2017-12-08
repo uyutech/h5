@@ -62,7 +62,7 @@ class ImageView extends migi.Component {
     this.emit('clickLike', this.sid);
   }
   clickDownload(e) {
-    if(!$CONFIG.isLogin) {
+    if(!util.isLogin()) {
       e.preventDefault();
       migi.eventBus.emit('NEED_LOGIN');
     }

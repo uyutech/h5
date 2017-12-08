@@ -24,6 +24,7 @@ class TopNav extends migi.Component {
       });
       migi.eventBus.on('LOGIN_OUT', function() {
         self.isLogin = false;
+        self.messageNum = 0;
         $.cookie('isLogin', false);
         $.cookie('uid', null);
       });
@@ -58,11 +59,11 @@ class TopNav extends migi.Component {
         });
       }
       else {
-        alert(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      alert(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
       loading = false;
     });
   }

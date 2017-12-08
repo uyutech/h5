@@ -85,12 +85,12 @@ class Comments extends migi.Component {
           migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          alert(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
       }
       loading = false;
     }, function(res) {
-      alert(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
       loading = false;
     });
   }
