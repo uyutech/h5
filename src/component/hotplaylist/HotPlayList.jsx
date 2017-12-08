@@ -13,11 +13,58 @@ class HotPlayList extends migi.Component {
   }
   @bind hasData
   @bind dataList
+  @bind message
   show() {
     $(this.element).removeClass('fn-hide');
   }
   hide() {
     $(this.element).addClass('fn-hide');
+  }
+  appendData(data) {
+    let s = '';
+    (data || []).forEach(function(item) {
+      s += this.genItem(item);
+    }.bind(this));
+    $(this.ref.list.element).append(s);
+  }
+  genItem(item) {
+    let url = '/works.html?worksID=' + item.WorksID + '&workID=' + item.ItemID;
+    let type = '';
+    if(item.ItemType === 1111 || item.ItemType === 1113) {
+      type = 'audio';
+    }
+    else if(item.ItemType === 2110) {
+      type = 'video';
+    }
+    if(item.WorksState === 3) {
+      return <li class="private">
+        <span class="name">待揭秘</span>
+      </li>;
+    }
+    let author = (item.Works_Item_Author || []).filter(function(item) {
+      return item.WorksAuthorType === '111';
+    }).map(function(item) {
+      return item.AuthName;
+    }).slice(0, 2);
+    if(item.WorksState === 2) {
+      return <li class={ type + ' rel' }>
+        <a href={ url } class="pic">
+          <img src={ util.autoSsl(util.img108_108_80(item.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
+        </a>
+        <a href={ url }
+           class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
+        <p class="author">{ author.join(' ') }</p>
+      </li>;
+    }
+    return <li class={ type + ' rel' }>
+      <a href={ url } class="pic">
+        <img src={ util.autoSsl(util.img108_108_80(item.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
+      </a>
+      <a href={ url }
+         class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
+      <p class="author">{ author.join(' ') }</p>
+      <span class="icon"/>
+    </li>;
   }
   click(e, vd, tvd) {
     e.preventDefault();
@@ -29,48 +76,14 @@ class HotPlayList extends migi.Component {
   }
   render() {
     return <div class="cp-hotplaylist" onClick={ { a: this.click } }>
-      {
-        this.dataList && this.dataList.length
-          ? <ol class="list" ref="list">
-              {
-                (this.dataList || []).map(function(item, i) {
-                  let url = '/works.html?worksID=' + item.WorksID + '&workID=' + item.ItemID;
-                  let type = '';
-                  if(item.ItemType === 1111 || item.ItemType === 1113) {
-                    type = 'audio';
-                  }
-                  else if(item.ItemType === 2110) {
-                    type = 'video';
-                  }
-                  if(item.WorksState === 3) {
-                    return <li class="private">
-                      <span class="name">待揭秘</span>
-                    </li>;
-                  }
-                  if(item.WorksState === 2) {
-                    return <li class={ type + ' rel' }>
-                      <a href={ url } class="pic" title={ item.ItemName }>
-                        <img src={ util.autoSsl(util.img108_108_80(item.WorksCoverPic || this.props.cover))
-                        || '//zhuanquan.xin/img/blank.png' }/>
-                      </a>
-                      <a href={ url } class={ 'name' + (item.ItemName ? '' : ' empty') }
-                         title={ item.ItemName }>{ item.ItemName || '待揭秘' }</a>
-                    </li>;
-                  }
-                  return <li class={ type + ' rel' }>
-                    <a href={ url } class="pic" title={ item.ItemName }>
-                      <img src={ util.autoSsl(util.img108_108_80(item.WorksCoverPic || this.props.cover))
-                      || '//zhuanquan.xin/img/blank.png' }/>
-                    </a>
-                    <a href={ url } class={ 'name' + (item.ItemName ? '' : ' empty') }
-                       title={ item.ItemName }>{ item.ItemName || '待揭秘' }</a>
-                    <span class="icon"/>
-                  </li>;
-                }.bind(this))
-              }
-            </ol>
-          : <div class="empty">暂无数据</div>
-      }
+      <ol class="list" ref="list">
+        {
+          (this.dataList || []).map(function(item) {
+            return this.genItem(item);
+          }.bind(this))
+        }
+      </ol>
+      <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;
   }
 }

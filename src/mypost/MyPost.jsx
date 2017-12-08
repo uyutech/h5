@@ -7,6 +7,7 @@
 import net from '../common/net';
 import util from '../common/util';
 import HotPost from '../component/hotpost/HotPost.jsx';
+import ImageView from '../post/ImageView.jsx';
 
 let take = 10;
 let skip = take;
@@ -32,7 +33,16 @@ class MyPost extends migi.Component {
         self.checkMore($window);
       });
     }
-  }checkMore($window) {
+
+    let hotPost = self.ref.hotPost;
+    let imageView = self.ref.imageView;
+    imageView.on('clickLike', function(sid) {
+      hotPost.like(sid, function(res) {
+        imageView.isLike = res.ISLike;
+      });
+    });
+  }
+  checkMore($window) {
     if(loading || loadEnd) {
       return;
     }
@@ -82,6 +92,7 @@ class MyPost extends migi.Component {
       <HotPost ref="hotPost"
                message={ self.postList.Size <= take && self.postList.Size > 3 ? '已经到底了' : '' }
                dataList={ self.postList.data }/>
+      <ImageView ref="imageView"/>
     </div>;
   }
   render() {

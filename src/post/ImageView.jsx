@@ -61,11 +61,16 @@ class ImageView extends migi.Component {
   clickLike() {
     this.emit('clickLike', this.sid);
   }
-  clickDownload(e) {
+  clickDownload(e, vd) {
     if(!util.isLogin()) {
       e.preventDefault();
       migi.eventBus.emit('NEED_LOGIN');
+      return;
     }
+    let url = vd.props.href;
+    jsBridge.download({
+      url,
+    });
   }
   render() {
     return <div class="mod-iv fn-hide">
@@ -79,7 +84,6 @@ class ImageView extends migi.Component {
             <a href={ this.dataList && this.dataList[this.idx]
               ? this.dataList[this.idx].FileUrl
               : ''}
-               target="_blank"
                onClick={ this.clickDownload }/>
           </li>
         </ul>

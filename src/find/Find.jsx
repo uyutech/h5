@@ -14,10 +14,18 @@ import HotMusicAlbum from '../component/hotmusicalbum/HotMusicAlbum.jsx';
 import HotAuthor from '../component/hotauthor/HotAuthor.jsx';
 import HotPlayList from '../component/hotplaylist/HotPlayList.jsx';
 import HotPic from '../component/hotpic/HotPic.jsx';
+import ImageView from '../post/ImageView.jsx';
 
-let take = 10;
-let skip = take;
-
+let take = 30;
+let skip = 10;
+let take2 = 10;
+let skip2 = 0;
+let size2 = 0;
+let loading;
+let loadEnd;
+let loading2;
+let loadEnd2;
+let cur = 'ma';
 let type;
 let hotPlayList;
 let hotPic;
@@ -63,32 +71,104 @@ class Find extends migi.Component {
     let $window = $(window);
     let WIN_HEIGHT = $window.height();
     let show;
-    $window.on('scroll', onScroll);
-    function onScroll() {
+    $window.on('scroll', function() {
       if(show) {
-        return;
+        if(cur === 'ma' && (loading || loadEnd)) {
+          return;
+        }
+        if(cur === 'pic' && (loading2 || loadEnd2)) {
+          return;
+        }
+        let WIN_HEIGHT = $window.height();
+        let HEIGHT = $(document.body).height();
+        let bool;
+        bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
+        if(bool) {
+          if(cur === 'ma') {
+            self.load();
+          }
+          else if(cur === 'pic') {
+            self.load2();
+          }
+        }
       }
-      let HEIGHT = $(document.body).height();
-      let bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-      if(bool) {
-        show = true;
-        $window.off('scroll', onScroll);
-        let p1 = self.ref.p1;
-        type = migi.render(
-          <ul class="type fn-clear" ref="type" onClick={ { li: self.clickType.bind(self) } }>
+      else {
+        let HEIGHT = $(document.body).height();
+        let bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
+        if(bool) {
+          show = true;
+          let p1 = self.ref.p1;
+          type = <ul class="type fn-clear" ref="type" onClick={ { li: self.clickType.bind(self) } }>
             <li class="ma cur" rel="ma">音乐</li>
             <li class="pic" rel="pic">美图</li>
-          </ul>
-        );
-        type.before(p1.element);
-        hotPlayList = migi.render(
-          <HotPlayList ref="hotPlayList" dataList={ self.hotPlayList.data }/>
-        );
-        hotPlayList.before(p1.element);
-        p1.clean();
-        self.ref.p2.clean();
+          </ul>;
+          type.before(p1.element);
+          hotPlayList = <HotPlayList ref="hotPlayList" dataList={ self.hotPlayList.data }/>;
+          hotPlayList.before(p1.element);
+          let imageView = <ImageView ref="imageView"/>;
+          imageView.before(p1.element);
+          p1.clean();
+          self.ref.p2.clean();
+        }
       }
+    });
+  }
+  load() {
+    let self = this;
+    if(loading || loadEnd) {
+      return;
     }
+    loading = true;
+    hotPlayList.message = '正在加载...';
+    net.postJSON('/h5/find/hotPlayList', { skip, take }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        skip += take;
+        hotPlayList.appendData(data.data);
+        if(skip >= data.Size) {
+          loadEnd = true;
+          hotPlayList.message = '已经到底了';
+        }
+        else {
+          hotPlayList.message = '';
+        }
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+      loading = false;
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      loading = false;
+    });
+  }
+  load2() {
+    let self = this;
+    if(loading2 || loadEnd2) {
+      return;
+    }
+    loading2 = true;
+    hotPic.message = '正在加载...';
+    net.postJSON('/h5/find/hotPicList', { skip: skip2, take: take2 }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        skip2 += take2;
+        size2 = data.Size;
+        if(skip2 >= data.Size) {
+          loadEnd2 = true;
+          hotPic.message = '已经到底了';
+        }
+        else {
+          hotPic.message = '正在渲染图片....';
+        }
+        hotPic.appendData(data.data);
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
   }
   clickChangeWork() {
     let self = this;
@@ -108,8 +188,8 @@ class Find extends migi.Component {
     if(!$li.hasClass('cur')) {
       let self = this;
       $(vd.element).find('li').toggleClass('cur');
-      let rel = tvd.props.rel;
-      if(rel === 'ma') {
+      cur = tvd.props.rel;
+      if(cur === 'ma') {
         hotPic.hide();
         hotPlayList.show();
       }
@@ -121,7 +201,8 @@ class Find extends migi.Component {
                     dataList={ self.hotPicList.data }/>
           );
           hotPic.on('poolEnd', function() {
-            hotPic.message = '';
+            loading2 = false;
+            hotPic.message = skip2 >= size2 ? '已经到底了' : '';
           });
           hotPic.after(hotPlayList.element);
         }

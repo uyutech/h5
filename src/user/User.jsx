@@ -7,12 +7,13 @@
 import net from '../common/net';
 import util from '../common/util';
 import Profile from './Profile.jsx';
-import Page from '../component/page/Page.jsx';
 import HotPost from '../component/hotpost/HotPost.jsx';
+import ImageView from '../post/ImageView.jsx';
 
-let loading;
 let take = 10;
 let skip = take;
+let loading;
+let loadEnd;
 
 class User extends migi.Component {
   constructor(...data) {
@@ -30,31 +31,58 @@ class User extends migi.Component {
 
     self.hasData = true;
 
-    let page = self.ref.page;
-    let page2 = self.ref.page2;
-    page.on('page', function(i) {
-      if(page2) {
-        page2.index = i;
-      }
-      self.load(i);
-    });
-    if(page2) {
-      page2.on('page', function(i) {
-        page.index = i;
-        self.load(i);
+    let $window = $(window);
+    loadEnd = self.userPost.Size <= take;
+    if(loadEnd) {
+      self.ref.hostPost.message = '已经到底了';
+    }
+    else {
+      $window.on('scroll', function() {
+        self.checkMore($window);
       });
     }
+
+    let hotPost = self.ref.hotPost;
+    let imageView = self.ref.imageView;
+    imageView.on('clickLike', function(sid) {
+      hotPost.like(sid, function(res) {
+        imageView.isLike = res.ISLike;
+      });
+    });
   }
-  load(i) {
+  checkMore($window) {
+    if(loading || loadEnd) {
+      return;
+    }
+    let self = this;
+    let WIN_HEIGHT = $window.height();
+    let HEIGHT = $(document.body).height();
+    let bool;
+    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
+    if(bool) {
+      self.load();
+    }
+  }
+  load() {
     let self = this;
     if(loading) {
       return;
     }
     loading = true;
-    skip = (i - 1) * take;
+    let hotPost = self.ref.hotPost;
+    hotPost.message = '正在加载...';
     net.postJSON('/h5/user/postList', { userID: self.userID, skip, take }, function(res) {
       if(res.success) {
-        self.ref.hotPost.setData(res.data.data);
+        let data = res.data;
+        skip += take;
+        hotPost.appendData(res.data.data);
+        if(skip >= data.Size) {
+          loadEnd = true;
+          hotPost.message = '已经到底了';
+        }
+        else {
+          hotPost.message = '';
+        }
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -70,13 +98,8 @@ class User extends migi.Component {
     return <div>
       <Profile userInfo={ self.userInfo } followState={ self.followState }/>
       <h4>TA画的圈</h4>
-      <Page ref="page" total={ Math.ceil(self.userPost.Size / take) }/>
       <HotPost ref="hotPost" dataList={ self.userPost.data }/>
-      {
-        self.userPost.Size > take
-          ? <Page ref="page2" total={ Math.ceil(self.userPost.Size / take) }/>
-          : ''
-      }
+      <ImageView ref="imageView"/>
     </div>;
   }
   render() {
