@@ -57,12 +57,20 @@ class Banner extends migi.Component {
     this.setOffset(Math.floor(this.index * $(window).width()));
     this.addInterval();
   }
+  click(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+    });
+  }
   render() {
-    return <div class="banner" onSwipeLeft={ this.left } onSwipeRight={ this.right }>
+    return <div class="banner" onSwipeLeft={ this.left } onSwipeRight={ this.right } onClick={ { a: this.click } }>
       <ul class="list fn-clear" ref="list" style={ 'width:' + this.dataList.length * 100 + '%' }>
         {
           this.dataList.map(function(item) {
-            return <li><a href={ item.url } target="_blank"><img src={ item.pic }/></a></li>;
+            return <li><a href={ item.url } target="_blank" title={ item.title }><img src={ item.pic }/></a></li>;
           })
         }
       </ul>
