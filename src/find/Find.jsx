@@ -14,7 +14,6 @@ import HotMusicAlbum from '../component/hotmusicalbum/HotMusicAlbum.jsx';
 import HotAuthor from '../component/hotauthor/HotAuthor.jsx';
 import HotPlayList from '../component/hotplaylist/HotPlayList.jsx';
 import HotPic from '../component/hotpic/HotPic.jsx';
-import ImageView from '../post/ImageView.jsx';
 
 let take = 30;
 let skip = 10;
@@ -105,8 +104,6 @@ class Find extends migi.Component {
           type.before(p1.element);
           hotPlayList = <HotPlayList ref="hotPlayList" dataList={ self.hotPlayList.data }/>;
           hotPlayList.before(p1.element);
-          let imageView = <ImageView ref="imageView"/>;
-          imageView.before(p1.element);
           p1.clean();
           self.ref.p2.clean();
         }

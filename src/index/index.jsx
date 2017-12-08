@@ -13,6 +13,7 @@ import Find from '../find/Find.jsx';
 import Circling from '../circling/Circling.jsx';
 import Follow from '../follow/Follow.jsx';
 import My from '../my/My.jsx';
+import ImageView from '../post/ImageView.jsx';
 
 jsBridge.ready(function() {
   jsBridge.on('back', function(e) {
@@ -34,6 +35,7 @@ jsBridge.ready(function() {
   }
 
   let botNav = migi.preExist(<BotNav/>, '#page');
+  migi.preExist(<ImageView ref="imageView"/>, '#page');
 
   let userInfo;
   let bonusPoint;
