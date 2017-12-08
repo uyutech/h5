@@ -2,9 +2,22 @@
  * Created by army on 2017/5/17.
  */
 
+let rel = 0;
+
 class BotNav extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      migi.eventBus.on('CLICK_MENU_USER', function() {
+        if(rel !== 3) {
+          rel = 3;
+          $(self.element).find('.cur').removeClass('cur');
+          $(self.element).find('.my').addClass('cur');
+          self.emit('change', rel);
+        }
+      });
+    });
   }
   click(e, vd, tvd) {
     if(tvd.props.class === 'new') {
@@ -13,22 +26,14 @@ class BotNav extends migi.Component {
       });
       return;
     }
-    var $elem = $(tvd.element);
-    let rel = tvd.props.rel;
-    this.cur($elem, rel);
-  }
-  cur($elem, rel) {
+    let $elem = $(tvd.element);
     if($elem.hasClass('cur')) {
       return;
     }
-    if(rel !== undefined) {
-      $(this.element).find('.cur').removeClass('cur');
-      $elem.addClass('cur');
-      this.emit('change', rel);
-    }
-  }
-  setCurrent(i) {
-    this.cur($(this.element).find(`li[rel="${i}"]`), i);
+    $(vd.element).find('.cur').removeClass('cur');
+    $elem.addClass('cur');
+    rel = tvd.props.rel;
+    this.emit('change', rel);
   }
   render() {
     return <div class="bot-nav" onClick={ { li: this.click } }>

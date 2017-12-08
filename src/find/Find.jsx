@@ -136,7 +136,7 @@ class Find extends migi.Component {
       <Banner ref="banner" dataList={ self.bannerList }/>
       <h4>热门圈子</h4>
       <HotCircle ref="hotCircle" dataList={ self.hotCircleList }/>
-      <h4>热门作品<small ref="changeWork" onClick={ self.clickChangeWork }>换一换</small></h4>
+      <h4>热门作品<small ref="changeWork" onClick={ self.clickChangeWork.bind(self) }>换一换</small></h4>
       <HotWork ref="hotWork" dataList={ self.hotWorkList }/>
       <h4>热门专辑</h4>
       <HotMusicAlbum ref="hotMusicAlbum" dataList={ self.hotMusicAlbumList }/>

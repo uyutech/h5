@@ -72,6 +72,9 @@ class TopNav extends migi.Component {
       title: '圈消息',
     });
   }
+  clickUser() {
+    migi.eventBus.emit('CLICK_MENU_USER');
+  }
   render() {
     return <div class="top-nav" id="topNav">
       <b class="logo"/>
@@ -80,7 +83,7 @@ class TopNav extends migi.Component {
       </div>
       <span class={ 'public' + (this.isLogin && this.isAuthor ? '' : ' fn-hide') }
             onClick={ this.click }>[{ this.isPublic ? '切换到马甲' : '切换到作者身份' }]</span>
-      <div class="user">
+      <div class="user" onClick={ this.clickUser }>
         <span class={ 'name' + (this.isPublic ? ' public' : '') }>
           { this.isLogin ? (this.isPublic ? this.authorName : this.name) : '' }
           </span>

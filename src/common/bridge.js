@@ -199,16 +199,25 @@ let jsBridge = {
     if(this.isInApp) {
       // 复用back event，模拟没有调用preventDefault()方法
       if (window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-        ZhuanQuanJSBridge.call('back', {prevent: false});
+        ZhuanQuanJSBridge.call('back', { prevent: false });
       }
     }
     else {
       history.go(-1);
     }
   },
-  swipeRefresh: function(state) {
+  refreshState: function(state) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('swipeRefresh', state);
+      ZhuanQuanJSBridge.call('refreshState', state);
+    }
+  },
+  refresh: function() {
+    // 复用refresh event，模拟没有调用preventDefault()方法
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('refresh', { prevent: false });
+    }
+    else {
+      location.reload(true);
     }
   },
   loginWeibo: function(callback) {

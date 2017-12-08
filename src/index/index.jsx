@@ -15,10 +15,12 @@ import Follow from '../follow/Follow.jsx';
 import My from '../my/My.jsx';
 
 jsBridge.ready(function() {
-  jsBridge.swipeRefresh(false);
   jsBridge.on('back', function(e) {
     e.preventDefault();
     jsBridge.moveTaskToBack();
+  });
+  jsBridge.on('refresh', function(e) {
+    e.preventDefault();
   });
 
   let topNav = migi.preExist(<TopNav/>, '#page');
