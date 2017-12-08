@@ -71,7 +71,6 @@ class Profile extends migi.Component {
       return;
     }
     jsBridge.album(function(res) {
-      res = JSON.parse(res);
       if(res.success) {
         let img = res.base64;
         net.postJSON('/h5/my/uploadHead', { img }, function(res) {

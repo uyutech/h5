@@ -327,7 +327,7 @@ class MusicAlbum extends migi.Component {
       });
     }
   }
-  clickDownload(e) {
+  clickDownload(e, vd) {
     e.preventDefault();
     if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
@@ -335,9 +335,26 @@ class MusicAlbum extends migi.Component {
     }
     let url = vd.props.href.v;
     let name = vd.props.download.v;
-    jsBridge.download({
-      url,
-      name,
+    jsBridge.networkInfo(function(res) {
+      if(res.available) {
+        if(res.wifi) {
+          jsBridge.download({
+            url,
+            name,
+          });
+        }
+        else {
+          jsBridge.confirm("检测到当前网络环境非wifi，继续下载可能会产生流量，是否确定继续？", function() {
+            jsBridge.download({
+              url,
+              name,
+            });
+          });
+        }
+      }
+      else {
+        jsBridge.toast("当前网络暂不可用哦~");
+      }
     });
   }
   clickShare() {

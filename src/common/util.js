@@ -5,7 +5,7 @@
 import BigNumber from 'bignumber.js';
 
 let util = {
-  isLogin: function() {
+  isLogin: function() {console.log(123, $.cookie('isLogin'), $.cookie('isLogin') === 'true');
     return $.cookie('isLogin') === 'true';
   },
   isIPhone: function(){

@@ -178,7 +178,6 @@ class SubPost extends migi.Component {
     }
     self.disableUpload = true;
     jsBridge.album(function(res) {
-      res = JSON.parse(res);
       if(res.success) {
         let img = res.base64;
         self.list.push({
