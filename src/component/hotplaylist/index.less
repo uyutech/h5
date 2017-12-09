@@ -8,7 +8,6 @@
     li{
       position:relative;
       height:0.54rem;
-      line-height:0.54rem;
       cursor:pointer;
       transition:transform 0.2s;
       overflow:hidden;
@@ -22,6 +21,8 @@
         }
         .name{
           color:@fourthTextColor;
+          padding-top:0;
+          line-height:0.54rem;
         }
       }
       &.empty{
@@ -37,7 +38,7 @@
         }
       }
       &.rel{
-        padding-left:0.6rem;
+        padding-left:0.65rem;
       }
       .pic{
         position:absolute;
@@ -61,7 +62,7 @@
       .name{
         position:relative;
         display:block;
-        margin-left:0.05rem;
+        padding-top:0.1rem;
         padding-right:0.3rem;
         font-size:0.14rem;
         white-space:nowrap;
@@ -75,6 +76,9 @@
       }
       a.name{
         color:@mainLinkColor;
+      }
+      .author{
+        color:@secondTextColor;
       }
       .icon{
         position:absolute;

@@ -4,6 +4,7 @@
 
 import migi from 'migi';
 import $ from 'anima-yocto-ajax';
+import pa from '../../package.json';
 
 // 开发环境在线浏览的时候，因不存在preRender的过程，所以将preExist替换为render，此时就降级为没有预渲染直接即时渲染
 if(location.hostname === 'army8735.circling.cc') {
@@ -29,6 +30,7 @@ export default {
     else {
       url += '&_=' + Date.now();
     }
+    url += '&version=' + pa.version;
     function load() {
       return $.ajax({
         url: url,

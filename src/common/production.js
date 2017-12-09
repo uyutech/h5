@@ -3,6 +3,7 @@
  */
 
 import $ from 'anima-yocto-ajax';
+import pa from '../../package.json';
 
 window.ROOT_DOMAIN = 'http://circling.cc';
 
@@ -23,6 +24,7 @@ export default {
     else {
       url += '&_=' + Date.now();
     }
+    url += '&version=' + pa.version;
     function load() {
       return $.ajax({
         url: url,

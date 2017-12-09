@@ -153,7 +153,7 @@ class Follow extends migi.Component {
       <HotAuthor ref="hotAuthor"
                  dataList={ self.follows.data }
                  empty={ '你还没有关注作者哦，快去发现页看看有没有喜欢的作者吧！' }
-                 more={ self.follows.Size > 10 ? '/my/relation?tag=author' : '' }/>
+                 more={ self.follows.Size > 10 ? '/relation.html' : '' }/>
       <h4>关注圈er</h4>
       <HotUser ref="hotuser"
                dataList={ self.userFollows.data }
