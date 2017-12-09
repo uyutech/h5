@@ -14,12 +14,15 @@ let take = 10;
 let skip = take;
 let loading;
 let loadEnd;
+let visible;
+let scrollY = 0;
 
 class Follow extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
+      visible = true;
       self.init();
       migi.eventBus.on('LOGIN_OUT', function() {
         self.hasData = false;
@@ -34,12 +37,15 @@ class Follow extends migi.Component {
   @bind hasData
   show() {
     $(this.element).removeClass('fn-hide');
+    $(window).scrollTop(scrollY);
     if(!this.hasData) {
       this.init();
     }
+    visible = true;
   }
   hide() {
     $(this.element).addClass('fn-hide');
+    visible = false;
   }
   init() {
     let self = this;
@@ -70,6 +76,9 @@ class Follow extends migi.Component {
 
     let $window = $(window);
     $window.on('scroll', function() {
+      if(!visible) {
+        return;
+      }
       self.checkMore($window);
     });
     if(loadEnd) {
@@ -83,8 +92,9 @@ class Follow extends migi.Component {
     let self = this;
     let WIN_HEIGHT = $window.height();
     let HEIGHT = $(document.body).height();
+    scrollY = $window.scrollTop();
     let bool;
-    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
+    bool = scrollY + WIN_HEIGHT + 30 > HEIGHT;
     if(bool) {
       self.load();
     }

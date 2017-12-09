@@ -14,12 +14,15 @@ let ajax;
 let loading;
 let loadEnd;
 let circleID;
+let visible;
+let scrollY = 0;
 
 class Circling extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
+      visible = true;
       net.postJSON('/h5/circling/index', function(res) {
         if(res.success) {
           self.setData(res.data);
@@ -35,9 +38,12 @@ class Circling extends migi.Component {
   @bind hasData
   show() {
     $(this.element).removeClass('fn-hide');
+    $(window).scrollTop(scrollY);
+    visible = true;
   }
   hide() {
     $(this.element).addClass('fn-hide');
+    visible = false;
   }
   setData(data) {
     let self = this;
@@ -50,6 +56,9 @@ class Circling extends migi.Component {
 
     let $window = $(window);
     $window.on('scroll', function() {
+      if(!visible) {
+        return;
+      }
       self.checkMore($window);
     });
     if(loadEnd) {
@@ -63,8 +72,9 @@ class Circling extends migi.Component {
     let self = this;
     let WIN_HEIGHT = $window.height();
     let HEIGHT = $(document.body).height();
+    scrollY = $window.scrollTop();
     let bool;
-    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
+    bool = scrollY + WIN_HEIGHT + 30 > HEIGHT;
     if(bool) {
       self.load();
     }

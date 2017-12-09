@@ -28,12 +28,15 @@ let cur = 'ma';
 let type;
 let hotPlayList;
 let hotPic;
+let visible;
+let scrollY = 0;
 
 class Find extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
+      visible = true;
       net.postJSON('/h5/find/index', function(res) {
         if(res.success) {
           self.setData(res.data);
@@ -49,9 +52,12 @@ class Find extends migi.Component {
   @bind hasData
   show() {
     $(this.element).removeClass('fn-hide');
+    $(window).scrollTop(scrollY);
+    visible = true;
   }
   hide() {
     $(this.element).addClass('fn-hide');
+    visible = false;
   }
   setData(data) {
     let self = this;
@@ -69,9 +75,12 @@ class Find extends migi.Component {
 
     let $window = $(window);
     let WIN_HEIGHT = $window.height();
-    let show;
+    let showType;
     $window.on('scroll', function() {
-      if(show) {
+      if(showType) {
+        if(!visible) {
+          return;
+        }
         if(cur === 'ma' && (loading || loadEnd)) {
           return;
         }
@@ -80,8 +89,9 @@ class Find extends migi.Component {
         }
         let WIN_HEIGHT = $window.height();
         let HEIGHT = $(document.body).height();
+        scrollY = $window.scrollTop();
         let bool;
-        bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
+        bool = scrollY + WIN_HEIGHT + 30 > HEIGHT;
         if(bool) {
           if(cur === 'ma') {
             self.load();
@@ -93,9 +103,10 @@ class Find extends migi.Component {
       }
       else {
         let HEIGHT = $(document.body).height();
-        let bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
+        scrollY = $window.scrollTop();
+        let bool = scrollY + WIN_HEIGHT + 30 > HEIGHT;
         if(bool) {
-          show = true;
+          showType = true;
           let p1 = self.ref.p1;
           type = <ul class="type fn-clear" ref="type" onClick={ { li: self.clickType.bind(self) } }>
             <li class="ma cur" rel="ma">音乐</li>

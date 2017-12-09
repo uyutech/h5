@@ -42,7 +42,7 @@ class BotNav extends migi.Component {
           <b class="icon"/>
           <span>发现</span>
         </li>
-        <li class="zhuanquan" rel={ 1 }>
+        <li class="circling" rel={ 1 }>
           <b class="icon"/>
           <span>转圈</span>
         </li>
