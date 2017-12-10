@@ -109,7 +109,7 @@ class Comment extends migi.Component {
       });
       $root.on('click', '.remove', function() {
         let $btn = $(this);
-        if(window.confirm('会删除子留言哦，确定要删除吗？')) {
+        jsBridge.confirm('会删除子留言哦，确定要删除吗？', function() {
           let cid = $btn.attr('cid');
           net.postJSON(self.props.delUrl, {commentID: cid}, function(res) {
             if(res.success) {
@@ -125,7 +125,7 @@ class Comment extends migi.Component {
           }, function(res) {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
           });
-        }
+        });
       });
       $root.on('click', 'a', function(e) {
         e.preventDefault();

@@ -101,9 +101,9 @@ class HotPost extends migi.Component {
           });
         });
         $list.on('click', '.del', function() {
-          if(jsBridge.confirm('确认删除吗？')) {
-            let postID = $(this).attr('rel');
-            let $li = $(this).closest('.wrap').closest('li');
+          let postID = $(this).attr('rel');
+          let $li = $(this).closest('.btn').closest('li');
+          jsBridge.confirm('确认删除吗？', function() {
             net.postJSON('/h5/post/del', { postID }, function(res) {
               if(res.success) {
                 $li.remove();
@@ -114,7 +114,7 @@ class HotPost extends migi.Component {
             }, function(res) {
               jsBridge.toast(res.message || util.ERROR_MESSAGE);
             });
-          }
+          });
         });
         $list.on('click', 'a', function(e) {
           e.preventDefault();

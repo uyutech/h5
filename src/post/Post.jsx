@@ -254,8 +254,8 @@ class Post extends migi.Component {
     });
   }
   clickDel(e, vd) {
-    if(jsBridge.confirm('确认删除吗？')) {
-      let postID = this.postID;
+    let postID = this.postID;
+    jsBridge.confirm('确认删除吗？', function() {
       net.postJSON('/h5/post/del', { postID }, function(res) {
         if(res.success) {
           location.reload(true);
@@ -266,7 +266,7 @@ class Post extends migi.Component {
       }, function(res) {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
       });
-    }
+    });
   }
   genDom() {
     let self = this;
