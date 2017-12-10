@@ -70,7 +70,7 @@ class HotAuthor extends migi.Component {
               }
               {
                 this.props.more
-                  ? <li class="more"><a href={ this.props.more } title="全部作者">查看更多</a></li>
+                  ? <li class="more"><a href={ this.props.more } title="圈关系">查看更多</a></li>
                   : ''
               }
             </ul>

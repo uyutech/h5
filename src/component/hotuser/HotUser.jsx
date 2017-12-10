@@ -12,18 +12,26 @@ class HotAuthor extends migi.Component {
     this.dataList = this.props.dataList;
   }
   @bind dataList
+  click(e, vd, tvd) {
+    e.preventDefault();
+    let href = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(href, {
+      title,
+    });
+  }
   render() {
-    return <div class="cp-hotuser">
+    return <div class="cp-hotuser" onClick={ { a: this.click } }>
       {
         this.dataList && this.dataList.length
           ? <ul>
             {
               this.dataList.map(function(item) {
                 return <li>
-                  <a href={ `/user/${item.UserID}` } class="pic">
+                  <a href={ `/user.html?userID=${item.UserID}` } class="pic" title={ item.UserNickName }>
                     <img src={ util.autoSsl(util.img120_120_80(item.User_HeadUrl || '//zhuanquan.xin/img/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
                   </a>
-                  <a href={ `/user/${item.UserID}` } class="txt">
+                  <a href={ `/user?userID=${item.UserID}` } class="txt" title={ item.UserNickName }>
                     <span class="name">{ item.UserNickName }</span>
                   </a>
                   <div class="info">{ item.followMe ? '互相关注' : '' }</div>
@@ -32,7 +40,7 @@ class HotAuthor extends migi.Component {
             }
             {
               this.props.more
-                ? <li class="more"><a href={ this.props.more }>查看更多</a></li>
+                ? <li class="more"><a href={ this.props.more } title="圈关系">查看更多</a></li>
                 : ''
             }
           </ul>
