@@ -144,21 +144,24 @@ class Video extends migi.Component {
   }
   clickScreen() {
     let video = this.video.element;
-    if(video.requestFullscreen) {
-      video.requestFullscreen();
-    }
-    else if(video.mozRequestFullscreen) {
-      video.mozRequestFullscreen();
-    }
-    else if(video.webkitRequestFullscreen) {
-      video.webkitRequestFullscreen();
-    }
-    else if(video.msRequestFullscreen) {
-      video.msRequestFullscreen();
-    }
-    else if(video.webkitEnterFullScreen) {
-      video.webkitEnterFullScreen();
-    }
+    video.pause();
+    setTimeout(function() {
+      if(video.requestFullscreen) {
+        video.requestFullscreen();
+      }
+      else if(video.mozRequestFullscreen) {
+        video.mozRequestFullscreen();
+      }
+      else if(video.webkitRequestFullscreen) {
+        video.webkitRequestFullscreen();
+      }
+      else if(video.msRequestFullscreen) {
+        video.msRequestFullscreen();
+      }
+      else if(video.webkitEnterFullScreen) {
+        video.webkitEnterFullScreen();
+      }
+    }, 1);
   }
   touchStart(e) {
     e.preventDefault();
