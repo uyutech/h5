@@ -181,13 +181,13 @@ class SubPost extends migi.Component {
         let img = res.base64;
         self.list.push({
           state: STATE.LOADING,
-          url: /^data:image\/(\w+);base64,/.test(img) ? img : 'data:image/jpeg;base64,' + img,
+          url: /^data:image\/(\w+);base64,/.test(img) ? img : ('data:image/jpeg;base64,' + img),
         });
         let node = document.createElement('img');
         node.style.position = 'absolute';
         node.style.left = '-9999rem';
         node.style.top = '-9999rem';
-        node.src = img;
+        node.src = self.list[self.imgNum].url;
         node.onload = function() {
           self.list[self.imgNum].width = node.width;
           self.list[self.imgNum].height = node.height;

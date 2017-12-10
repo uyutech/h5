@@ -4,6 +4,8 @@
 
 let rel = 0;
 
+import util from '../../common/util';
+
 class BotNav extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -20,6 +22,10 @@ class BotNav extends migi.Component {
     });
   }
   click(e, vd, tvd) {
+    if(!util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
     if(tvd.props.class === 'new') {
       jsBridge.pushWindow('/subpost.html', {
         title: '画圈',

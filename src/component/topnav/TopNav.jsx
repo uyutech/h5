@@ -13,14 +13,16 @@ class TopNav extends migi.Component {
     let self = this;
     self.on(migi.Event.DOM, function() {
       jsBridge.getPreference('userInfo', function(userInfo) {
-        self.name = userInfo.NickName;
-        self.authorName = userInfo.AuthorName;
-        self.isAuthor = userInfo.ISAuthor;
-        self.head = userInfo.Head_Url;
-        self.isPublic = userInfo.ISOpen;
-        self.isLogin = true;
-        $.cookie('isLogin', true);
-        $.cookie('uid', userInfo.UID);
+        if(userInfo) {
+          self.name = userInfo.NickName;
+          self.authorName = userInfo.AuthorName;
+          self.isAuthor = userInfo.ISAuthor;
+          self.head = userInfo.Head_Url;
+          self.isPublic = userInfo.ISOpen;
+          self.isLogin = true;
+          $.cookie('isLogin', true);
+          $.cookie('uid', userInfo.UID);
+        }
       });
       migi.eventBus.on('LOGIN', function(userInfo) {
         self.name = userInfo.NickName;
