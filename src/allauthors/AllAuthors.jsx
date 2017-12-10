@@ -110,11 +110,11 @@ class AllAuthors extends migi.Component {
   }
   genItem(item) {
     return <li>
-      <a href={ `/user.html?userID=${item.AuthorID}` } class="pic" title={ item.AuthorName }>
+      <a href={ `/author.html?authorID=${item.AuthorID}` } class="pic" title={ item.AuthorName }>
         <img src={ util.autoSsl(util.img120_120_80(item.Head_url
           || '/src/common/head.png')) }/>
       </a>
-      <a href={ `/user.html?userID=${item.AuthorID}` } class="txt" title={ item.AuthorName }>
+      <a href={ `/author.html?authorID=${item.AuthorID}` } class="txt" title={ item.AuthorName }>
         <span class="name">{ item.AuthorName }</span>
       </a>
     </li>;

@@ -181,7 +181,7 @@ class Follow extends migi.Component {
       <HotUser ref="hotUser"
                dataList={ self.userFollows.data }
                empty={ '你还没有关注的圈er哦，快去转圈页看看有没有有趣的小伙伴吧~' }
-               more={ self.userFollows.Size > 10 ? '/my/relation?tag=follow' : '' }/>
+               more={ self.userFollows.Size > 10 ? '/relation.html?tag=follow' : '' }/>
       <p><small>小提示：</small>互相关注和关注我的可以在 <a href="/relation.html" title="圈关系" onClick={ self.click.bind(self) }>圈关系</a> 里查看</p>
       <h4>Ta们画的圈</h4>
       <HotPost ref="hotPost" dataList={ self.postList.data }/>

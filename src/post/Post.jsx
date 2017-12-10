@@ -79,7 +79,7 @@ class Post extends migi.Component {
       self.rid = rid;
       self.cid = cid;
       if(!n || n === '0') {
-        location.href = '/subcomment?type=1&id=' + self.postID + '&cid=' + cid + '&rid=' + rid;
+        location.href = '/subcomment.html?type=1&id=' + self.postID + '&cid=' + cid + '&rid=' + rid;
       }
     });
     comment.on('closeSubComment', function() {

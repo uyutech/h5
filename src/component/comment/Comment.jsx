@@ -277,7 +277,7 @@ class Comment extends migi.Component {
         <div class="t fn-clear">
           <div class="profile fn-clear">
             <a class="pic" href={ '/author.html?authorID=' + item.IsAuthor } title={ item.Send_AuthorName }>
-              <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
+              <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '/src/common/head.png')) }/>
             </a>
             <div class="txt">
               <a class="name" href={ '/author?authorID=' + item.IsAuthor } title={ item.Send_AuthorName }>{ item.Send_AuthorName }</a>
@@ -309,10 +309,10 @@ class Comment extends migi.Component {
       <div class="t fn-clear">
         <div class="profile fn-clear">
           <a class="pic" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>
-            <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_UserHeadUrl || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
+            <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_UserHeadUrl || '/src/common/head.png')) }/>
           </a>
           <div class="txt">
-            <a class="name" href={ '/user?userID=' + item.Send_UserID } title={ item.Send_UserName }>{ item.Send_UserName }</a>
+            <a class="name" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>{ item.Send_UserName }</a>
             <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
           </div>
         </div>
@@ -343,7 +343,7 @@ class Comment extends migi.Component {
         <div class="t fn-clear">
           <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } title={ item.Send_AuthorName }>
             <a class="pic" href={ '/author.html?authorID=' + item.IsAuthor } name={ item.Send_AuthorName }>
-              <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
+              <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '/src/common/head.png')) }/>
             </a>
             <div class="txt">
               <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
@@ -378,11 +378,11 @@ class Comment extends migi.Component {
       <div class="t fn-clear">
         <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_UserName }>
           <a class="pic" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>
-            <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_UserHeadUrl || '//zhuanquan.xin/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
+            <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_UserHeadUrl || '/src/common/head.png')) }/>
           </a>
           <div class="txt">
             <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
-            <a class="name" href={ '/user?userID=' + item.Send_UserID } title={ item.Send_UserName }>{ item.Send_UserName }</a>
+            <a class="name" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>{ item.Send_UserName }</a>
           </div>
         </div>
         <div class="fn fn-clear">
