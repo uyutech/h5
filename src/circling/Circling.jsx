@@ -45,6 +45,14 @@ class Circling extends migi.Component {
     $(this.element).addClass('fn-hide');
     visible = false;
   }
+  refresh() {
+    let self = this;
+    if(self.hasData && visible) {
+      self.ref.hotPost.setData();
+      skip = 0;
+      self.load();
+    }
+  }
   setData(data) {
     let self = this;
 

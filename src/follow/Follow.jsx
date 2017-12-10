@@ -137,14 +137,22 @@ class Follow extends migi.Component {
       title,
     });
   }
+  click2(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+    });
+  }
   genDom() {
     let self = this;
     return <div>
       <h4>关注话题</h4>
-      <ul class="circles">
+      <ul class="circles" onClick={ { a: self.click2.bind(self) } }>
         {
           (self.hotCircle || []).map(function(item) {
-            return <li rel={ item.Cid }><a href={ '/circle/' + item.Cid }>{ item.CirclingName }</a></li>;
+            return <li rel={ item.Cid }><a href={ '/circle.html?circleID=' + item.Cid } title={ item.CirclingName + '圈' }>{ item.CirclingName }</a></li>;
           })
         }
       </ul>

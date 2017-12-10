@@ -22,6 +22,9 @@ jsBridge.ready(function() {
   });
   jsBridge.on('refresh', function(e) {
     e.preventDefault();
+    if(circling) {
+      circling.refresh();
+    }
   });
   jsBridge.on('resume', function(data) {
     if(data && data.message) {

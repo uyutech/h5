@@ -383,6 +383,14 @@ class HotPost extends migi.Component {
     });
     $(self.ref.list.element).append(html);
   }
+  prependData(data) {
+    let self = this;
+    let html = '';
+    (data || []).forEach(function(item) {
+      html += self.genItem(item);
+    });
+    $(self.ref.list.element).prepend(html);
+  }
   render() {
     return <div class="cp-hotpost">
       <ol class="list" ref="list" dangerouslySetInnerHTML={ this.html }/>
