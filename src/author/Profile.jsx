@@ -45,7 +45,7 @@ class Profile extends migi.Component {
     let self = this;
     self.loading = true;
     if(self.like) {
-      if(jsBridge.confirm('确定取关吗？')) {
+      jsBridge.confirm('确定取关吗？', function() {
         net.postJSON('/h5/author/unFollow', { authorID: self.authorID }, function(res) {
           if(res.success) {
             self.like = false;
@@ -62,7 +62,7 @@ class Profile extends migi.Component {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
           self.loading = false;
         });
-      }
+      });
     }
     else {
       net.postJSON('/h5/author/follow', { authorID: self.authorID } , function(res) {

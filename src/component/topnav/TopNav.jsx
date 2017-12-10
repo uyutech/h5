@@ -12,6 +12,16 @@ class TopNav extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
+      jsBridge.getPreference('userInfo', function(userInfo) {
+        self.name = userInfo.NickName;
+        self.authorName = userInfo.AuthorName;
+        self.isAuthor = userInfo.ISAuthor;
+        self.head = userInfo.Head_Url;
+        self.isPublic = userInfo.ISOpen;
+        self.isLogin = true;
+        $.cookie('isLogin', true);
+        $.cookie('uid', userInfo.UID);
+      });
       migi.eventBus.on('LOGIN', function(userInfo) {
         self.name = userInfo.NickName;
         self.authorName = userInfo.AuthorName;
@@ -53,7 +63,6 @@ class TopNav extends migi.Component {
           if(!userInfo) {
             return;
           }
-          userInfo = JSON.parse(userInfo);
           userInfo.ISOpen = self.isPublic;
           jsBridge.setPreference('userInfo', JSON.stringify(userInfo));
         });

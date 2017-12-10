@@ -30,7 +30,6 @@ class My extends migi.Component {
           if(!bonusPoint) {
             return;
           }
-          bonusPoint = JSON.parse(bonusPoint);
           self.setData({
             userInfo,
             bonusPoint,

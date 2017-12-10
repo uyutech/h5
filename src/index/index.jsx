@@ -25,8 +25,17 @@ jsBridge.ready(function() {
     if(circling) {
       circling.refresh();
     }
+    if(follow) {
+      follow.refresh();
+    }
+    net.postJSON('/h5/my/message', function(res) {
+      if(res.success) {
+        topNav.setNum(res.data);
+      }
+    });
   });
-  jsBridge.on('resume', function(data) {
+  jsBridge.on('resume', function(e) {
+    let data = e.data;console.log(data);
     if(data && data.message) {
       net.postJSON('/h5/my/message', function(res) {
         if(res.success) {
@@ -55,7 +64,7 @@ jsBridge.ready(function() {
     if(!res) {
       return;
     }
-    userInfo = JSON.parse(res);
+    userInfo = res;
     if(userInfo) {
       migi.eventBus.emit('LOGIN', userInfo);
     }
@@ -64,7 +73,7 @@ jsBridge.ready(function() {
     if(!res) {
       return;
     }
-    bonusPoint = JSON.parse(res);
+    bonusPoint = res;
   });
 
   let find = migi.preExist(<Find/>, '#page');

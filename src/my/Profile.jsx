@@ -29,7 +29,6 @@ class Profile extends migi.Component {
       return;
     }
     jsBridge.prompt(self.sname, function(res) {
-      res = JSON.parse(res);
       if(res.success) {
         let newName = res.value;
         let length = newName.length;
@@ -46,12 +45,9 @@ class Profile extends migi.Component {
                 if(!userInfo) {
                   return;
                 }
-                userInfo = JSON.parse(userInfo);
-                if(userInfo) {
-                  userInfo.NickName = newName;
-                  migi.eventBus.emit('LOGIN', userInfo);
-                  jsBridge.setPreference('userInfo', JSON.stringify(userInfo));
-                }
+                userInfo.NickName = newName;
+                migi.eventBus.emit('LOGIN', userInfo);
+                jsBridge.setPreference('userInfo', JSON.stringify(userInfo));
               });
             }
             else {
@@ -81,12 +77,9 @@ class Profile extends migi.Component {
               if(!userInfo) {
                 return;
               }
-              userInfo = JSON.parse(userInfo);
-              if(userInfo) {
-                userInfo.Head_Url = res.url;
-                migi.eventBus.emit('LOGIN', userInfo);
-                jsBridge.setPreference('userInfo', JSON.stringify(userInfo));
-              }
+              userInfo.Head_Url = res.url;
+              migi.eventBus.emit('LOGIN', userInfo);
+              jsBridge.setPreference('userInfo', JSON.stringify(userInfo));
             });
           }
           else {
@@ -101,7 +94,6 @@ class Profile extends migi.Component {
   click2() {
     let self = this;
     jsBridge.prompt(self.sign, function(res) {
-      res = JSON.parse(res);
       if(res.success) {
         let newSign = res.value;
         let length = newSign.length;
@@ -117,12 +109,9 @@ class Profile extends migi.Component {
                 if(!userInfo) {
                   return;
                 }
-                userInfo = JSON.parse(userInfo);
-                if(userInfo) {
-                  userInfo.User_Sign = newSign;
-                  migi.eventBus.emit('LOGIN', userInfo);
-                  jsBridge.setPreference('userInfo', JSON.stringify(userInfo));
-                }
+                userInfo.User_Sign = newSign;
+                migi.eventBus.emit('LOGIN', userInfo);
+                jsBridge.setPreference('userInfo', JSON.stringify(userInfo));
               });
             }
             else {

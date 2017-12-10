@@ -9,6 +9,7 @@ import util from '../common/util';
 import HotPost from '../component/hotpost/HotPost.jsx';
 import HotAuthor from '../component/hotauthor/HotAuthor.jsx';
 import HotUser from '../component/hotuser/HotUser.jsx';
+import Circles from './Circles.jsx';
 
 let take = 10;
 let skip = take;
@@ -46,6 +47,27 @@ class Follow extends migi.Component {
   hide() {
     $(this.element).addClass('fn-hide');
     visible = false;
+  }
+  refresh() {
+    let self = this;
+    if(self.hasData && visible) {
+      net.postJSON('/h5/follow/index', function(res) {
+        if(res.success) {
+          let data = res.data;
+          self.ref.circles.dataList = data.hotCircle;
+          self.ref.hotAuthor.dataList = data.follows.data;
+          self.ref.hotUser.dataList = data.userFollows.data;
+        }
+        else if(res.code === 1000) {
+          migi.eventBus.emit('NEED_LOGIN');
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      });
+    }
   }
   init() {
     let self = this;
@@ -149,20 +171,14 @@ class Follow extends migi.Component {
     let self = this;
     return <div>
       <h4>关注话题</h4>
-      <ul class="circles" onClick={ { a: self.click2.bind(self) } }>
-        {
-          (self.hotCircle || []).map(function(item) {
-            return <li rel={ item.Cid }><a href={ '/circle.html?circleID=' + item.Cid } title={ item.CirclingName + '圈' }>{ item.CirclingName }</a></li>;
-          })
-        }
-      </ul>
+      <Circles ref="circles" dataList={ self.hotCircle }/>
       <h4>关注作者</h4>
       <HotAuthor ref="hotAuthor"
                  dataList={ self.follows.data }
                  empty={ '你还没有关注作者哦，快去发现页看看有没有喜欢的作者吧！' }
                  more={ self.follows.Size > 10 ? '/relation.html' : '' }/>
       <h4>关注圈er</h4>
-      <HotUser ref="hotuser"
+      <HotUser ref="hotUser"
                dataList={ self.userFollows.data }
                empty={ '你还没有关注的圈er哦，快去转圈页看看有没有有趣的小伙伴吧~' }
                more={ self.userFollows.Size > 10 ? '/my/relation?tag=follow' : '' }/>

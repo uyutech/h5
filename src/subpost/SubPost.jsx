@@ -56,7 +56,6 @@ class SubPost extends migi.Component {
     self.on(migi.Event.DOM, function() {
       jsBridge.getPreference(self.getImgKey(), function(cache) {
         if(cache) {
-          cache = JSON.parse(cache);
           let temp = [];
           cache.forEach(function(item) {
             temp.push({
@@ -241,7 +240,6 @@ class SubPost extends migi.Component {
     let key = self.getImgKey();
     jsBridge.getPreference(key, function(cache) {
       if(cache) {
-        cache = JSON.parse(cache);
       }
       else {
         cache = [];
@@ -255,7 +253,6 @@ class SubPost extends migi.Component {
     let key = self.getImgKey();
     jsBridge.getPreference(key, function(cache) {
       if(cache) {
-        cache = JSON.parse(cache);
         let i = cache.indexOf(url);
         if(i > -1) {
           cache.splice(i, 1);
