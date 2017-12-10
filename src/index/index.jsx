@@ -23,6 +23,15 @@ jsBridge.ready(function() {
   jsBridge.on('refresh', function(e) {
     e.preventDefault();
   });
+  jsBridge.on('resume', function(data) {
+    if(data && data.message) {
+      net.postJSON('/h5/my/message', function(res) {
+        if(res.success) {
+          topNav.setNum(res.data);
+        }
+      });
+    }
+  });
 
   let topNav = migi.preExist(<TopNav/>, '#page');
 

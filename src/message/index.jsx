@@ -14,6 +14,12 @@ import util from '../common/util';
 import Message from './Message.jsx';
 
 jsBridge.ready(function() {
+  jsBridge.on('back', function(e) {
+    e.preventDefault();
+    jsBridge.popWindow({
+      message: true,
+    });
+  });
   let message = migi.preExist(
     <Message/>,
     '#page'

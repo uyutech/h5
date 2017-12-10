@@ -113,7 +113,8 @@ class Find extends migi.Component {
             <li class="pic" rel="pic">美图</li>
           </ul>;
           type.before(p1.element);
-          hotPlayList = <HotPlayList ref="hotPlayList" dataList={ self.hotPlayList.data }/>;
+          hotPlayList = <HotPlayList ref="hotPlayList"
+                                     dataList={ self.hotPlayList.data }/>;
           hotPlayList.before(p1.element);
           p1.clean();
           self.ref.p2.clean();
@@ -180,7 +181,7 @@ class Find extends migi.Component {
   }
   clickChangeWork() {
     let self = this;
-    net.postJSON('/h5/find/hotWorkList', function(res) {
+    net.postJSON('/h5/find/hotWorkList', { skip: 0, take: 10 }, function(res) {
       if(res.success) {
         self.ref.hotWork.dataList = res.data;
       }
@@ -224,13 +225,13 @@ class Find extends migi.Component {
     return <div ref="root">
       <Banner ref="banner" dataList={ self.bannerList }/>
       <h4>热门圈子</h4>
-      <HotCircle ref="hotCircle" dataList={ self.hotCircleList }/>
+      <HotCircle ref="hotCircle" dataList={ self.hotCircleList } more="/allcircles.html"/>
       <h4>热门作品<small ref="changeWork" onClick={ self.clickChangeWork.bind(self) }>换一换</small></h4>
-      <HotWork ref="hotWork" dataList={ self.hotWorkList }/>
+      <HotWork ref="hotWork" dataList={ self.hotWorkList } more="/allworks.html"/>
       <h4>热门专辑</h4>
-      <HotMusicAlbum ref="hotMusicAlbum" dataList={ self.hotMusicAlbumList }/>
+      <HotMusicAlbum ref="hotMusicAlbum" dataList={ self.hotMusicAlbumList.data } more="/allalbums.html"/>
       <h4>入驻作者</h4>
-      <HotAuthor ref="hotAuthor" dataList={ self.hotAuthorList }/>
+      <HotAuthor ref="hotAuthor" dataList={ self.hotAuthorList.data } more="/allauthors.html"/>
       <div class="fn-placeholder-tags" ref="p1"/>
       <div class="fn-placeholder" ref="p2"/>
     </div>;

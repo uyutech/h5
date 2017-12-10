@@ -223,14 +223,14 @@ let jsBridge = {
   loginWeibo: function(callback) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('loginWeibo', function(res) {
-        callback(JSON.parse(res));
+        callback(res);
       });
     }
   },
   weiboLogin: function(data, callback) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('weiboLogin', data, function(res) {
-        callback(JSON.parse(res));
+        callback(res);
       });
     }
   },
@@ -341,7 +341,7 @@ let jsBridge = {
     callback = callback || function() {};
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('album', function(res) {
-        callback(JSON.parse(res));
+        callback(res);
       });
     }
   },
@@ -362,7 +362,7 @@ let jsBridge = {
     callback = callback || function() {};
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('networkInfo', function(res) {
-        callback(JSON.parse(res));
+        callback(res);
       });
     }
   }

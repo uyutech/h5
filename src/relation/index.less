@@ -57,13 +57,15 @@
       ul{
         margin:0 auto;
         padding:0.1rem 0 0;
-        width:3.15rem;
-        transform:translateX(0.15rem);
+        width:2.85rem;
         li{
           float:left;
           margin-right:0.3rem;
           margin-bottom:0.1rem;
           width:0.75rem;
+          &:nth-child(3n) {
+            margin-right:0;
+          }
           .pic{
             position:relative;
             display:block;
@@ -137,22 +139,6 @@
     }
     > .author{
       display:block;
-    }
-  }
-}
-
-@media screen and (max-device-width:320px){
-  #page > .relation{
-    > div{
-      > .friends, > .follows, > .followers{
-        ul{
-          width:2.85rem;
-          transform:translateX(0.1rem);
-          li{
-            margin-right:0.2rem;
-          }
-        }
-      }
     }
   }
 }

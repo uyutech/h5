@@ -14,6 +14,10 @@ module.exports = {
     message: './src/message/pre.jsx',
     mypost: './src/mypost/pre.jsx',
     myfavor: './src/myfavor/pre.jsx',
+    allworks: './src/allworks/pre.jsx',
+    allalbums: './src/allalbums/pre.jsx',
+    allauthors: './src/allauthors/pre.jsx',
+    allcircles: './src/allcircles/pre.jsx',
   },
   output: {
     path: __dirname + '/www',

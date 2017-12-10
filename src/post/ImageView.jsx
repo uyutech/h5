@@ -68,8 +68,8 @@ class ImageView extends migi.Component {
     return <div class="mod-iv fn-hide">
       <div class="c" style={ 'top:' + this.tops + 'px' }>
         <img src={ this.dataList && this.dataList[this.idx]
-            ? util.autoSsl(util.img720__80(this.dataList[this.idx].FileUrl)) || '//zhuanquan.xin/img/blank.png'
-            : '//zhuanquan.xin/img/blank.png' }/>
+            ? util.autoSsl(util.img720__80(this.dataList[this.idx].FileUrl)) || '/src/common/blank.png'
+            : '/src/common/blank.png' }/>
         <ul class="btn">
           <li class={ 'like' + (this.isLike ? ' has' : '') } onClick={ this.clickLike }/>
           <li class="download">

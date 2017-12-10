@@ -80,7 +80,7 @@ class Circling extends migi.Component {
     }
   }
   load() {
-    let self = this;console.log(1, loading, loadEnd)
+    let self = this;
     if(loading || loadEnd) {
       return;
     }

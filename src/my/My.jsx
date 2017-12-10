@@ -23,6 +23,9 @@ class My extends migi.Component {
     self.on(migi.Event.DOM, function() {
       self.init();
       migi.eventBus.on('LOGIN', function(userInfo) {
+        if(self.isLogin) {
+          return;
+        }
         jsBridge.getPreference('bonusPoint', function(bonusPoint) {
           if(!bonusPoint) {
             return;
@@ -108,13 +111,11 @@ class My extends migi.Component {
   clickWeibo() {
     let self = this;
     jsBridge.loginWeibo(function(res) {
-      res = JSON.parse(res);
       if(res.success) {
         jsBridge.showLoading('正在登录...');
         let openID = res.openID;
         let token = res.token;
         jsBridge.weiboLogin({ openID, token }, function(res) {
-          res = JSON.parse(res);
           jsBridge.hideLoading();
           if(res.success) {
             let data = res.data;

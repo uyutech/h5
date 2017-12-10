@@ -312,14 +312,14 @@ let util = {
     }
     if(n >= 10000) {
       n = new BigNumber(n).div(10000).toFixed(fix || 1);
-      n = n.replace(/(\.[1-9]*)0+$/, '$1');
-      n = n.replace(/\.0$/, '');
+      n = n.replace(/(\.[1-9]+)0+$/, '$1');
+      n = n.replace(/\.0+$/, '');
       n += 'w';
     }
     if(n >= 1000) {
       n = new BigNumber(n).div(1000).toFixed(fix || 1);
-      n = n.replace(/(\.[1-9]*)0+$/, '$1');
-      n = n.replace(/\.0$/, '');
+      n = n.replace(/(\.[1-9]+)0+$/, '$1');
+      n = n.replace(/\.0+$/, '');
       n += 'k';
     }
     return n;

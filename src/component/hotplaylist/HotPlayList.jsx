@@ -9,7 +9,7 @@ import util from '../../common/util';
 class HotPlayList extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.dataList = this.props.dataList;console.log(this.dataList);
+    this.dataList = this.props.dataList;
   }
   @bind hasData
   @bind dataList
@@ -45,7 +45,7 @@ class HotPlayList extends migi.Component {
       return item.WorksAuthorType === '111';
     }).map(function(item) {
       return item.AuthName;
-    });console.log(author)
+    });
     if(item.WorksState === 2) {
       return <li class={ type + ' rel' }>
         <a href={ url } class="pic">
