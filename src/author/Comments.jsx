@@ -143,9 +143,9 @@ class Comments extends migi.Component {
         </ul>
       </div>
       <Comment ref="comment"
-               zanUrl="/api/author/likeComment"
-               subUrl="/api/author/subCommentList"
-               delUrl="/api/author/delComment"
+               zanUrl="/h5/author/likeComment"
+               subUrl="/h5/author/subCommentList"
+               delUrl="/h5/author/delComment"
                data={ this.props.commentData.data }
                message={ (!this.props.commentData.Size || this.props.commentData.Size > take) ? '' : '已经到底了' }/>
     </div>;

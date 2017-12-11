@@ -103,7 +103,7 @@ let jsBridge = {
         s = s || {};
         s.title = s.title || '';
         s.message = s.message || '加载中...';
-        if (s.cancelable === undefined) {
+        if(s.cancelable === undefined) {
           s.cancelable = true;
         }
       }
