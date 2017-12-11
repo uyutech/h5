@@ -21,7 +21,6 @@ const TEXT = {
 };
 const MAX_IMG_NUM = 10;
 const MAX_TEXT_LENGTH = 4096;
-const hash = {};
 
 class SubPost extends migi.Component {
   constructor(...data) {

@@ -35,7 +35,7 @@ jsBridge.ready(function() {
     });
   });
   jsBridge.on('resume', function(e) {
-    let data = e.data;console.log(data);
+    let data = e.data;
     if(data && data.message) {
       net.postJSON('/h5/my/message', function(res) {
         if(res.success) {
