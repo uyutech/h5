@@ -174,50 +174,84 @@ class SubPost extends migi.Component {
       jsBridge('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
       return;
     }
+    let num = MAX_IMG_NUM - self.imgNum;
+    num = Math.min(3, num);
     self.disableUpload = true;
-    jsBridge.album(function(res) {
+    jsBridge.album({ num }, function(res) {
       if(res.success) {
-        let img = res.base64;
-        self.list.push({
-          state: STATE.LOADING,
-          url: /^data:image\/(\w+);base64,/.test(img) ? img : ('data:image/jpeg;base64,' + img),
-        });
-        let node = document.createElement('img');
-        node.style.position = 'absolute';
-        node.style.left = '-9999rem';
-        node.style.top = '-9999rem';
-        node.src = self.list[self.imgNum].url;
-        node.onload = function() {
-          self.list[self.imgNum].width = node.width;
-          self.list[self.imgNum].height = node.height;
-          document.body.removeChild(node);
-        };
-        document.body.appendChild(node);
-        net.postJSON('/h5/my/uploadPic', { img }, function(res) {
-          let url = res.data;
-          let has;
-          self.list.forEach(function(item) {
-            if(item.url === url) {
-              has = true;
+        res = res.base64;
+        let num = res.length;
+        let count = 0;
+        let hasUpload;
+        res.forEach(function(img, i) {
+          self.list.push({
+            state: STATE.SENDING,
+            url: /^data:image\/(\w+);base64,/.test(img) ? img : ('data:image/jpeg;base64,' + img),
+          });
+          let node = document.createElement('img');
+          node.style.position = 'absolute';
+          node.style.left = '-9999rem';
+          node.style.top = '-9999rem';
+          node.src = self.list[i + self.imgNum].url;
+          node.onload = function() {
+            self.list[i + self.imgNum].width = node.width;
+            self.list[i + self.imgNum].height = node.height;
+            document.body.removeChild(node);
+          };
+          document.body.appendChild(node);
+          net.postJSON('/h5/my/uploadPic', { img }, function(res) {
+            if(res.success) {
+              let url = res.data;
+              let has;
+              self.list.forEach(function(item, j) {
+                if(item && item.url === url) {
+                  hasUpload = has = true;
+                }
+              });
+              if(!has) {
+                self.list[i + self.imgNum].state = STATE.LOADED;
+                self.list[i + self.imgNum].url = url;
+                self.addCache(url);
+              }
+              else {
+                self.list[i + self.imgNum].state = STATE.ERROR;
+              }
+            }
+            else {
+              self.list[i + self.imgNum] = null;
+            }
+            self.list = self.list;
+            count++;
+            if(count === num) {
+              self.disableUpload = false;
+              for(let j = self.list.length - 1; j >= 0; j--) {
+                if(self.list[j] === null) {
+                  self.list.splice(j, 1);
+                }
+              }
+              self.imgNum = self.list.length;
+              if(hasUpload) {
+                jsBridge.toast('有图片已经重复上传过啦~');
+              }
+            }
+          }, function(res) {
+            self.list[i + self.imgNum].state = STATE.ERROR;
+            self.list = self.list;
+            count++;
+            if(count === num) {
+              self.disableUpload = false;
+              for(let j = self.list.length - 1; j >= 0; j--) {
+                if(self.list[j] === null) {
+                  self.list.splice(j, 1);
+                }
+              }
+              self.imgNum = self.list.length;
+              if(hasUpload) {
+                jsBridge.toast('有图片已经重复上传过啦~');
+              }
             }
           });
-          if(!has) {
-            self.list[self.imgNum].state = STATE.LOADED;
-            self.list[self.imgNum].url = url;
-            self.addCache(url);
-            self.imgNum++;
-            self.list = self.list;
-          }
-          else {
-            self.list.pop();
-            jsBridge.toast('有图片已经重复上传过啦，已自动忽略~');
-          }
-          self.disableUpload = false;
-        }, function() {
-          self.list[self.imgNum].state = STATE.ERROR;
-          self.list = self.list;
-          self.disableUpload = false;
-        }, 1000 * 60 * 10);
+        });
       }
       else if(res.cancel) {
         self.disableUpload = false;

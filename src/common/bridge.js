@@ -9,6 +9,7 @@ function isType(type) {
   }
 }
 let isString = isType('String');
+let isFunction = isType('Function');
 let ua = navigator.userAgent;
 
 let jsBridge = {
@@ -337,10 +338,16 @@ let jsBridge = {
       });
     }
   },
-  album: function(callback) {
-    callback = callback || function() {};
+  album: function(data, callback) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('album', function(res) {
+      if(isFunction(data)) {
+        callback = data;
+        data = {
+          num: 1
+        };
+      }
+      callback = callback || function() {};
+      ZhuanQuanJSBridge.call('album', data, function(res) {
         callback(res);
       });
     }

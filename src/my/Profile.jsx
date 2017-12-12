@@ -68,7 +68,8 @@ class Profile extends migi.Component {
     }
     jsBridge.album(function(res) {
       if(res.success) {
-        let img = res.base64;
+        let img = res.base64[0];
+        self.head = img;
         net.postJSON('/h5/my/uploadHead', { img }, function(res) {
           if(res.success) {
             self.head = res.url;
@@ -124,6 +125,12 @@ class Profile extends migi.Component {
       }
     });
   }
+  clickPri(e, vd) {
+    e.preventDefault();
+    jsBridge.pushWindow('/private.html', {
+      title: '收货信息'
+    });
+  }
   render() {
     return <div class="profile">
       <h4>我的资料</h4>
@@ -139,6 +146,7 @@ class Profile extends migi.Component {
           <label>签名：</label>
           <p ref="sign" class={ this.sign ? 'sign' : 'sign empty' }>{ this.sign || '暂无签名' }</p>
           <b class="edit edit2" ref="edit2" onClick={ this.click2 }/>
+          {/*<div class="private"><a href="/private.html" onClick={ this.clickPri }>编辑收货地址</a><small>(圈儿会为你保密哦)</small></div>*/}
         </div>
       </div>
     </div>;

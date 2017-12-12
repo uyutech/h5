@@ -34,7 +34,7 @@ class User extends migi.Component {
     let $window = $(window);
     loadEnd = self.userPost.Size <= take;
     if(loadEnd) {
-      self.ref.hostPost.message = '已经到底了';
+      self.ref.hotPost.message = '已经到底了';
     }
     else {
       $window.on('scroll', function() {
