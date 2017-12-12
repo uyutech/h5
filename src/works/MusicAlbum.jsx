@@ -9,6 +9,7 @@ import util from '../common/util';
 
 let isStart;
 let offsetX;
+let altMedia;
 
 class MusicAlbum extends migi.Component {
   constructor(...data) {
@@ -95,6 +96,7 @@ class MusicAlbum extends migi.Component {
                               onPause={ self.onPause.bind(self) }
                               onEnded={ self.onEnded.bind(self) }
                               onProgress={ self.onProgress.bind(self) }
+                              onCanplaythrough={ self.onCanplaythrough.bind(self) }
                               preload="meta">
             your browser does not support the audio tag
           </audio>;
@@ -116,6 +118,7 @@ class MusicAlbum extends migi.Component {
                               onPause={ self.onPause.bind(self) }
                               onEnded={ self.onEnded.bind(self) }
                               onPlaying={ self.onPlaying.bind(self) }
+                              onCanplaythrough={ self.onCanplaythrough.bind(self) }
                               preload="meta"
                               playsinline="true"
                               webkit-playsinline="true">
@@ -129,8 +132,7 @@ class MusicAlbum extends migi.Component {
         self.av = self.video;
         break;
     }
-    self.volume = self.volume;
-    self.av.element.currentTime = self.currentTime = 0;
+    altMedia = true;
     if(isPlaying) {
       self.play();
     }
@@ -186,6 +188,12 @@ class MusicAlbum extends migi.Component {
   }
   onEnded(e) {
     this.isPlaying = false;
+  }
+  onCanplaythrough(e) {
+    if(altMedia) {
+      altMedia = false;
+      this.av.element.currentTime = this.currentTime = 0;
+    }
   }
   play() {
     this.av && this.av.element.play();

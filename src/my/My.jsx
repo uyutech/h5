@@ -149,7 +149,7 @@ class My extends migi.Component {
     let idx = tvd.props.idx;
     net.postJSON('/h5/my/sendPrize', { cartID }, function(res) {
       if(res.success) {
-        $button.replaceWith('<span>已发货</span>');
+        $button.replaceWith('<span>已确认发货</span>');
         jsBridge.getPreference('loginInfo', function(loginInfo) {
           if(!loginInfo) {
             return;
@@ -181,7 +181,7 @@ class My extends migi.Component {
             if(item.State === 1) {
               return <li>{ item.ProductName }<button rel={ item.ID } idx={ i }>发货</button></li>
             }
-            return <li>{ item.ProductName }<span>已发货</span></li>;
+            return <li>{ item.ProductName }<span>已确认发货</span></li>;
           })
         }
       </ul>
