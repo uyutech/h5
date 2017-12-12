@@ -21,7 +21,7 @@ module.exports = {
     allalbums: './src/allalbums/index.jsx',
     allauthors: './src/allauthors/index.jsx',
     allcircles: './src/allcircles/index.jsx',
-    // private: './src/private/index.jsx',
+    private: './src/private/index.jsx',
   },
   output: {
     path: __dirname + '/www',

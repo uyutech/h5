@@ -183,7 +183,10 @@ let jsBridge = {
     }
     else {
       let res = window.prompt(s.message, s.value);
-      callback(res);
+      callback({
+        success: true,
+        value: res,
+      });
     }
   },
   hideBackButton: function() {
@@ -246,7 +249,12 @@ let jsBridge = {
       ZhuanQuanJSBridge.call('getPreference', key, callback);
     }
     else {
-      callback(localStorage[key]);
+      let s = localStorage[key];
+      if(s && (s.charAt(0) === '{' && s.charAt(s.length - 1) === '}'
+        || s.charAt(0) === '[' && s.charAt(s.length - 1) === ']')) {
+        s = JSON.parse(s);
+      }
+      callback(s);
     }
   },
   setPreference: function(key, value, callback) {

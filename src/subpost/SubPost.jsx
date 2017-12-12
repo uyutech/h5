@@ -180,6 +180,9 @@ class SubPost extends migi.Component {
     jsBridge.album({ num }, function(res) {
       if(res.success) {
         res = res.base64;
+        if(!Array.isArray(res)) {
+          res = [res];
+        }
         let num = res.length;
         let count = 0;
         let hasUpload;

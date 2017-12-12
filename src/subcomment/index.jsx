@@ -20,6 +20,7 @@ let rid = search.rid;
 let cid = search.cid;
 
 jsBridge.ready(function() {
+  jsBridge.refreshState(false);
   let subComment = migi.preExist(
     <SubComment/>,
     '#page'

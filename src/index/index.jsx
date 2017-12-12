@@ -28,6 +28,9 @@ jsBridge.ready(function() {
     if(follow) {
       follow.refresh();
     }
+    if(my) {
+      my.refresh();
+    }
     net.postJSON('/h5/my/message', function(res) {
       if(res.success) {
         topNav.setNum(res.data);
@@ -58,22 +61,16 @@ jsBridge.ready(function() {
   let botNav = migi.preExist(<BotNav/>, '#page');
   migi.preExist(<ImageView ref="imageView"/>, '#page');
 
-  let userInfo;
-  let bonusPoint;
-  jsBridge.getPreference('userInfo', function(res) {
+  let loginInfo;
+  jsBridge.delPreference('userInfo');
+  jsBridge.delPreference('bonusPoint');
+  jsBridge.getPreference('loginInfo', function(res) {
     if(!res) {
       return;
     }
-    userInfo = res;
-    if(userInfo) {
-      migi.eventBus.emit('LOGIN', userInfo);
-    }
-  });
-  jsBridge.getPreference('bonusPoint', function(res) {
-    if(!res) {
-      return;
-    }
-    bonusPoint = res;
+    loginInfo = res;
+    migi.eventBus.emit('LOGIN', loginInfo);
+    migi.eventBus.emit('USER_INFO', loginInfo.userInfo);
   });
 
   let find = migi.preExist(<Find/>, '#page');
@@ -104,7 +101,7 @@ jsBridge.ready(function() {
     }
     else if(i === 3) {
       if(!my) {
-        my = migi.render(<My userInfo={ userInfo } bonusPoint={ bonusPoint }/>, '#page');
+        my = migi.render(<My loginInfo={ loginInfo }/>, '#page');
       }
       last = my;
     }

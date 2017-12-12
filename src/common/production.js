@@ -13,7 +13,7 @@ export default {
     if (!/^http(s)?:\/\//.test(url)) {
       url = 'http://circling.cc/' + url.replace(/^\//, '');
     }
-    Object.keys(data).forEach(function(k) {
+    data && Object.keys(data).forEach(function(k) {
       if(data[k] === undefined || data[k] === null) {
         delete data[k];
       }

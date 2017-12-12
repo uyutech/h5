@@ -12,7 +12,11 @@ class TopNav extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      jsBridge.getPreference('userInfo', function(userInfo) {
+      jsBridge.getPreference('loginInfo', function(loginInfo) {
+        if(!loginInfo) {
+          return;
+        }
+        let userInfo = loginInfo.userInfo;
         if(userInfo) {
           self.name = userInfo.NickName;
           self.authorName = userInfo.AuthorName;
@@ -24,7 +28,10 @@ class TopNav extends migi.Component {
           $.cookie('uid', userInfo.UID);
         }
       });
-      migi.eventBus.on('LOGIN', function(userInfo) {
+      migi.eventBus.on('USER_INFO', function(userInfo) {
+        if(!userInfo) {
+          return;
+        }
         self.name = userInfo.NickName;
         self.authorName = userInfo.AuthorName;
         self.isAuthor = userInfo.ISAuthor;
@@ -61,12 +68,12 @@ class TopNav extends migi.Component {
     net.postJSON('/h5/my/altSettle', { public: !self.isPublic }, function(res) {
       if(res.success) {
         self.isPublic = !self.isPublic;
-        jsBridge.getPreference('userInfo', function(userInfo) {
-          if(!userInfo) {
+        jsBridge.getPreference('loginInfo', function(loginInfo) {
+          if(!loginInfo || !loginInfo.userInfo) {
             return;
           }
-          userInfo.ISOpen = self.isPublic;
-          jsBridge.setPreference('userInfo', JSON.stringify(userInfo));
+          loginInfo.userInfo.ISOpen = self.isPublic;
+          jsBridge.setPreference('loginInfo', JSON.stringify(loginInfo));
         });
       }
       else {

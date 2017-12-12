@@ -18,7 +18,7 @@ module.exports = {
     allalbums: './src/allalbums/pre.jsx',
     allauthors: './src/allauthors/pre.jsx',
     allcircles: './src/allcircles/pre.jsx',
-    // private: './src/private/pre.jsx',
+    private: './src/private/pre.jsx',
   },
   output: {
     path: __dirname + '/www',

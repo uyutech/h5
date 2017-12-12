@@ -22,19 +22,8 @@ class My extends migi.Component {
     }
     self.on(migi.Event.DOM, function() {
       self.init();
-      migi.eventBus.on('LOGIN', function(userInfo) {
-        if(self.isLogin) {
-          return;
-        }
-        jsBridge.getPreference('bonusPoint', function(bonusPoint) {
-          if(!bonusPoint) {
-            return;
-          }
-          self.setData({
-            userInfo,
-            bonusPoint,
-          });
-        });
+      migi.eventBus.on('LOGIN', function(loginInfo) {
+        self.setData(loginInfo);
       });
     });
   }
@@ -52,15 +41,12 @@ class My extends migi.Component {
       if(res.success) {
         let data = res.data;
         self.setData(data);
-        migi.eventBus.emit('LOGIN', data.userInfo);
-        jsBridge.setPreference('userInfo', JSON.stringify(data.userInfo));
-        jsBridge.setPreference('bonusPoint', JSON.stringify(data.bonusPoint));
+        jsBridge.setPreference('loginInfo', JSON.stringify(data));
       }
       else if(res.code === 1000) {
         self.isLogin = false;
         self.hasData = true;
-        jsBridge.delPreference('userInfo');
-        jsBridge.delPreference('bonusPoint');
+        jsBridge.delPreference('loginInfo');
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -73,6 +59,7 @@ class My extends migi.Component {
     let self = this;
     self.userInfo = data.userInfo;
     self.bonusPoint = data.bonusPoint;
+    self.prize = data.prize;
 
     self.hasData = true;
     self.isLogin = true;
@@ -119,9 +106,8 @@ class My extends migi.Component {
           if(res.success) {
             let data = res.data;
             self.setData(data);
-            migi.eventBus.emit('LOGIN', data.userInfo);
-            jsBridge.setPreference('userInfo', JSON.stringify(data.userInfo));
-            jsBridge.setPreference('bonusPoint', JSON.stringify(data.bonusPoint));
+            migi.eventBus.emit('USER_INFO', data.userInfo);
+            jsBridge.setPreference('loginInfo', JSON.stringify(data));
           }
           else {
             jsBridge.toast(res.message);
@@ -139,8 +125,7 @@ class My extends migi.Component {
       self.isLogin = false;
       migi.eventBus.emit('LOGIN_OUT');
       $.cookie('isLogin', null);
-      jsBridge.delPreference('userInfo');
-      jsBridge.delPreference('bonusPoint');
+      jsBridge.delPreference('loginInfo');
       jsBridge.loginOut();
     }, function(res) {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -154,10 +139,52 @@ class My extends migi.Component {
       title,
     });
   }
+  clickPrize(e, vd, tvd) {
+    let $button = $(tvd.element);
+    if($button.hasClass('loading')) {
+      return;
+    }
+    $button.addClass('loading');
+    let cartID = tvd.props.rel;
+    let idx = tvd.props.idx;
+    net.postJSON('/h5/my/sendPrize', { cartID }, function(res) {
+      if(res.success) {
+        $button.replaceWith('<span>已发货</span>');
+        jsBridge.getPreference('loginInfo', function(loginInfo) {
+          if(!loginInfo) {
+            return;
+          }
+          loginInfo.prize[idx].State = 2;
+          jsBridge.setPreference('loginInfo', JSON.stringify(loginInfo));
+        });
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+      $button.removeClass('loading');
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      $button.removeClass('loading');
+    });
+  }
+  refresh() {
+    this.init();
+  }
   genDom() {
     let self = this;
     return <div>
       <Profile ref="profile" userInfo={ self.userInfo }/>
+      <p class="info">大家注意啦~活动奖励均不包邮。本次发货为到付形式，请大家谨慎选择。圈币抵扣运费功能将与圈币兑换福利系统一同上线，需要使用圈币抵扣的小伙伴请勿点击‘发货’按钮哦~可以等待之后使用圈币抵扣~<br/>预计发货时间为12月20日左右。需要发货的小伙伴请在12月17日前点击‘发货’按钮哦~</p>
+      <ul class="prize" ref="prize" onClick={ { button: self.clickPrize.bind(self) } }>
+        {
+          (this.prize || []).map(function(item, i) {
+            if(item.State === 1) {
+              return <li>{ item.ProductName }<button rel={ item.ID } idx={ i }>发货</button></li>
+            }
+            return <li>{ item.ProductName }<span>已发货</span></li>;
+          })
+        }
+      </ul>
       <ul class="list" onClick={ { a: self.clickLink.bind(self) } }>
         <li><a href="/relation.html" class="relation">圈关系</a></li>
         <li><a href="/message.html" class="message">圈消息</a></li>

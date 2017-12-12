@@ -30,12 +30,10 @@ class NeedLogin extends migi.Component {
           jsBridge.hideLoading();
           if(res.success) {
             let data = res.data;
-            jsBridge.setPreference('userInfo', JSON.stringify(data.userInfo), function() {
-              jsBridge.setPreference('bonusPoint', JSON.stringify(data.bonusPoint), function() {
-                migi.eventBus.emit('LOGIN', data.userInfo);
-                self.hide();
-              });
-            });
+            migi.eventBus.emit('LOGIN', data);
+            migi.eventBus.emit('USER_INFO', data.userInfo);
+            jsBridge.setPreference('loginInfo', JSON.stringify(data));
+            self.hide();
           }
           else {
             jsBridge.toast(res.message);

@@ -8,12 +8,19 @@
 #page > .circling{
   > div{
     .circles{
+      position:fixed;
+      left:0;
+      top:0.64rem;
+      width:100%;
       display:flex;
-      margin:0.1rem 0 0;
-      padding-left:0.1rem;
+      box-sizing:border-box;
+      padding:0.1rem 0.1rem 0.05rem;
       align-items:start;
       overflow-x:auto;
       transform:translate3d(0, 0, 0);
+      z-index:200;
+      background:#FFF;
+      box-shadow:@boxShadow;
       li{
         display:block;
         margin-right:0.05rem;
@@ -38,7 +45,7 @@
       }
     }
     .cinfo{
-      margin-bottom:0.1rem;
+      margin:0.45rem 0 0.1rem;
       padding:0 0.1rem;
       color:@secondTextColor;
     }

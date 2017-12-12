@@ -9,6 +9,7 @@ import util from '../common/util';
 import Title from './Title.jsx';
 import HotPost from '../component/hotpost/HotPost.jsx';
 import ImageView from '../post/ImageView.jsx';
+import SubCmt from '../component/subcmt/SubCmt.jsx';
 
 let take = 10;
 let skip = take;
@@ -42,6 +43,12 @@ class Circle extends migi.Component {
     imageView.on('clickLike', function(sid) {
       hotPost.like(sid, function(res) {
         imageView.isLike = res.ISLike;
+      });
+    });
+    let subCmt = self.ref.subCmt;
+    subCmt.on('click', function() {
+      jsBridge.pushWindow('/subpost.html?circleID=' + self.circleID, {
+        title: '画个圈',
       });
     });
   }
@@ -100,6 +107,11 @@ class Circle extends migi.Component {
       <HotPost ref="hotPost"
                dataList={ self.postList.data }
                message={ self.postList.Size > take ? '' : '已经到底了' }/>
+      <SubCmt ref="subCmt"
+              tipText="-${n}"
+              subText="发送"
+              readOnly={ true }
+              placeholder={ '在' + self.circleDetail.TagName +'圈画个圈吧。小小的提示：现在可以把一个圈画在好几个圈子里哦！' }/>
       <ImageView ref="imageView"/>
     </div>;
   }

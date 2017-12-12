@@ -41,13 +41,10 @@ class Profile extends migi.Component {
             if(res.success) {
               self.sname = newName;
               self.updateNickNameTimeDiff = 0;
-              jsBridge.getPreference('userInfo', function(userInfo) {
-                if(!userInfo) {
-                  return;
-                }
-                userInfo.NickName = newName;
-                migi.eventBus.emit('LOGIN', userInfo);
-                jsBridge.setPreference('userInfo', JSON.stringify(userInfo));
+              jsBridge.getPreference('loginInfo', function(loginInfo) {
+                loginInfo.userInfo.NickName = newName;
+                jsBridge.setPreference('loginInfo', JSON.stringify(loginInfo));
+                migi.eventBus.emit('USER_INFO', loginInfo.userInfo);
               });
             }
             else {
@@ -68,19 +65,16 @@ class Profile extends migi.Component {
     }
     jsBridge.album(function(res) {
       if(res.success) {
-        let img = res.base64[0];
+        let img = Array.isArray(res.base64) ? res.base64[0] : res.base64;
         self.head = img;
         net.postJSON('/h5/my/uploadHead', { img }, function(res) {
           if(res.success) {
             self.head = res.url;
             self.updateHeadTimeDiff = 0;
-            jsBridge.getPreference('userInfo', function(userInfo) {
-              if(!userInfo) {
-                return;
-              }
-              userInfo.Head_Url = res.url;
-              migi.eventBus.emit('LOGIN', userInfo);
-              jsBridge.setPreference('userInfo', JSON.stringify(userInfo));
+            jsBridge.getPreference('loginInfo', function(loginInfo) {
+              loginInfo.userInfo.Head_Url = res.url;
+              jsBridge.setPreference('loginInfo', JSON.stringify(loginInfo));
+              migi.eventBus.emit('USER_INFO', loginInfo.userInfo);
             });
           }
           else {
@@ -105,14 +99,10 @@ class Profile extends migi.Component {
         if(newSign !== self.sign) {
           net.postJSON('/h5/my/updateSign', { sign: newSign }, function(res) {
             if(res.success) {
-              self.sign = newSign;
-              jsBridge.getPreference('userInfo', function(userInfo) {
-                if(!userInfo) {
-                  return;
-                }
-                userInfo.User_Sign = newSign;
-                migi.eventBus.emit('LOGIN', userInfo);
-                jsBridge.setPreference('userInfo', JSON.stringify(userInfo));
+              self.sign = newSign;return;
+              jsBridge.getPreference('loginInfo', function(loginInfo) {
+                loginInfo.userInfo.User_Sign = newSign;
+                jsBridge.setPreference('loginInfo', JSON.stringify(loginInfo));
               });
             }
             else {
@@ -146,7 +136,7 @@ class Profile extends migi.Component {
           <label>签名：</label>
           <p ref="sign" class={ this.sign ? 'sign' : 'sign empty' }>{ this.sign || '暂无签名' }</p>
           <b class="edit edit2" ref="edit2" onClick={ this.click2 }/>
-          {/*<div class="private"><a href="/private.html" onClick={ this.clickPri }>编辑收货地址</a><small>(圈儿会为你保密哦)</small></div>*/}
+          <div class="private"><a href="/private.html" onClick={ this.clickPri }>编辑收货地址</a><small>(圈儿会为你保密哦)</small></div>
         </div>
       </div>
     </div>;

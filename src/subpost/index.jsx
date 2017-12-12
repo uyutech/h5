@@ -15,6 +15,7 @@ import util from '../common/util';
 import SubPost from './SubPost.jsx';
 
 jsBridge.ready(function() {
+  jsBridge.refreshState(false);
   let subPost = migi.preExist(
     <SubPost placeholder="在转圈圈画个圈吧"/>,
     '#page'
