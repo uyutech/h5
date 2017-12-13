@@ -14,6 +14,9 @@ class TopNav extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
+      if(jsBridge.appVersoin) {
+        $(self.ref.version.element).text(jsBridge.appVersoin + '~' + pack.version);
+      }
       jsBridge.getPreference('loginInfo', function(loginInfo) {
         if(!loginInfo) {
           return;
@@ -101,7 +104,7 @@ class TopNav extends migi.Component {
   render() {
     return <div class="top-nav" id="topNav" onClick={ this.clickTop }>
       <b class="logo"/>
-      <span class="version">{ jsBridge.appVersoin + '~' + pack.version }</span>
+      <span class="version" ref="version">{ pack.version }</span>
       <div class={ 'message' + (this.isLogin ? '' : ' fn-hide') } onClick={ this.clickMessage }>
         <span>{ this.messageNum || '' }</span>
       </div>
