@@ -11,9 +11,14 @@ function isType(type) {
 let isString = isType('String');
 let isFunction = isType('Function');
 let ua = navigator.userAgent;
+let appVersion = '';
+if(/ app\/ZhuanQuan\/([\d.]+)/.test(ua)) {
+  appVersion = / app\/ZhuanQuan\/([\d.]+)/.exec(ua)[1];
+}
 
 let jsBridge = {
-  isInApp: /app\/ZhuanQuan/.test(ua),
+  isInApp: / app\/ZhuanQuan/.test(ua),
+  appVersoin: appVersion,
   ready: function(cb) {
     cb = cb || function() {};
     if(this.isInApp) {

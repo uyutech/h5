@@ -105,7 +105,7 @@
       }
     }
   }
-  > .ti3, > .ti4{
+  > .ti3{
     position:relative;
     margin-top:0.05rem;
     &:after{
@@ -159,6 +159,35 @@
   }
   > .ti4{
     font-size:0.1rem;
+    li{
+      position:relative;
+      margin-right:0.05rem;
+      padding-right:0.05rem;
+      display:inline-block;
+      white-space:nowrap;
+      &:active{
+        text-decoration:underline;
+      }
+      &:after{
+        position:absolute;
+        top:50%;
+        right:0;
+        height:0.1rem;
+        width:0;
+        border-left:1px solid #EEE;
+        content:' ';
+        transform:translateY(-50%);
+      }
+      &:last-child{
+        margin:0;
+        padding:0;
+        &:after{
+          display:none;
+          border:none;
+          content:''
+        }
+      }
+    }
   }
   > .c{
     flex:1;

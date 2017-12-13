@@ -5,6 +5,8 @@
 import net from '../../common/net';
 import util from '../../common/util';
 
+const pack = require('../../../package.json');
+
 let loading;
 
 class TopNav extends migi.Component {
@@ -93,9 +95,13 @@ class TopNav extends migi.Component {
   clickUser() {
     migi.eventBus.emit('CLICK_MENU_USER');
   }
+  clickTop() {
+    $(this.element).toggleClass('focus');
+  }
   render() {
-    return <div class="top-nav" id="topNav">
+    return <div class="top-nav" id="topNav" onClick={ this.clickTop }>
       <b class="logo"/>
+      <span class="version">{ jsBridge.appVersoin + '~' + pack.version }</span>
       <div class={ 'message' + (this.isLogin ? '' : ' fn-hide') } onClick={ this.clickMessage }>
         <span>{ this.messageNum || '' }</span>
       </div>

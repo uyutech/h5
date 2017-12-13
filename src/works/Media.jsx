@@ -106,9 +106,9 @@ class Media extends migi.Component {
                   this.props.videoData.length && this.props.videoData.length > 1
                     ? this.props.videoData.map(function(item, i) {
                       if(workID !== undefined && first === 'video') {
-                        return <dd class={ workID === item.ItemID.toString() ? 'cur' : '' } rel={ i }>{ item.ItemName }</dd>;
+                        return <dd class={ workID === item.ItemID.toString() ? 'cur' : '' } rel={ i }>{ item.Tips || '普通版' }</dd>;
                       }
-                      return <dd class={ this.vIndex === i ? 'cur' : '' } rel={ i }>{ item.ItemName }</dd>;
+                      return <dd class={ this.vIndex === i ? 'cur' : '' } rel={ i }>{ item.Tips || '普通版' }</dd>;
                     }.bind(this))
                     : ''
                 }
@@ -123,9 +123,9 @@ class Media extends migi.Component {
                   this.props.audioData.length && this.props.audioData.length > 1
                     ? this.props.audioData.map(function(item, i) {
                       if(workID !== undefined && first === 'audio') {
-                        return <dd class={ workID === item.ItemID.toString() ? 'cur' : '' } rel={ i }>{ item.ItemName }</dd>;
+                        return <dd class={ workID === item.ItemID.toString() ? 'cur' : '' } rel={ i }>{ item.Tips || '歌曲' }</dd>;
                       }
-                      return <dd class={ this.aIndex === i ? 'cur' : '' } rel={ i }>{ item.ItemName }</dd>;
+                      return <dd class={ this.aIndex === i ? 'cur' : '' } rel={ i }>{ item.Tips || '歌曲' }</dd>;
                     }.bind(this))
                     : ''
                 }
