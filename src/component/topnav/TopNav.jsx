@@ -102,9 +102,9 @@ class TopNav extends migi.Component {
     $(this.element).toggleClass('focus');
   }
   render() {
-    return <div class="top-nav" id="topNav" onClick={ this.clickTop }>
-      <b class="logo"/>
-      <span class="version" ref="version">{ pack.version }</span>
+    return <div class="top-nav" id="topNav">
+      <b class="logo" onClick={ this.clickTop }/>
+      <span class="version" ref="version" onClick={ this.clickTop }>{ pack.version }</span>
       <div class={ 'message' + (this.isLogin ? '' : ' fn-hide') } onClick={ this.clickMessage }>
         <span>{ this.messageNum || '' }</span>
       </div>
