@@ -25,6 +25,7 @@ export default {
       url += '&_=' + Date.now();
     }
     url += '&version=' + pa.version;
+    url += '&app=' + jsBridge.appVersoin;
     function load() {
       return $.ajax({
         url: url,

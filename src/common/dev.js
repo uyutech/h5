@@ -31,6 +31,7 @@ export default {
       url += '&_=' + Date.now();
     }
     url += '&version=' + pa.version;
+    url += '&app=' + jsBridge.appVersoin;
     function load() {
       return $.ajax({
         url: url,
@@ -47,6 +48,9 @@ export default {
           success(data, state, xhr);
         },
         error: function (data) {
+          if(data && data.statusText === 'abort') {
+            return;
+          }
           if(!error.__hasExec) {
             error.__hasExec = true;
             error(data || {});
