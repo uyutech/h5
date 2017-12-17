@@ -109,7 +109,10 @@ class Comment extends migi.Component {
       });
       $root.on('click', '.remove', function() {
         let $btn = $(this);
-        jsBridge.confirm('会删除子留言哦，确定要删除吗？', function() {
+        jsBridge.confirm('会删除子留言哦，确定要删除吗？', function(res) {
+          if(!res) {
+            return;
+          }
           let cid = $btn.attr('cid');
           net.postJSON(self.props.delUrl, {commentID: cid}, function(res) {
             if(res.success) {

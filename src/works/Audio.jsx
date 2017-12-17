@@ -311,7 +311,10 @@ class Audio extends migi.Component {
           });
         }
         else {
-          jsBridge.confirm("检测到当前网络环境非wifi，继续下载可能会产生流量，是否确定继续？", function() {
+          jsBridge.confirm("检测到当前网络环境非wifi，继续下载可能会产生流量，是否确定继续？", function(res) {
+            if(!res) {
+              return;
+            }
             jsBridge.download({
               url,
               name,

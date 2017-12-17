@@ -103,7 +103,10 @@ class HotPost extends migi.Component {
         $list.on('click', '.del', function() {
           let postID = $(this).attr('rel');
           let $li = $(this).closest('.btn').closest('li');
-          jsBridge.confirm('确认删除吗？', function() {
+          jsBridge.confirm('确认删除吗？', function(res) {
+            if(!res) {
+              return;
+            }
             net.postJSON('/h5/post/del', { postID }, function(res) {
               if(res.success) {
                 $li.remove();

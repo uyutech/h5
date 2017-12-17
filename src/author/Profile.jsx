@@ -45,7 +45,10 @@ class Profile extends migi.Component {
     let self = this;
     self.loading = true;
     if(self.like) {
-      jsBridge.confirm('确定取关吗？', function() {
+      jsBridge.confirm('确定取关吗？', function(res) {
+        if(!res) {
+          return;
+        }
         net.postJSON('/h5/author/unFollow', { authorID: self.authorID }, function(res) {
           if(res.success) {
             self.like = false;

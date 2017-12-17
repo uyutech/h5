@@ -255,7 +255,10 @@ class Post extends migi.Component {
   }
   clickDel(e, vd) {
     let postID = this.postID;
-    jsBridge.confirm('确认删除吗？', function() {
+    jsBridge.confirm('确认删除吗？', function(res) {
+      if(!res) {
+        return;
+      }
       net.postJSON('/h5/post/del', { postID }, function(res) {
         if(res.success) {
           location.reload(true);

@@ -165,7 +165,7 @@ let jsBridge = {
         s.message = s.message || '确认吗？';
       }
       if(window.confirm(s.message)) {
-        callback();
+        callback(true);
       }
     }
   },
