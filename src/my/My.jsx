@@ -147,6 +147,28 @@ class My extends migi.Component {
     $button.addClass('loading');
     let cartID = tvd.props.rel;
     let idx = tvd.props.idx;
+    if($button.hasClass('cancel')) {
+      net.postJSON('/h5/my/cancelPrize', { cartID }, function(res) {
+        if(res.success) {
+          $button.text('发货').removeClass('cancel');
+          jsBridge.getPreference('loginInfo', function(loginInfo) {
+            if(!loginInfo) {
+              return;
+            }
+            loginInfo.prize[idx].State = 1;
+            jsBridge.setPreference('loginInfo', JSON.stringify(loginInfo));
+          });
+        }
+        else {
+          alert(res.message || util.ERROR_MESSAGE);
+        }
+        $button.removeClass('loading');
+      }, function(res) {
+        alert(res.message || util.ERROR_MESSAGE);
+        $button.removeClass('loading');
+      });
+      return;
+    }
     net.postJSON('/h5/my/sendPrize', { cartID }, function(res) {
       if(res.success) {
         $button.replaceWith('<span>已确认发货</span>');
@@ -181,7 +203,7 @@ class My extends migi.Component {
             if(item.State === 1) {
               return <li>{ item.ProductName }<button rel={ item.ID } idx={ i }>发货</button></li>
             }
-            return <li>{ item.ProductName }<span>已确认发货</span></li>;
+            return <li>{ item.ProductName }<button rel={ item.ID } idx={ i } class="cancel">取消发货</button></li>;
           })
         }
       </ul>
