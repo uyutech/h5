@@ -312,7 +312,7 @@ class MusicAlbum extends migi.Component {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
         $vd.removeClass('loading');
-      }, function () {
+      }, function(res) {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
         $vd.removeClass('loading');
       });
@@ -329,7 +329,7 @@ class MusicAlbum extends migi.Component {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
         $vd.removeClass('loading');
-      }, function () {
+      }, function(res) {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
         $vd.removeClass('loading');
       });
