@@ -31,6 +31,7 @@ class Private extends migi.Component {
   setData(data) {
     let self = this;
 
+    data = data || {};
     self.realName = data.Name;
     self.phone = data.Phone;
     self.address = data.Address;

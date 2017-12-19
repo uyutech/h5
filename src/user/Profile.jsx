@@ -35,7 +35,7 @@ class Profile extends migi.Component {
     if(self.followState === 2) {
       net.postJSON('/h5/user/follow', { userID: self.props.userInfo.UID }, function(res) {
         if(res.success) {
-          self.followState = res.data;
+          self.followState = res.data.FollowState;
         }
         else if(res.code === 1000) {
           migi.eventBus.emit('NEED_LOGIN');
@@ -50,7 +50,7 @@ class Profile extends migi.Component {
     else {
       net.postJSON('/h5/user/unFollow', { userID: self.props.userInfo.UID }, function(res) {
         if(res.success) {
-          self.followState = res.data;
+          self.followState = res.data.FollowState;
         }
         else if(res.code === 1000) {
           migi.eventBus.emit('NEED_LOGIN');
