@@ -59,7 +59,7 @@ class ImageView extends migi.Component {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
-    let url = vd.props.href;
+    let url = $(vd.element).attr('href');
     jsBridge.download({
       url,
     });

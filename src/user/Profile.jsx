@@ -48,18 +48,22 @@ class Profile extends migi.Component {
       });
     }
     else {
-      net.postJSON('/h5/user/unFollow', { userID: self.props.userInfo.UID }, function(res) {
-        if(res.success) {
-          self.followState = res.data.FollowState;
+      jsBridge.confirm('取消关注吗？', function(res) {
+        if(res) {
+          net.postJSON('/h5/user/unFollow', { userID: self.props.userInfo.UID }, function(res) {
+            if(res.success) {
+              self.followState = res.data.FollowState;
+            }
+            else if(res.code === 1000) {
+              migi.eventBus.emit('NEED_LOGIN');
+            }
+            else {
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            }
+          }, function(res) {
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          });
         }
-        else if(res.code === 1000) {
-          migi.eventBus.emit('NEED_LOGIN');
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
       });
     }
   }

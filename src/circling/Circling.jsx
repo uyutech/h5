@@ -70,7 +70,7 @@ class Circling extends migi.Component {
       self.checkMore($window);
     });
     if(loadEnd) {
-      self.ref.hostPost.message = '已经到底了';
+      self.ref.hotPost.message = '已经到底了';
     }
   }
   checkMore($window) {

@@ -239,7 +239,7 @@ class Post extends migi.Component {
     net.postJSON('/h5/post/like', { postID }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.isLike = self.ref.imageView.isLike = data.ISLike;
+        self.isLike = self.ref.imageView.isLike = data.State === 'likeWordsUser';
         self.likeCount = data.LikeCount || '点赞';
         $li.toggleClass('has');
         $li.find('span').text(data.FavorCount || '点赞');
@@ -310,8 +310,12 @@ class Post extends migi.Component {
           <ul>
             {
               (postData.Taglist || []).map(function(item) {
-                return <li><a href={ '/circle.html?circleID=' + item.TagID }
-                              title={ item.TagName }>{ item.TagName }圈</a></li>;
+                if(item.CirclingList && item.CirclingList.length) {
+                  return <li>
+                    <a href={ '/circle.html?circleID=' + item.CirclingList[0].CirclingID }
+                       title={ item.CirclingList[0].CirclingName + '圈' }>{ item.CirclingList[0].CirclingName }圈</a></li>;
+                }
+                return <li><span>{ item.TagName }</span></li>;
               })
             }
           </ul>
