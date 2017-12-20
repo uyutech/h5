@@ -54,12 +54,15 @@ class ImageView extends migi.Component {
     this.emit('clickLike', this.sid);
   }
   clickDownload(e, vd) {
+    e.preventDefault();
     if(!util.isLogin()) {
-      e.preventDefault();
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
     let url = $(vd.element).attr('href');
+    if(url && /^\/\//.test(url)) {
+      url = location.protocol + url;
+    }
     jsBridge.download({
       url,
     });

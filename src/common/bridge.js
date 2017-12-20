@@ -373,7 +373,7 @@ let jsBridge = {
         };
       }
       if(!data.name) {
-        data.name = url;
+        data.name = data.url;
       }
       ZhuanQuanJSBridge.call('download', data);
     }

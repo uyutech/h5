@@ -343,6 +343,9 @@ class MusicAlbum extends migi.Component {
     }
     let url = vd.props.href.v;
     let name = vd.props.download.v;
+    if(url && /^\/\//.test(url)) {
+      url = location.protocol + url;
+    }
     jsBridge.networkInfo(function(res) {
       if(res.available) {
         if(res.wifi) {
