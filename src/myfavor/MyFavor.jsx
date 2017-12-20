@@ -97,7 +97,7 @@ class MyFavor extends migi.Component {
     let hotPlayList = self.ref.hotPlayList;
     loading = true;
     hotPlayList.message = '正在加载...';
-    net.postJSON('/h5/my/favor', { skip, take }, function(res) {
+    net.postJSON('/h5/my/favorMV', { skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
