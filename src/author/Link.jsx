@@ -17,9 +17,17 @@ class Link extends migi.Component {
   @bind _BaiduUrl
   @bind _WangyiUrl
   @bind _WeiboUrl
+  click(e, vd, tvd) {
+    e.preventDefault();
+    jsBridge.confirm('即将离开前往站外，确认吗？', function(res) {
+      if(res) {
+        jsBridge.openUri(tvd.props.href);
+      }
+    });
+  }
   render() {
     return <div class="link">
-      <ul>
+      <ul onClick={ { a: this.click } }>
         {
           this._5SingUrl ? <li><a target="_blank" href={ this._5SingUrl } class="sing5">5sing</a></li> : ''
         }
