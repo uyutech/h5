@@ -144,7 +144,7 @@ class HotPost extends migi.Component {
     net.postJSON('/h5/post/like', { postID }, function(res) {
       if(res.success) {
         let data = res.data;
-        if(data.State === 'likeWordsUser') {
+        if(data.ISLike || data.State === 'likeWordsUser') {
           $li.addClass('has');
         }
         else {
@@ -201,12 +201,16 @@ class HotPost extends migi.Component {
             <ul>
               {
                 (item.Taglist || []).map(function(item) {
-                  if(item.CirclingList && item.CirclingList.length) {
-                    return <li>
-                      <a href={ '/circle.html?circleID=' + item.CirclingList[0].CirclingID }
-                         title={ item.CirclingList[0].CirclingName + '圈' }>{ item.CirclingList[0].CirclingName }圈</a></li>;
+                  if(item.CirclingList) {
+                    if(item.CirclingList.length) {
+                      return <li>
+                        <a href={ '/circle.html?circleID=' + item.CirclingList[0].CirclingID }
+                           title={ item.CirclingList[0].CirclingName + '圈' }>{ item.CirclingList[0].CirclingName }圈</a></li>;
+                    }
+                    return <li><span>{ item.TagName }</span></li>;
                   }
-                  return <li><span>{ item.TagName }</span></li>;
+                  return <li><a href={ '/circle.html?circleID=' + item.TagID }
+                                title={ item.TagName + '圈' }>{ item.TagName }圈</a></li>;
                 })
               }
             </ul>
@@ -298,12 +302,16 @@ class HotPost extends migi.Component {
           <ul>
             {
               (item.Taglist || []).map(function(item) {
-                if(item.CirclingList && item.CirclingList.length) {
-                  return <li>
-                    <a href={ '/circle.html?circleID=' + item.CirclingList[0].CirclingID }
-                       title={ item.CirclingList[0].CirclingName + '圈' }>{ item.CirclingList[0].CirclingName }圈</a></li>;
+                if(item.CirclingList) {
+                  if(item.CirclingList.length) {
+                    return <li>
+                      <a href={ '/circle.html?circleID=' + item.CirclingList[0].CirclingID }
+                         title={ item.CirclingList[0].CirclingName + '圈' }>{ item.CirclingList[0].CirclingName }圈</a></li>;
+                  }
+                  return <li><span>{ item.TagName }</span></li>;
                 }
-                return <li><span>{ item.TagName }</span></li>;
+                return <li><a href={ '/circle.html?circleID=' + item.TagID }
+                              title={ item.TagName + '圈' }>{ item.TagName }圈</a></li>;
               })
             }
           </ul>

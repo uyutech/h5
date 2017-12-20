@@ -276,14 +276,15 @@ class Comment extends migi.Component {
   }
   genComment(item) {
     if(item.IsAuthor) {
+      let authorID = item.AuthorID || item.IsAuthor;
       return <li class="author" id={ 'comment_' + item.Send_ID }>
         <div class="t fn-clear">
           <div class="profile fn-clear">
-            <a class="pic" href={ '/author.html?authorID=' + item.AuthorID } title={ item.Send_AuthorName }>
+            <a class="pic" href={ '/author.html?authorID=' + authorID } title={ item.Send_AuthorName }>
               <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '/src/common/head.png')) }/>
             </a>
             <div class="txt">
-              <a class="name" href={ '/author?authorID=' + item.AuthorID } title={ item.Send_AuthorName }>{ item.Send_AuthorName }</a>
+              <a class="name" href={ '/author?authorID=' + authorID } title={ item.Send_AuthorName }>{ item.Send_AuthorName }</a>
               <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
             </div>
           </div>
@@ -342,15 +343,16 @@ class Comment extends migi.Component {
   }
   genChildComment(item) {
     if(item.IsAuthor) {
+      let authorID = item.AuthorID || item.IsAuthor; //兼容老逻辑IsAuthor作为id
       return <li class="author" id={ 'comment_' + item.Send_ID }>
         <div class="t fn-clear">
           <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } title={ item.Send_AuthorName }>
-            <a class="pic" href={ '/author.html?authorID=' + item.AuthorID } name={ item.Send_AuthorName }>
+            <a class="pic" href={ '/author.html?authorID=' + authorID } name={ item.Send_AuthorName }>
               <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '/src/common/head.png')) }/>
             </a>
             <div class="txt">
               <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
-              <a class="name" href={ '/author.html?authorID=' + item.AuthorID } title={ item.Send_AuthorName }>{ item.Send_AuthorName }</a>
+              <a class="name" href={ '/author.html?authorID=' + authorID } title={ item.Send_AuthorName }>{ item.Send_AuthorName }</a>
             </div>
           </div>
           <div class="fn fn-clear">

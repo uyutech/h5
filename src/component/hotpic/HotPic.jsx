@@ -30,7 +30,7 @@ class HotPic extends migi.Component {
         let id = $b.attr('itemID');
         net.postJSON('/h5/works/likeWork', { workID: id }, function(res) {
           if(res.success) {
-            if(res.data.State === 'likeWordsUser') {
+            if(res.data === 211 || res.data.State === 'likeWordsUser') {
               $b.addClass('has');
             }
             else {
