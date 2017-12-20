@@ -1,6 +1,6 @@
 {
   "name": "zhuanquan-h5",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "dependencies": {
     "anima-querystring": "~2.0.0",
     "anima-yocto-ajax": "~2.0.4",
