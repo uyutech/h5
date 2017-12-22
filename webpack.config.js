@@ -22,6 +22,9 @@ module.exports = {
     allauthors: './src/allauthors/index.jsx',
     allcircles: './src/allcircles/index.jsx',
     private: './src/private/index.jsx',
+    mall: './src/mall/index.jsx',
+    mall_new: './src/mall_new/index.jsx',
+    mall_wait: './src/mall_wait/index.jsx',
   },
   output: {
     path: __dirname + '/www',

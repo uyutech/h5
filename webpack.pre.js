@@ -19,6 +19,9 @@ module.exports = {
     allauthors: './src/allauthors/pre.jsx',
     allcircles: './src/allcircles/pre.jsx',
     private: './src/private/pre.jsx',
+    mall: './src/mall/pre.jsx',
+    mall_new: './src/mall_new/pre.jsx',
+    mall_wait: './src/mall_wait/pre.jsx',
   },
   output: {
     path: __dirname + '/www',

@@ -59,7 +59,7 @@ class My extends migi.Component {
     let self = this;
     self.userInfo = data.userInfo;
     self.bonusPoint = data.bonusPoint;
-    self.prize = data.prize;
+    self.coins = data.coins || {};
 
     self.hasData = true;
     self.isLogin = true;
@@ -196,34 +196,13 @@ class My extends migi.Component {
     let self = this;
     return <div>
       <Profile ref="profile" userInfo={ self.userInfo }/>
-      <p class="info">大家注意啦~活动奖励均不包邮。本次发货为到付形式，请大家谨慎选择。圈币抵扣运费功能将与圈币兑换福利系统一同上线，需要使用圈币抵扣的小伙伴请勿点击‘发货’按钮哦~可以等待之后使用圈币抵扣~<br/>预计发货时间为12月20日左右。需要发货的小伙伴请在12月17日前点击‘发货’按钮哦~</p>
-      <ul class="prize" ref="prize" onClick={ { button: self.clickPrize.bind(self) } }>
-        {
-          (this.prize || []).map(function(item, i) {
-            if(item.State === 1) {
-              return <li>{ item.ProductName }<button rel={ item.ID } idx={ i }>发货</button></li>
-            }
-            return <li>{ item.ProductName }<button rel={ item.ID } idx={ i } class="cancel">取消发货</button></li>;
-          })
-        }
-      </ul>
       <ul class="list" onClick={ { a: self.clickLink.bind(self) } }>
+        <li><a href="/mall.html" class="mall">圈商城<small>（我的圈币：{ self.coins.Coins || 0 }）</small></a></li>
         <li><a href="/relation.html" class="relation">圈关系</a></li>
         <li><a href="/message.html" class="message">圈消息</a></li>
         <li><a href="/mypost.html" class="post">我画的圈</a></li>
         <li><a href="/myfavor.html" class="favor">我的收藏</a></li>
       </ul>
-      {
-        self.bonusPoint && self.bonusPoint.ranking
-          ? <div class="bp">
-              <p class="rank">全站排名 { self.bonusPoint.ranking } 名</p>
-              <p><small>以上是截止到11月30日晚0点的积分排名哦。1-10名的小伙伴将获得异世谣随机签名手账一份~11-200名的小伙伴将获得异世谣空白手账一份~
-                <br/>福利详情页将和圈币系统一起尽快上线，请耐心等待哦！
-                <br/>另外本周末我们将在11-100名中随机抽取3名小伙伴升级为随机签名手账。
-                <br/>没进前200的小伙伴们也不用气馁，之前的所有努力都会积累圈币~很快就会上线圈币兑换福利的功能哦！</small></p>
-            </div>
-          : ''
-      }
       <span class="loginout" onClick={ self.clickOut.bind(this) }>退出登录</span>
     </div>;
   }

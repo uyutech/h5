@@ -136,7 +136,6 @@ class Profile extends migi.Component {
           <label>签名：</label>
           <p ref="sign" class={ this.sign ? 'sign' : 'sign empty' }>{ this.sign || '暂无签名' }</p>
           <b class="edit edit2" ref="edit2" onClick={ this.click2 }/>
-          <div class="private"><a href="/private.html" onClick={ this.clickPri }>编辑收货地址</a><small>(圈儿会为你保密哦)</small></div>
         </div>
       </div>
     </div>;
