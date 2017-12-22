@@ -77,9 +77,6 @@ class PlayList extends migi.Component {
       $li.addClass('cur');
       let i = tvd.props.rel;
       migi.eventBus.emit('chooseMusic', this.list[i]);
-      if(parent && parent !== window && parent.setHash) {
-        parent.setHash('/works/' + this.props.worksID + '/' + this.list[i].ItemID, true);
-      }
     }
   }
   render() {
@@ -107,14 +104,14 @@ class PlayList extends migi.Component {
             let works = item.Works_Items_Works[0] || {};
             if(item.WorksState === 2) {
               return <li class={ type + ' rel' + ((this.index === undefined ? i : this.index !== i) ? '' : ' cur') } rel={ i }>
-                <a href={ '/works/' + works.WorksID } class="pic">
+                <a href={ '/works.html?worksID=' + works.WorksID } class="pic">
                   <img src={ util.autoSsl(util.img64_64_80(works.WorksCoverPic || this.props.cover)) || '//zhuanquan.xin/img/blank.png' }/>
                 </a>
-                <a href={ '/works/' + works.WorksID } class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
+                <a href={ '/works.html?worksID=' + works.WorksID } class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
               </li>;
             }
             return <li class={ type + ' rel' + ((this.index === undefined ? i : this.index !== i) ? '' : ' cur') + (item.FileUrl ? '' : ' empty') } rel={ i }>
-              <a href={ '/works/' + works.WorksID } class="pic">
+              <a href={ '/works.html?worksID=' + works.WorksID } class="pic">
                 <img src={ util.autoSsl(util.img64_64_80(works.WorksCoverPic || this.props.cover)) || '//zhuanquan.xin/img/blank.png' }/>
               </a>
               <span class={ 'name' + (works.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</span>
