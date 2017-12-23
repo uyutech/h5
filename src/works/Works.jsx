@@ -21,6 +21,7 @@ import SubCmt from '../component/subcmt/SubCmt.jsx';
 import LyricsParser from './LyricsParser.jsx';
 import MusicAlbum from './MusicAlbum.jsx';
 import PlayList from './PlayList.jsx';
+import ImageView from './ImageView.jsx';
 import Describe from './Describe.jsx';
 import PhotoAlbum from './PhotoAlbum.jsx';
 
@@ -29,6 +30,7 @@ let first;
 class Works extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
   }
   @bind hasData
   @bind worksID
@@ -60,6 +62,16 @@ class Works extends migi.Component {
         });
       }
     });
+
+    let imageView = self.ref.imageView;
+    if(imageView) {
+      jsBridge.on('back', function(e) {
+        if(!imageView.isHide()) {
+          e.preventDefault();
+          imageView.hide();
+        }
+      });
+    }
   }
   setWorks(worksDetail) {
     let self = this;
@@ -390,6 +402,7 @@ class Works extends migi.Component {
                 tipText="-${n}"
                 readOnly={ true }
                 placeholder="夸夸这个作品吧"/>
+        <ImageView ref="imageView"/>
       </div>;
     }
     return <div class={ 't' + self.worksType }>

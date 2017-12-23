@@ -304,6 +304,7 @@ class Video extends migi.Component {
             url,
             name,
           });
+          jsBridge.toast('开始下载，请关注通知栏进度');
         }
         else {
           jsBridge.confirm("检测到当前网络环境非wifi，继续下载可能会产生流量，是否确定继续？", function(res) {
@@ -314,6 +315,7 @@ class Video extends migi.Component {
               url,
               name,
             });
+            jsBridge.toast('开始下载，请关注通知栏进度');
           });
         }
       }

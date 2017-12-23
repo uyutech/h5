@@ -49,6 +49,12 @@ class User extends migi.Component {
         imageView.isLike = res.ISLike;
       });
     });
+    jsBridge.on('back', function(e) {
+      if(!imageView.isHide()) {
+        e.preventDefault();
+        imageView.hide();
+      }
+    });
   }
   checkMore($window) {
     if(loading || loadEnd) {

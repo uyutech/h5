@@ -47,7 +47,7 @@ class PhotoAlbum extends migi.Component {
       });
       migi.eventBus.on('photoFavor', function(data) {
         let $li = $('#photo_' + data.ItemID);
-        if(data.ISLike) {
+        if(data.ISFavor) {
           $li.find('.favor').addClass('has');
         }
         else {

@@ -35,6 +35,9 @@ class ImageView extends migi.Component {
   hide() {
     $(this.element).addClass('fn-hide');
   }
+  isHide() {
+    return  $(this.element).hasClass('fn-hide');
+  }
   clickPrev() {
     let self = this;
     if(self.idx) {
@@ -66,6 +69,7 @@ class ImageView extends migi.Component {
     jsBridge.download({
       url,
     });
+    jsBridge.toast('开始下载，请关注通知栏进度');
   }
   render() {
     return <div class="mod-iv fn-hide">

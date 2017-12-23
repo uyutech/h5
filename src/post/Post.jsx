@@ -92,6 +92,12 @@ class Post extends migi.Component {
     imageView.on('clickLike', function() {
       self.clickLike();
     });
+    jsBridge.on('back', function(e) {
+      if(!imageView.isHide()) {
+        e.preventDefault();
+        imageView.hide();
+      }
+    });
   }
   checkMore($window) {
     let self = this;

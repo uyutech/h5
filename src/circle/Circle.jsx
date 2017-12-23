@@ -51,6 +51,12 @@ class Circle extends migi.Component {
         title: '画个圈',
       });
     });
+    jsBridge.on('back', function(e) {
+      if(!imageView.isHide()) {
+        e.preventDefault();
+        imageView.hide();
+      }
+    });
   }
   checkMore($window) {
     if(loading || loadEnd) {
