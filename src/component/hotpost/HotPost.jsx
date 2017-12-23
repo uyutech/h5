@@ -377,7 +377,8 @@ class HotPost extends migi.Component {
         <li class="share" rel={ id }><b/><span>分享</span></li>
         <li class={ 'favor' + (item.ISFavor ? ' has' : '') } rel={ id }>
           <b/><span>{ item.FavorCount || '收藏' }</span></li>
-        <li class={ 'like' + (item.ISLike ? ' has' : '') } rel={ id }><b/><span>{ item.LikeCount || '点赞' }</span>
+        <li class={ 'like' + (item.ISLike ? ' has' : '') } rel={ id }>
+          <b/><span>{ item.LikeCount || '点赞' }</span>
         </li>
         <li class="comment" rel={ id } count={ item.CommentCount }>
           <b/><span>{ item.CommentCount || '评论' }</span>

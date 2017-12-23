@@ -45,8 +45,7 @@ class SubComment extends migi.Component {
     let content = $vd.val().trim();
     self.invalid = content.length < 3 || content.length > MAX_TEXT_LENGTH;
     self.warnLength = content.length > MAX_TEXT_LENGTH;
-    let key2 = self.getContentKey();
-    localStorage[key2] = content;
+    jsBridge.setPreference(self.getContentKey(), content);
   }
   submit(e) {
     e.preventDefault();
@@ -61,8 +60,7 @@ class SubComment extends migi.Component {
         rid: self.rid
       }, function(res) {
         if(res.success) {
-          let key2 = self.getContentKey();
-          localStorage[key2] = '';
+          jsBridge.setPreference(self.getContentKey(), null);
           jsBridge.popWindow(res.data);
         }
         else {

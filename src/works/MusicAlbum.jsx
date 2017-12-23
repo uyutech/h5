@@ -272,7 +272,7 @@ class MusicAlbum extends migi.Component {
     if(!$vd.hasClass('loading')) {
       $vd.addClass('loading');
       let data = self.item;
-      net.postJSON('/api/works/likeWork', { workID: self.workID }, function (res) {
+      net.postJSON('/h5/works/likeWork', { workID: self.workID }, function (res) {
         if(res.success) {
           data.ISLike = self.like = res.data === 211 || res.data.State === 'likeWordsUser';
         }
@@ -301,7 +301,7 @@ class MusicAlbum extends migi.Component {
       //
     }
     else if($vd.hasClass('has')) {
-      net.postJSON('/api/works/unFavorWork', { workID: self.workID }, function (res) {
+      net.postJSON('/h5/works/unFavorWork', { workID: self.workID }, function (res) {
         if(res.success) {
           data.ISFavor = self.favor = false;
         }
@@ -318,7 +318,7 @@ class MusicAlbum extends migi.Component {
       });
     }
     else {
-      net.postJSON('/api/works/favorWork', { workID: self.workID }, function (res) {
+      net.postJSON('/h5/works/favorWork', { workID: self.workID }, function (res) {
         if(res.success) {
           data.ISFavor = self.favor = true;
         }

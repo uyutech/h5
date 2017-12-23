@@ -14,10 +14,13 @@ import util from '../common/util';
 
 import SubPost from './SubPost.jsx';
 
+let search = qs.parse(location.search.replace(/^\?/, ''));
+let circleID = search.circleID;
+
 jsBridge.ready(function() {
   jsBridge.refreshState(false);
   let subPost = migi.preExist(
-    <SubPost placeholder="在转圈圈画个圈吧"/>,
+    <SubPost circleID={ circleID } placeholder="在转圈圈画个圈吧"/>,
     '#page'
   );
   net.postJSON('/h5/subpost/index', function(res) {

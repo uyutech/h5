@@ -163,14 +163,16 @@ class Find extends migi.Component {
         let data = res.data;
         skip2 += take2;
         size2 = data.Size;
-        if(skip2 >= data.Size) {
-          loadEnd2 = true;
-          hotPic.message = '已经到底了';
+        if(data.data.length) {
+          hotPic.appendData(data.data);
+          hotPic.message = '正在渲染图片';
         }
         else {
-          hotPic.message = '正在渲染图片....';
+          hotPic.message = skip2 >= data.Size ? '已经到底了' : '';
         }
-        hotPic.appendData(data.data);
+        if(skip2 >= data.Size) {
+          loadEnd2 = true;
+        }
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
