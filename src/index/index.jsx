@@ -16,10 +16,6 @@ import My from '../my/My.jsx';
 import ImageView from '../post/ImageView.jsx';
 
 jsBridge.ready(function() {
-  jsBridge.on('back', function(e) {
-    e.preventDefault();
-    jsBridge.moveTaskToBack();
-  });
   jsBridge.on('refresh', function(e) {
     e.preventDefault();
     if(circling) {
@@ -59,7 +55,16 @@ jsBridge.ready(function() {
   }
 
   let botNav = migi.preExist(<BotNav/>, '#page');
-  migi.preExist(<ImageView ref="imageView"/>, '#page');
+  let imageView = migi.preExist(<ImageView ref="imageView"/>, '#page');
+  jsBridge.on('back', function(e) {
+    if(!imageView.isHide()) {
+      e.preventDefault();
+      imageView.hide();
+    }
+    else {
+      jsBridge.moveTaskToBack();
+    }
+  });
 
   let loginInfo;
   jsBridge.delPreference('userInfo');
