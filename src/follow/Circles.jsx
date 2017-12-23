@@ -10,6 +10,14 @@ class Circles extends migi.Component {
     this.dataList = this.props.dataList;
   }
   @bind dataList
+  click(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+    });
+  }
   render() {
     return <ul class="circles" onClick={ { a: this.click } }>
       {

@@ -137,6 +137,9 @@ class SubPost extends migi.Component {
       }
       self.sending = true;
       let circleID = [];
+      if(self.props.circleID) {
+        circleID.push(self.props.circleID);
+      }
       $(self.ref.label.element).find('.cur,.on').each(function(i, li) {
         circleID.push($(li).attr('rel'));
       });
