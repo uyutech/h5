@@ -137,12 +137,12 @@ class SubPost extends migi.Component {
       }
       self.sending = true;
       let circleID = [];
-      if(self.props.circleID) {
-        circleID.push(self.props.circleID);
-      }
       $(self.ref.label.element).find('.cur,.on').each(function(i, li) {
         circleID.push($(li).attr('rel'));
       });
+      if(self.props.circleID && circleID.indexOf(self.props.circleID) === -1) {
+        circleID.push(self.props.circleID);
+      }
       net.postJSON('/h5/circle/post', { content: self.value, imgs, widths, heights, circleID: circleID.join(',') }, function(res) {
         if(res.success) {
           self.value = '';
