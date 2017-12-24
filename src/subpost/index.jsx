@@ -26,8 +26,13 @@ jsBridge.ready(function() {
   net.postJSON('/h5/subpost/index', function(res) {
     if(res.success) {
       subPost.to = res.data.hotCircleList.data;
-      subPost.activityLabel = res.data.activityLabel;
-      subPost.tagList = res.data.activityLabel['0'] || [];
+      let activityLabel = res.data.activityLabel;
+      subPost.activityLabel = activityLabel;
+      let tagList = activityLabel['0'] || [];
+      if(circleID && activityLabel && activityLabel[circleID]) {
+        tagList = tagList.concat(activityLabel[circleID]);
+      }
+      subPost.tagList = tagList;
     }
     else {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);

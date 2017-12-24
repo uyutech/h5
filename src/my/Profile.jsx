@@ -13,11 +13,13 @@ class Profile extends migi.Component {
     let self = this;
     if(self.props.userInfo) {
       self.head = self.props.userInfo.Head_Url;
+      self.userId = self.props.userInfo.UID;
       self.sname = self.props.userInfo.NickName;
       self.sign = self.props.userInfo.User_Sign;
     }
   }
   @bind head
+  @bind userId
   @bind sname
   @bind sign
   @bind updateNickNameTimeDiff
@@ -129,6 +131,9 @@ class Profile extends migi.Component {
           <img src={ util.autoSsl(util.img200_200_80(this.head)) || '/src/common/head.png' }/>
         </div>
         <div class="txt">
+          <label>uid：</label>
+          <span>{ this.userId }</span>
+          <br/>
           <label>昵称：</label>
           <strong ref="sname">{ this.sname }</strong>
           <b class="edit" ref="edit" onClick={ this.click }/>

@@ -351,7 +351,7 @@ class SubPost extends migi.Component {
         <ul ref="label">
           {
             (this.to || []).map(function(item) {
-              return <li rel={ item.TagID } class={ item.TagID.toString() === (this.props.circleID || '').toString() ? 'on' : '' }>{ item.TagName }</li>;
+              return <li rel={ item.TagID } class={ item.TagID.toString() === (this.props.circleID || '').toString() ? 'on' : '' }>{ item.TagName }圈</li>;
             }.bind(this))
           }
         </ul>

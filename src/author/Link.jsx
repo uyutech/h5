@@ -55,7 +55,7 @@ class Link extends migi.Component {
           this.HuabanUrl ? <li><a target="_blank" href={ this.HuabanUrl } class="huaban">花瓣</a></li> : ''
         }
         {
-          this.LofterUrl ? <li><a target="_blank" href={ this.LofterUrl } class="lofter">乐乎</a></li> : ''
+          this.LofterUrl ? <li><a target="_blank" href={ this.LofterUrl } class="lofter">lofter</a></li> : ''
         }
         {
           this.POCOUrl ? <li><a target="_blank" href={ this.POCOUrl } class="poco">poco</a></li> : ''

@@ -96,9 +96,13 @@ class Messages extends migi.Component {
           <span>{ item.Content }</span>
         </a>
         <pre class="con">{ item.Send_Content }</pre>
-        <ul class="btn fn-clear">
-          <li class="comment" type={ type } cid={ item.ParentID } rid={ item.RootID } name={ item.Send_UserName } tid={ item.urlID }>回复</li>
-        </ul>
+        {
+          type === 0
+            ? ''
+            : <ul class="btn fn-clear">
+              <li class="comment" type={ type } cid={ item.ParentID } rid={ item.RootID } name={ item.Send_UserName } tid={ item.urlID }>回复</li>
+            </ul>
+        }
         <b class="arrow"/>
       </div>
     </li>;

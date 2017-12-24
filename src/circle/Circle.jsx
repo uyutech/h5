@@ -27,6 +27,7 @@ class Circle extends migi.Component {
     self.circleID = circleID;
 
     self.circleDetail = data.circleDetail;
+    self.stick = data.stick;
     self.postList = data.postList;
 
     self.hasData = true;
@@ -110,6 +111,11 @@ class Circle extends migi.Component {
     return <div>
       <Title ref="title"
              circleDetail={ self.circleDetail }/>
+      {
+        self.stick && self.stick.Size
+          ? <HotPost data={ self.stick.data }/>
+          : ''
+      }
       <HotPost ref="hotPost"
                dataList={ self.postList.data }
                message={ self.postList.Size > take ? '' : '已经到底了' }/>
