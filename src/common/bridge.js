@@ -13,12 +13,12 @@ let isFunction = isType('Function');
 let ua = navigator.userAgent;
 let appVersion = '';
 if(/ app\/ZhuanQuan\/([\d.]+)/.test(ua)) {
-  appVersion = / app\/ZhuanQuan\/([\d.]+)/.exec(ua)[1];
+  appVersion = / app\/ZhuanQuan\/([\d.]+)/.exec(ua)[1];console.log(appVersion);
 }
 
 let jsBridge = {
   isInApp: / app\/ZhuanQuan/.test(ua),
-  appVersoin: appVersion,
+  appVersion: appVersion,
   ready: function(cb) {
     cb = cb || function() {};
     if(this.isInApp) {
