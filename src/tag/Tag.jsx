@@ -1,5 +1,5 @@
 /**
- * Created by army8735 on 2017/12/5.
+ * Created by army8735 on 2017/12/24.
  */
 
 'use strict';
@@ -14,25 +14,16 @@ let skip = take;
 let loading;
 let loadEnd;
 
-class MyPost extends migi.Component {
+class Tag extends migi.Component {
   constructor(...data) {
     super(...data);
   }
   @bind hasData
-  setData(data) {
+  setData(tag, data) {
     let self = this;
-
-    self.postList = data;
-    loadEnd = self.postList.Size <= take;
-
+    self.tag = tag;
+    self.data = data;
     self.hasData = true;
-
-    let $window = $(window);
-    if(!loadEnd) {
-      $window.on('scroll', function() {
-        self.checkMore($window);
-      });
-    }
 
     let hotPost = self.ref.hotPost;
     let imageView = self.ref.imageView;
@@ -47,34 +38,35 @@ class MyPost extends migi.Component {
         imageView.hide();
       }
     });
+
+    if(data.Size > take) {
+      let $window = $(window);
+      $window.on('scroll', function() {
+        self.checkMore($window);
+      });
+    }
   }
   checkMore($window) {
-    if(loading || loadEnd) {
-      return;
-    }
     let self = this;
     let WIN_HEIGHT = $window.height();
     let HEIGHT = $(document.body).height();
     let bool;
     bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    if(!loading && !loadEnd && bool) {
       self.load();
     }
   }
   load() {
     let self = this;
-    if(loading) {
-      return;
-    }
-    loading = true;
     let hotPost = self.ref.hotPost;
+    loading = true;
     hotPost.message = '正在加载...';
-    net.postJSON('/h5/my/postList', { skip, take }, function(res) {
+    net.postJSON('/h5/tag/list', { skip, take, tag: self.tag }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
         hotPost.appendData(data.data);
-        if(skip >= data.Size) {
+        if(!data.data.length || data.data.length < take) {
           loadEnd = true;
           hotPost.message = '已经到底了';
         }
@@ -94,23 +86,19 @@ class MyPost extends migi.Component {
   genDom() {
     let self = this;
     return <div>
-      <h4>我画的圈</h4>
-      <HotPost ref="hotPost"
-               message={ self.postList.Size <= take && self.postList.Size > 3 ? '已经到底了' : '' }
-               dataList={ self.postList.data }/>
+      <h3>#{ self.tag }#</h3>
+      <HotPost ref="hotPost" dataList={ self.data.data }/>
       <ImageView ref="imageView"/>
     </div>;
   }
   render() {
-    return <div class="mypost">
+    return <div class="tag">
       {
         this.hasData
           ? this.genDom()
           : <div>
               <div class="fn-placeholder-tag"/>
-              <div class="fn-placeholder-roundlet"/>
               <div class="fn-placeholder"/>
-              <div class="fn-placeholder-roundlet"/>
               <div class="fn-placeholder"/>
             </div>
       }
@@ -118,4 +106,4 @@ class MyPost extends migi.Component {
   }
 }
 
-export default MyPost;
+export default Tag;

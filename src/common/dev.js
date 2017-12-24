@@ -31,7 +31,7 @@ export default {
       url += '&_=' + Date.now();
     }
     url += '&version=' + pa.version;
-    url += '&app=' + jsBridge.appVersoin;
+    url += '&app=' + jsBridge.appVersion;
     function load() {
       return $.ajax({
         url: url,

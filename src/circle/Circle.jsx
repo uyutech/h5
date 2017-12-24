@@ -42,7 +42,7 @@ class Circle extends migi.Component {
     let imageView = self.ref.imageView;
     imageView.on('clickLike', function(sid) {
       hotPost.like(sid, function(res) {
-        imageView.isLike = res.ISLike;
+        imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
       });
     });
     let subCmt = self.ref.subCmt;

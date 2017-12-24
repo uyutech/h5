@@ -14,8 +14,8 @@ class TopNav extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      if(jsBridge.appVersoin) {
-        $(self.ref.version.element).text(jsBridge.appVersoin + '~' + pack.version);
+      if(jsBridge.appVersion) {
+        $(self.ref.version.element).text(jsBridge.appVersion + '~' + pack.version);
       }
       jsBridge.getPreference('loginInfo', function(loginInfo) {
         if(!loginInfo) {

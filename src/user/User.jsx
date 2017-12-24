@@ -46,7 +46,7 @@ class User extends migi.Component {
     let imageView = self.ref.imageView;
     imageView.on('clickLike', function(sid) {
       hotPost.like(sid, function(res) {
-        imageView.isLike = res.ISLike;
+        imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
       });
     });
     jsBridge.on('back', function(e) {

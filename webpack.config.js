@@ -25,6 +25,7 @@ module.exports = {
     mall: './src/mall/index.jsx',
     mall_new: './src/mall_new/index.jsx',
     mall_wait: './src/mall_wait/index.jsx',
+    tag: './src/tag/index.jsx',
   },
   output: {
     path: __dirname + '/www',

@@ -44,35 +44,6 @@ jsBridge.ready(function() {
     }
   });
 
-  let old = false;
-  if(jsBridge.appVersion) {
-    let version = jsBridge.appVersion.split('.');
-    let major = parseInt(version[0]) || 0;
-    let minor = parseInt(version[1]) || 0;
-    let patch = parseInt(version[2]) || 0;
-    if(minor < 2) {
-      old = true;
-    }
-    else if(patch < 8) {
-      old = true;
-    }
-  }
-  else {
-    old = true;
-  }
-  if(old) {
-    let notice = migi.render(
-      <a class="notice" href="#" onClick={ function(e) {
-        e.preventDefault();
-        jsBridge.openUri('http://circling.net.cn/android/circling-0.2.9.apk');
-      } }>您的app版本过低，考虑到功能和体验，请点击下载更新</a>,
-      '#page'
-    );
-    setTimeout(function() {
-      $(notice.element).addClass('show');
-    }, 2000);
-  }
-
   let topNav = migi.preExist(<TopNav/>, '#page');
 
   if(util.isLogin()) {
@@ -141,4 +112,33 @@ jsBridge.ready(function() {
     }
     last.show();
   });
+
+  let old = false;
+  if(jsBridge.appVersion) {
+    let version = jsBridge.appVersion.split('.');
+    let major = parseInt(version[0]) || 0;
+    let minor = parseInt(version[1]) || 0;
+    let patch = parseInt(version[2]) || 0;
+    if(minor < 2) {
+      old = true;
+    }
+    else if(patch < 8) {
+      old = true;
+    }
+  }
+  else {
+    old = true;
+  }
+  if(old) {
+    let notice = migi.render(
+      <a class="notice" href="#" onClick={ function(e) {
+        e.preventDefault();
+        jsBridge.openUri('http://circling.net.cn/android/circling-0.2.9.apk');
+      } }>您的app版本过低，考虑到功能和体验，请点击下载更新</a>
+    );
+    notice.prependTo('#page');
+    setTimeout(function() {
+      $(notice.element).addClass('show');
+    }, 2000);
+  }
 });

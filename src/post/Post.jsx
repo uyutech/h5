@@ -281,7 +281,7 @@ class Post extends migi.Component {
     let self = this;
     let postData = self.postData;
     let html = (postData.Content || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
-      .replace(/#([^#\n]+?)#/g, `<strong>#$1#</strong>`)
+      .replace(/#([^#\n]+?)#/g, `<a href="tag.html?tag=$1" title="话题-$1">#$1#</a>`)
       .replace(/(http(?:s)?:\/\/[\w-]+\.[\w]+\S*)/gi, '<a href="$1" target="_blank">$1</a>');
     let replyData = self.replyData;
     return <div>
