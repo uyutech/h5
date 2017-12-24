@@ -48,11 +48,11 @@ class Media extends migi.Component {
         }
         if(type === 'audio') {
           audio.switchTo(this.aIndex = index);
-          history.replaceState(null, '', '/works?worksID=' + this.props.worksID + '&workID=' + this.props.audioData[this.aIndex].ItemID);
+          history.replaceState(null, '', '/works.html?worksID=' + this.props.worksID + '&workID=' + this.props.audioData[this.aIndex].ItemID);
         }
         else if(type === 'video') {
           video.switchTo(this.vIndex = index);
-          history.replaceState(null, '', '/works?worksID=' + this.props.worksID + '&workID=' + this.props.videoData[this.vIndex].ItemID);
+          history.replaceState(null, '', '/works.html?worksID=' + this.props.worksID + '&workID=' + this.props.videoData[this.vIndex].ItemID);
         }
       }
       else {
@@ -67,13 +67,13 @@ class Media extends migi.Component {
           video && video.pause().hide();
           audio.show();
           audio.switchTo(this.aIndex = index);
-          history.replaceState(null, '', '/works?worksID=' + this.props.worksID + '&workID=' + this.props.audioData[this.aIndex].ItemID);
+          history.replaceState(null, '', '/works.html?worksID=' + this.props.worksID + '&workID=' + this.props.audioData[this.aIndex].ItemID);
         }
         else if(type === 'video') {
           audio && audio.pause().hide();
           video.show();
           video.switchTo(this.vIndex = index);
-          history.replaceState(null, '', '/works?worksID=' + this.props.worksID + '&workID=' + this.props.videoData[this.vIndex].ItemID);
+          history.replaceState(null, '', '/works.html?worksID=' + this.props.worksID + '&workID=' + this.props.videoData[this.vIndex].ItemID);
         }
       }
     }

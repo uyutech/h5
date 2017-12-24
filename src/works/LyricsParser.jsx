@@ -23,6 +23,6 @@ export default {
     });
   },
   getTxt: function(s) {
-    return s.replace(/\[\d{2,}:\d{2}\.\d{2,3}]/g, '').replace(/\[\w+:\w+]/g, '');
+    return s.replace(/\n\s*\n/g, '\n').replace(/\[\d{2,}:\d{2}\.\d{2,3}]/g, '').replace(/\[\w+:\w+]/g, '');
   }
 };
