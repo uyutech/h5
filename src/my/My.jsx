@@ -203,6 +203,15 @@ class My extends migi.Component {
         <li><a href="/mypost.html" class="post">我画的圈</a></li>
         <li><a href="/myfavor.html" class="favor">我的收藏</a></li>
       </ul>
+      <a href="http://circling.cc/#/post/91255" class="help" onClick={ function(e) {
+        e.preventDefault();
+        jsBridge.pushWindow('/post.html?postID=91255', {
+          title: '帮助中心'
+        });
+      } }>
+        <img class="pic" src={ util.autoSsl(util.img60_60_80('//zhuanquan.xyz/temp/f3bcae7e2f60d9729a0e205dfb39ca6e.jpg')) }/>
+        <span>帮助中心</span>
+      </a>
       <span class="loginout" onClick={ self.clickOut.bind(this) }>退出登录</span>
     </div>;
   }

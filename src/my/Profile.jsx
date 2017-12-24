@@ -132,7 +132,7 @@ class Profile extends migi.Component {
         </div>
         <div class="txt">
           <label>uid：</label>
-          <span>{ this.userId }</span>
+          <span>{ this.userId.toString().replace(/^20180*/, '') }</span>
           <br/>
           <label>昵称：</label>
           <strong ref="sname">{ this.sname }</strong>
