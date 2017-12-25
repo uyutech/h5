@@ -113,7 +113,7 @@ class Circle extends migi.Component {
              circleDetail={ self.circleDetail }/>
       {
         self.stick && self.stick.Size
-          ? <HotPost data={ self.stick.data }/>
+          ? <HotPost dataList={ self.stick.data }/>
           : ''
       }
       <HotPost ref="hotPost"
