@@ -169,7 +169,9 @@ class HotPost extends migi.Component {
   }
   encode(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
-      .replace(/#([^#\n]+?)#/g, `<a href="tag.html?tag=$1" title="话题-$1">#$1#</a>`)
+      .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
+        return `<a href="tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
+      })
       .replace(/(http(?:s)?:\/\/[\w-]+\.[\w]+\S*)/gi, '<a href="$1" target="_blank">$1</a>');
   }
   genItem(item) {
@@ -302,16 +304,13 @@ class HotPost extends migi.Component {
           <ul>
             {
               (item.Taglist || []).map(function(item) {
-                if(item.CirclingList) {
-                  if(item.CirclingList.length) {
-                    return <li>
-                      <a href={ '/circle.html?circleID=' + item.CirclingList[0].CirclingID }
-                         title={ item.CirclingList[0].CirclingName + '圈' }>{ item.CirclingList[0].CirclingName }圈</a></li>;
-                  }
-                  return <li><span>{ item.TagName }</span></li>;
+                if(item.CirclingList && item.CirclingList.length) {
+                  return <li>
+                    <a href={ '/circle.html?circleID=' + item.CirclingList[0].CirclingID }
+                       title={ item.CirclingList[0].CirclingName + '圈' }>{ item.CirclingList[0].CirclingName }圈</a>
+                  </li>;
                 }
-                return <li><a href={ '/circle.html?circleID=' + item.TagID }
-                              title={ item.TagName + '圈' }>{ item.TagName }圈</a></li>;
+                return <li><span>{ item.TagName }</span></li>;
               })
             }
           </ul>
