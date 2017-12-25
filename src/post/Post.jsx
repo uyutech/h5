@@ -98,6 +98,11 @@ class Post extends migi.Component {
         imageView.hide();
       }
     });
+    jsBridge.on('resume', function(e) {
+      if(e.data) {
+        self.ref.comment.prependData(e.data);
+      }
+    });
   }
   checkMore($window) {
     let self = this;

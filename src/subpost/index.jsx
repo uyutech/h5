@@ -23,9 +23,34 @@ jsBridge.ready(function() {
     <SubPost circleID={ circleID } placeholder="在转圈圈画个圈吧"/>,
     '#page'
   );
-  net.postJSON('/h5/subpost/index', function(res) {
+  net.postJSON('/h5/subpost/list', { circleID }, function(res) {
     if(res.success) {
-      subPost.to = res.data.hotCircleList.data;
+      let to = res.data.myCircleList;
+      if(to && to.length && circleID !== undefined) {
+        let has = false;
+        to.forEach(function(item) {
+          if(item.CirclingID.toString() === (circleID || '').toString()) {
+            has = true;
+          }
+        });
+        if(has) {
+          migi.sort(to, function(a, b) {
+            if(a.CirclingID.toString() === (circleID || '').toString()) {
+              return false;
+            }
+            else if(b.CirclingID.toString() === (circleID || '').toString()) {
+              return true;
+            }
+          });
+        }
+        else {
+          to.unshift({
+            CirclingID: circleID,
+            CirclingName: res.data.circleDetail.TagName,
+          });
+        }
+      }
+      subPost.to = to;console.log(to);
       let activityLabel = res.data.activityLabel;
       subPost.activityLabel = activityLabel;
       let tagList = activityLabel['0'] || [];

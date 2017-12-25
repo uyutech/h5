@@ -58,6 +58,11 @@ class Circle extends migi.Component {
         imageView.hide();
       }
     });
+    jsBridge.on('resume', function(e) {
+      if(e.data) {
+        self.ref.hotPost.prependData(e.data);
+      }
+    });
   }
   checkMore($window) {
     if(loading || loadEnd) {

@@ -31,6 +31,11 @@ class Comments extends migi.Component {
         loadEnd = true;
         self.ref.comment.message = '已经到底了';
       }
+      jsBridge.on('resume', function(e) {
+        if(e.data) {
+          self.ref.comment.prependData(e.data);
+        }
+      });
     });
   }
   @bind authorID

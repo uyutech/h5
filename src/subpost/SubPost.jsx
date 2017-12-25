@@ -28,30 +28,6 @@ class SubPost extends migi.Component {
     let self = this;
     self.to = self.props.to ? self.props.to.slice(0) : undefined;
     self.placeholder = self.props.placeholder;
-    if(self.to && self.to.length && self.props.circleID !== undefined) {
-      let has = false;
-      self.to.forEach(function(item) {
-        if(item.TagID.toString() === (self.props.circleID || '').toString()) {
-          has = true;
-        }
-      });
-      if(has) {
-        migi.sort(self.to, function(a, b) {
-          if(a.TagID.toString() === (self.props.circleID || '').toString()) {
-            return false;
-          }
-          else if(b.TagID.toString() === (self.props.circleID || '').toString()) {
-            return true;
-          }
-        });
-      }
-      else {
-        self.to.unshift({
-          TagID: self.props.circleID,
-          TagName: self.props.circleDetail.TagName,
-        });
-      }
-    }
     self.on(migi.Event.DOM, function() {
       jsBridge.getPreference(self.getImgKey(), function(cache) {
         if(cache) {
@@ -156,7 +132,7 @@ class SubPost extends migi.Component {
           }, {
             title: '画圈正文'
           });
-          jsBridge.popWindow();
+          jsBridge.popWindow(res.data);
         }
         else {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -351,7 +327,7 @@ class SubPost extends migi.Component {
         <ul ref="label">
           {
             (this.to || []).map(function(item) {
-              return <li rel={ item.TagID } class={ item.TagID.toString() === (this.props.circleID || '').toString() ? 'on' : '' }>{ item.TagName }圈</li>;
+              return <li rel={ item.CirclingID } class={ item.CirclingID.toString() === (this.props.circleID || '').toString() ? 'on' : '' }>{ item.CirclingName }圈</li>;
             }.bind(this))
           }
         </ul>
