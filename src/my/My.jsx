@@ -21,10 +21,10 @@ class My extends migi.Component {
       self.bonusPoint = self.props.bonusPoint;
     }
     self.on(migi.Event.DOM, function() {
-      self.init();
       migi.eventBus.on('LOGIN', function(loginInfo) {
         self.setData(loginInfo);
       });
+      self.init();
     });
   }
   @bind hasData
@@ -47,6 +47,7 @@ class My extends migi.Component {
         self.isLogin = false;
         self.hasData = true;
         jsBridge.delPreference('loginInfo');
+        migi.eventBus.emit('LOIN_OUT');
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);

@@ -42,6 +42,17 @@ jsBridge.ready(function() {
         }
       });
     }
+    jsBridge.getPreference('loginInfo', function(loginInfo) {
+      if(!loginInfo) {
+        migi.eventBus.emit('LOGIN_OUT');
+        return;
+      }
+      migi.eventBus.emit('LOGIN', loginInfo);
+      let userInfo = loginInfo.userInfo;
+      if(userInfo) {
+        migi.eventBus.emit('USER_INFO', userInfo);
+      }
+    });
   });
 
   let topNav = migi.preExist(<TopNav/>, '#page');
