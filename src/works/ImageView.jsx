@@ -152,11 +152,23 @@ class ImageView extends migi.Component {
       });
     }
   }
-  clickDownload(e) {
+  clickDownload(e, vd) {
     if(!util.isLogin()) {
       e.preventDefault();
       migi.eventBus.emit('NEED_LOGIN');
     }
+    let $vd = $(vd.element);
+    let url = $vd.attr('href');
+    if(url && /^\/\//.test(url)) {
+      url = location.protocol + url;
+    }
+    url = util.img(url);
+    let name = $vd.attr('download') || url.replace(/^.*\//, '');
+    jsBridge.download({
+      url,
+      name,
+    });
+    jsBridge.toast('开始下载，请关注通知栏进度');
   }
   render() {
     return <div class="image-view fn-hide">
