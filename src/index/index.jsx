@@ -122,7 +122,7 @@ jsBridge.ready(function() {
     if(minor < 2) {
       old = true;
     }
-    else if(patch < 8) {
+    else if(minor === 2 && patch < 8) {
       old = true;
     }
   }
