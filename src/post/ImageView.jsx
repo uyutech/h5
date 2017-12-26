@@ -66,8 +66,11 @@ class ImageView extends migi.Component {
     if(url && /^\/\//.test(url)) {
       url = location.protocol + url;
     }
+    url = util.img(url);
+    let name = url.replace(/^.*\//, '');
     jsBridge.download({
       url,
+      name,
     });
     jsBridge.toast('开始下载，请关注通知栏进度');
   }

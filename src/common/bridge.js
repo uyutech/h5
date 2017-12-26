@@ -54,7 +54,7 @@ let jsBridge = {
   },
   pushWindow: function(url, params) {
     if(this.isInApp) {
-      if (window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
         url = url.trim();
         if (url) {
           if (/^\w+:\/\//i.test(url)) {
