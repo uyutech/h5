@@ -168,7 +168,6 @@ class ImageView extends migi.Component {
       url,
       name,
     });
-    jsBridge.toast('开始下载，请关注通知栏进度');
   }
   render() {
     return <div class="image-view fn-hide">

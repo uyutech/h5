@@ -19,6 +19,7 @@ if(/ app\/ZhuanQuan\/([\d.]+)/.test(ua)) {
 let jsBridge = {
   isInApp: / app\/ZhuanQuan/.test(ua),
   appVersion: appVersion,
+  isIOS: /iP(hone|od|ad)/.test(ua),
   ready: function(cb) {
     cb = cb || function() {};
     if(this.isInApp) {
@@ -376,6 +377,7 @@ let jsBridge = {
         data.name = data.url;
       }
       ZhuanQuanJSBridge.call('download', data);
+      jsBridge.toast('开始下载，请关注通知栏进度');
     }
   },
   networkInfo: function(callback) {

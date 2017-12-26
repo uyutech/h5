@@ -347,6 +347,10 @@ class MusicAlbum extends migi.Component {
     if(url && /^\/\//.test(url)) {
       url = location.protocol + url;
     }
+    if(jsBridge.isIOS) {
+      jsBridge.toast('ios暂不支持下载音视频~');
+      return;
+    }
     jsBridge.networkInfo(function(res) {
       if(res.available) {
         if(res.wifi) {
@@ -354,7 +358,6 @@ class MusicAlbum extends migi.Component {
             url,
             name,
           });
-          jsBridge.toast('开始下载，请关注通知栏进度');
         }
         else {
           jsBridge.confirm("检测到当前网络环境非wifi，继续下载可能会产生流量，是否确定继续？", function(res) {
@@ -365,7 +368,6 @@ class MusicAlbum extends migi.Component {
               url,
               name,
             });
-            jsBridge.toast('开始下载，请关注通知栏进度');
           });
         }
       }

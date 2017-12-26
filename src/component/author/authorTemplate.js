@@ -72,7 +72,6 @@ let code2Data = {
   '151': {
     name: '配音',
     display: '配音',
-    css: 'cv',
   },
   '211': {
     name: '视频',
