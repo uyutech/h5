@@ -306,7 +306,7 @@ class Audio extends migi.Component {
     if(url && /^\/\//.test(url)) {
       url = location.protocol + url;
     }
-    if(jsBridge.isIOS) {
+    if(jsBridge.ios) {
       jsBridge.toast('ios暂不支持下载音视频~');
       return;
     }

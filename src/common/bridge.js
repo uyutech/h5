@@ -15,19 +15,27 @@ let appVersion = '';
 if(/ app\/ZhuanQuan\/([\d.]+)/.test(ua)) {
   appVersion = / app\/ZhuanQuan\/([\d.]+)/.exec(ua)[1];
 }
+let ios = /iP(hone|od|ad)/.test(ua);
 
 let jsBridge = {
   isInApp: / app\/ZhuanQuan/.test(ua),
   appVersion: appVersion,
-  isIOS: /iP(hone|od|ad)/.test(ua),
+  android: !ios,
+  ios,
   ready: function(cb) {
     cb = cb || function() {};
     if(this.isInApp) {
-      if (window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+        jsBridge.android = ZhuanQuanJSBridge.android;
+        jsBridge.ios = ZhuanQuanJSBridge.ios;
         cb();
       }
       else {
-        document.addEventListener('ZhuanQuanJSBridgeReady', cb);
+        document.addEventListener('ZhuanQuanJSBridgeReady', function() {
+          jsBridge.android = ZhuanQuanJSBridge.android;
+          jsBridge.ios = ZhuanQuanJSBridge.ios;
+          cb();
+        });
       }
     }
     else {
