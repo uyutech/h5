@@ -304,7 +304,7 @@ class Post extends migi.Component {
               <img src={ util.autoSsl(util.img128_128_80(postData.SendUserHead_Url
                 || '/src/common/head.png')) }/>
             </a>
-            : <a class="pic" href={ '/user.html?authorID=' + postData.SendUserID }
+            : <a class="pic" href={ '/user.html?userID=' + postData.SendUserID }
                  title={ postData.SendUserNickName }>
               <img src={ util.autoSsl(util.img128_128_80(postData.SendUserHead_Url
                 || '/src/common/head.png')) }/>
@@ -316,7 +316,7 @@ class Post extends migi.Component {
               postData.IsAuthor
                 ? <a class="name" href={ '/author.html?authorID=' + postData.AuthorID }
                      title={ postData.SendUserNickName }>{ postData.SendUserNickName }</a>
-                : <a class="name" href={ '/user.html?authorID=' + postData.SendUserID }
+                : <a class="name" href={ '/user.html?userID=' + postData.SendUserID }
                      title={ postData.SendUserNickName }>{ postData.SendUserNickName }</a>
             }
             <small class="time">{ util.formatDate(postData.Createtime) }</small>
