@@ -69,9 +69,12 @@ class HotPlayList extends migi.Component {
   }
   click(e, vd, tvd) {
     e.preventDefault();
-    let href = tvd.props.href;
+    let url = tvd.props.href;
     let title = tvd.props.title;
-    jsBridge.pushWindow(href, {
+    if(!url) {
+      throw new Error('hotplaylist url is null');
+    }
+    jsBridge.pushWindow(url, {
       title,
     });
   }

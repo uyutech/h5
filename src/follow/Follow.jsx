@@ -155,6 +155,9 @@ class Follow extends migi.Component {
     e.preventDefault();
     let url = vd.props.href;
     let title = vd.props.title;
+    if(!url) {
+      throw new Error('follow url is null');
+    }
     jsBridge.pushWindow(url, {
       title,
     });
@@ -163,6 +166,9 @@ class Follow extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
+    if(!url) {
+      throw new Error('follow2 url is null');
+    }
     jsBridge.pushWindow(url, {
       title,
     });

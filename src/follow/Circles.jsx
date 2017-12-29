@@ -14,6 +14,9 @@ class Circles extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
+    if(!url) {
+      throw new Error('circles url is null');
+    }
     jsBridge.pushWindow(url, {
       title,
     });

@@ -15,9 +15,12 @@ class HotMusicAlbum extends migi.Component {
   @bind dataList
   click(e, vd, tvd) {
     e.preventDefault();
-    let href = tvd.props.href;
+    let url = tvd.props.href;
     let title = tvd.props.title;
-    jsBridge.pushWindow(href, {
+    if(!url) {
+      throw new Error('hotmusicalbum url is null');
+    }
+    jsBridge.pushWindow(url, {
       title,
     });
   }

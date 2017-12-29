@@ -135,6 +135,9 @@ class Comment extends migi.Component {
         let $this = $(this);
         let url = $this.attr('href');
         let title = $this.attr('title');
+        if(!url) {
+          throw new Error('comment url is null');
+        }
         jsBridge.pushWindow(url, {
           title,
         });

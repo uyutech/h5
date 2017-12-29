@@ -311,8 +311,8 @@ let jsBridge = {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       if(isString(data)) {
         data = {
-          text: data,
-        };
+
+        }
       }
       ZhuanQuanJSBridge.call('setOptionMenu', data);
     }

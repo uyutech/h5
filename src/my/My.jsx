@@ -136,6 +136,9 @@ class My extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.children[0];
+    if(!url) {
+      throw new Error('my url is null');
+    }
     jsBridge.pushWindow(url, {
       title,
     });

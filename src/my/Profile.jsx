@@ -68,7 +68,6 @@ class Profile extends migi.Component {
     jsBridge.album(function(res) {
       if(res.success) {
         let img = Array.isArray(res.base64) ? res.base64[0] : res.base64;
-        self.head = img;
         net.postJSON('/h5/my/uploadHead', { img }, function(res) {
           if(res.success) {
             self.head = res.url;
@@ -101,11 +100,7 @@ class Profile extends migi.Component {
         if(newSign !== self.sign) {
           net.postJSON('/h5/my/updateSign', { sign: newSign }, function(res) {
             if(res.success) {
-              self.sign = newSign;return;
-              jsBridge.getPreference('loginInfo', function(loginInfo) {
-                loginInfo.userInfo.User_Sign = newSign;
-                jsBridge.setPreference('loginInfo', JSON.stringify(loginInfo));
-              });
+              self.sign = newSign;
             }
             else {
               jsBridge.toast(res.message || util.ERROR_MESSAGE);

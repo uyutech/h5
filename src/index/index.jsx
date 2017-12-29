@@ -33,6 +33,23 @@ jsBridge.ready(function() {
       }
     });
   });
+  jsBridge.getPreference('loginInfo', function(loginInfo) {
+    // 未登录情况下resume后检查登录情况
+    if(!loginInfo) {
+      jsBridge.on('resume', function() {
+        jsBridge.getPreference('loginInfo', function(loginInfo) {
+          if(!loginInfo) {
+            return;
+          }
+          migi.eventBus.emit('LOGIN', loginInfo);
+          let userInfo = loginInfo.userInfo;
+          if(userInfo) {
+            migi.eventBus.emit('USER_INFO', userInfo);
+          }
+        });
+      });
+    }
+  });
   jsBridge.on('resume', function(e) {
     let data = e.data;
     if(data && data.message) {
@@ -42,17 +59,6 @@ jsBridge.ready(function() {
         }
       });
     }
-    jsBridge.getPreference('loginInfo', function(loginInfo) {
-      if(!loginInfo) {
-        migi.eventBus.emit('LOGIN_OUT');
-        return;
-      }
-      migi.eventBus.emit('LOGIN', loginInfo);
-      let userInfo = loginInfo.userInfo;
-      if(userInfo) {
-        migi.eventBus.emit('USER_INFO', userInfo);
-      }
-    });
   });
 
   let topNav = migi.preExist(<TopNav/>, '#page');

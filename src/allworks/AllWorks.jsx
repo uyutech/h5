@@ -43,6 +43,9 @@ class AllWorks extends migi.Component {
       let $this = $(this);
       let url = $this.attr('href');
       let title = $this.attr('title');
+      if(!url) {
+        throw new Error('allworks url is null');
+      }
       jsBridge.pushWindow(url, {
         title,
       });

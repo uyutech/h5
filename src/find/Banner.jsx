@@ -61,6 +61,9 @@ class Banner extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
+    if(!url) {
+      throw new Error('banner url is null');
+    }
     jsBridge.pushWindow(url, {
       title,
     });

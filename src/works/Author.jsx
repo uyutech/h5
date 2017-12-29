@@ -16,6 +16,9 @@ class Author extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
+    if(!url) {
+      throw new Error('author url is null');
+    }
     jsBridge.pushWindow(url, {
       title,
     });
