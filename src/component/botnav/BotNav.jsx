@@ -25,6 +25,8 @@ class BotNav extends migi.Component {
     if(tvd.props.class === 'new') {
       jsBridge.pushWindow('/subpost.html', {
         title: '画圈',
+        showOptionMenu: 'true',
+        optionMenu: '发布',
       });
       return;
     }

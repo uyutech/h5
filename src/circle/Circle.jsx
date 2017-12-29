@@ -50,6 +50,8 @@ class Circle extends migi.Component {
     subCmt.on('click', function() {
       jsBridge.pushWindow('/subpost.html?circleID=' + self.circleID, {
         title: '画个圈',
+        showOptionMenu: 'true',
+        optionMenu: '发布',
       });
     });
     jsBridge.on('back', function(e) {

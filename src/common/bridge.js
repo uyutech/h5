@@ -181,14 +181,12 @@ let jsBridge = {
   prompt: function(s, callback) {
     if(isString(s)) {
       s = {
-        title: '',
         message: '请输入',
         value: s,
       };
     }
     else {
       s = s || {};
-      s.title = s.title || '';
       s.message = s.message || '请输入';
       s.value = s.value || '';
     }
@@ -311,6 +309,11 @@ let jsBridge = {
   },
   setOptionMenu: function(data) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      if(isString(data)) {
+        data = {
+          text: data,
+        };
+      }
       ZhuanQuanJSBridge.call('setOptionMenu', data);
     }
   },

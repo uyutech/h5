@@ -23,9 +23,10 @@ jsBridge.ready(function() {
     <SubPost circleID={ circleID } placeholder="在转圈圈画个圈吧"/>,
     '#page'
   );
-  net.postJSON('/h5/subpost/list', { circleID }, function(res) {
+  net.postJSON('/h5/subpost/index', { circleID }, function(res) {
     if(res.success) {
-      let to = res.data.myCircleList;
+      let data = res.data;
+      let to = data.myCircleList;
       if(to && to.length && circleID !== undefined) {
         let has = false;
         to.forEach(function(item) {
@@ -46,18 +47,17 @@ jsBridge.ready(function() {
         else {
           to.unshift({
             CirclingID: circleID,
-            CirclingName: res.data.circleDetail.TagName,
+            CirclingName: data.circleDetail.TagName,
           });
         }
       }
-      subPost.to = to;console.log(to);
-      let activityLabel = res.data.activityLabel;
+      subPost.to = to;
+      let activityLabel = data.activityLabel || [];
       subPost.activityLabel = activityLabel;
-      let tagList = activityLabel['0'] || [];
-      if(circleID && activityLabel && activityLabel[circleID]) {
-        tagList = tagList.concat(activityLabel[circleID]);
+      subPost.tagList = (data.tagList || []).concat(activityLabel);
+      if(circleID && data.tagList) {
+        subPost.setCache(circleID, data.tagList);
       }
-      subPost.tagList = tagList;
     }
     else {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
