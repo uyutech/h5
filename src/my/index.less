@@ -3,10 +3,22 @@
  */
 
 #page > .my{
-  > div{
+  > .login{
+    padding-top:1rem;
+    .passport{
+      display:block;
+      margin:0 auto;
+      padding-top:0.7rem;
+      width:1rem;
+      background:url(../component/botnav/icon.png) no-repeat center 0;
+      background-size:0.52rem auto;
+      text-align:center;
+      color:#919191;
+      font-size:0.16rem;
+    }
     .weibo{
       display:block;
-      margin:1rem auto 0;
+      margin:0.2rem auto 0;
       padding-top:0.4rem;
       width:1rem;
       background:url(../component/mlogin/login_weibo.png) no-repeat center 0;
@@ -15,6 +27,8 @@
       color:#919191;
       font-size:0.16rem;
     }
+  }
+  > div{
     h4{
       position:relative;
       margin:0.1rem;
@@ -234,7 +248,7 @@
     }
     .loginout{
       display:block;
-      margin:0.2rem auto;
+      margin:0.2rem auto 0;
       width:1.5rem;
       line-height:0.42rem;
       font-size:0.16rem;
@@ -245,6 +259,11 @@
       &:active{
         color:#0AE;
       }
+    }
+    .version{
+      margin-top:0.2rem;
+      text-align:center;
+      color:#CCC;
     }
   }
 }

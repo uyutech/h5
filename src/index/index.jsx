@@ -34,21 +34,30 @@ jsBridge.ready(function() {
     });
   });
   jsBridge.getPreference('loginInfo', function(loginInfo) {
-    // 未登录情况下resume后检查登录情况
-    if(!loginInfo) {
-      jsBridge.on('resume', function() {
-        jsBridge.getPreference('loginInfo', function(loginInfo) {
-          if(!loginInfo) {
-            return;
-          }
-          migi.eventBus.emit('LOGIN', loginInfo);
+    jsBridge.on('resume', function() {
+      jsBridge.getPreference('loginInfo', function(loginInfo2) {
+        if(loginInfo && !loginInfo2) {
+          loginInfo = null;
+          migi.eventBus.emit('LOGIN_OUT');
+          $.cookie('isLogin', null);
+          $.cookie('uid', null);
+        }
+        else if(!loginInfo && loginInfo2) {
+          loginInfo = loginInfo2;
           let userInfo = loginInfo.userInfo;
+          migi.eventBus.emit('LOGIN', loginInfo);
           if(userInfo) {
             migi.eventBus.emit('USER_INFO', userInfo);
           }
-        });
+        }
       });
-    }
+    });
+    migi.eventBus.on('LOGIN_OUT', function() {
+      loginInfo = null;
+    });
+    migi.eventBus.on('LOGIN', function(data) {
+      loginInfo = data;
+    });
   });
   jsBridge.on('resume', function(e) {
     let data = e.data;
@@ -136,10 +145,7 @@ jsBridge.ready(function() {
     let major = parseInt(version[0]) || 0;
     let minor = parseInt(version[1]) || 0;
     let patch = parseInt(version[2]) || 0;
-    if(minor < 2) {
-      old = true;
-    }
-    else if(minor === 2 && patch < 8) {
+    if(minor < 3) {
       old = true;
     }
   }
@@ -150,7 +156,7 @@ jsBridge.ready(function() {
     let notice = migi.render(
       <a class="notice" href="#" onClick={ function(e) {
         e.preventDefault();
-        jsBridge.openUri('http://circling.net.cn/android/circling-0.2.9.apk');
+        jsBridge.openUri('http://circling.net.cn/android/circling-0.4.0.apk');
       } }>您的app版本过低，考虑到功能和体验，请点击下载更新</a>
     );
     notice.prependTo('#page');

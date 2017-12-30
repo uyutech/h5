@@ -57,7 +57,7 @@ class Post extends migi.Component {
       });
     });
     $root.on('click', '.comment', function() {
-      jsBridge.pushWindow('/subcomment.html?type=1?id=' + self.postID, {
+      jsBridge.pushWindow('/subcomment.html?type=1&id=' + self.postID, {
         title: '评论',
       });
     });

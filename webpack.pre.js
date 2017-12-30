@@ -24,6 +24,7 @@ module.exports = {
     mall_wait: './src/mall_wait/pre.jsx',
     tag: './src/tag/pre.jsx',
     more_tag: './src/more_tag/pre.jsx',
+    passport: './src/passport/pre.jsx',
   },
   output: {
     path: __dirname + '/www',

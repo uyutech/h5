@@ -8,6 +8,8 @@ import net from '../common/net';
 import util from '../common/util';
 import Profile from './Profile.jsx';
 
+const pack = require('../../package.json');
+
 class My extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -47,7 +49,7 @@ class My extends migi.Component {
         self.isLogin = false;
         self.hasData = true;
         jsBridge.delPreference('loginInfo');
-        migi.eventBus.emit('LOIN_OUT');
+        migi.eventBus.emit('LOGIN_OUT');
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -106,9 +108,11 @@ class My extends migi.Component {
           jsBridge.hideLoading();
           if(res.success) {
             let data = res.data;
-            self.setData(data);
+            migi.eventBus.emit('LOGIN', data);
             migi.eventBus.emit('USER_INFO', data.userInfo);
             jsBridge.setPreference('loginInfo', JSON.stringify(data));
+            $.cookie('isLogin', true);
+            $.cookie('uid', data.userInfo.UID);
           }
           else {
             jsBridge.toast(res.message);
@@ -126,6 +130,7 @@ class My extends migi.Component {
       self.isLogin = false;
       migi.eventBus.emit('LOGIN_OUT');
       $.cookie('isLogin', null);
+      $.cookie('uid', null);
       jsBridge.delPreference('loginInfo');
       jsBridge.loginOut();
     }, function(res) {
@@ -217,7 +222,26 @@ class My extends migi.Component {
         <span>帮助中心</span>
       </a>
       <span class="loginout" onClick={ self.clickOut.bind(this) }>退出登录</span>
+      <p class="version">版本：{ jsBridge.appVersion + '~' + pack.version }</p>
     </div>;
+  }
+  clickLogin() {
+    if(jsBridge.appVersion) {
+      let version = jsBridge.appVersion.split('.');
+      let minor = parseInt(version[1]) || 0;
+      if(minor < 4) {
+        jsBridge.toast('转圈账号注册登录功能在0.4版本以后提供，请更新客户端~');
+        return;
+      }
+    }
+    else {
+      jsBridge.toast('转圈账号注册登录功能在0.4版本以后提供，请更新客户端~');
+      return;
+    }
+    jsBridge.pushWindow('/passport.html', {
+      title: '登录注册',
+      backgroundColor: '#b6d1e8'
+    });
   }
   render() {
     return <div class="my">
@@ -226,7 +250,9 @@ class My extends migi.Component {
           ? this.isLogin
             ? this.genDom()
             : <div class="login">
+                <span class="passport" onClick={ this.clickLogin }>转圈账号</span>
                 <span class="weibo" onClick={ this.clickWeibo }>微博登录</span>
+                <p class="version">版本：{ jsBridge.appVersion + '~' + pack.version }</p>
               </div>
           : <div>
               <div class="fn-placeholder-tag"/>

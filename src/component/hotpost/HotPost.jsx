@@ -411,6 +411,10 @@ class HotPost extends migi.Component {
   prependData(data) {
     let self = this;
     let html = '';
+    data = data || [];
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
     (data || []).forEach(function(item) {
       html += self.genItem(item);
     });

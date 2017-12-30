@@ -177,7 +177,9 @@ class Follow extends migi.Component {
     let self = this;
     return <div>
       <h4>关注话题</h4>
-      <Circles ref="circles" dataList={ self.hotCircle }/>
+      <Circles ref="circles"
+               empty={ '你还没有关注话题哦，快去发现页看看有没有喜欢的话题吧！' }
+               dataList={ self.hotCircle }/>
       <h4>关注作者</h4>
       <HotAuthor ref="hotAuthor"
                  dataList={ self.follows.data }

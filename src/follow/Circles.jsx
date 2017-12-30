@@ -24,9 +24,11 @@ class Circles extends migi.Component {
   render() {
     return <ul class="circles" onClick={ { a: this.click } }>
       {
-        (this.dataList || []).map(function(item) {
-          return <li rel={ item.Cid }><a href={ '/circle.html?circleID=' + item.Cid } title={ item.CirclingName + '圈' }>{ item.CirclingName }</a></li>;
-        })
+        this.dataList && this.dataList.length
+          ? (this.dataList || []).map(function(item) {
+              return <li rel={ item.Cid }><a href={ '/circle.html?circleID=' + item.Cid } title={ item.CirclingName + '圈' }>{ item.CirclingName }</a></li>;
+            })
+          : <div class="empty">{ this.props.empty || '暂无数据' }</div>
       }
     </ul>;
   }

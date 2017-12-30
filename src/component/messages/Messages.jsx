@@ -35,6 +35,9 @@ class Messages extends migi.Component {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
+        if(url.charAt(0) === '#') {
+          return;
+        }
         let title = $this.attr('title');
         if(!url) {
           throw new Error('messages url is null');

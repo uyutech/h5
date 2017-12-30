@@ -7,6 +7,15 @@ import util from "../../common/util";
 class NeedLogin extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      jsBridge.on('resume', function(e) {
+        let data = e.data;
+        if(data && data.passport && util.isLogin()) {
+          self.hide();
+        }
+      });
+    });
   }
   @bind message
   show() {
@@ -18,6 +27,24 @@ class NeedLogin extends migi.Component {
   clickClose(e) {
     e.preventDefault();
     this.hide();
+  }
+  clickLogin() {
+    if(jsBridge.appVersion) {
+      let version = jsBridge.appVersion.split('.');
+      let minor = parseInt(version[1]) || 0;
+      if(minor < 4) {
+        jsBridge.toast('转圈账号注册登录功能在0.4版本以后提供，请更新客户端~');
+        return;
+      }
+    }
+    else {
+      jsBridge.toast('转圈账号注册登录功能在0.4版本以后提供，请更新客户端~');
+      return;
+    }
+    jsBridge.pushWindow('/passport.html', {
+      title: '登录注册',
+      backgroundColor: '#b6d1e8'
+    });
   }
   clickWeibo() {
     let self = this;
@@ -52,6 +79,7 @@ class NeedLogin extends migi.Component {
       <div class="c">
         <h3>您尚未登录...</h3>
         <p>{ this.message || '登录后即可进行相关操作~' }</p>
+        <span class="passport" onClick={ this.clickLogin }>转圈账号</span>
         <span class="weibo" onClick={ this.clickWeibo }>微博登录</span>
         <a href="#" class="close" onClick={ this.clickClose }/>
       </div>

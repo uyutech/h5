@@ -128,6 +128,8 @@ class Circling extends migi.Component {
       circleID = tvd.props.rel;
       this.ref.hotPost.setData();
       skip = 0;
+      loadEnd = false;
+      loading = false;
       this.load();
     }
   }
