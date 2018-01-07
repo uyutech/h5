@@ -46,6 +46,11 @@ let jsBridge = {
     cb = cb || function() {};
     document.addEventListener(name, cb);
   },
+  off: function(name, cb) {
+    if(cb) {
+      document.removeEventListener(name, cb);
+    }
+  },
   setTitle: function(s) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('setTitle', s || '');

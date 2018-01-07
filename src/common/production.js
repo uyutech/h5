@@ -5,13 +5,13 @@
 import $ from 'anima-yocto-ajax';
 import pa from '../../package.json';
 
-window.ROOT_DOMAIN = 'http://circling.cc';
+window.ROOT_DOMAIN = 'https://circling.cc';
 
 export default {
   ajax: function(url, data, success, error, type, timeout) {
     // 兼容无host
     if (!/^http(s)?:\/\//.test(url)) {
-      url = 'http://circling.cc/' + url.replace(/^\//, '');
+      url = window.ROOT_DOMAIN + '/' + url.replace(/^\//, '');
     }
     data && Object.keys(data).forEach(function(k) {
       if(data[k] === undefined || data[k] === null) {

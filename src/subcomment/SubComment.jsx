@@ -22,6 +22,9 @@ class SubComment extends migi.Component {
           self.invalid = length < 3 || length > MAX_TEXT_LENGTH;
         }
       });
+      jsBridge.on('back', function() {
+        self.ref.input.element.blur();
+      });
     });
   }
   @bind placeholder

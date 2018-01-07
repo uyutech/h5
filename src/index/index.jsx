@@ -35,22 +35,25 @@ jsBridge.ready(function() {
   });
   jsBridge.getPreference('loginInfo', function(loginInfo) {
     jsBridge.on('resume', function() {
-      jsBridge.getPreference('loginInfo', function(loginInfo2) {
-        if(loginInfo && !loginInfo2) {
-          loginInfo = null;
-          migi.eventBus.emit('LOGIN_OUT');
-          $.cookie('isLogin', null);
-          $.cookie('uid', null);
-        }
-        else if(!loginInfo && loginInfo2) {
-          loginInfo = loginInfo2;
-          let userInfo = loginInfo.userInfo;
-          migi.eventBus.emit('LOGIN', loginInfo);
-          if(userInfo) {
-            migi.eventBus.emit('USER_INFO', userInfo);
+      // ios暂不清楚为何需要延迟，否则不触发
+      setTimeout(function() {
+        jsBridge.getPreference('loginInfo', function(loginInfo2) {
+          if(loginInfo && !loginInfo2) {
+            loginInfo = null;
+            migi.eventBus.emit('LOGIN_OUT');
+            $.cookie('isLogin', null);
+            $.cookie('uid', null);
           }
-        }
-      });
+          else if(!loginInfo && loginInfo2) {
+            loginInfo = loginInfo2;
+            let userInfo = loginInfo.userInfo;
+            migi.eventBus.emit('LOGIN', loginInfo);
+            if(userInfo) {
+              migi.eventBus.emit('USER_INFO', userInfo);
+            }
+          }
+        });
+      }, 1);
     });
     migi.eventBus.on('LOGIN_OUT', function() {
       loginInfo = null;
@@ -145,7 +148,7 @@ jsBridge.ready(function() {
     let major = parseInt(version[0]) || 0;
     let minor = parseInt(version[1]) || 0;
     let patch = parseInt(version[2]) || 0;
-    if(minor < 3) {
+    if(minor < 4) {
       old = true;
     }
   }

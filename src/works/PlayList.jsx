@@ -79,6 +79,14 @@ class PlayList extends migi.Component {
       migi.eventBus.emit('chooseMusic', this.list[i]);
     }
   }
+  clickLink(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+    });
+  }
   render() {
     return <div class={ 'mod mod-playlist' + (this.props.hidden ? ' fn-hide' : '') }>
       <ul class="type fn-clear" onClick={ { li: this.clickType } }>
@@ -86,7 +94,7 @@ class PlayList extends migi.Component {
         {/*<li class="audio" rel="audio">播放音频</li>*/}
         {/*<li class="music cur">播放全部</li>*/}
       </ul>
-      <ol class="list" ref="list" onClick={ { li: this.clickItem } }>
+      <ol class="list" ref="list" onClick={ { li: this.clickItem, a: this.clickLink } }>
         {
           (this.list || []).map(function(item, i) {
             let type = '';
@@ -104,15 +112,20 @@ class PlayList extends migi.Component {
             let works = item.Works_Items_Works[0] || {};
             if(item.WorksState === 2) {
               return <li class={ type + ' rel' + ((this.index === undefined ? i : this.index !== i) ? '' : ' cur') } rel={ i }>
-                <a href={ '/works.html?worksID=' + works.WorksID } class="pic">
-                  <img src={ util.autoSsl(util.img64_64_80(works.WorksCoverPic || this.props.cover)) || '//zhuanquan.xin/img/blank.png' }/>
+                <a href={ '/works.html?worksID=' + works.WorksID } class="pic" title={ item.ItemName }>
+                  <img src={ util.autoSsl(util.img64_64_80(works.WorksCoverPic || this.props.cover))
+                  || '//zhuanquan.xin/img/blank.png' }/>
                 </a>
-                <a href={ '/works.html?worksID=' + works.WorksID } class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
+                <a href={ '/works.html?worksID=' + works.WorksID }
+                   class={ 'name' + (item.ItemName ? '' : ' empty') }
+                   title={ item.ItemName }>{ item.ItemName || '待揭秘' }</a>
               </li>;
             }
-            return <li class={ type + ' rel' + ((this.index === undefined ? i : this.index !== i) ? '' : ' cur') + (item.FileUrl ? '' : ' empty') } rel={ i }>
-              <a href={ '/works.html?worksID=' + works.WorksID } class="pic">
-                <img src={ util.autoSsl(util.img64_64_80(works.WorksCoverPic || this.props.cover)) || '//zhuanquan.xin/img/blank.png' }/>
+            return <li class={ type + ' rel' + ((this.index === undefined ? i : this.index !== i) ? '' : ' cur')
+            + (item.FileUrl ? '' : ' empty') } rel={ i }>
+              <a href={ '/works.html?worksID=' + works.WorksID } class="pic" title={ item.ItemName }>
+                <img src={ util.autoSsl(util.img64_64_80(works.WorksCoverPic || this.props.cover))
+                || '//zhuanquan.xin/img/blank.png' }/>
               </a>
               <span class={ 'name' + (works.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</span>
               <span class="icon"><b class="l1"/><b class="l2"/><b class="l3"/></span>

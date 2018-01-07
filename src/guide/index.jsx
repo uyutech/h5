@@ -14,99 +14,46 @@ import Step3 from './Step3.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
 let step = parseInt(search.step);
-let authorName = search.authorName;
+let nickName = search.nickName;
 
-if(step === undefined || isNaN(step)) {
-  step = 1;
+if(!step) {
+  step = 0;
 }
-if(step > 1) {
-  $(document.body).addClass('no_fit');
-}
-// let firstStep = step;
 
-let step0 = migi.render(
-  <Step0 isShow={ step == 0 } authorName={ authorName }/>,
-  document.body
-);
-let step1 = migi.render(
-  <Step1 isShow={ step == 1 }/>,
-  document.body
-);
-let step2 = migi.render(
-  <Step2 isShow={ step == 2 }/>,
-  document.body
-);
-let step3 = migi.render(
-  <Step3 isShow={ step == 3 }/>,
-  document.body
-);
-
-step1.on('next', function() {
-  step1.hide();
-  step2.show();
-  step2.loadMore();
-  step++;
-  step1.enable();
-});
-step2.on('next', function() {
-  step2.hide();
-  step3.show();
-  step3.loadMore();
-  step++;
-  step2.enable();
-});
-step3.on('next', function() {
-  location.href = 'index.html';
-});
-
-switch (step) {
-  case 3:
-    step3.show();
-    step3.loadMore();
-    break;
-  case 2:
-    step2.show();
-    step2.loadMore();
-    break;
-  case 0:
-    break;
-  default:
-    step1.show();
-    break;
-}
+// let step0 = migi.render(
+//   <Step0 isShow={ step == 0 } authorName={ authorName }/>,
+//   '#page'
+// );
 
 jsBridge.ready(function() {
-  jsBridge.swipeRefresh(false);
-  jsBridge.on('back', function(e) {
-    e.preventDefault();
-    jsBridge.moveTaskToBack();
+  jsBridge.refreshState(false);
+
+  let step1 = migi.render(
+    <Step1 isShow={ !step || step < 10 } nickName={ nickName }/>,
+    '#page'
+  );
+  let step2 = migi.render(
+    <Step2 isShow={ step === 10 }/>,
+    '#page'
+  );
+  let step3 = migi.render(
+    <Step3 isShow={ step === 11 }/>,
+    '#page'
+  );
+
+  step1.on('next', function() {
+    step1.hide();
+    step2.show();
+    step2.loadMore();
   });
-  // jsBridge.userInfo(function(res) {
-  //   console.log(JSON.stringify(res));
-  // });
-  // jsBridge.confirm('haha', function(res) {
-  //   console.log(res);
-  // });
-  // jsBridge.on('back', function(e) {
-  //   if(step) {
-  //     if(step > firstStep && step > 1) {
-  //       e.preventDefault();
-  //       switch (step) {
-  //         case 3:
-  //           step3.hide();
-  //           step2.show();
-  //           step--;
-  //           break;
-  //         case 2:
-  //           step2.hide();
-  //           step1.show();
-  //           step--;
-  //           break;
-  //         case 1:
-  //           s
-  //           break;
-  //       }
-  //     }
-  //   }
-  // });
+  step2.on('next', function() {
+    step2.hide();
+    step3.show();
+    step3.loadMore();
+  });
+  step3.on('next', function() {
+    jsBridge.popWindow({
+      guide: true,
+    });
+  });
 });

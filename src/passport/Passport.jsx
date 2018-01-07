@@ -132,6 +132,7 @@ class Login extends migi.Component {
     }, function(res) {
       if(res.success) {
         let data = res.data;
+        jsBridge.toast('登录成功');
         jsBridge.setPreference('loginInfo', JSON.stringify(data), function() {
           jsBridge.popWindow({
             passport: true,
@@ -139,7 +140,6 @@ class Login extends migi.Component {
         });
         $.cookie('isLogin', true);
         $.cookie('uid', data.userInfo.UID);
-        jsBridge.toast('登录成功');
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -191,6 +191,7 @@ class Login extends migi.Component {
         }, function(res) {
           if(res.success) {
             let data = res.data;
+            jsBridge.toast('注册成功');
             jsBridge.setPreference('loginInfo', JSON.stringify(data), function() {
               jsBridge.popWindow({
                 passport: true,
@@ -198,7 +199,6 @@ class Login extends migi.Component {
             });
             $.cookie('isLogin', true);
             $.cookie('uid', data.userInfo.UID);
-            jsBridge.toast('注册成功');
           }
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);

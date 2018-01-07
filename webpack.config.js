@@ -28,6 +28,8 @@ module.exports = {
     tag: './src/tag/index.jsx',
     more_tag: './src/more_tag/index.jsx',
     passport: './src/passport/index.jsx',
+    phone: './src/phone/index.jsx',
+    guide: './src/guide/index.jsx',
   },
   output: {
     path: __dirname + '/www',

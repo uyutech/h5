@@ -256,7 +256,7 @@ class Post extends migi.Component {
         self.isLike = self.ref.imageView.isLike = data.ISLike || data.State === 'likeWordsUser';
         self.likeCount = data.LikeCount || '点赞';
         $li.toggleClass('has');
-        $li.find('span').text(data.FavorCount || '点赞');
+        $li.find('span').text(data.LikeCount || '点赞');
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);

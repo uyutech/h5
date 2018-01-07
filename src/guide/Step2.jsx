@@ -1,10 +1,9 @@
 /**
  * Created by army on 2017/4/21.
  */
- 
-let loading = false;
-let fromIndex = 0;
-let limit = 30;
+
+import net from '../common/net';
+import util from '../common/util';
 
 class Step2 extends migi.Component {
   constructor(...data) {
@@ -12,64 +11,17 @@ class Step2 extends migi.Component {
     let self = this;
     self.isShow = self.props.isShow;
     self.on(migi.Event.DOM, function() {
-      self.$c = $(self.ref.c.element);
-      let $list2 = self.$list2 = $(self.ref.list2.element);
+      if(self.isShow) {
+        self.loadMore();
+      }
       let $list = $(self.ref.list.element);
-      let $win = $(window);
-      let winHeight = $win.height();
-      let last;
-      $win.on('scroll', function() {
-        if(self.isShow) {
-          let scrollTop = $win.scrollTop();
-          let bodyHeight = $(document.body).height();
-          if (scrollTop + winHeight > bodyHeight - 50) {
-            self.loadMore();
-          }
-        }
-      });
-      $list2.on('click', 'b', function(e) {
-        let $b = $(this);
-        let $li = $b.parent();
-        if($li.hasClass('sel')) {
-          let tagId = $li.attr('tagId');
-          $list.find(`[tagId="${tagId}"]`).removeClass('sel');
-          $li.addClass('fn-hidden');
-          $li.addClass('remove');
-          setTimeout(function() {
-            $li.remove();
-            self.autoWidth();
-          }, 200);
-        }
-      });
-      $list2.on('click', 'li', function(e) {
-        let $li = $(this);
-        if(e.target == this) {
-          if($li.hasClass('sel')) {
-            $li.removeClass('sel');
-            last = null;
-          }
-          else {
-            if (last) {
-              last.removeClass('sel');
-            }
-            $li.toggleClass('sel');
-            last = $li;
-          }
-        }
-      });
-      $(document.body).on('click', function(e) {
-        let $o = $(e.target);
-        if(!$o.closest('.choose')[0]) {
-          if(last) {
-            last.removeClass('sel');
-          }
-          last = null;
-        }
+      $list.on('click', 'li', function() {
+        $(this).toggleClass('on');
       });
     });
   }
   @bind isShow
-  @bind setDis = false
+  @bind sending
   get list() {
     return this._list || [];
   }
@@ -89,35 +41,28 @@ class Step2 extends migi.Component {
     this.autoWidth();
     $li.toggleClass('sel');
   }
-  next(e, vd) {
+  next() {
     let self = this;
-    let $vd = $(vd.element);
-    if(!$vd.hasClass('dis')) {
-      self.setDis = true;
-      let tagIds = [];
-      self.$list2.find('li').each(function(i, o) {
-        tagIds.push(parseInt($(o).attr('tagId')));
-      });
-      jsBridge.showLoading();
-      util.postJSON('api/Users/SaveTagToUser', {
-        tagIds: tagIds.join(','),
-      }, function(res) {
-        jsBridge.hideLoading();
-        if(res.success) {
-          self.emit('next');
-        }
-        else {
-          jsBridge.toast(res.message || '网络错误请稍后再试');
-        }
-      }, function(res) {
-        self.setDis = false;
-        jsBridge.hideLoading();
-        jsBridge.toast(res.message || '网络错误请稍后再试');
-      });
+    if(self.sending) {
+      return;
     }
-  }
-  enable() {
-    this.setDis = false;
+    self.sending = true;
+    let ids = [];
+    $(self.ref.list.element).find('li').each(function(i, o) {
+      ids.push($(o).attr('rel'));
+    });
+    net.postJSON('/h5/passport/guideCircle', { ids }, function(res) {
+      if(res.success) {
+        self.emit('next');
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+      self.sending = false;
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      self.sending = false;
+    });
   }
   show() {
     this.isShow = true;
@@ -125,64 +70,36 @@ class Step2 extends migi.Component {
   hide() {
     this.isShow = false;
   }
-  autoWidth() {
-    this.$c.css('width', this.$list2.width() + 1);
-  }
   loadMore() {
-    if(loading) {
-      return;
-    }
-    loading = true;
     let self = this;
-    util.postJSON('api/Users/GetTag', {
-      Skip: fromIndex,
-      Take: limit,
-    }, function(res) {
+    net.postJSON('/h5/passport/guideCircleList', { skip: 0, take: 30 }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.list = self.list.concat(data.data);
-        loading = false;
-        fromIndex += limit;
-        data.data.forEach(function(item) {
-          if(item.isDefaultFollowed) {
-            self.add(item.tagId, item.tagName);
-            self.autoWidth();
-          }
+        let s = '';
+        (data.data || []).forEach(function(item) {
+          s += self.genItem(item);
         });
+        $(self.ref.list.element).append(s);
       }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  add(tagId, txt) {
-    this.$c.css('width', '999rem');
-    let $new = $(`<li tagId="${tagId}">${txt}<b></b></li>`);
-    this.$list2.append($new);
-    $new.css('width', $new.width() + 1);
+  genItem(item) {
+    return <li rel={ item.ID }>{ item.Tag_Name }</li>;
   }
   render() {
     return <div class={ 'step2' + (this.isShow ? '' : ' fn-hide') }>
-      <img class="logo" src="src/guide/step2.jpg"/>
-      <h2>请选择你感兴趣的圈子</h2>
-      <h4>以便我们呈现更适合你的内容</h4>
-      <div class="list" ref="list">
-        <ul class="fn-clear" onClick={ { 'li': this.click } }>
-          {
-            this.list.map(function(item) {
-              if(item.isDefaultFollowed) {
-                return <li tagId={ item.ID } class="sel">{ item.Tag_Name }</li>;
-              }
-              return <li tagId={ item.ID }>{ item.Tag_Name }</li>;
-            }.bind(this))
-          }
-        </ul>
+      <div class="con">
+        <b class="icon"/>
+        <h2>请选择你感兴趣的圈子</h2>
+        <h4>以便我们呈现更适合你的内容</h4>
+        <ul class="list fn-clear" ref="list"/>
       </div>
-      <div class="choose">
-        <div class="lists">
-          <div class="c" ref="c">
-            <ul ref="list2"></ul>
-          </div>
-        </div>
-        <button ref="next" class={ 'sub' + (this.setDis ? ' dis' : '') } onClick={ this.next }>我选好啦！</button>
-      </div>
+      <button class={ 'sub' + (this.sending ? ' dis' : '') } onClick={ this.next }>我选好啦！</button>
     </div>;
   }
 }

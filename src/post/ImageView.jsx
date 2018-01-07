@@ -58,6 +58,7 @@ class ImageView extends migi.Component {
   }
   clickDownload(e, vd) {
     e.preventDefault();
+    e.stopPropagation();
     if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;

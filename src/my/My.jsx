@@ -93,8 +93,11 @@ class My extends migi.Component {
     profile.updateNickNameTimeDiff = updateNickNameTimeDiff;
     profile.updateHeadTimeDiff = updateHeadTimeDiff;
 
-    if(self.bonusPoint && self.bonusPoint.ranking) {
-      $(self.element).find('.bp .rank').html(`全站排名 ${ self.bonusPoint.ranking } 名`);
+    let step = self.userInfo.User_Reg_Stat || 0;
+    if(!step || step < 99) {
+      jsBridge.pushWindow('/guide.html?step=' + step + '&nickName=' + encodeURIComponent(self.userInfo.NickName || ''), {
+        title: '用户引导',
+      });
     }
   }
   clickWeibo() {
@@ -148,63 +151,31 @@ class My extends migi.Component {
       title,
     });
   }
-  clickPrize(e, vd, tvd) {
-    let $button = $(tvd.element);
-    if($button.hasClass('loading')) {
-      return;
-    }
-    $button.addClass('loading');
-    let cartID = tvd.props.rel;
-    let idx = tvd.props.idx;
-    if($button.hasClass('cancel')) {
-      net.postJSON('/h5/my/cancelPrize', { cartID }, function(res) {
-        if(res.success) {
-          $button.text('发货').removeClass('cancel');
-          jsBridge.getPreference('loginInfo', function(loginInfo) {
-            if(!loginInfo) {
-              return;
-            }
-            loginInfo.prize[idx].State = 1;
-            jsBridge.setPreference('loginInfo', JSON.stringify(loginInfo));
-          });
-        }
-        else {
-          alert(res.message || util.ERROR_MESSAGE);
-        }
-        $button.removeClass('loading');
-      }, function(res) {
-        alert(res.message || util.ERROR_MESSAGE);
-        $button.removeClass('loading');
-      });
-      return;
-    }
-    net.postJSON('/h5/my/sendPrize', { cartID }, function(res) {
-      if(res.success) {
-        $button.replaceWith('<span>已确认发货</span>');
-        jsBridge.getPreference('loginInfo', function(loginInfo) {
-          if(!loginInfo) {
-            return;
-          }
-          loginInfo.prize[idx].State = 2;
-          jsBridge.setPreference('loginInfo', JSON.stringify(loginInfo));
-        });
-      }
-      else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      }
-      $button.removeClass('loading');
-    }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      $button.removeClass('loading');
-    });
-  }
   refresh() {
     this.init();
+  }
+  bindPhone() {
+    let self = this;
+    jsBridge.pushWindow('/phone.html', {
+      title: '绑定手机',
+    });
+    jsBridge.on('resume', function cb(e) {
+      let data = e.data;
+      if(data && data.phone) {
+        self.userInfo.phoneNumber = data.phone;
+        self.hasData = true;
+      }
+      jsBridge.off('resume', cb);
+    });
   }
   genDom() {
     let self = this;
     return <div>
       <Profile ref="profile" userInfo={ self.userInfo }/>
+      <ul class="bind" ref="bind">
+        <li class="phone">登录手机：{ self.userInfo.phoneNumber && self.userInfo.phoneNumber !== '-'
+          ? <span>{ self.userInfo.phoneNumber }</span> : <button onClick={ self.bindPhone.bind(self) }>绑定</button> }</li>
+      </ul>
       <ul class="list" onClick={ { a: self.clickLink.bind(self) } }>
         <li><a href="/mall.html" class="mall">圈商城<small>（我的圈币：{ self.coins.Coins || 0 }）</small></a></li>
         <li><a href="/relation.html" class="relation">圈关系</a></li>
@@ -234,7 +205,7 @@ class My extends migi.Component {
         return;
       }
     }
-    else {
+    else if(jsBridge.isInApp) {
       jsBridge.toast('转圈账号注册登录功能在0.4版本以后提供，请更新客户端~');
       return;
     }

@@ -69,6 +69,9 @@ class SubPost extends migi.Component {
         }
         self.submit();
       });
+      jsBridge.on('back', function() {
+        self.ref.input.element.blur();
+      });
     });
   }
   @bind placeholder
