@@ -51,6 +51,7 @@ class Step2 extends migi.Component {
     $(self.ref.list.element).find('li').each(function(i, o) {
       ids.push($(o).attr('rel'));
     });
+    ids = ids.join(',');
     net.postJSON('/h5/passport/guideCircle', { ids }, function(res) {
       if(res.success) {
         self.emit('next');

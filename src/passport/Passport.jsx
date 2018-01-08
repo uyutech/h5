@@ -301,7 +301,7 @@ class Login extends migi.Component {
           </div>
           <button class={ this.loading ? 'dis' : '' } onClick={ this.clickRegister }>注册</button>
           <p class="schema">注册即代表同意<span onClick={ function() {
-            jsBridge.pushWindow('http://zhuanquan.xin/schema.html', { title: '用户协议' });
+            jsBridge.pushWindow('https://zhuanquan.xin/schema.html', { title: '用户协议' });
           } }>《转圈用户协议》</span></p>
         </div>
       </div>

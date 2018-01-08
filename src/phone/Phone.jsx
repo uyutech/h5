@@ -101,20 +101,20 @@ class Phone extends migi.Component {
       phone,
       password,
       code: self.code,
-    }, function(res) {console.log(res);
+    }, function(res) {
       if(res.success) {
         jsBridge.toast('绑定成功');
         jsBridge.popWindow({
           phone,
         });
       }
-      else if(res.code === 1007) {
+      else if(res.code === 1008) {
         self.message = res.message;
         self.confirm = true;
         self.loading = false;
       }
-      else if(res.code === 1008) {
-        jsBridge.confirm(res.message + '\n该操作将注销之前的账号。确定要这样吗？', function(res) {
+      else if(res.code === 1007) {
+        jsBridge.confirm(res.message + '\n该操作将解除该手机与其关联账号的绑定哦~', function(res) {
           if(!res) {
             self.loading = false;
             return;
@@ -186,7 +186,7 @@ class Phone extends migi.Component {
     let self = this;
     let phone = self.phone;
     let password = self.password;
-    jsBridge.confirm('该操作将解除该手机与其关联账号的绑定哦~', function(res) {
+    jsBridge.confirm('该操作将注销之前的账号哦~', function(res) {
       if(!res) {
         return;
       }

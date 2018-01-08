@@ -159,7 +159,7 @@ jsBridge.ready(function() {
     let notice = migi.render(
       <a class="notice" href="#" onClick={ function(e) {
         e.preventDefault();
-        jsBridge.openUri('http://circling.net.cn/android/circling-0.4.0.apk');
+        jsBridge.openUri('https://circling.net.cn/android/circling-0.4.1.apk');
       } }>您的app版本过低，考虑到功能和体验，请点击下载更新</a>
     );
     notice.prependTo('#page');

@@ -10,6 +10,9 @@ import Profile from './Profile.jsx';
 
 const pack = require('../../package.json');
 
+let bindUuid;
+let bindName;
+
 class My extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -31,6 +34,8 @@ class My extends migi.Component {
   }
   @bind hasData
   @bind isLogin
+  @bind message
+  @bind confirm
   show() {
     $(this.element).removeClass('fn-hide');
   }
@@ -61,6 +66,11 @@ class My extends migi.Component {
   setData(data) {
     let self = this;
     self.userInfo = data.userInfo;
+    self.oauthInfo = data.oauthInfo || [];
+    self.oauthHash = {};
+    self.oauthInfo.forEach(function(item) {
+      self.oauthHash[item.OpenType] = item;
+    });
     self.bonusPoint = data.bonusPoint;
     self.coins = data.coins || {};
 
@@ -156,34 +166,102 @@ class My extends migi.Component {
   }
   bindPhone() {
     let self = this;
+    bindName = '手机';
     jsBridge.pushWindow('/phone.html', {
       title: '绑定手机',
     });
     jsBridge.on('resume', function cb(e) {
       let data = e.data;
       if(data && data.phone) {
-        self.userInfo.phoneNumber = data.phone;
-        self.hasData = true;
+        self.init();
       }
       jsBridge.off('resume', cb);
+    });
+  }
+  bindWeibo() {
+    let self = this;
+    bindName = '微博';
+    jsBridge.loginWeibo(function(res) {
+      if(res.success) {
+        jsBridge.showLoading('正在登录...');
+        let openID = res.openID;
+        let token = res.token;
+        net.postJSON('/h5/passport/bindOauth', { openID, token }, function(res) {
+          if(res.success) {
+            self.init();
+          }
+          else if(res.code === 1008) {
+            bindUuid = res.data;
+            self.message = res.message;
+            self.confirm = true;
+          }
+          else if(res.code === 1007) {
+            bindUuid = res.data;
+            jsBridge.confirm(res.message + '\n该操作将解除该' + bindName + '与其关联账号的绑定哦~', function(res) {
+              if(!res) {
+                return;
+              }
+              net.postJSON('/h5/passport/mergeOauth', {
+                code: bindUuid,
+                type: 2,
+              }, function(res) {
+                if(res.success) {
+                  jsBridge.toast('绑定成功');
+                  self.init();
+                }
+                else {
+                  jsBridge.toast(res.message);
+                }
+              }, function(res) {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              });
+            });
+          }
+          else {
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          }
+          jsBridge.hideLoading();
+        }, function(res) {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.hideLoading();
+        });
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
     });
   }
   genDom() {
     let self = this;
     return <div>
       <Profile ref="profile" userInfo={ self.userInfo }/>
-      <ul class="bind" ref="bind">
-        <li class="phone">登录手机：{ self.userInfo.phoneNumber && self.userInfo.phoneNumber !== '-'
-          ? <span>{ self.userInfo.phoneNumber }</span> : <button onClick={ self.bindPhone.bind(self) }>绑定</button> }</li>
-      </ul>
+      <dl class="bind" ref="bind">
+        <dt>绑定信息：</dt>
+        <dd class={ 'phone' + (self.oauthHash.telphone ? '' : ' dis') }>
+          {
+            self.oauthHash.telphone
+            ? <span>{ self.oauthHash.telphone.OpenID }</span>
+            : <button onClick={ self.bindPhone.bind(self) }>绑定</button>
+          }
+        </dd>
+        <dd class={ 'weibo' + (self.oauthHash.weibo ? '' : ' dis') }>
+          {
+            self.oauthHash.weibo
+            ? <span>{ self.oauthHash.weibo.OpenID }</span>
+            : <button onClick={ self.bindWeibo.bind(self) }>绑定</button>
+          }
+        </dd>
+      </dl>
       <ul class="list" onClick={ { a: self.clickLink.bind(self) } }>
-        <li><a href="/mall.html" class="mall">圈商城<small>（我的圈币：{ self.coins.Coins || 0 }）</small></a></li>
+        <li>
+          <a href="/mall.html" class="mall">圈商城<small>（我的圈币：{ self.coins.Coins || 0 }）</small></a>
+        </li>
         <li><a href="/relation.html" class="relation">圈关系</a></li>
         <li><a href="/message.html" class="message">圈消息</a></li>
         <li><a href="/mypost.html" class="post">我画的圈</a></li>
         <li><a href="/myfavor.html" class="favor">我的收藏</a></li>
       </ul>
-      <a href="http://circling.cc/#/post/91255" class="help" onClick={ function(e) {
+      <a href="https://circling.cc/#/post/91255" class="help" onClick={ function(e) {
         e.preventDefault();
         jsBridge.pushWindow('/post.html?postID=91255', {
           title: '帮助中心'
@@ -214,6 +292,61 @@ class My extends migi.Component {
       backgroundColor: '#b6d1e8'
     });
   }
+  clickMerge() {
+    let self = this;
+    jsBridge.confirm('合并后，会保留此账号之前的作品、发言、圈币和收藏数据~之后再以此账号登录时会直接进入当前账号哦！确定进行合并吗？', function(res) {
+      if(!res) {
+        return;
+      }
+      jsBridge.showLoading();
+      net.postJSON('/h5/passport/mergeOauth', {
+        code: bindUuid,
+        type: 1,
+      }, function(res) {
+        if(res.success) {
+          jsBridge.toast('绑定成功');
+          self.confirm = false;
+          self.init();
+        }
+        else {
+          jsBridge.toast(res.message);
+        }
+        jsBridge.hideLoading();
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.hideLoading();
+      });
+    });
+  }
+  clickBind() {
+    let self = this;
+    jsBridge.confirm('该操作将注销之前的账号哦~', function(res) {
+      if(!res) {
+        return;
+      }
+      jsBridge.showLoading();
+      net.postJSON('/h5/passport/mergeOauth', {
+        code: bindUuid,
+        type: 2,
+      }, function(res) {
+        if(res.success) {
+          jsBridge.toast('绑定成功');
+          self.confirm = false;
+          self.init();
+        }
+        else {
+          jsBridge.toast(res.message);
+        }
+        jsBridge.hideLoading();
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.hideLoading();
+      });
+    });
+  }
+  clickCancel() {
+    this.confirm = false;
+  }
   render() {
     return <div class="my">
       {
@@ -232,6 +365,15 @@ class My extends migi.Component {
               <div class="fn-placeholder"/>
             </div>
       }
+      <div class={ 'confirm' + (this.confirm ? '' : ' fn-hide') }>
+        <div class="c">
+          <p>{ this.message }</p>
+          <strong>请问这是您之前的账号吗？</strong>
+          <button onClick={ this.clickMerge }>是的，我想要合并两个账号</button>
+          <button onClick={ this.clickBind }>不是的，我只要绑定手机就可以了</button>
+          <button onClick={ this.clickCancel }>算了，还是维持现状吧</button>
+        </div>
+      </div>
     </div>;
   }
 }
