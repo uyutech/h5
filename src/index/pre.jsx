@@ -10,7 +10,6 @@ import Find from '../find/Find.jsx';
 import ImageView from '../post/ImageView.jsx';
 
 let s = '';
-s += migi.preRender(<TopNav/>);
 s += migi.preRender(<BotNav/>);
 s += migi.preRender(<ImageView ref="imageView"/>);
 s += migi.preRender(<Find/>);

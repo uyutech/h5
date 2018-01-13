@@ -8,7 +8,6 @@ import './index.less';
 import net from '../common/net';
 import util from '../common/util';
 import BotNav from '../component/botnav/BotNav.jsx';
-import TopNav from '../component/topnav/TopNav.jsx';
 import Find from '../find/Find.jsx';
 import Circling from '../circling/Circling.jsx';
 import Follow from '../follow/Follow.jsx';
@@ -27,11 +26,6 @@ jsBridge.ready(function() {
     if(my) {
       my.refresh();
     }
-    net.postJSON('/h5/my/message', function(res) {
-      if(res.success) {
-        topNav.setNum(res.data);
-      }
-    });
   });
   jsBridge.getPreference('loginInfo', function(loginInfo) {
     jsBridge.on('resume', function() {
@@ -62,26 +56,6 @@ jsBridge.ready(function() {
       loginInfo = data;
     });
   });
-  jsBridge.on('resume', function(e) {
-    let data = e.data;
-    if(data && data.message) {
-      net.postJSON('/h5/my/message', function(res) {
-        if(res.success) {
-          topNav.setNum(res.data);
-        }
-      });
-    }
-  });
-
-  let topNav = migi.preExist(<TopNav/>, '#page');
-
-  if(util.isLogin()) {
-    net.postJSON('/h5/my/message', function(res) {
-      if(res.success) {
-        topNav.setNum(res.data);
-      }
-    });
-  }
 
   let botNav = migi.preExist(<BotNav/>, '#page');
   let imageView = migi.preExist(<ImageView ref="imageView"/>, '#page');
@@ -151,9 +125,6 @@ jsBridge.ready(function() {
     if(minor < 4) {
       old = true;
     }
-  }
-  else {
-    old = true;
   }
   if(old) {
     let notice = migi.render(

@@ -11,7 +11,6 @@ class HotPlayList extends migi.Component {
     super(...data);
     this.dataList = this.props.dataList;
   }
-  @bind hasData
   @bind dataList
   @bind message
   show() {

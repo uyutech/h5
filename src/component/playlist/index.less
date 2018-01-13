@@ -1,0 +1,68 @@
+/**
+ * Created by army8735 on 2018/1/12.
+ */
+
+.cp-playlist{
+  .list{
+    padding:0 0.15rem;
+    li{
+      display:flex;
+      align-items:center;
+      height:0.5rem;
+      border-bottom:1px solid rgba(182, 182, 182, 0.5);
+      .hairlines &{
+        border-bottom-width:0.5px;
+      }
+      &:last-child{
+        border-bottom:none;
+      }
+      .pic{
+        display:block;
+        margin-right:0.15rem;
+        width:0.4rem;
+        height:0.4rem;
+        img{
+          display:block;
+          width:100%;
+          height:100%;
+          border-radius:0.05rem;
+          object-fit:cover;
+        }
+      }
+      .txt{
+        flex:1;
+        margin-right:0.1rem;
+        .name{
+          color:#717171;
+          font-size:0.14rem;
+          white-space:nowrap;
+          overflow:hidden;
+          text-overflow:ellipsis;
+        }
+        .author{
+          color:#B6B6B6;
+          font-size:0.11rem;
+        }
+      }
+      .video{
+        display:block;
+        width:0.24rem;
+        height:0.24rem;
+        background:url(video.png) no-repeat center;
+        background-size:contain;
+      }
+      .fn{
+        display:block;
+        width:0.24rem;
+        height:0.24rem;
+        background:url(fn.png) no-repeat center;
+        background-size:contain;
+      }
+    }
+  }
+  .empty{
+    margin-left:0.1rem;
+    line-height:3;
+    color:@fourthTextColor;
+  }
+}

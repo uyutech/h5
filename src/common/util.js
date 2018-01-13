@@ -56,6 +56,12 @@ let util = {
     }
     return url ? util.img(url) + '-750_750_80' : url;
   },
+  img750__80: function(url) {
+    if(!/\/\/zhuanquan\./i.test(url)) {
+      return url;
+    }
+    return url ? util.img(url) + '-750__80' : url;
+  },
   img720__80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {
       return url;
@@ -80,6 +86,12 @@ let util = {
     }
     return url ? util.img(url) + '-480_480_80' : url;
   },
+  img360__80: function(url) {
+    if(!/\/\/zhuanquan\./i.test(url)) {
+      return url;
+    }
+    return url ? util.img(url) + '-360__80' : url;
+  },
   img336__80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {
       return url;
@@ -103,6 +115,12 @@ let util = {
       return url;
     }
     return url ? util.img(url) + '-288_288_80' : url;
+  },
+  img250_250_80: function(url) {
+    if(!/\/\/zhuanquan\./i.test(url)) {
+      return url;
+    }
+    return url ? util.img(url) + '-250_250_80' : url;
   },
   img240_240_80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {
@@ -145,6 +163,12 @@ let util = {
       return url;
     }
     return url ? util.img(url) + '-172_172_80' : url;
+  },
+  img170_170_80: function(url) {
+    if(!/\/\/zhuanquan\./i.test(url)) {
+      return url;
+    }
+    return url ? util.img(url) + '-170_170_80' : url;
   },
   img168__80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {
@@ -229,6 +253,12 @@ let util = {
       return url;
     }
     return url ? util.img(url) + '-90_90' : url;
+  },
+  img80_80_80: function(url) {
+    if(!/\/\/zhuanquan\./i.test(url)) {
+      return url;
+    }
+    return url ? util.img(url) + '-80_80_80' : url;
   },
   img64_64_80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {

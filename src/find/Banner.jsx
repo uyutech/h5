@@ -4,6 +4,9 @@
 
 'use strict';
 
+import net from "../common/net";
+import util from "../common/util";
+
 let interval;
 
 class Banner extends migi.Component {
@@ -69,11 +72,26 @@ class Banner extends migi.Component {
     });
   }
   render() {
-    return <div class="banner" onSwipeLeft={ this.left } onSwipeRight={ this.right } onClick={ { a: this.click } }>
-      <ul class="list fn-clear" ref="list" style={ 'width:' + this.dataList.length * 100 + '%' }>
+    return <div class="mod-banner" onSwipeLeft={ this.left } onSwipeRight={ this.right } onClick={ { a: this.click } }>
+      <ul class="list fn-clear" ref="list" style={ 'width:' + Math.max(1, this.dataList.length) * 100 + '%' }>
         {
           this.dataList.map(function(item) {
-            return <li><a href={ item.url } target="_blank" title={ item.title }><img src={ item.pic }/></a></li>;
+            let url = '';
+            switch(item.urltype) {
+              case 1:
+                url = '/works.html?worksID=' + item.urlid;
+                break;
+              case 2:
+                url = '/post.html?postID=' + item.urlid;
+                break;
+              case 3:
+                url = '/author.html?authorID=' + item.urlid;
+                break;
+              case 4:
+                url = '/user.html?userID=' + item.urlid;
+                break;
+            }
+            return <li><a href={ url } target="_blank" title={ item.title }><img src={ util.autoSsl(util.img750__80(item.coverpic)) || '/src/common/blank.png' }/></a></li>;
           })
         }
       </ul>
