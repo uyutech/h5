@@ -30,7 +30,7 @@ class Works extends migi.Component {
     let author = works.GroupAuthorTypeHash.AuthorTypeHashlist[0] || {};
     return <div class={ 'mod-works' + (this.props.last ? ' last' : '') }>
       <a href={ '/works.html?worksID=' + works.WorksID } title={ works.Title } class="pic">
-        <img src={ util.autoSsl(util.img250_250_80(data.coverpic)) || '/src/common/blank.png' }/>
+        <img src={ util.autoSsl(util.img250_250_80(data.coverpic || works.cover_Pic)) || '/src/common/blank.png' }/>
         <div>
           <span>{ data.Describe }</span>
         </div>
@@ -50,7 +50,7 @@ class Works extends migi.Component {
             })
           }
         </dl>
-        <a href={ '/works.html?worksID=' + works.WorksID } title={ works.Title } class="intro">{ data.Intro }</a>
+        <a href={ '/works.html?worksID=' + works.WorksID } title={ works.Title } class="intro"><pre>{ data.Intro }</pre></a>
       </div>
     </div>;
   }

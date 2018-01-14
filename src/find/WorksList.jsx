@@ -38,13 +38,16 @@ class WorksList extends migi.Component {
   }
   render() {
     let data = this.props.data;
-    return <div class={ 'mod-workslist' + (this.props.last ? ' last' : '') }
-                style={ data.coverpic ? `background-image:url(${data.coverpic})` : '' }>
-      <h3>{ data.Describe }{ (data.worklist || []).length > 6 ? <span onClick={ this.click }>换一换</span> : '' }</h3>
+    return <div class={ 'mod-workslist' + (this.props.last ? ' last' : '') }>
+      <h3 style={ data.coverpic ? `background-image:url(${data.coverpic})` : '' }>
+        { data.Describe }{ (data.worklist || []).length > 6 ? <span onClick={ this.click }>换一换</span> : '' }
+      </h3>
       <ul ref="list">
         {
           (data.worklist || []).slice(this.index, this.index + 6).map(function(item) {
-            let author = item.GroupAuthorTypeHash.AuthorTypeHashlist[0] || {};
+            let GroupAuthorTypeHash = item.GroupAuthorTypeHash || {};
+            let AuthorTypeHashlist = GroupAuthorTypeHash.AuthorTypeHashlist || [];
+            let author = AuthorTypeHashlist[0] || {};
             return <li class={ 't' + item.WorkType }>
               <a href={ '/works.html?worksID=' + item.WorksID } title={ item.Title } class="pic">
                 <img src={ util.autoSsl(util.img170_170_80(item.cover_Pic)) }/>

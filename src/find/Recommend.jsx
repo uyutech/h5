@@ -19,6 +19,7 @@ let take = 10;
 let skip = take;
 let loading;
 let loadEnd;
+let ajax;
 
 class Recommend extends migi.Component {
   constructor(...data) {
@@ -37,6 +38,12 @@ class Recommend extends migi.Component {
     visible = false;
     return this;
   }
+  reload() {
+    skip = 0;
+    loadEnd = loading = false;
+    $(this.ref.list.element).html('');
+    this.loadMore();
+  }
   loadMore() {
     if(loading || loadEnd) {
       return;
@@ -44,7 +51,10 @@ class Recommend extends migi.Component {
     loading = true;
     let self = this;
     self.message = '正在加载...';
-    net.postJSON('/h5/find/typeList', { id: self.tagList[0].ID }, function(res) {
+    if(ajax) {
+      ajax.abort();
+    }
+    ajax = net.postJSON('/h5/find/recommendList', { id: self.rid, skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;

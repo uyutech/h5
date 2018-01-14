@@ -3,14 +3,22 @@
  */
 
 .mod-post{
+  position:relative;
   margin:0 0.15rem;
   padding:0.15rem 0;
-  border-bottom:1px solid rgba(182, 182, 182, 0.5);
-  .hairlines &{
-    border-width:0.5px;
+  &:after{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:1px;
+    background:rgba(182, 182, 182, 0.5);
+    content:' ';
+    overflow:hidden;
+    transform:scaleY(0.5);
   }
-  &.last{
-    border:none;
+  &.last:after{
+    content:' ';
   }
   .pic{
     position:relative;

@@ -91,7 +91,7 @@ class Banner extends migi.Component {
                 url = '/user.html?userID=' + item.urlid;
                 break;
             }
-            return <li><a href={ url } target="_blank" title={ item.title }><img src={ util.autoSsl(util.img750__80(item.coverpic)) || '/src/common/blank.png' }/></a></li>;
+            return <li><a href={ url } target="_blank" title={ item.Describe }><img src={ util.autoSsl(util.img750__80(item.coverpic)) || '/src/common/blank.png' }/></a></li>;
           })
         }
       </ul>

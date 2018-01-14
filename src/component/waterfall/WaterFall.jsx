@@ -124,6 +124,7 @@ class WaterFall extends migi.Component {
     $l2.html('');
     pool = [];
     list = [];
+    index = 0;
   }
   appendData(data) {
     let self = this;

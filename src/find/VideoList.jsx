@@ -24,6 +24,31 @@ class VideoList extends migi.Component {
           title,
         });
       });
+      $root.on('click', '.like', function() {
+        let $b = $(this);
+        if($b.hasClass('loading')) {
+          return;
+        }
+        $b.addClass('loading');
+        net.postJSON('/h5/works/likeWork', { workID: $b.attr('workID') }, function(res) {
+          if(res.success) {
+            let data = res.data;
+            if(data.State === 'likeWordsUser') {
+              $b.addClass('liked');
+            }
+            else {
+              $b.removeClass('liked');
+            }
+          }
+          else {
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          }
+          $b.removeClass('loading');
+        }, function(res) {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          $b.removeClass('loading');
+        });
+      });
     });
   }
   @bind message
@@ -61,8 +86,8 @@ class VideoList extends migi.Component {
               })
             }
           </div>
-          <b class="like">{ item.LikeHis }</b>
-          <b class="comment">456</b>
+          <b class={ 'like' + (item.ISLike ? ' liked' : '') } workID={ item.ItemID }>{ item.LikeHis }</b>
+          <b class="comment">{ works.CommentCount }</b>
         </div>
       </div>
     </li>;

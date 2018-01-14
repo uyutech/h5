@@ -38,9 +38,10 @@ class AuthorList extends migi.Component {
   }
   render() {
     let data = this.props.data;
-    return <div class={ 'mod-authorlist' + (this.props.last ? ' last' : '') }
-                style={ data.coverpic ? `background-image:url(${data.coverpic})` : '' }>
-      <h3>{ data.Describe }{ (data.authorlist || []).length > 6 ? <span onClick={ this.click }>换一换</span> : '' }</h3>
+    return <div class={ 'mod-authorlist' + (this.props.last ? ' last' : '') }>
+      <h3 style={ data.coverpic ? `background-image:url(${data.coverpic})` : '' }>
+        { data.Describe }{ (data.authorlist || []).length > 6 ? <span onClick={ this.click }>换一换</span> : '' }
+      </h3>
       <ul>
         {
           (data.authorlist || []).slice(this.index, this.index + 6).map(function(item) {

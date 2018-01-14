@@ -58,12 +58,16 @@ class Find extends migi.Component {
     $(this.element).addClass('fn-hide');
     visible = false;
   }
+  refresh() {
+    this.ref.recommend.reload();
+  }
   setData(data) {
     let self = this;
 
     self.tagList = data.tagList;
     self.ref.nav.dataList = data.tagList;
     self.ref.recommend.setData(data);
+    self.ref.recommend.rid = data.tagList[0].ID;
   }
   render() {
     return <div class="find">

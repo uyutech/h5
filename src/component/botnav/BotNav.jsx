@@ -45,9 +45,9 @@ class BotNav extends migi.Component {
   }
   render() {
     return <ul class="bot-nav" onClick={ { li: this.click } }>
-      <li class="follow" rel={ 2 }>
+      <li class="find cur" rel={ 0 }>
         <b class="icon"/>
-        <span>关注</span>
+        <span>发现</span>
       </li>
       <li class="circling" rel={ 1 }>
         <b class="icon"/>
@@ -56,9 +56,9 @@ class BotNav extends migi.Component {
       <li class="new">
         <b class="icon"/>
       </li>
-      <li class="find cur" rel={ 0 }>
+      <li class="follow" rel={ 2 }>
         <b class="icon"/>
-        <span>发现</span>
+        <span>关注</span>
       </li>
       <li class="my" rel={ 3 }>
         <b class="icon"/>

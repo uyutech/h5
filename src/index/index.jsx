@@ -19,6 +19,9 @@ import BotFn from '../component/botfn/BotFn.jsx';
 jsBridge.ready(function() {
   jsBridge.on('refresh', function(e) {
     e.preventDefault();
+    if(find) {
+      find.refresh();
+    }
     if(circling) {
       circling.refresh();
     }

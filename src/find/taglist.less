@@ -3,15 +3,26 @@
  */
 
 .mod-taglist{
+  position:relative;
   display:flex;
   justify-content:center;
   height:0.4rem;
   border-top:0.05rem solid #edf3f7;
-  border-bottom:1px solid rgba(182, 182, 182, 0.5);
   overflow-x:scroll;
   transform:translateZ(0);
-  .hairlines &{
-    border-bottom-width:0.5px;
+  &:after{
+    position:absolute;
+    left:0;
+    bottom:0;
+    width:100%;
+    height:1px;
+    background:rgba(182, 182, 182, 0.5);
+    content:' ';
+    overflow:hidden;
+    transform:scaleY(0.5);
+  }
+  &.last:after{
+    content:' ';
   }
   li{
     position:relative;
@@ -22,14 +33,14 @@
     font-size:0.13rem;
     flex-shrink:0;
     &.cur{
-      color:#5D99C4;
+      color:#8BBDE1;
       &:after{
         position:absolute;
         left:50%;
         bottom:0.03rem;
         width:70%;
         height:0.02rem;
-        background:#5D99C4;
+        background:#8BBDE1;
         border-radius:0.02rem;
         content:' ';
         transform:translateX(-50%);
