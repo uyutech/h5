@@ -25,27 +25,31 @@
           display:flex;
           align-items:center;
           padding:0 0.1rem;
-          height:0.3rem;
-          a{
+          min-height:0.3rem;
+          .author{
             flex:1;
-            display:flex;
-            align-items:center;
-            height:100%;
-            img{
-              margin-right:0.02rem;
-              box-sizing:border-box;
-              width:0.24rem;
-              height:0.24rem;
-              border:1px solid #EBF5FA;
-              border-radius:100%;
-              .ios &{
-                border-width:0.5px;
+            a{
+              display:flex;
+              align-items:center;
+              margin-right:0.1rem;
+              height:0.3rem;
+              white-space:nowrap;
+              img{
+                margin-right:0.02rem;
+                box-sizing:border-box;
+                width:0.24rem;
+                height:0.24rem;
+                border:1px solid #EBF5FA;
+                border-radius:100%;
+                .ios &{
+                  border-width:0.5px;
+                }
               }
-            }
-            span{
-              flex:1;
-              font-size:0.11rem;
-              color:#636365;
+              span{
+                flex:1;
+                font-size:0.11rem;
+                color:#636365;
+              }
             }
           }
           .like{
@@ -54,6 +58,9 @@
             height:0.16rem;
             background:url(like.png) no-repeat center;
             background-size:contain;
+            &.has{
+              background-image:url(liked.png);
+            }
           }
         }
       }

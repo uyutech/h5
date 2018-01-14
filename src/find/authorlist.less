@@ -13,6 +13,7 @@
     border:none;
   }
   h3{
+    position:relative;
     margin-bottom:0.1rem;
     padding-left:0.3rem;
     font-size:0.17rem;
@@ -20,6 +21,26 @@
     line-height:0.24rem;
     background:url(author.png) no-repeat 0 center;
     background-size:contain;
+    span{
+      position:absolute;
+      top:0;
+      right:0;
+      padding-right:0.1rem;
+      font-size:0.12rem;
+      color:#B6B6B6;
+      font-weight:400;
+      &:after{
+        position:absolute;
+        top:50%;
+        right:0;
+        width:0.08rem;
+        height:0.08rem;
+        border-top:1px solid #B6B6B6;
+        border-right:1px solid #B6B6B6;
+        content:' ';
+        transform:translateY(-50%) rotateZ(45deg);
+      }
+    }
   }
   ul{
     display:flex;

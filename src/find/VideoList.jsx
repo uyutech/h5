@@ -13,6 +13,18 @@ class VideoList extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.dataList = self.props.dataList;
+    self.on(migi.Event.DOM, function() {
+      let $root = $(self.element);
+      $root.on('click', 'a', function(e) {
+        e.preventDefault();
+        let $a = $(this);
+        let url = $a.attr('href');
+        let title = $a.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+        });
+      });
+    });
   }
   @bind message
   show() {
@@ -42,7 +54,7 @@ class VideoList extends migi.Component {
           <div class="author">
             {
               (author.AuthorInfo || []).map(function(item) {
-                return <a href={ '/author.html?authorID=' + item.AuthorID }>
+                return <a href={ '/author.html?authorID=' + item.AuthorID } title={ item.AuthorName }>
                   <img src={ util.autoSsl(util.img48_48_80(item.Head_url || '/src/common/blank.png')) }/>
                   <span>{ item.AuthorName }</span>
                 </a>;

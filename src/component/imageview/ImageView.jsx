@@ -19,87 +19,91 @@ let $i2;
 let $i3;
 let loading;
 let pos;
+let uuid = 0;
 
 function setTransform(dx) {
   $c.css('-webkit-transform', `translate3d(${dx},0,0)`);
   $c.css('transform', `translate3d(${dx},0,0)`);
 }
 function clearTransform() {
-  $c.css('-webkit-transform', 'none');
-  $c.css('transform', 'none');
+  $c.css('-webkit-transform', 'translate3d(0,0,0)');
+  $c.css('transform', 'translate3d(0,0,0)');
 }
 
 class ImageView extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.dataList = self.props.dataList || [];
-    self.isLike = self.props.isLike;
+    self.list = self.props.list || [];
+    self.index = self.props.index || 0;
     self.on(migi.Event.DOM, function() {
-      let $window = $(window);
       $c = $(self.ref.c.element);
       $i1 = $(self.ref.i1.element);
       $i2 = $(self.ref.i2.element);
       $i3 = $(self.ref.i3.element);
-      migi.eventBus.on('chooseImage', function(data) {
-        let dataList = data.list || [];
-        let index = parseInt(data.index) || 0;
-        self.dataList = dataList;
-        self.idx = index;
-        $c.css('top', $window.scrollTop() + 'px');
-        self.show();
-
-        // 优先预览图
-        self.setImg(index);
-      });
     });
   }
-  @bind dataList = []
-  @bind idx
-  @bind isLike
+  @bind list = []
+  @bind index
   show() {
     $(this.element).removeClass('fn-hide');
+    jsBridge.refreshState(false);
   }
   hide() {
     $(this.element).addClass('fn-hide');
+    jsBridge.refreshState(true);
+    this.emit('hide');
   }
   isHide() {
     return  $(this.element).hasClass('fn-hide');
   }
+  setData(list, index) {
+    let self = this;
+    list = list || [];
+    index = parseInt(index) || 0;
+    self.list = list;
+    self.index = index;
+    $c.css('top', $(window).scrollTop() + 'px');
+    self.show();
+    // 优先预览图
+    self.setImg(index);
+  }
   setImg(index) {
     let self = this;
-    let dataList = self.dataList;
-    let data = dataList[index];
+    let list = self.list;
+    let data = list[index];
     let url = util.autoSsl(data.FileUrl);
     if(data.loaded || !data.preview) {
+      ++uuid;
       $i2.find('img').attr('src', url || '/src/common/blank.png');
     }
     else {
       $i2.find('img').attr('src', data.preview);
+      let cid = ++uuid;
       self.loadImg(url, function(res) {
-        if(res) {
+        if(res && uuid === cid) {
           data.loaded = true;
           $i2.find('img').attr('src', url);
         }
       });
     }
     if(index) {
-      if(dataList[index - 1].loaded || !dataList[index - 1].preview) {
-        $i1.find('img').attr('src', dataList[index - 1].FileUrl || '/src/common/blank.png');
+      if(list[index - 1].loaded || !list[index - 1].preview) {
+        $i1.find('img').attr('src', list[index - 1].FileUrl || '/src/common/blank.png');
       }
       else {
-        $i1.find('img').attr('src', dataList[index - 1].preview);
+        $i1.find('img').attr('src', list[index - 1].preview);
       }
     }
     else {
       $i1.find('img').attr('src', '/src/common/blank.png');
     }
-    if(index < dataList.length - 1) {
-      if(dataList[index + 1].loaded || !dataList[index + 1].preview) {
-        $i3.find('img').attr('src', dataList[index + 1].FileUrl || '/src/common/blank.png');
+    if(index < list.length - 1) {
+      if(list[index + 1].loaded || !list[index + 1].preview) {
+        $i3.find('img').attr('src', list[index + 1].FileUrl || '/src/common/blank.png');
       }
       else {
-        $i3.find('img').attr('src', dataList[index + 1].preview);
+        $i3.find('img').attr('src', list[index + 1].preview);
       }
     }
     else {
@@ -126,6 +130,10 @@ class ImageView extends migi.Component {
     };
     document.body.appendChild(img);
   }
+  click(e) {
+    e.stopPropagation();
+    this.hide();
+  }
   start(e) {
     if(!loading && e.touches.length === 1) {
       isStart = true;
@@ -145,7 +153,7 @@ class ImageView extends migi.Component {
         t: Date.now(),
         x,
       });
-      if(pos.length > 2) {
+      if(pos.length > 5) {
         pos.shift();
       }
     }
@@ -161,7 +169,7 @@ class ImageView extends migi.Component {
           t: Date.now(),
           x,
         });
-        if(pos.length > 2) {
+        if(pos.length > 5) {
           pos.shift();
         }
       }
@@ -175,27 +183,56 @@ class ImageView extends migi.Component {
     isStart = isMove = false;
     let change = false;
     let i;
+    let ts;
     if(dx < -WIDTH >> 1) {
-      if(self.idx < self.dataList.length - 1) {
+      if(self.index < self.list.length - 1) {
         change = true;
-        i = ++self.idx;
+        i = ++self.index;
+        ts = '-100%';
       }
     }
     else if(dx > WIDTH >> 1) {
-      if(self.idx) {
+      if(self.index) {
         change = true;
-        i = --self.idx;
+        i = --self.index;
+        ts = '100%';
       }
     }
     else if(pos.length > 1 && Math.abs(dx) > 10) {
-      let dt = Math.max(1, pos[1].t - pos[0].t);
-      let dx2 = pos[1].x - pos[0].x;
-      let rate = Math.abs(dx2) / dt;
-      console.log(dt, dx2, rate);
+      for(let i = pos.length - 1; i > 0; i--) {
+        let a = pos[i];
+        let b = pos[i - 1];
+        if(a.t - b.t > 30) {
+          pos = pos.slice(i);
+          break;
+        }
+      }
+      if(pos.length > 1) {
+        let now = Date.now();
+        pos.push({
+          t: now,
+          x: pos[pos.length - 1].x,
+        });
+        let dt = Math.max(1, pos[pos.length - 1].t - pos[0].t);
+        let dx2 = pos[pos.length - 1].x - pos[0].x;
+        let rate = Math.abs(dx2) / dt;
+        if(rate > 0.1) {
+          if(dx2 > 0 && self.index) {
+            change = true;
+            i = --self.index;
+            ts = '100%';
+          }
+          else if(dx2 < 0 && self.index < self.list.length - 1) {
+            change = true;
+            i = ++self.index;
+            ts = '-100%';
+          }
+        }
+      }
     }
     if(change) {
       $c.addClass('transition');
-      setTransform('100%');
+      setTransform(ts);
       loading = true;
       setTimeout(function() {
         $c.removeClass('transition');
@@ -205,45 +242,34 @@ class ImageView extends migi.Component {
       }, 200);
       return;
     }
-    // if(dx < -WIDTH >> 1) {
-    //   if(self.idx < self.dataList.length - 1) {
-    //     self.idx++;
-    //     let i = self.idx;
-    //     $c.addClass('transition');
-    //     setTransform('-100%');
-    //     loading = true;
-    //     setTimeout(function() {
-    //       $c.removeClass('transition');
-    //       clearTransform();
-    //       self.setImg(i);
-    //       loading = false;
-    //     }, 200);
-    //     return;
-    //   }
-    // }
-    // else if(dx > WIDTH >> 1) {
-    //   if(self.idx) {
-    //     self.idx--;
-    //     let i = self.idx;
-    //     $c.addClass('transition');
-    //     setTransform('100%');
-    //     loading = true;
-    //     setTimeout(function() {
-    //       $c.removeClass('transition');
-    //       clearTransform();
-    //       self.setImg(i);
-    //       loading = false;
-    //     }, 200);
-    //     return;
-    //   }
-    // }
     $c.addClass('transition');
-    $c.css('-webkit-transform', 'none');
-    $c.css('transform', 'none');
+    $c.css('-webkit-transform', 'translate3d(0,0,0)');
+    $c.css('transform', 'translate3d(0,0,0)');
+  }
+  clickDownload(e, vd) {
+    e.stopPropagation();
+    if(!util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
+    let url = $(vd.element).attr('rel');
+    if(url && /^\/\//.test(url)) {
+      url = location.protocol + url;
+    }
+    url = util.img(url);
+    let name = url.replace(/^.*\//, '');
+    jsBridge.download({
+      url,
+      name,
+    });
+  }
+  clickLike(e) {
+    e.stopPropagation();
+    this.emit('like', this.list, this.index);
   }
   render() {
     return <div class="cp-imageview fn-hide">
-      <div class="c" ref="c"
+      <div class="c" ref="c" onClick={ this.click }
            onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
         <div class="i1" ref="i1">
           <img src="/src/common/blank.png"/>
@@ -255,9 +281,12 @@ class ImageView extends migi.Component {
           <img src="/src/common/blank.png"/>
         </div>
       </div>
-      <label>{ ((this.idx || 0) + 1) + '/' + this.dataList.length }</label>
-      <b class="download" onClick={ this.clickDownload }/>
-      <b class={ 'like' + (this.isLike ? ' has' : '') } onClick={ this.clickLike }/>
+      <label>{ ((this.index || 0) + 1) + '/' + this.list.length }</label>
+      <b class="download"
+         rel={ this.list[this.index] && this.list[this.index].FileUrl }
+         onClick={ this.clickDownload }/>
+      <b class={ 'like' + (this.list[this.index] && this.list[this.index].ISLike ? ' has' : '') }
+         onClick={ this.clickLike }/>
     </div>;
   }
 }

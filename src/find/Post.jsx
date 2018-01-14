@@ -12,7 +12,7 @@ class Post extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      let $root = $(self.ref.element);
+      let $root = $(self.element);
       $root.on('click', 'a', function(e) {
         e.preventDefault();
         let $a = $(this);

@@ -10,7 +10,6 @@ import util from '../common/util';
 import Nav from './Nav.jsx';
 import Recommend from "./Recommend.jsx";
 import ItemList from './ItemList.jsx';
-import ImageView from '../component/imageview/ImageView.jsx';
 
 let visible;
 let scrollY = 0;
@@ -77,7 +76,6 @@ class Find extends migi.Component {
           }
         })
       }
-      <ImageView ref="imageView"/>
     </div>;
   }
 }

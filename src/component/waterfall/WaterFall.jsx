@@ -6,6 +6,7 @@
 
 import net from '../../common/net';
 import util from '../../common/util';
+import ImageView from '../imageview/ImageView.jsx';
 
 let pool = [];
 let list = [];
@@ -20,8 +21,14 @@ class WaterFall extends migi.Component {
       if(self.props.dataList) {
         self.appendData(self.props.dataList);
       }
+      let imageView = self.ref.imageView;
       let $root = $(self.element);
-      $root.on('click', '.like', function() {
+
+      function like() {
+        if(!util.isLogin()) {
+          migi.eventBus.emit('NEED_LOGIN');
+          return;
+        }
         let $b = $(this);
         if($b.hasClass('loading')) {
           return;
@@ -30,11 +37,18 @@ class WaterFall extends migi.Component {
         let id = $b.attr('itemID');
         net.postJSON('/h5/works/likeWork', { workID: id }, function(res) {
           if(res.success) {
-            if(res.data === 211 || res.data.State === 'likeWordsUser') {
+            if(res.data.State === 'likeWordsUser') {
               $b.addClass('has');
             }
             else {
               $b.removeClass('has');
+            }
+            for(let i = 0, len = list.length; i < len; i++) {
+              if(id.toString() === list[i].ItemID.toString()) {
+                list[i].ISLike = res.data.State === 'likeWordsUser';
+                imageView.list = list;
+                break;
+              }
             }
           }
           else if(res.code === 1000) {
@@ -48,8 +62,10 @@ class WaterFall extends migi.Component {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
           $b.removeClass('loading');
         });
-      });
-      $root.on('click', '.favor', function() {
+      }
+      $root.on('click', '.like', like);
+
+      function favor() {
         let $b = $(this);
         if($b.hasClass('loading')) {
           return;
@@ -77,14 +93,19 @@ class WaterFall extends migi.Component {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
           $b.removeClass('loading');
         });
-      });
-      $root.on('click', 'img', function(e) {
+      }
+      $root.on('click', '.favor', favor);
+
+      $root.on('click', 'img', function() {
         let $img = $(this);
         let index = $img.attr('rel');
-        migi.eventBus.emit('chooseImage', {
-          list,
-          index,
-        });
+        imageView.setData(list, index);
+      });
+
+      imageView.on('like', function(list, index) {
+        let id = list[index].ItemID;
+        let $li = $('#image_' + id);
+        like.call($li.find('.like'));
       });
     });
   }
@@ -147,16 +168,23 @@ class WaterFall extends migi.Component {
     li.appendTo($min[0]);
   }
   genItem(data) {
+    let author = data.GroupAuthorTypeHash.AuthorTypeHashlist[0] || {};
     data.preview = util.autoSsl(util.img360__80(data.FileUrl));
     if(data.Width <= 360) {
       return <li id={ 'image_' + data.ItemID }>
         <img class="pic" src={ util.autoSsl(util.img360__80(data.FileUrl)) || '/src/common/blank.png' }
              rel={ index++ } height={ data.Height / 2 }/>
         <div class="txt">
-          <a href="">
-            <img src="//zhuanquan.xyz/pic/3fc9dc8f4aa54ccfae45294dd689e820.jpg"/>
-            <span>名字</span>
-          </a>
+          <div class="author">
+            {
+              (author.AuthorInfo || []).map(function(item) {
+                return <a href={ '/author.html?authorID=' + item.AuthorID } title={ item.AuthorName }>
+                  <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/blank.png')) }/>
+                  <span>{ item.AuthorName }</span>
+                </a>
+              })
+            }
+          </div>
           <b class={ 'like' + (data.ISLike ? ' has' : '') } itemID={ data.ItemID }/>
         </div>
       </li>;
@@ -166,10 +194,16 @@ class WaterFall extends migi.Component {
       <img class="pic" src={ util.autoSsl(util.img360__80(data.FileUrl)) || '/src/common/blank.png' }
            rel={ index++ } height={ height / 2 }/>
       <div class="txt">
-        <a href="">
-          <img src="//zhuanquan.xyz/pic/3fc9dc8f4aa54ccfae45294dd689e820.jpg"/>
-          <span>名字</span>
-        </a>
+        <div class="author">
+          {
+            (author.AuthorInfo || []).map(function(item) {
+              return <a href={ '/author.html?authorID=' + item.AuthorID } title={ item.AuthorName }>
+                <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/blank.png')) }/>
+                <span>{ item.AuthorName }</span>
+              </a>
+            })
+          }
+        </div>
         <b class={ 'like' + (data.ISLike ? ' has' : '') } itemID={ data.ItemID }/>
       </div>
     </li>;
@@ -207,6 +241,7 @@ class WaterFall extends migi.Component {
         </div>
       </div>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
+      <ImageView ref="imageView"/>
     </div>;
   }
 }

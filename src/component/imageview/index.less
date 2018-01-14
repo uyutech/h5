@@ -28,7 +28,7 @@
     left:0;
     top:0;
     width:100%;
-    //overflow:hidden;
+    min-height:100%;
     z-index:102;
     &.transition{
       transition:transform 0.2s;
@@ -84,5 +84,8 @@
     background-size:contain;
     border-radius:0.02rem;
     z-index:104;
+    &.has{
+      background-image:url(liked.png);
+    }
   }
 }
