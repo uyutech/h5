@@ -19,27 +19,19 @@ import Playlist from '../component/playlist/Playlist.jsx';
 import VideoList from './VideoList.jsx';
 import WaterFall from '../component/waterfall/WaterFall.jsx';
 
-let visible;
-let scrollY = 0;
-let take = 10;
-let skip = take;
-let groupID;
-let typeID;
-let sort;
-let loading;
-let loadEnd;
-let ajax;
-
 class ItemList extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.first = true;
+    let self = this;
+    self.first = true;
+    self.take = 10;
+    self.skip = self.take;
   }
   @bind hasData
   show() {
     $(this.element).removeClass('fn-hide');
-    $(window).scrollTop(scrollY);
-    visible = true;
+    $(window).scrollTop(this.scrollY);
+    this.visible = true;
     if(this.first) {
       this.first = false;
       this.load();
@@ -48,7 +40,7 @@ class ItemList extends migi.Component {
   }
   hide() {
     $(this.element).addClass('fn-hide');
-    visible = false;
+    this.visible = false;
     return this;
   }
   load() {
@@ -67,11 +59,11 @@ class ItemList extends migi.Component {
     });
   }
   loadMore() {
-    if(loading || loadEnd) {
+    let self = this;
+    if(self.loading || self.loadEnd) {
       return;
     }
-    loading = true;
-    let self = this;
+    self.loading = true;
     let tag = self.props.tag;
     let videoList;
     let playlist;
@@ -90,45 +82,50 @@ class ItemList extends migi.Component {
         waterFall.message = '正在加载...';
         break;
     }
-    if(ajax) {
-      ajax.abort();
+    if(self.ajax) {
+      self.ajax.abort();
     }
-    ajax = net.postJSON('/h5/find/itemList', { groupID, typeID, sort, skip, take }, function(res) {
+    let groupID = self.groupID;
+    let typeID = self.typeID;
+    let sort = self.sort;
+    let skip = self.skip;
+    let take = self.take;
+    self.ajax = net.postJSON('/h5/find/itemList', { groupID, typeID, sort, skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
-        if(skip >= data.Size) {
-          loadEnd = true;
+        self.skip += self.take;
+        if(self.skip >= data.Size) {
+          self.loadEnd = true;
         }
         switch(tag.ID) {
           case 2:
             videoList.appendData(data.data);
-            videoList.message = loadEnd ? '已经到底了' : '';
+            videoList.message = self.loadEnd ? '已经到底了' : '';
             break;
           case 3:
             playlist.appendData(data.data);
-            playlist.message = loadEnd ? '已经到底了' : '';
+            playlist.message = self.loadEnd ? '已经到底了' : '';
             break;
           case 5:
             waterFall.appendData(data.data);
-            waterFall.message = loadEnd ? '已经到底了' : '';
+            waterFall.message = self.loadEnd ? '已经到底了' : '';
             break;
         }
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
-      loading = false;
+      self.loading = false;
     }, function(res) {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      loading = false;
+      self.loading = false;
     });
   }
   reset() {
-    skip = 0;
-    loadEnd = false;
-    loading = false;
     let self = this;
+    self.skip = 0;
+    self.loadEnd = false;
+    self.loading = false;
     let tag = self.props.tag;
     switch(tag.ID) {
       case 2:
@@ -147,7 +144,7 @@ class ItemList extends migi.Component {
     self.bannerList = data.bannerList;
     self.dataList = data.dataList;
     self.typeList = data.typeList;
-    self.itemList = data.itemList;
+    self.itemList = data.itemList || {};
     self.hasData = true;
 
     let list = self.ref.list;
@@ -161,14 +158,14 @@ class ItemList extends migi.Component {
     });
 
     if(self.typeList && self.typeList.length) {
-      groupID = self.typeList[0].GroupID;
+      self.groupID = self.typeList[0].GroupID;
     }
 
     let tagList = self.ref.tagList;
     if(tagList) {
       tagList.on('change', function(v) {console.log(v);
-        typeID = null;
-        groupID = v.GroupID;
+        self.typeID = null;
+        self.groupID = v.GroupID;
         fn.dataList = v.itemsTypeList;
         self.reset();
         self.loadMore();
@@ -178,24 +175,25 @@ class ItemList extends migi.Component {
     let fn = self.ref.fn;
     if(fn) {
       fn.on('sort', function(v) {
-        sort = v;
+        self.sort = v;
         self.reset();
         self.loadMore();
       });
       fn.on('type', function(v) {
-        typeID = v;
+        self.typeID = v;
         self.reset();
         self.loadMore();
       });
     }
 
-    if(!self.itemList.Size || self.itemList.Size <= take) {
-      return;
-    }
     let $window = $(window);
     let WIN_HEIGHT = $window.height();
     $window.on('scroll', function() {
-      if(!visible) {
+      if(!self.visible) {
+        return;
+      }
+      self.scrollY = $window.scrollTop();
+      if(!self.itemList.Size || self.itemList.Size <= self.take) {
         return;
       }
       let HEIGHT = $(document.body).height();
@@ -246,9 +244,13 @@ class ItemList extends migi.Component {
           ? <TagList ref="tagList" dataList={ self.typeList }/>
           : ''
       }
-      <Fn ref="fn" dataList={ (self.typeList[0] || {}).itemsTypeList }/>
       {
-        self.itemList.data.length
+        self.typeList.length || (self.typeList[0] || {}).itemsTypeList
+          ? <Fn ref="fn" dataList={ (self.typeList[0] || {}).itemsTypeList }/>
+          : ''
+      }
+      {
+        self.itemList.data && self.itemList.data.length
           ? {
               2: <VideoList ref="videoList" dataList={ self.itemList.data }/>,
               3: <Playlist ref="playlist" dataList={ self.itemList.data }/>,

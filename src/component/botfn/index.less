@@ -1,0 +1,98 @@
+/**
+ * Created by army8735 on 2018/1/14.
+ */
+
+.cp-botfn{
+  &:before{
+    position:fixed;
+    display:none;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0, 0, 0, 0.5);
+    z-index:101;
+  }
+  &.on:before{
+    display:block;
+    content:' ';
+  }
+  .c{
+    position:fixed;
+    left:0;
+    bottom:0;
+    width:100%;
+    background:#EDF3F7;
+    transform:translate3d(0, 100%, 0);
+    z-index:102;
+    transition:transform 0.2s;
+    .list{
+      display:flex;
+      padding:0.1rem 0.15rem 0.05rem;
+      flex-basis:0;
+      overflow-x:scroll;
+      transform:translateZ(0);
+      li{
+        margin-right:0.1rem;
+        width:0.6rem;
+        font-size:0.11rem;
+        color:#636365;
+        text-align:center;
+        &:last-child{
+          margin-right:0;
+        }
+        b{
+          display:block;
+          margin-bottom:0.05rem;
+          height:0.6rem;
+          background:#FFF;
+          border-radius:0.05rem;
+          background-position:center;
+          background-repeat:no-repeat;
+          background-size:contain;
+        }
+        &.del{
+          b{
+            background-image:url(del.png);
+          }
+        }
+        &.favor{
+          b{
+            background-image:url(favor.png);
+          }
+        }
+        &.favored{
+          b{
+            background-image:url(favored.png);
+          }
+        }
+        &.like{
+          b{
+            background-image:url(like.png);
+          }
+        }
+        &.liked{
+          b{
+            background-image:url(liked.png);
+          }
+        }
+      }
+    }
+    .cancel{
+      display:block;
+      width:100%;
+      height:0.44rem;
+      border:none;
+      background:none;
+      border-top:1px solid rgba(182, 182, 182, 0.5);
+      color:#636365;
+      font-size:0.17rem;
+      .hairlines &{
+        border-width:0.5px;
+      }
+    }
+  }
+  &.on .c{
+    transform:translate3d(0, 0, 0);
+  }
+}

@@ -4,8 +4,8 @@
 
 'use strict';
 
-import net from "../common/net";
-import util from "../common/util";
+import net from '../common/net';
+import util from '../common/util';
 
 import Banner from './Banner.jsx';
 import Works from './Works.jsx';
@@ -17,12 +17,15 @@ let visible;
 let scrollY = 0;
 let take = 10;
 let skip = take;
+let loading;
+let loadEnd;
 
 class Recommend extends migi.Component {
   constructor(...data) {
     super(...data);
   }
   @bind hasData
+  @bind message
   show() {
     $(this.element).removeClass('fn-hide');
     $(window).scrollTop(scrollY);
@@ -34,20 +37,34 @@ class Recommend extends migi.Component {
     visible = false;
     return this;
   }
-  load() {
+  loadMore() {
+    if(loading || loadEnd) {
+      return;
+    }
+    loading = true;
     let self = this;
-    self.on(migi.Event.DOM, function() {
-      visible = true;
-      net.postJSON('/h5/find/newIndex', { skip, take }, function(res) {
-        if(res.success) {
-          // self.setData(res.data);
+    self.message = '正在加载...';
+    net.postJSON('/h5/find/typeList', { id: self.tagList[0].ID }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        skip += take;
+        if(skip >= data.Size) {
+          loadEnd = true;
         }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
+        let list = self.ref.list.element;
+        (data.data || []).forEach(function(item, i) {
+          let cp = self.genItem(item, i === data.Size - 1);
+          if(cp) {
+            cp.appendTo(list);
+          }
+        });
+        self.message = loadEnd ? '已经到底了' : '';
+      }
+      else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
   setData(data) {
@@ -60,20 +77,27 @@ class Recommend extends migi.Component {
     let arr = (data.dataList.data || []);
     let length = arr.length;
     (data.dataList.data || []).forEach(function(item, i) {
-      let cp = self.genItem(item, i === length - 1);
+      let cp = self.genItem(item, i === data.dataList.Size - 1);
       if(cp) {
         cp.appendTo(list);
       }
     });
 
-    if(self.dataList.Size <= take) {
-      return;
-    }
     let $window = $(window);
     let WIN_HEIGHT = $window.height();
     $window.on('scroll', function() {
-      if(visible) {
-        //
+      if(!visible) {
+        return;
+      }
+      scrollY = $window.scrollTop();
+      if(self.dataList.Size <= take) {
+        return;
+      }
+      let HEIGHT = $(document.body).height();
+      let bool;
+      bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
+      if(bool) {
+        self.loadMore();
       }
     });
   }
@@ -86,6 +110,7 @@ class Recommend extends migi.Component {
           : ''
       }
       <div ref="list"/>
+      <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;
   }
   genItem(item, last) {

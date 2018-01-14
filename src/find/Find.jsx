@@ -72,7 +72,7 @@ class Find extends migi.Component {
       {
         (this.tagList || []).map(function(item, i) {
           if(i) {
-            return <ItemList ref="itemList" tag={item}/>;
+            return <ItemList ref="itemList" tag={ item }/>;
           }
         })
       }

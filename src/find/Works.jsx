@@ -4,8 +4,8 @@
 
 'use strict';
 
-import net from "../common/net";
-import util from "../common/util";
+import net from '../common/net';
+import util from '../common/util';
 
 class Works extends migi.Component {
   constructor(...data) {
@@ -37,7 +37,6 @@ class Works extends migi.Component {
       </a>
       <div class="txt">
         <a href={ '/works.html?worksID=' + works.WorksID } title={ works.Title } class="name">{ works.Title }</a>
-        <b class="fn"/>
         <dl>
           <dt>{ author.Describe }</dt>
           {

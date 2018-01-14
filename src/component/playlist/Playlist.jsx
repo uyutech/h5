@@ -13,6 +13,70 @@ class Playlist extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.dataList = self.props.dataList;
+    self.on(migi.Event.DOM, function() {
+      let $root = $(this.element);
+      let loadingFavor;
+      let loadingLike;
+      let ajaxFavor;
+      let ajaxLike;
+      $root.on('click', '.fn', function() {
+        let $fn = $(this);
+        let isLike = $fn.attr('isLike') === 'true';
+        let isFavor = $fn.attr('isFavor') === 'true';
+        migi.eventBus.emit('BOT_FN', {
+          isLike,
+          isFavor,
+          clickFavor: function(botFn) {
+            if(loadingFavor) {
+              return;
+            }
+            loadingFavor = true;
+            ajaxFavor = net.postJSON(isFavor ? '/h5/works/unFavorWork' : '/h5/works/favorWork', { workID: $fn.attr('workID') }, function(res) {
+              if(res.success) {
+                let data = res.data;
+                $fn.attr('isFavor', isFavor = botFn.isFavor = data.State === 'favorWork');
+              }
+              else {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              }
+              loadingFavor = false;
+            }, function(res) {
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              loadingFavor = false;
+            });
+          },
+          clickLike: function(botFn) {
+            if(loadingLike) {
+              return;
+            }
+            loadingLike = true;
+            ajaxLike = net.postJSON('/h5/works/likeWork', { workID: $fn.attr('workID') }, function(res) {
+              if(res.success) {
+                let data = res.data;
+                $fn.attr('isLike', isLike = botFn.isLike = data.State === 'likeWordsUser');
+              }
+              else {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              }
+              loadingLike = false;
+            }, function(res) {
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              loadingLike = false;
+            });
+          },
+          clickCancel: function() {
+            if(ajaxFavor) {
+              ajaxFavor.abort();
+            }
+            if(ajaxLike) {
+              ajaxLike.abort();
+            }
+            loadingFavor = false;
+            loadingLike = false;
+          }
+        });
+      });
+    });
   }
   @bind message
   show() {
@@ -28,7 +92,7 @@ class Playlist extends migi.Component {
     }.bind(this));
     $(this.ref.list.element).append(s);
   }
-  genItem(item) {
+  genItem(item) {console.log(item);
     if(item.WorksState === 3) {
       return <li class="private">
         <span class="name">待揭秘</span>
@@ -66,7 +130,7 @@ class Playlist extends migi.Component {
         }).join(' ') }</p>
       </div>
       <b class="video"/>
-      <b class="fn"/>
+      <b class="fn" workID={ item.ItemID } isLike={ item.ISLike } isFavor={ item.ISFavor }/>
     </li>;
   }
   clearData() {

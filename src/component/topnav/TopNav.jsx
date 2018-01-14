@@ -5,8 +5,6 @@
 import net from '../../common/net';
 import util from '../../common/util';
 
-const pack = require('../../../package.json');
-
 let loading;
 
 class TopNav extends migi.Component {
@@ -14,9 +12,6 @@ class TopNav extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      if(jsBridge.appVersion) {
-        $(self.ref.version.element).text(jsBridge.appVersion + '~' + pack.version);
-      }
       jsBridge.getPreference('loginInfo', function(loginInfo) {
         if(!loginInfo) {
           return;
@@ -61,6 +56,12 @@ class TopNav extends migi.Component {
   @bind isAuthor
   @bind authorName
   @bind messageNum
+  show() {
+    $(this.element).removeClass('fn-hide');
+  }
+  hide() {
+    $(this.element).addClass('fn-hide');
+  }
   setNum(data) {
     this.messageNum = data.Count;
   }
@@ -98,13 +99,9 @@ class TopNav extends migi.Component {
   clickUser() {
     migi.eventBus.emit('CLICK_MENU_USER');
   }
-  clickTop() {
-    $(this.element).toggleClass('focus');
-  }
   render() {
-    return <div class="top-nav" id="topNav">
-      <b class="logo" onClick={ this.clickTop }/>
-      <span class="version" ref="version" onClick={ this.clickTop }>{ pack.version }</span>
+    return <div class="top-nav fn-hide" id="topNav">
+      <b class="logo"/>
       <div class={ 'message' + (this.isLogin ? '' : ' fn-hide') } onClick={ this.clickMessage }>
         <span>{ this.messageNum || '' }</span>
       </div>

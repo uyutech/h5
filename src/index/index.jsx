@@ -8,11 +8,13 @@ import './index.less';
 import net from '../common/net';
 import util from '../common/util';
 import BotNav from '../component/botnav/BotNav.jsx';
+import TopNav from '../component/topnav/TopNav.jsx';
 import Find from '../find/Find.jsx';
 import Circling from '../circling/Circling.jsx';
 import Follow from '../follow/Follow.jsx';
 import My from '../my/My.jsx';
 import ImageView from '../post/ImageView.jsx';
+import BotFn from '../component/botfn/BotFn.jsx';
 
 jsBridge.ready(function() {
   jsBridge.on('refresh', function(e) {
@@ -26,6 +28,11 @@ jsBridge.ready(function() {
     if(my) {
       my.refresh();
     }
+    net.postJSON('/h5/my/message', function(res) {
+      if(res.success) {
+        topNav.setNum(res.data);
+      }
+    });
   });
   jsBridge.getPreference('loginInfo', function(loginInfo) {
     jsBridge.on('resume', function() {
@@ -56,18 +63,28 @@ jsBridge.ready(function() {
       loginInfo = data;
     });
   });
-
-  let botNav = migi.preExist(<BotNav/>, '#page');
-  let imageView = migi.preExist(<ImageView ref="imageView"/>, '#page');
-  jsBridge.on('back', function(e) {
-    if(!imageView.isHide()) {
-      e.preventDefault();
-      imageView.hide();
-    }
-    else {
-      jsBridge.moveTaskToBack();
+  jsBridge.on('resume', function(e) {
+    let data = e.data;
+    if(data && data.message) {
+      net.postJSON('/h5/my/message', function(res) {
+        if(res.success) {
+          topNav.setNum(res.data);
+        }
+      });
     }
   });
+
+  let topNav = migi.preExist(<TopNav/>, '#page');
+
+  if(util.isLogin()) {
+    net.postJSON('/h5/my/message', function(res) {
+      if(res.success) {
+        topNav.setNum(res.data);
+      }
+    });
+  }
+
+  let botNav = migi.preExist(<BotNav/>, '#page');
 
   let loginInfo;
   jsBridge.delPreference('userInfo');
@@ -94,27 +111,43 @@ jsBridge.ready(function() {
         find = migi.render(<Find/>, '#page');
       }
       last = find;
+      topNav.hide();
     }
     else if(i === 1) {
       if(!circling) {
         circling = migi.render(<Circling/>, '#page');
       }
       last = circling;
+      topNav.show();
     }
     else if(i === 2) {
       if(!follow) {
         follow = migi.render(<Follow/>, '#page');
       }
       last = follow;
+      topNav.show();
     }
     else if(i === 3) {
       if(!my) {
         my = migi.render(<My loginInfo={ loginInfo }/>, '#page');
       }
       last = my;
+      topNav.show();
     }
     last.show();
   });
+
+  let imageView = migi.render(<ImageView/>, '#page');
+  jsBridge.on('back', function(e) {
+    if(!imageView.isHide()) {
+      e.preventDefault();
+      imageView.hide();
+    }
+    else {
+      jsBridge.moveTaskToBack();
+    }
+  });
+  migi.render(<BotFn/>, '#page');
 
   let old = false;
   if(jsBridge.appVersion) {
