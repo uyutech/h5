@@ -79,7 +79,16 @@ class Media extends migi.Component {
     }
   }
   render() {
-    let showLabel = this.props.videoData && this.props.audioData;
+    let showLabel = false;
+    if(this.props.videoData && this.props.audioData) {
+      showLabel = true;
+    }
+    if(this.props.videoData && this.props.videoData.length > 1) {
+      showLabel = true;
+    }
+    else if(this.props.audioData && this.props.audioData.length > 1) {
+      showLabel = true;
+    }
     let worksID = this.props.worksID;
     let workID = this.props.workID;
     let first = this.props.first;

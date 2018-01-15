@@ -72,6 +72,9 @@ class VideoList extends migi.Component {
     return <li>
       <a href={ url } title={ item.ItemName } class="pic">
         <img src={ util.autoSsl(util.img750__80(works.WorksCoverPic || '/src/common/blank.png')) }/>
+        <div class="num">
+          <span class="play-times">{ util.abbrNum(item.PlayHis) }次播放</span>
+        </div>
       </a>
       <div class="txt">
         <a href={ url } title={ item.ItemName } class="name">{ item.ItemName }</a>
