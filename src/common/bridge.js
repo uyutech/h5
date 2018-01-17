@@ -417,7 +417,15 @@ let jsBridge = {
         callback(res);
       });
     }
-  }
+  },
+  media: function(data, callback) {
+    callback = callback || function() {};
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      ZhuanQuanJSBridge.call('media', data, function(res) {
+        callback(res);
+      });
+    }
+  },
 };
 
 window.jsBridge = jsBridge;

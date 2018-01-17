@@ -15,29 +15,43 @@
   > div{
     > .nav{
       position:relative;
-      padding:0.2rem 0.2rem 0.5rem;
-      background:url(../circle/circle.jpg) no-repeat center;
-      background-size:cover;
+      padding:39% 0.15rem 0.15rem;
+      background:url(tbg.jpg) no-repeat center 0;
+      background-size:100% auto;
+      &:before{
+        position:absolute;
+        left:0;
+        top:0;
+        width:100%;
+        height:0.66rem;
+        background:linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0));
+        content:' ';
+      }
       > .profile{
+        position:relative;
         display:flex;
-        align-items:center;
+        padding-top:0.05rem;
+        height:0.6rem;
         .pic{
           position:relative;
+          top:-0.75rem;
+          margin-right:0.2rem;
+          padding:0.21rem 0.1rem 0.13rem;
           width:1rem;
           height:1rem;
-          margin-right:0.2rem;
+          background:url(head_bg.png) no-repeat center;
+          background-size:contain;
           img{
             display:block;
             width:100%;
             height:100%;
             box-sizing:border-box;
-            border:1px solid #FFF;
             border-radius:100%;
           }
           .settled{
             position:absolute;
-            bottom:0;
-            right:0;
+            bottom:0.12rem;
+            right:0.12rem;
             display:block;
             width:0.29rem;
             height:0.34rem;
@@ -50,178 +64,160 @@
           .n{
             display:flex;
             align-items:center;
+            flex-shrink:0;
+            overflow-x:scroll;
+            transform:translateZ(0);
             h3{
               margin-right:0.08rem;
-              font-size:0.16rem;
-              font-weight:400;
-              vertical-align:middle;
+              font-size:0.19rem;
+              color:#5D99C4;
             }
           }
-          .rel{
-            position:relative;
-            margin-top:0.1rem;
-            line-height:0.2rem;
-            label{
-              margin-right:0.02rem;
-              padding-left:0.2rem;
-              color:@fourthTextColor;
-              background:url(../icon/small-people.png) no-repeat 0 center;
-              background-size:0.16rem auto;
-            }
-            .follow, .un-follow{
-              position:absolute;
-              top:0;
-              right:0;
-              display:block;
-              padding:0 0.1rem;
-              height:0.2rem;
-              line-height:0.2rem;
-              background-size:0.1rem auto;
-              border-radius:0.1rem;
-              color:@thirdTextColor;
-              background:@secondColor
-            }
-            .un-follow{
-              background-color:@fourthTextColor;
-            }
+        }
+        .follow, .un-follow{
+          position:absolute;
+          top:-0.3rem;
+          right:0;
+          display:block;
+          box-sizing:border-box;
+          padding-left:0.2rem;
+          width:0.66rem;
+          height:0.24rem;
+          line-height:0.24rem;
+          color:#FFF;
+          background:#8BBDE1;
+          background-repeat:no-repeat;
+          background-position:0.05rem center;
+          background-size:0.12rem auto;
+          border:none;
+          border-radius:0.24rem;
+          &.loading{
+            color:#CCC;
           }
-          .intro{
-            margin-top:0.1rem;
-          }
+        }
+        .follow{
+          background-image:url(+.png);
+        }
+        .un-follow{
+          background-image:url(-.png);
         }
       }
-      > .link{
-        position:relative;
-        margin-top:0.2rem;
-        padding:0.2rem 0 0;
-        box-sizing:border-box;
-        text-align:center;
-        color:@fourthTextColor;
-        border-top:1px solid #C2D8E4;
-        ul{
+      > .plus{
+        display:flex;
+        align-items:center;
+        color:#B6B6B6;
+        font-size:0.13rem;
+        line-height:0.2rem;
+        li{
+          flex:1;
+          position:relative;
+          margin:0 0.1rem 0 0;
+          padding:0 0.1rem 0 0;
+          text-align:center;
+          &:after{
+            position:absolute;
+            top:50%;
+            right:0;
+            width:0;
+            height:0.1rem;
+            border-right:1px solid #D8D8D8;
+            content:' ';
+            transform:translateY(-50%);
+          }
+          &:last-child:after{
+            display:none;
+            content:'';
+          }
+        }
+        .outside{
           display:flex;
-          flex-wrap:wrap;
-          li{
-            flex:1;
-            text-align:center;
-            a{
-              display:block;
-              margin:0 auto;
-              padding-top:0.2rem;
-              min-width:0.2rem;
-              height:0.4rem;
-              box-sizing:border-box;
-              text-align:center;
-              white-space:nowrap;
-              color:@fourthTextColor;
-              &.sing5{
-                background:url(../icon/link-5sing.png) no-repeat center 0;
-                background-size:0.18rem auto;
-              }
-              &.bilibili{
-                background:url(../icon/link-bilibili.png) no-repeat center 0;
-                background-size:0.18rem auto;
-              }
-              &.wangyi{
-                background:url(../icon/link-163.png) no-repeat center 0;
-                background-size:0.18rem auto;
-              }
-              &.baidu{
-                background:url(../icon/link-baidu.png) no-repeat center 0;
-                background-size:0.18rem auto;
-              }
-              &.weibo{
-                background:url(../icon/link-weibo.png) no-repeat center 0;
-                background-size:0.18rem auto;
-              }
-              &.huaban{
-                background:url(../icon/link-huaban.png) no-repeat center 0;
-                background-size:0.18rem auto;
-              }
-              &.lofter{
-                background:url(../icon/link-lofter.png) no-repeat center 0;
-                background-size:0.18rem auto;
-              }
-              &.poco{
-                background:url(../icon/link-poco.png) no-repeat center 0;
-                background-size:0.18rem auto;
-              }
-              &.zcoo{
-                background:url(../icon/link-zcoo.png) no-repeat center 0;
-                background-size:0.18rem auto;
-              }
+          overflow-x:scroll;
+          align-items:center;
+          transform:translateZ(0);
+          span{
+            margin-right:0.05rem;
+            white-space:nowrap;
+          }
+          a{
+            display:block;
+            width:0.24rem;
+            height:0.24rem;
+            white-space:nowrap;
+            &.sing5{
+              background:url(../icon/link-5sing.png) no-repeat center 0;
+              background-size:0.24rem auto;
+            }
+            &.bilibili{
+              background:url(../icon/link-bilibili.png) no-repeat center 0;
+              background-size:0.24rem auto;
+            }
+            &.wangyi{
+              background:url(../icon/link-163.png) no-repeat center 0;
+              background-size:0.24rem auto;
+            }
+            &.baidu{
+              background:url(../icon/link-baidu.png) no-repeat center 0;
+              background-size:0.24rem auto;
+            }
+            &.weibo{
+              background:url(../icon/link-weibo.png) no-repeat center 0;
+              background-size:0.24rem auto;
+            }
+            &.huaban{
+              background:url(../icon/link-huaban.png) no-repeat center 0;
+              background-size:0.24rem auto;
+            }
+            &.lofter{
+              background:url(../icon/link-lofter.png) no-repeat center 0;
+              background-size:0.24rem auto;
+            }
+            &.poco{
+              background:url(../icon/link-poco.png) no-repeat center 0;
+              background-size:0.24rem auto;
+            }
+            &.zcoo{
+              background:url(../icon/link-zcoo.png) no-repeat center 0;
+              background-size:0.24rem auto;
             }
           }
         }
-        p{
-          margin:0.1rem;
+        strong{
+          margin-left:0.02rem;
+          font-weight:400;
+          color:#8BBDE1;
+          font-size:0.14rem;
+          flex-basis:0;
+          line-height:0.2rem;
         }
       }
     }
     > .type{
-      margin-top:-0.41rem;
-      padding-top:0.01rem;
-      height:0.4rem;
       display:flex;
-      border-bottom:0.08rem solid @mainColor;
-      overflow:hidden;
+      justify-content:center;
+      height:0.4rem;
+      border-top:0.05rem solid #edf3f7;
       li{
+        flex:1;
         position:relative;
-        padding:0 0.2rem 0 0.5rem;
-        width:0.3rem;
-        height:100%;
-        box-shadow:@tagShadow;
-        border-top-left-radius:0.24rem;
-        border-top-right-radius:0.24rem;
-        color:@secondTextColor;
-        line-height:0.48rem;
-        font-size:0.12rem;
-        cursor:pointer;
-        text-align:right;
-        background-color:rgba(255, 255, 255, 0.7);
-        background-position:0.2rem 0.12rem;
-        background-repeat:no-repeat;
-        background-size:0.24rem auto;
-        &.home{
-          background-image:url(../icon/tag-home.png);
-          &.cur{
-            background-image:url(../icon/tag-home-cur.png);
-          }
-        }
-        &.ma{
-          background-image:url(../icon/tag-ma.png);
-          &.cur{
-            background-image:url(../icon/tag-ma-cur.png);
-          }
-        }
-        &.pic{
-          background-image:url(../icon/tag-pic.png);
-          &.cur{
-            background-image:url(../icon/tag-pic-cur.png);
-          }
-        }
-        &.comments{
-          background-image:url(../icon/tag-comments.png);
-          &.cur{
-            background-image:url(../icon/tag-comments-cur.png);
-          }
-        }
-        &:active{
-          text-decoration:underline;
-        }
-        &:first-child{
-          z-index:9;
-        }
-        &:nth-child(2){
-          z-index:8;
-        }
+        margin:0 0.1rem;
+        height:0.4rem;
+        line-height:0.4rem;
+        color:#636365;
+        font-size:0.15rem;
+        text-align:center;
         &.cur{
-          background-color:@mainColor;
-          color:@mainTextColor;
-          cursor:default;
-          font-size:0.14rem;
-          text-decoration:none;
-          z-index:10;
+          color:#8BBDE1;
+          &:after{
+            position:absolute;
+            left:50%;
+            bottom:0.03rem;
+            width:70%;
+            height:0.02rem;
+            background:#8BBDE1;
+            border-radius:0.02rem;
+            content:' ';
+            transform:translateX(-50%);
+          }
         }
       }
     }

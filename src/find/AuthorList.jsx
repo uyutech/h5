@@ -20,7 +20,7 @@ class AuthorList extends migi.Component {
         let url = $a.attr('href');
         let title = $a.attr('title');
         jsBridge.pushWindow(url, {
-          title,
+          transparentTitle: true,
         });
       });
     });

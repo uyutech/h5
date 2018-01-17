@@ -150,6 +150,7 @@ class Author extends migi.Component {
                 subText="发送"
                 tipText="-${n}"
                 readOnly={ true }
+                shareUrl={ '/author/' + self.authorID }
                 placeholder={ '给' + self.authorDetail.AuthorName + '留个言吧' }/>
       </div>;
     }
@@ -189,6 +190,7 @@ class Author extends migi.Component {
               subText="发送"
               tipText="-${n}"
               readOnly={ true }
+              shareUrl={ '/author/' + self.authorID }
               placeholder={ '给' + self.authorDetail.AuthorName + '留个言吧' }/>
     </div>;
   }

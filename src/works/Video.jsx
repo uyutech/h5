@@ -24,6 +24,9 @@ class Video extends migi.Component {
       if(self.props.show) {
         self.on(migi.Event.DOM, function() {
           self.addMedia();
+          jsBridge.media({
+            key: 'stop',
+          });
         });
       }
     }
@@ -67,6 +70,9 @@ class Video extends migi.Component {
     video.prependTo(this.ref.c.element);
   }
   switchTo(index) {
+    jsBridge.media({
+      key: 'stop',
+    });
     this.index = index;
     if(!this.video) {
       this.addMedia();
@@ -123,6 +129,9 @@ class Video extends migi.Component {
     this.isPlaying = false;
   }
   play() {
+    jsBridge.media({
+      key: 'stop',
+    });
     this.video.element.play();
     this.isPlaying = true;
     net.postJSON('/h5/works/addPlayCount', { workID: this.datas[this.index || 0].ItemID });

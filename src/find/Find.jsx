@@ -67,7 +67,7 @@ class Find extends migi.Component {
     self.tagList = data.tagList;
     self.ref.nav.dataList = data.tagList;
     self.ref.recommend.setData(data);
-    self.ref.recommend.rid = data.tagList[0].ID;
+    self.ref.recommend.rid = (data.tagList[0] || {}).ID;
   }
   render() {
     return <div class="find">

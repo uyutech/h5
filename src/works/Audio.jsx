@@ -8,11 +8,40 @@ import LyricsParser from './LyricsParser.jsx';
 
 let isStart;
 let offsetX;
+let mediaService;
+let hasSwitch;
 
 class Audio extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    if(jsBridge.appVersion && jsBridge.android) {
+      let version = jsBridge.appVersion.split('.');
+      let major = parseInt(version[0]) || 0;
+      let minor = parseInt(version[1]) || 0;
+      let patch = parseInt(version[2]) || 0;
+      if(major > 0 || minor > 4) {
+        mediaService = true;
+        jsBridge.on('timeupdate', function(e) {
+          if(e.data) {
+            self.currentTime = e.data.currentTime * 0.001;
+            self.setBarPercent(self.currentTime / self.duration);
+          }
+        });
+        jsBridge.on('prepared', function(e) {
+          if(e.data) {
+            self.duration = e.data * 0.001;
+            self.canControl = true;
+          }
+        });
+        jsBridge.on('progress', function(e) {
+          if(e.data) {
+            let load = self.ref.load.element;
+            load.innerHTML = `<b style="width:${e.data}%"/>`;
+          }
+        });
+      }
+    }
     if(self.props.datas) {
       self.setData(self.props.datas);
       if(self.props.workID) {
@@ -24,7 +53,15 @@ class Audio extends migi.Component {
       }
       if(self.props.show) {
         self.on(migi.Event.DOM, function() {
-          self.addMedia();
+          if(mediaService) {
+            jsBridge.media({
+              key: 'url',
+              value: location.protocol + util.autoSsl(this.datas[this.index || 0].FileUrl),
+            });
+          }
+          else {
+            self.addMedia();
+          }
         });
       }
     }
@@ -81,21 +118,47 @@ class Audio extends migi.Component {
     audio.appendTo(this.element);
   }
   switchTo(index) {
-    this.index = index;
-    if(!this.audio) {
-      this.addMedia();
+    let self = this;
+    self.index = index;
+    self.isPlaying = false;
+    self.currentTime = 0;
+    self.ref.load.element.innerHTML = '';
+    self.setBarPercent(0);
+    if(mediaService) {
+      jsBridge.media({
+        key: 'url',
+        value: location.protocol + util.autoSsl(self.datas[self.index || 0].FileUrl),
+      }, function(res) {
+        self.currentTime = 0;
+        self.setBarPercent(0);
+        let load = self.ref.load.element;
+        if(res.isCached) {
+          load.innerHTML = `<b style="width:100%"/>`;
+        }
+        else {
+          load.innerHTML = '';
+        }
+      });
     }
-    this.audio.element.src = this.datas[this.index].FileUrl;
-    this.pause();
-    this.emit('switchTo', this.datas[this.index]);
+    else {
+      if(!self.audio) {
+        self.addMedia();
+      }
+      self.audio.element.src = self.datas[self.index].FileUrl;
+    }
+    self.emit('switchTo', self.datas[self.index]);
   }
   show() {
-    $(this.element).removeClass('fn-hide');
-    if(!this.audio) {
-      this.addMedia();
+    let self = this;
+    $(self.element).removeClass('fn-hide');
+    if(mediaService) {}
+    else {
+      if(!self.audio) {
+        self.addMedia();
+      }
     }
-    $(this.ref.fn.element).removeClass('fn-hidden');
-    return this;
+    $(self.ref.fn.element).removeClass('fn-hidden');
+    return self;
   }
   hide() {
     $(this.element).addClass('fn-hide');
@@ -154,14 +217,28 @@ class Audio extends migi.Component {
     this.isPlaying = false;
   }
   play() {
-    this.audio.element.play();
+    if(mediaService) {
+      jsBridge.media({
+        key: 'play',
+      });
+    }
+    else {
+      this.audio.element.play();
+    }
     this.isPlaying = true;
     this.hasStart = true;
     net.postJSON('/h5/works/addPlayCount', { workID: this.datas[this.index || 0].ItemID });
     return this;
   }
   pause() {
-    this.audio && this.audio.element.pause();
+    if(mediaService) {
+      jsBridge.media({
+        key: 'pause',
+      });
+    }
+    else {
+      this.audio && this.audio.element.pause();
+    }
     this.isPlaying = false;
     return this;
   }
@@ -202,7 +279,17 @@ class Audio extends migi.Component {
       let x = e.pageX - left;
       let percent = x / $progress.width();
       let currentTime = Math.floor(this.duration * percent);
-      this.audio.element.currentTime = this.currentTime = currentTime;
+      if(mediaService) {
+        jsBridge.media({
+          key: 'seek',
+          value: currentTime * 1000,
+        });
+        this.currentTime = currentTime;
+        this.setBarPercent(percent);
+      }
+      else {
+        this.audio.element.currentTime = this.currentTime = currentTime;
+      }
     }
   }
   setBarPercent(percent) {

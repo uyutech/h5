@@ -133,6 +133,7 @@ class MusicAlbum extends migi.Component {
         break;
     }
     altMedia = true;
+    self.canControl = false;
     if(isPlaying) {
       self.play();
     }
@@ -190,6 +191,7 @@ class MusicAlbum extends migi.Component {
     this.isPlaying = false;
   }
   onCanplaythrough(e) {
+    this.canControl = true;
     if(altMedia) {
       altMedia = false;
       this.av.element.currentTime = this.currentTime = 0;
