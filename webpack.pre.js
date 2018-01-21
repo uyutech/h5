@@ -26,6 +26,7 @@ module.exports = {
     more_tag: './src/more_tag/pre.jsx',
     passport: './src/passport/pre.jsx',
     phone: './src/phone/pre.jsx',
+    playlist: './src/playlist/pre.jsx',
   },
   output: {
     path: __dirname + '/www',

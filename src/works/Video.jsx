@@ -27,6 +27,7 @@ class Video extends migi.Component {
           jsBridge.media({
             key: 'stop',
           });
+          jsBridge.setPreference('playlist_playing', null);
         });
       }
     }
@@ -73,6 +74,7 @@ class Video extends migi.Component {
     jsBridge.media({
       key: 'stop',
     });
+    jsBridge.setPreference('playlist_playing', null);
     this.index = index;
     if(!this.video) {
       this.addMedia();
@@ -129,9 +131,6 @@ class Video extends migi.Component {
     this.isPlaying = false;
   }
   play() {
-    jsBridge.media({
-      key: 'stop',
-    });
     this.video.element.play();
     this.isPlaying = true;
     net.postJSON('/h5/works/addPlayCount', { workID: this.datas[this.index || 0].ItemID });
@@ -346,7 +345,7 @@ class Video extends migi.Component {
       </div>
       <div class="fn" ref="fn">
         <div class="control">
-          <small class="time">{ util.formatTime(this.currentTime * 1000) } / { util.formatTime(this.duration * 1000) }</small>
+          <small class="time">{ util.formatTime(this.currentTime) } / { util.formatTime(this.duration) }</small>
           <b class="full" onClick={ this.clickScreen }/>
         </div>
         <div class="bar">

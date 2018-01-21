@@ -403,7 +403,7 @@ class MusicAlbum extends migi.Component {
       </div>
       <div class={ 'fn' + ((this.showFn && this.url) ? '' : ' hidden') } ref="fn">
         <div class="control">
-          <small class="time">{ util.formatTime(this.currentTime * 1000) } / { util.formatTime(this.duration * 1000) }</small>
+          <small class="time">{ util.formatTime(this.currentTime) } / { util.formatTime(this.duration) }</small>
           <b class="full" onClick={ this.clickScreen }/>
         </div>
         <div class="bar">

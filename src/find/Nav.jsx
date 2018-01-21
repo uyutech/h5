@@ -23,6 +23,9 @@ class Nav extends migi.Component {
     });
   }
   @bind dataList
+  clickPlaylist() {
+    migi.eventBus.emit('PLAYLIST');
+  }
   render() {
     return <div class="mod-nav">
       <b class="search"/>
@@ -36,6 +39,7 @@ class Nav extends migi.Component {
           })
         }
       </ul>
+      <b class="playlist" onClick={ this.clickPlaylist }/>
     </div>;
   }
 }

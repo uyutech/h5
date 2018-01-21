@@ -14,8 +14,8 @@ import util from '../common/util';
 import Works from './Works.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let worksID = search.worksID;
-let workID = search.workID;
+let worksID = parseInt(search.worksID);
+let workID = parseInt(search.workID) || undefined;
 
 jsBridge.ready(function() {
   let works = migi.preExist(

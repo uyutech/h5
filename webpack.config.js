@@ -30,6 +30,7 @@ module.exports = {
     passport: './src/passport/index.jsx',
     phone: './src/phone/index.jsx',
     guide: './src/guide/index.jsx',
+    playlist: './src/playlist/index.jsx',
   },
   output: {
     path: __dirname + '/www',

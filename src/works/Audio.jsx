@@ -9,7 +9,6 @@ import LyricsParser from './LyricsParser.jsx';
 let isStart;
 let offsetX;
 let mediaService;
-let hasSwitch;
 
 class Audio extends migi.Component {
   constructor(...data) {
@@ -22,22 +21,25 @@ class Audio extends migi.Component {
       let patch = parseInt(version[2]) || 0;
       if(major > 0 || minor > 4) {
         mediaService = true;
+        jsBridge.on('prepared', function(e) {
+          if(e.data) {
+            self.duration = e.data.duration * 0.001;
+            self.canControl = true;
+          }
+        });
         jsBridge.on('timeupdate', function(e) {
           if(e.data) {
             self.currentTime = e.data.currentTime * 0.001;
-            self.setBarPercent(self.currentTime / self.duration);
-          }
-        });
-        jsBridge.on('prepared', function(e) {
-          if(e.data) {
-            self.duration = e.data * 0.001;
+            self.duration = e.data.duration * 0.001;
+            self.updateLrc();
             self.canControl = true;
+            self.setBarPercent(self.currentTime / self.duration);
           }
         });
         jsBridge.on('progress', function(e) {
           if(e.data) {
             let load = self.ref.load.element;
-            load.innerHTML = `<b style="width:${e.data}%"/>`;
+            load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
           }
         });
       }
@@ -55,8 +57,23 @@ class Audio extends migi.Component {
         self.on(migi.Event.DOM, function() {
           if(mediaService) {
             jsBridge.media({
-              key: 'url',
-              value: location.protocol + util.autoSsl(this.datas[this.index || 0].FileUrl),
+              key: 'info',
+              value: {
+                url: location.protocol + util.autoSsl(this.datas[this.index || 0].FileUrl),
+                name: this.datas[this.index || 0].ItemID,
+              },
+            }, function(res) {
+              let load = self.ref.load.element;
+              if(res.isCached) {
+                load.innerHTML = `<b style="width:100%"/>`;
+              }
+              else {
+                load.innerHTML = '';
+              }
+              self.isPlaying = res.isPlaying;
+              if(res.isPlaying) {
+                self.canControl = true;
+              }
             });
           }
           else {
@@ -126,8 +143,11 @@ class Audio extends migi.Component {
     self.setBarPercent(0);
     if(mediaService) {
       jsBridge.media({
-        key: 'url',
-        value: location.protocol + util.autoSsl(self.datas[self.index || 0].FileUrl),
+        key: 'info',
+        value: {
+          url: location.protocol + util.autoSsl(this.datas[this.index || 0].FileUrl),
+          name: this.datas[this.index || 0].ItemID,
+        },
       }, function(res) {
         self.currentTime = 0;
         self.setBarPercent(0);
@@ -165,27 +185,12 @@ class Audio extends migi.Component {
     return this;
   }
   onTimeupdate(e) {
-    let currentTime = this.currentTime = e.target.currentTime;
-    this.duration = e.target.duration;
-    let item = this.datas[this.index];
-    let formatLyrics = item.formatLyrics;
-    let formatLyricsData = formatLyrics.data;
-    if(formatLyrics.is && formatLyricsData.length) {
-      let tempIndex = this.lyricsIndex;
-      for (let i = 0, len = formatLyricsData.length; i < len; i++) {
-        if(currentTime * 1000 >= formatLyricsData[i].timestamp) {
-          tempIndex = i;
-        }
-        else {
-          break;
-        }
-      }
-      if(tempIndex !== this.lyricsIndex) {
-        this.lyricsIndex = tempIndex;
-      }
-    }
-    let percent = currentTime / this.duration;
-    this.setBarPercent(percent);
+    let self = this;
+    let currentTime = self.currentTime = e.target.currentTime;
+    self.duration = e.target.duration;
+    self.updateLrc();
+    let percent = currentTime / self.duration;
+    self.setBarPercent(percent);
   }
   onProgress(e) {
     let buffered = e.target.buffered;
@@ -217,20 +222,45 @@ class Audio extends migi.Component {
     this.isPlaying = false;
   }
   play() {
+    let self = this;
+    let work = self.datas[self.index || 0];
+    let o = {
+      worksID: self.props.worksID,
+      workID: work.ItemID,
+    };
+    jsBridge.getPreference('playlist', function(res) {
+      if(!res) {
+        res = [];
+      }
+      for(let i = 0, len = res.length; i < len; i++) {
+        if(res[i].worksID === o.worksID && res[i].workID === o.workID) {
+          res.splice(i, 1);
+          break;
+        }
+      }
+      res.unshift(o);
+      if(res.length > 20) {
+        res.pop();
+      }
+      jsBridge.setPreference('playlist', res);
+    });
+    jsBridge.setPreference('playlist_cur', o);
+    jsBridge.setPreference('playlist_playing', true);
     if(mediaService) {
       jsBridge.media({
         key: 'play',
       });
     }
     else {
-      this.audio.element.play();
+      self.audio.element.play();
     }
-    this.isPlaying = true;
-    this.hasStart = true;
-    net.postJSON('/h5/works/addPlayCount', { workID: this.datas[this.index || 0].ItemID });
+    self.isPlaying = true;
+    self.hasStart = true;
+    net.postJSON('/h5/works/addPlayCount', { workID: work.ItemID });
     return this;
   }
   pause() {
+    jsBridge.setPreference('playlist_playing', null);
     if(mediaService) {
       jsBridge.media({
         key: 'pause',
@@ -266,7 +296,20 @@ class Audio extends migi.Component {
       diff = Math.min(width, diff);
       let percent = diff / width;
       this.setBarPercent(percent);
-      this.audio.element.currentTime = this.currentTime = Math.floor(this.duration * percent);
+      let currentTime = Math.floor(this.duration * percent);
+      if(mediaService) {
+        jsBridge.media({
+          key: 'seek',
+          value: {
+            time: currentTime * 1000,
+          },
+        });
+        this.currentTime = currentTime;
+        this.setBarPercent(percent);
+      }
+      else {
+        this.audio.element.currentTime = this.currentTime = currentTime;
+      }
     }
   }
   touchEnd(e) {
@@ -282,7 +325,9 @@ class Audio extends migi.Component {
       if(mediaService) {
         jsBridge.media({
           key: 'seek',
-          value: currentTime * 1000,
+          value: {
+            time: currentTime * 1000
+          },
         });
         this.currentTime = currentTime;
         this.setBarPercent(percent);
@@ -299,9 +344,29 @@ class Audio extends migi.Component {
     percent *= 100;
     percent = Math.min(percent, 100);
     $(this.ref.vol.element).css('width', percent + '%');
-    $(this.ref.p.element).css('-moz-transform', `translateX(${percent}%)`);
-    $(this.ref.p.element).css('-webkit-transform', `translateX(${percent}%)`);
-    $(this.ref.p.element).css('transform', `translateX(${percent}%)`);
+    let $p = $(this.ref.p.element);
+    $p.css('-moz-transform', `translateX(${percent}%)`);
+    $p.css('-webkit-transform', `translateX(${percent}%)`);
+    $p.css('transform', `translateX(${percent}%)`);
+  }
+  updateLrc() {
+    let item = this.datas[this.index];
+    let formatLyrics = item.formatLyrics;
+    let formatLyricsData = formatLyrics.data;
+    if(formatLyrics.is && formatLyricsData.length) {
+      let tempIndex = this.lyricsIndex;
+      for (let i = 0, len = formatLyricsData.length; i < len; i++) {
+        if(this.currentTime * 1000 >= formatLyricsData[i].timestamp) {
+          tempIndex = i;
+        }
+        else {
+          break;
+        }
+      }
+      if(tempIndex !== this.lyricsIndex) {
+        this.lyricsIndex = tempIndex;
+      }
+    }
   }
   clickPlay(e) {
     this.isPlaying ? this.pause() : this.play();
@@ -447,7 +512,7 @@ class Audio extends migi.Component {
       <div class="fn" ref="fn">
         <div class="control">
           <b class={ 'lyrics' + (this.showLyricsMode ? '' : ' roll') } onClick={ this.altLyrics }/>
-          <small class="time">{ util.formatTime(this.currentTime * 1000) } / { util.formatTime(this.duration * 1000) }</small>
+          <small class="time">{ util.formatTime(this.currentTime) } / { util.formatTime(this.duration) }</small>
         </div>
         <div class="bar">
           <b class={ 'play' + (this.isPlaying ? ' pause' : '') } onClick={ this.clickPlay }/>

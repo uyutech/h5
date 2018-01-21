@@ -4,6 +4,7 @@
 
 'use strict';
 
+let clickDel;
 let clickFavor;
 let clickLike;
 let clickCancel;
@@ -14,19 +15,25 @@ class BotFn extends migi.Component {
     let self = this;
     self.on(migi.Event.DOM, function() {
       migi.eventBus.on('BOT_FN', function(data) {
+        self.canDel = data.canDel;
         self.isFavor = data.isFavor;
         self.isLike = data.isLike;
-        self.isOwn = data.isOwn;
+        clickDel = data.clickDel;
         clickFavor = data.clickFavor;
         clickLike = data.clickLike;
         clickCancel = data.clickCancel;
         self.pop = true;
-      })
+      });
+      $(self.element).on('click', function(e) {
+        if(!$(e.target).closest('.c')[0]) {
+          self.pop = false;
+        }
+      });
     });
   }
+  @bind canDel;
   @bind isFavor
   @bind isLike
-  @bind isOwn
   @bind pop
   show() {
     $(this.element).removeClass('fn-hide');
@@ -35,6 +42,11 @@ class BotFn extends migi.Component {
   hide() {
     $(this.element).addClass('fn-hide');
     return this;
+  }
+  clickDel() {
+    if(clickDel) {
+      clickDel(this);
+    }
   }
   clickFavor() {
     if(clickFavor) {
@@ -51,15 +63,15 @@ class BotFn extends migi.Component {
       clickCancel(this);
     }
     this.pop = false;
-    clickLike = clickFavor = clickCancel = null;
+    clickDel = clickLike = clickFavor = clickCancel = null;
   }
   render() {
     return <div class={ 'cp-botfn' + (this.pop ? ' on' : '') }>
       <div class={ 'c' + (this.pop ? ' on' : '') }>
         <ul class="list">
-          <li class={ 'del' + (this.isOwn ? '' : ' fn-hide') } ref="del"><b/>删除</li>
-          <li class={ 'favor' + (this.isFavor ? ' favored' : '') } onClick={ this.clickFavor }><b/>收藏</li>
           <li class={ 'like' + (this.isLike ? ' liked' : '') } onClick={ this.clickLike }><b/>点赞</li>
+          <li class={ 'favor' + (this.isFavor ? ' favored' : '') } onClick={ this.clickFavor }><b/>收藏</li>
+          <li class={ 'del' + (this.canDel ? '' : ' fn-hide') } ref="del" onClick={ this.clickDel }><b/>删除</li>
         </ul>
         <button class="cancel" onClick={ this.clickCancel }>取消</button>
       </div>

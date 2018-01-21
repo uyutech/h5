@@ -301,7 +301,7 @@ let jsBridge = {
         delete localStorage[key];
       }
       else {
-        localStorage[key] = value;
+        localStorage[key] = JSON.stringify(value);
       }
       callback();
     }
@@ -424,6 +424,16 @@ let jsBridge = {
       ZhuanQuanJSBridge.call('media', data, function(res) {
         callback(res);
       });
+    }
+  },
+  setBack: function(data) {
+    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      if(isString(data)) {
+        data = {
+          img: data,
+        };
+      }
+      ZhuanQuanJSBridge.call('setBack', data);
     }
   },
 };

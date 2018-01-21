@@ -151,14 +151,14 @@ class Works extends migi.Component {
     if(self.workID) {
       if(self.videoData) {
         self.videoData.forEach(function(item) {
-          if(item.ItemID.toString() === self.workID) {
+          if(item.ItemID.toString() === self.workID.toString()) {
             first = 'video';
           }
         });
       }
       if(self.audioData) {
         self.audioData.forEach(function(item) {
-          if(item.ItemID.toString() === self.workID) {
+          if(item.ItemID.toString() === self.workID.toString()) {
             first = 'audio';
           }
         });
