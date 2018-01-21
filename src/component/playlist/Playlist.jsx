@@ -89,6 +89,7 @@ class Playlist extends migi.Component {
   }
   clearData() {
     $(this.ref.list.element).html('');
+    this.dataList = [];
   }
   click(e, vd, tvd) {
     e.preventDefault();
@@ -204,7 +205,7 @@ class Playlist extends migi.Component {
       data,
     });
   }
-  fn($fn) {console.log($fn);
+  fn($fn) {
     let self = this;
     let isLike = $fn.attr('isLike') === 'true';
     let isFavor = $fn.attr('isFavor') === 'true';
@@ -213,7 +214,25 @@ class Playlist extends migi.Component {
       isFavor,
       canDel: self.props.canDel,
       clickDel: function(botFn) {
-        self.props.clickDel(botFn);
+        jsBridge.confirm('确认删除吗？', function(res) {
+          if(res) {
+            let $li = $fn.closest('li');
+            let index = $li.attr('index');
+            $li.remove();
+            let o = self.dataList.splice(index, 1)[0];
+            self.updateIndex();
+            self.props.clickDel(botFn, {
+              del: o ? {
+                workID: o.ItemID,
+                worksID: o.Works_Items_Works[0].WorksID,
+              } : null,
+              isCur: $li.hasClass('cur'),
+              isEmpty: !self.dataList.length,
+              first: self.dataList[0],
+              index,
+            });
+          }
+        });
       },
       clickFavor: function(botFn) {
         if(loadingFavor) {
@@ -284,6 +303,11 @@ class Playlist extends migi.Component {
     if($cur[0]) {
       self.fn($cur.find('.fn'));
     }
+  }
+  updateIndex() {
+    $(this.ref.list.element).find('li').each(function(i, li) {
+      $(li).attr('index', i);
+    });
   }
   render() {
     return <div class="cp-playlist">

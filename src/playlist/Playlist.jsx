@@ -9,8 +9,11 @@ import util from '../common/util';
 import Media from './Media.jsx';
 import MediaPlaylist from '../component/playlist/Playlist.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
+import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
+import InputCmt from '../component/inputcmt/InputCmt.jsx';
 
 let playlistCur;
+let playlistCache;
 
 class Playlist extends migi.Component {
   constructor(...data) {
@@ -19,8 +22,10 @@ class Playlist extends migi.Component {
     self.on(migi.Event.DOM, function() {
       let playlist = self.ref.playlist;
       let media = self.ref.media;
-      let botPlayBar = media.ref.botPlayBar;
+      let botPlayBar = self.ref.botPlayBar;
+      let inputCmt = self.ref.inputCmt;
       jsBridge.getPreference('playlist', function(res) {
+        playlistCache = res || [];
         let count = 0;
         function fin() {
           if(count >= 3) {
@@ -28,7 +33,6 @@ class Playlist extends migi.Component {
               let item = self.list[i];
               if(item.ItemID === playlistCur.workID) {
                 jsBridge.setTitle(item.ItemName);
-                self.cur = item;
                 media.setData(item);
                 playlist.setCur(playlistCur);
                 return;
@@ -36,10 +40,8 @@ class Playlist extends migi.Component {
             }
             let item = self.list[0];
             jsBridge.setTitle(item.ItemName);
-            self.cur = item;
             media.setData(item);
             playlist.setCurIndex(0);
-            self.loaded = true;
           }
         }
         if(res && res.length) {
@@ -76,7 +78,7 @@ class Playlist extends migi.Component {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
           });
           jsBridge.getPreference('playlist_playing', function(res) {
-            self.playing = !!res;
+            self.isPlaying = !!res;
             count++;
             fin();
           });
@@ -102,14 +104,31 @@ class Playlist extends migi.Component {
       jsBridge.on('optionMenu1', function() {
         playlist.currentFn();
       });
+      jsBridge.on('timeupdate', function(e) {
+        if(e.data) {
+          botPlayBar.isPlaying = true;
+        }
+      });
       playlist.on('choose', function(data) {
         media.setData(data.data);
         media.play();
+      });
+      media.on('play', function(data) {
+        botPlayBar.isPlaying = true;
+        jsBridge.setPreference('playlist_playing', true);
         let o = {
-          workID: data.data.ItemID,
-          worksID: data.data.Works_Items_Works[0].WorksID,
+          workID: data.ItemID,
+          worksID: data.Works_Items_Works[0].WorksID,
         };
         jsBridge.setPreference('playlist_cur', o);
+      });
+      media.on('pause', function() {
+        botPlayBar.isPlaying = false;
+        jsBridge.setPreference('playlist_playing', false);
+      });
+      media.on('stop', function() {
+        botPlayBar.isPlaying = false;
+        jsBridge.setPreference('playlist_playing', false);
       });
       botPlayBar.on('prev', function() {
         playlist.prevLoop();
@@ -117,13 +136,46 @@ class Playlist extends migi.Component {
       botPlayBar.on('next', function() {
         playlist.nextLoop();
       });
+      botPlayBar.on('play', function() {
+        media.play();
+      });
+      botPlayBar.on('pause', function() {
+        media.pause();
+      });
+      botPlayBar.on('comment', function() {
+        botPlayBar.hide();
+        inputCmt.show();
+      });
+      inputCmt.on('fn', function() {
+        inputCmt.hide();
+        botPlayBar.show();
+      });
+      inputCmt.on('click', function() {});
     });
   }
-  @bind loaded
-  @bind list
-  @bind cur
-  @bind playing
-  clickDel(botFn) {}
+  clickDel(botFn, data) {
+    let self = this;
+    botFn.pop = false;
+    let media = self.ref.media;
+    if(data.isEmpty) {
+      self.list = [];
+      media.setData(null);
+      jsBridge.setPreference('playlist');
+      jsBridge.setPreference('playlist_playing');
+      jsBridge.setPreference('playlist_cur');
+    }
+    else if(data.isCur) {
+      self.list.splice(data.index, 1);
+      let isPlaying = media.isPlaying;
+      media.setData(data.first);
+      if(isPlaying) {
+        media.play();
+      }
+      self.ref.playlist.setCurIndex(0);
+      playlistCache.splice(data.index, 1);
+      jsBridge.setPreference('playlist', playlistCache);
+    }
+  }
   render() {
     return <div class="playlist">
       <Media ref="media"/>
@@ -131,8 +183,10 @@ class Playlist extends migi.Component {
         <li class="cur">曲目</li>
         <li>收藏列表</li>
       </ul>
-      <MediaPlaylist ref="playlist" canDel={ true } clickDel={ this.clickDel }/>
+      <MediaPlaylist ref="playlist" canDel={ true } clickDel={ this.clickDel.bind(this) }/>
+      <BotPlayBar ref="botPlayBar"/>
       <BotFn ref="botFn"/>
+      <InputCmt ref="inputCmt" hidden={ true } placeholder={ '发表评论...' } readOnly={ true }/>
     </div>;
   }
 }

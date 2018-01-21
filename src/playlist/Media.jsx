@@ -6,7 +6,6 @@
 
 import util from '../common/util';
 import net from '../common/net';
-import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
 import LyricsParser from "../works/LyricsParser.jsx";
 
 let loadingLike;
@@ -24,16 +23,15 @@ class Media extends migi.Component {
     self.lrc = {};
     self.lrcIndex = 0;
     self.on(migi.Event.DOM, function() {
-      let botPlayBar = self.ref.botPlayBar;
       jsBridge.on('prepared', function(e) {
-        if(e.data) {
+        if(self.data && e.data) {
           self.duration = e.data.duration * 0.001;
           self.canControl = true;
         }
       });
       jsBridge.on('timeupdate', function(e) {
-        if(e.data) {
-          self.isPlaying = self.ref.botPlayBar.isPlaying = true;
+        if(self.data && e.data) {
+          self.isPlaying = true;
           self.currentTime = e.data.currentTime * 0.001;
           self.duration = e.data.duration * 0.001;
           self.canControl = true;
@@ -42,16 +40,10 @@ class Media extends migi.Component {
         }
       });
       jsBridge.on('progress', function(e) {
-        if(e.data) {
+        if(self.data && e.data) {
           let load = self.ref.load.element;
           load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
         }
-      });
-      botPlayBar.on('play', function() {
-        self.play();
-      });
-      botPlayBar.on('pause', function() {
-        self.pause();
       });
       // botFn点赞收藏通过eventBus同步
       migi.eventBus.on('likeWork', function(data) {
@@ -78,11 +70,21 @@ class Media extends migi.Component {
   @bind currentTime
   @bind canControl
   @bind isLike
-  @bidn likeNum
+  @bind likeNum
   @bind isFavor
   setData(data) {
     let self = this;
     self.data = data;
+    if(data === null) {
+      self.stop();
+      self.duration = 0;
+      self.isLike = self.isFavor = false;
+      self.likeNum = 0;
+      self.cover = null;
+      self.canControl = false;
+      self.lrc = {};
+      return;
+    }
     let works = data.Works_Items_Works[0];
     self.cover = works.WorksCoverPic;
     self.isLike = data.ISLike;
@@ -155,10 +157,14 @@ class Media extends migi.Component {
   }
   play() {
     let self = this;
+    if(!self.data) {
+      return;
+    }
     jsBridge.media({
       key: 'play',
     });
-    self.isPlaying = self.ref.botPlayBar.isPlaying = true;
+    self.isPlaying = true;
+    self.emit('play', self.data);
     net.postJSON('/h5/works/addPlayCount', { workID: self.data.ItemID });
     return this;
   }
@@ -167,7 +173,21 @@ class Media extends migi.Component {
     jsBridge.media({
       key: 'pause',
     });
-    self.isPlaying = self.ref.botPlayBar.isPlaying = false;
+    self.isPlaying = false;
+    self.emit('pause', self.data);
+    return this;
+  }
+  stop() {
+    let self = this;
+    jsBridge.media({
+      key: 'stop',
+    });
+    self.isPlaying = false;
+    self.currentTime = 0;
+    self.setBarPercent(0);
+    self.updateLrc();
+    self.emit('stop', self.data);
+    return this;
   }
   repeat() {
     jsBridge.media({
@@ -213,15 +233,18 @@ class Media extends migi.Component {
     this.lrcMode = !this.lrcMode;
   }
   clickLike() {
+    let self = this;
     if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
+    if(!self.data) {
       return;
     }
     if(loadingLike) {
       return;
     }
     loadingLike = true;
-    let self = this;
     ajaxLike = net.postJSON('/h5/works/likeWork', { workID: self.data.ItemID }, function (res) {console.log(res);
       if(res.success) {
         self.isLike = self.data.ISLike = res.data.State === 'likeWordsUser';
@@ -243,11 +266,14 @@ class Media extends migi.Component {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
+    let self = this;
+    if(!self.data) {
+      return;
+    }
     if(loadingFavor) {
       return;
     }
     loadingFavor = true;
-    let self = this;
     if(self.isFavor) {
       ajaxFavor = net.postJSON('/h5/works/unFavorWork', { workID: self.data.ItemID }, function (res) {
         if(res.success) {
@@ -283,6 +309,56 @@ class Media extends migi.Component {
         loadingFavor = false;
       });
     }
+  }
+  clickDownload() {
+    let self = this;
+    if(!util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
+    if(!self.data) {
+      return;
+    }
+    let url = self.data.FileUrl;
+    let name = self.data.ItemName;
+    if(url && /^\/\//.test(url)) {
+      url = location.protocol + url;
+    }
+    if(jsBridge.ios) {
+      jsBridge.toast('ios暂不支持下载音视频~');
+      return;
+    }
+    jsBridge.networkInfo(function(res) {
+      if(res.available) {
+        if(res.wifi) {
+          jsBridge.download({
+            url,
+            name,
+          });
+        }
+        else {
+          jsBridge.confirm("检测到当前网络环境非wifi，继续下载可能会产生流量，是否确定继续？", function(res) {
+            if(!res) {
+              return;
+            }
+            jsBridge.download({
+              url,
+              name,
+            });
+          });
+        }
+      }
+      else {
+        jsBridge.toast("当前网络暂不可用哦~");
+      }
+    });
+  }
+  clickShare() {
+    let self = this;
+    if(!self.data) {
+      return;
+    }
+    migi.eventBus.emit('SHARE', '/works/' + self.data.Works_Items_Works[0].WorksID + '/' + self.data.ItemID);
   }
   render() {
     return <div class="mod-media">
@@ -322,22 +398,21 @@ class Media extends migi.Component {
       <ul class="btn">
         <li onClick={ this.clickLike }>
           <b class={ 'like' + (this.isLike ? ' liked' : '') }/>
-          <span>{ this.isLike ? this.data.LikeHis : '点赞' }</span>
+          <span>{ this.isLike ? ((this.data || {}).LikeHis || 0) : '点赞' }</span>
         </li>
         <li onClick={ this.clickFavor }>
           <b class={ 'favor' + (this.isFavor ? ' favored' : '') }/>
           <span>{ this.isFavor ? '已收藏' : '收藏' }</span>
         </li>
-        <li>
+        <li onClick={ this.clickDownload }>
           <b class="download"/>
           <span>下载</span>
         </li>
-        <li>
+        <li onClick={ this.clickShare }>
           <b class="share"/>
           <span>分享</span>
         </li>
       </ul>
-      <BotPlayBar ref="botPlayBar"/>
     </div>;
   }
 }
