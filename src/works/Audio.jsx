@@ -21,13 +21,13 @@ class Audio extends migi.Component {
       let patch = parseInt(version[2]) || 0;
       if(major > 0 || minor > 4) {
         mediaService = true;
-        jsBridge.on('prepared', function(e) {
+        jsBridge.on('mediaPrepared', function(e) {
           if(e.data) {
             self.duration = e.data.duration * 0.001;
             self.canControl = true;
           }
         });
-        jsBridge.on('timeupdate', function(e) {
+        jsBridge.on('mediaTimeupdate', function(e) {
           if(e.data) {
             self.currentTime = e.data.currentTime * 0.001;
             self.duration = e.data.duration * 0.001;
@@ -36,7 +36,7 @@ class Audio extends migi.Component {
             self.setBarPercent(self.currentTime / self.duration);
           }
         });
-        jsBridge.on('progress', function(e) {
+        jsBridge.on('mediaProgress', function(e) {
           if(e.data) {
             let load = self.ref.load.element;
             load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
@@ -225,15 +225,22 @@ class Audio extends migi.Component {
     let self = this;
     let work = self.datas[self.index || 0];
     let o = {
-      worksID: self.props.worksID,
-      workID: work.ItemID,
+      worksId: self.props.worksID,
+      workId: work.ItemID,
+      isLike: work.ISLike,
+      isFavor: work.ISFavor,
+      likeNum: work.LikeHis,
+      url: work.FileUrl,
+      workName: work.ItemName,
+      worksCover: self.props.cover,
+      lrc: work.lrc,
     };
     jsBridge.getPreference('playlist', function(res) {
       if(!res) {
         res = [];
       }
       for(let i = 0, len = res.length; i < len; i++) {
-        if(res[i].worksID === o.worksID && res[i].workID === o.workID) {
+        if(res[i].worksId.toString() === o.worksId.toString() && res[i].workId.toString() === o.workId.toString()) {
           res.splice(i, 1);
           break;
         }
@@ -245,7 +252,7 @@ class Audio extends migi.Component {
       jsBridge.setPreference('playlist', res);
     });
     jsBridge.setPreference('playlist_cur', o);
-    jsBridge.setPreference('playlist_playing', true);
+    // jsBridge.setPreference('playlist_playing', true);
     if(mediaService) {
       jsBridge.media({
         key: 'play',
@@ -260,7 +267,7 @@ class Audio extends migi.Component {
     return this;
   }
   pause() {
-    jsBridge.setPreference('playlist_playing', null);
+    // jsBridge.setPreference('playlist_playing', null);
     if(mediaService) {
       jsBridge.media({
         key: 'pause',

@@ -26,7 +26,7 @@ class BotFn extends migi.Component {
       });
       $(self.element).on('click', function(e) {
         if(!$(e.target).closest('.c')[0]) {
-          self.pop = false;
+          self.clickCancel();
         }
       });
     });

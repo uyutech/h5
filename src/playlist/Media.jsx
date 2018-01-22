@@ -6,7 +6,7 @@
 
 import util from '../common/util';
 import net from '../common/net';
-import LyricsParser from "../works/LyricsParser.jsx";
+import LyricsParser from '../works/LyricsParser.jsx';
 
 let loadingLike;
 let loadingFavor;
@@ -23,13 +23,13 @@ class Media extends migi.Component {
     self.lrc = {};
     self.lrcIndex = 0;
     self.on(migi.Event.DOM, function() {
-      jsBridge.on('prepared', function(e) {
+      jsBridge.on('mediaPrepared', function(e) {
         if(self.data && e.data) {
           self.duration = e.data.duration * 0.001;
           self.canControl = true;
         }
       });
-      jsBridge.on('timeupdate', function(e) {
+      jsBridge.on('mediaTimeupdate', function(e) {
         if(self.data && e.data) {
           self.isPlaying = true;
           self.currentTime = e.data.currentTime * 0.001;
@@ -39,7 +39,7 @@ class Media extends migi.Component {
           self.setBarPercent(self.currentTime / self.duration);
         }
       });
-      jsBridge.on('progress', function(e) {
+      jsBridge.on('mediaProgress', function(e) {
         if(self.data && e.data) {
           let load = self.ref.load.element;
           load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
@@ -47,21 +47,20 @@ class Media extends migi.Component {
       });
       // botFn点赞收藏通过eventBus同步
       migi.eventBus.on('likeWork', function(data) {
-        if(data.workID.toString() === self.data.ItemID.toString()
-          && data.worksID.toString() === self.data.Works_Items_Works[0].WorksID.toString()) {
-          self.isLike = data.state;
+        if(data.workId === self.data.workId
+          && data.worksId === self.data.worksId) {
+          self.isLike = data.isLike;
         }
       });
       migi.eventBus.on('favorWork', function(data) {
-        if(data.workID.toString() === self.data.ItemID.toString()
-          && data.worksID.toString() === self.data.Works_Items_Works[0].WorksID.toString()) {
-          self.isFavor = data.state;
+        if(data.workId === self.data.workId
+          && data.worksId === self.data.worksId) {
+          self.isFavor = data.isFavor;
         }
       });
     });
   }
   @bind data
-  @bind cover
   @bind isPlaying
   @bind lrcMode
   @bind lrcIndex
@@ -75,21 +74,20 @@ class Media extends migi.Component {
   setData(data) {
     let self = this;
     self.data = data;
+    let load = self.ref.load.element;
     if(data === null) {
       self.stop();
       self.duration = 0;
       self.isLike = self.isFavor = false;
       self.likeNum = 0;
-      self.cover = null;
       self.canControl = false;
       self.lrc = {};
+      load.innerHTML = '';
       return;
     }
-    let works = data.Works_Items_Works[0];
-    self.cover = works.WorksCoverPic;
-    self.isLike = data.ISLike;
-    self.likeNum = data.LikeHis;
-    self.isFavor = data.ISFavor;
+    self.isLike = data.isLike;
+    self.likeNum = data.likeNum;
+    self.isFavor = data.isFavor;
     let l = {};
     if(LyricsParser.isLyrics(data.lrc)) {
       l.is = true;
@@ -111,11 +109,10 @@ class Media extends migi.Component {
     jsBridge.media({
       key: 'info',
       value: {
-        url: location.protocol + util.autoSsl(data.FileUrl),
-        name: data.ItemID,
+        url: location.protocol + util.autoSsl(data.url),
+        name: data.workId,
       },
     }, function(res) {
-      let load = self.ref.load.element;
       if(res.isCached) {
         load.innerHTML = `<b style="width:100%"/>`;
       }
@@ -165,13 +162,15 @@ class Media extends migi.Component {
     });
     self.isPlaying = true;
     self.emit('play', self.data);
-    net.postJSON('/h5/works/addPlayCount', { workID: self.data.ItemID });
+    net.postJSON('/h5/works/addPlayCount', { workID: self.data.workId });
     return this;
   }
   pause() {
     let self = this;
     jsBridge.media({
       key: 'pause',
+    }, function() {
+      self.isPlaying = false;
     });
     self.isPlaying = false;
     self.emit('pause', self.data);
@@ -210,17 +209,19 @@ class Media extends migi.Component {
       e.preventDefault();
       let diff = e.touches[0].pageX;
       let percent = diff / WIDTH;
-      this.setBarPercent(percent);
       let currentTime = Math.floor(this.duration * percent);
-      jsBridge.media({
-        key: 'seek',
-        value: {
-          time: currentTime * 1000,
-        },
-      });
-      this.currentTime = currentTime;
-      this.setBarPercent(percent);
-      this.updateLrc();
+      if(currentTime !== this.currentTime) {
+        jsBridge.media({
+          key: 'seek',
+          value: {
+            time: currentTime * 1000,
+          },
+        });
+        this.setBarPercent(percent);
+        this.currentTime = currentTime;
+        this.setBarPercent(percent);
+        this.updateLrc();
+      }
     }
   }
   touchEnd(e) {
@@ -245,9 +246,10 @@ class Media extends migi.Component {
       return;
     }
     loadingLike = true;
-    ajaxLike = net.postJSON('/h5/works/likeWork', { workID: self.data.ItemID }, function (res) {console.log(res);
+    ajaxLike = net.postJSON('/h5/works/likeWork', { workID: self.data.workId }, function (res) {
       if(res.success) {
-        self.isLike = self.data.ISLike = res.data.State === 'likeWordsUser';
+        self.isLike = self.data.isLike = res.data.State === 'likeWordsUser';
+        self.emit('like', self.data);
       }
       else if(res.code === 1000) {
         migi.eventBus.emit('NEED_LOGIN');
@@ -275,10 +277,10 @@ class Media extends migi.Component {
     }
     loadingFavor = true;
     if(self.isFavor) {
-      ajaxFavor = net.postJSON('/h5/works/unFavorWork', { workID: self.data.ItemID }, function (res) {
+      ajaxFavor = net.postJSON('/h5/works/unFavorWork', { workID: self.data.workId }, function (res) {
         if(res.success) {
-          self.isFavor = self.data.ISFavor = false;
-          self.fnFavor = null;
+          self.isFavor = self.data.isFavor = false;
+          self.emit('favor', self.data);
         }
         else if(res.code === 1000) {
           migi.eventBus.emit('NEED_LOGIN');
@@ -293,9 +295,10 @@ class Media extends migi.Component {
       });
     }
     else {
-      ajaxFavor = net.postJSON('/h5/works/favorWork', { workID: self.data.ItemID }, function (res) {
+      ajaxFavor = net.postJSON('/h5/works/favorWork', { workID: self.data.workId }, function (res) {
         if(res.success) {
-          self.isFavor = self.data.ISFavor = true;
+          self.isFavor = self.data.isFavor = true;
+          self.emit('favor', self.data);
         }
         else if(res.code === 1000) {
           migi.eventBus.emit('NEED_LOGIN');
@@ -319,8 +322,8 @@ class Media extends migi.Component {
     if(!self.data) {
       return;
     }
-    let url = self.data.FileUrl;
-    let name = self.data.ItemName;
+    let url = self.data.url;
+    let name = self.data.workName;
     if(url && /^\/\//.test(url)) {
       url = location.protocol + url;
     }
@@ -358,14 +361,14 @@ class Media extends migi.Component {
     if(!self.data) {
       return;
     }
-    migi.eventBus.emit('SHARE', '/works/' + self.data.Works_Items_Works[0].WorksID + '/' + self.data.ItemID);
+    migi.eventBus.emit('SHARE', '/works/' + self.data.worksId + '/' + self.data.workId);
   }
   render() {
     return <div class="mod-media">
       <div class="c">
         <div class="cover">
           <img class={ this.lrcMode && this.lrc.data ? 'blur' : '' }
-               src={ util.autoSsl(util.img750_750_80(this.cover || '/src/common/blank.png')) }/>
+               src={ util.autoSsl(util.img750_750_80((this.data || {}).worksCover || '/src/common/blank.png')) }/>
         </div>
         <div class="lrc" ref="lrc">
           <div class={ 'roll' + (this.lrcMode && this.lrc.data ? '' : ' fn-hide') }>
@@ -398,7 +401,7 @@ class Media extends migi.Component {
       <ul class="btn">
         <li onClick={ this.clickLike }>
           <b class={ 'like' + (this.isLike ? ' liked' : '') }/>
-          <span>{ this.isLike ? ((this.data || {}).LikeHis || 0) : '点赞' }</span>
+          <span>{ this.isLike ? ((this.data || {}).likeNum || 0) : '点赞' }</span>
         </li>
         <li onClick={ this.clickFavor }>
           <b class={ 'favor' + (this.isFavor ? ' favored' : '') }/>

@@ -419,6 +419,7 @@ let jsBridge = {
     }
   },
   media: function(data, callback) {
+    data = data || {};
     callback = callback || function() {};
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('media', data, function(res) {
