@@ -147,10 +147,15 @@ class List extends migi.Component {
       clickDel: function(botFn) {
         jsBridge.confirm('确认删除吗？', function(res) {
           if(res) {
+            let isCur = $li.hasClass('cur');
             $li.remove();
             self.updateIndex();
-            let o = self.dataList.splice(index, 1)[0];
-            self.emit('del', o, self.dataList);
+            self.dataList.splice(index, 1);
+            self.emit('del', {
+              data,
+              list: self.dataList,
+              isCur,
+            });
           }
         });
       },
@@ -164,7 +169,10 @@ class List extends migi.Component {
             let data2 = res.data;
             data.isFavor = botFn.isFavor = data2.State === 'favorWork';
             // 同步botFn
-            migi.eventBus.emit('favorWork', data, self.dataList);
+            migi.eventBus.emit('favorWork', {
+              data,
+              list: self.dataList,
+            });
           }
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -185,7 +193,10 @@ class List extends migi.Component {
             let data2 = res.data;
             data.isLike = botFn.isLike = data2.State === 'likeWordsUser';
             // 同步botFn
-            migi.eventBus.emit('likeWork', data, self.dataList);
+            migi.eventBus.emit('likeWork', {
+              data,
+              list: self.dataList,
+            });
           }
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);

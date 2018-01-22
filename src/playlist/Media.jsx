@@ -46,16 +46,16 @@ class Media extends migi.Component {
         }
       });
       // botFn点赞收藏通过eventBus同步
-      migi.eventBus.on('likeWork', function(data) {
-        if(data.workId === self.data.workId
-          && data.worksId === self.data.worksId) {
-          self.isLike = data.isLike;
+      migi.eventBus.on('likeWork', function(res) {
+        if(res.data.workId === self.data.workId
+          && res.data.worksId === self.data.worksId) {
+          self.isLike = res.data.isLike;
         }
       });
-      migi.eventBus.on('favorWork', function(data) {
-        if(data.workId === self.data.workId
-          && data.worksId === self.data.worksId) {
-          self.isFavor = data.isFavor;
+      migi.eventBus.on('favorWork', function(res) {
+        if(res.data.workId === self.data.workId
+          && res.data.worksId === self.data.worksId) {
+          self.isFavor = res.data.isFavor;
         }
       });
     });

@@ -78,7 +78,7 @@ class Playlist extends migi.Component {
       });
 
       list.on('choose', function(data) {
-        media.setData(data.data);
+        media.setData(data);
         media.play();
       });
 
@@ -119,11 +119,19 @@ class Playlist extends migi.Component {
       });
       inputCmt.on('click', function() {});
 
-      migi.eventBus.on(['likeWork', 'favorWork'], function(data, dataList) {
-        jsBridge.setPreference('playlist', dataList);
+      migi.eventBus.on(['likeWork', 'favorWork'], function(res) {
+        jsBridge.setPreference('playlist', res.dataList);
       });
-      list.on('del', function(data, dataList) {
-        jsBridge.setPreference('playlist', dataList);
+      list.on('del', function(res) {
+        jsBridge.setPreference('playlist', res.dataList);
+        if(!res.dataList.length) {
+          media.setData(null);
+          jsBridge.setPreference('playlist_cur');
+        }
+        else if(res.isCur) {
+          media.setData(res.dataList[0]);
+          jsBridge.setPreference('playlist_cur', res.dataList[0]);
+        }
       });
     });
   }
