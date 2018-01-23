@@ -31,7 +31,7 @@ class Author extends migi.Component {
       let last = '';
       let lastTips = '';
       item.forEach(function(item) {
-        let url = `/author.html?authorID=${item.ID}`;
+        let url = `/author.html?authorId=${item.ID}`;
         if(item.WorksAuthorType !== last || item.Tips !== lastTips) {
           if(temp.length) {
             let li = <li>

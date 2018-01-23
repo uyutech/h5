@@ -4,3 +4,9 @@
 
 'use strict';
 
+import Playlist from './Playlist.jsx';
+
+let s = '';
+s += migi.preRender(<Playlist/>);
+
+export default s;

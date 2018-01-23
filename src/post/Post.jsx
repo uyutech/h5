@@ -299,7 +299,7 @@ class Post extends migi.Component {
       <div class={ 'profile fn-clear' + (postData.IsAuthor ? ' author' : '') }>
         {
           postData.IsAuthor
-            ? <a class="pic" href={ '/author.html?authorID=' + postData.AuthorID }
+            ? <a class="pic" href={ '/author.html?authorId=' + postData.AuthorID }
                  title={ postData.SendUserNickName }>
               <img src={ util.autoSsl(util.img128_128_80(postData.SendUserHead_Url
                 || '/src/common/head.png')) }/>
@@ -314,7 +314,7 @@ class Post extends migi.Component {
           <div>
             {
               postData.IsAuthor
-                ? <a class="name" href={ '/author.html?authorID=' + postData.AuthorID }
+                ? <a class="name" href={ '/author.html?authorId=' + postData.AuthorID }
                      title={ postData.SendUserNickName }>{ postData.SendUserNickName }</a>
                 : <a class="name" href={ '/user.html?userID=' + postData.SendUserID }
                      title={ postData.SendUserNickName }>{ postData.SendUserNickName }</a>

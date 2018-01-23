@@ -194,7 +194,7 @@ class HotPost extends migi.Component {
     }
     let url = '/post.html?postID=' + id;
     if(item.IsAuthor) {
-      let authorUrl = '/author.html?authorID=' + item.AuthorID;
+      let authorUrl = '/author.html?authorId=' + item.AuthorID;
       return <li class="author" id={ 'post_' + id}>
         <div class="profile fn-clear">
           <a class="pic" href={ authorUrl } type="2" title={ item.SendUserNickName }>

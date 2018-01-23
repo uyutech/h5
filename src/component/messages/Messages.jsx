@@ -55,7 +55,7 @@ class Messages extends migi.Component {
     let url = '#';
     let title = '';
     if(type === 1) {
-      url = '/author.html?authorID=' + item.urlID;
+      url = '/author.html?authorId=' + item.urlID;
       title = item.Send_UserName;
     }
     else if(type === 2) {
@@ -71,7 +71,7 @@ class Messages extends migi.Component {
         <div class="profile fn-clear">
           <img class="pic" src={ util.autoSsl(util.img96_96_80(item.Send_UserHeadUrl || '/src/common/head.png')) }/>
           <div class="txt">
-            <a href={ '/author.html?authorID=' + item.Send_UserID } class="name" title={ item.Send_UserName }>{ item.Send_UserName }</a>
+            <a href={ '/author.html?authorId=' + item.Send_UserID } class="name" title={ item.Send_UserName }>{ item.Send_UserName }</a>
             <a class="time" href={ url } title={ title }>{ util.formatDate(item.Send_Time) }</a>
           </div>
         </div>

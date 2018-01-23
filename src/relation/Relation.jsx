@@ -284,11 +284,11 @@ class Relation extends migi.Component {
   }
   genAuthor(item) {
     return <li>
-      <a href={ `/author.html?authorID=${item.AuthorID}` } class="pic" title={ item.AuthorName }>
+      <a href={ `/author.html?authorId=${item.AuthorID}` } class="pic" title={ item.AuthorName }>
         <img src={ util.autoSsl(util.img120_120_80(item.Head_url
           || '/src/common/head.png')) }/>
       </a>
-      <a href={ `/author.html?authorID=${item.AuthorID}` } class="txt" title={ item.AuthorName }>
+      <a href={ `/author.html?authorId=${item.AuthorID}` } class="txt" title={ item.AuthorName }>
         <span class="name">{ item.AuthorName }</span>
       </a>
     </li>;

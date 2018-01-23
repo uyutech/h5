@@ -179,7 +179,7 @@ class WaterFall extends migi.Component {
           <div class="author">
             {
               (author.AuthorInfo || []).map(function(item) {
-                return <a href={ '/author.html?authorID=' + item.AuthorID } title={ item.AuthorName }>
+                return <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
                   <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/blank.png')) }/>
                   <span>{ item.AuthorName }</span>
                 </a>
@@ -198,7 +198,7 @@ class WaterFall extends migi.Component {
         <div class="author">
           {
             (author.AuthorInfo || []).map(function(item) {
-              return <a href={ '/author.html?authorID=' + item.AuthorID } title={ item.AuthorName }>
+              return <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
                 <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/blank.png')) }/>
                 <span>{ item.AuthorName }</span>
               </a>

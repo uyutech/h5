@@ -85,7 +85,7 @@ class Banner extends migi.Component {
                 url = '/post.html?postID=' + item.urlid;
                 break;
               case 3:
-                url = '/author.html?authorID=' + item.urlid;
+                url = '/author.html?authorId=' + item.urlid;
                 break;
               case 4:
                 url = '/user.html?userID=' + item.urlid;

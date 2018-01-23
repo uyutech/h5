@@ -42,7 +42,7 @@ class Works extends migi.Component {
           {
             (author.AuthorInfo || []).map(function(item) {
               return <dd>
-                <a href={ '/author.html?authorID=' + item.AuthorID } title={ item.AuthorName }>
+                <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
                   <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/blank.png')) }/>
                   <span>{ item.AuthorName }</span>
                 </a>
