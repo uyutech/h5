@@ -1,6 +1,6 @@
 {
   "name": "zhuanquan-h5",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "dependencies": {
     "anima-querystring": "~2.0.0",
     "anima-yocto-ajax": "~2.0.4",
@@ -29,20 +29,16 @@
     "webstorm-disable-index": "^1.2.0"
   },
   "scripts": {
-    "build-src": "export NODE_ENV=production && rm -rf ./www && webpack && npm run img && npm run pre-src && npm run preRender",
-    "build": "export NODE_ENV=production && rm -rf ./www && webpack -p && npm run img && npm run pre && npm run preRender",
-    "build-dev-src": "export NODE_ENV=dev && rm -rf ./www && webpack && npm run img && npm run pre-src && npm run preRender",
-    "build-dev": "export NODE_ENV=dev && rm -rf ./www && webpack -p && npm run img && npm run pre && npm run preRender",
+    "build-src": "rm -rf ./www && webpack && npm run img && npm run pre-src && npm run preRender",
+    "build": "rm -rf ./www && webpack -p && npm run img && npm run pre && npm run preRender",
     "img": "webpack --config webpack.img.js",
     "pre-src": "webpack --config webpack.pre.js",
     "pre": "webpack -p --config webpack.pre.js",
     "preRender": "node pre",
-    "mock": "export NODE_ENV=mock && webpack-dev-server --host 0.0.0.0 --port 8080",
-    "dev": "export NODE_ENV=dev && webpack-dev-server --host 0.0.0.0 --port 8080",
+    "mock": "webpack-dev-server --host 0.0.0.0 --port 8080",
+    "dev": "webpack-dev-server --host 0.0.0.0 --port 8080",
     "zip": "rm -rf dist && mkdir dist && cd www && zip -r ../dist/h5.zip *",
     "pack-src": "npm run build-src && npm run zip",
-    "pack": "npm run build && npm run zip",
-    "pack-dev-src": "npm run build-dev-src && npm run zip",
-    "pack-dev": "npm run build-dev && npm run zip"
+    "pack": "npm run build && npm run zip"
   }
 }

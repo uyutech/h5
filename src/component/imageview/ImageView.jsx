@@ -7,7 +7,7 @@
 import net from '../../common/net';
 import util from '../../common/util';
 
-let WIDTH = $(window).width();
+let WIDTH;
 let isStart;
 let isMove;
 let sx;
@@ -37,6 +37,7 @@ class ImageView extends migi.Component {
     self.list = self.props.list || [];
     self.index = self.props.index || 0;
     self.on(migi.Event.DOM, function() {
+      WIDTH = $(window).width();
       $c = $(self.ref.c.element);
       $i1 = $(self.ref.i1.element);
       $i2 = $(self.ref.i2.element);

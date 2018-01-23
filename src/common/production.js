@@ -7,6 +7,15 @@ import pa from '../../package.json';
 
 window.ROOT_DOMAIN = 'https://circling.cc';
 
+// 开发环境在线浏览的时候，因不存在preRender的过程，所以将preExist替换为render，此时就降级为没有预渲染直接即时渲染
+if(location.hostname === 'army8735.circling.cc') {
+  migi.preExist = migi.render;
+  window.ROOT_DOMAIN = 'http://dev.circling.cc2';
+}
+else if(location.hostname === 'h5.dev.circling.cc2') {
+  window.ROOT_DOMAIN = 'http://dev.circling.cc2';
+}
+
 export default {
   ajax: function(url, data, success, error, type, timeout) {
     // 兼容无host

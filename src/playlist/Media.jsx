@@ -14,7 +14,7 @@ let ajaxLike;
 let ajaxFavor;
 
 let isStart;
-let WIDTH = $(window).width();
+let WIDTH;
 
 class Media extends migi.Component {
   constructor(...data) {
@@ -23,6 +23,7 @@ class Media extends migi.Component {
     self.lrc = {};
     self.lrcIndex = 0;
     self.on(migi.Event.DOM, function() {
+      WIDTH = $(window).width();
       jsBridge.on('mediaPrepared', function(e) {
         if(self.data && e.data) {
           self.duration = e.data.duration * 0.001;

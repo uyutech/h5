@@ -5,9 +5,9 @@
 
 import 'migi-es6-shim';
 import 'migi';
-import './bridge.js';
+import './bridge';
 import $ from 'anima-yocto-ajax';
-import env from 'ENV';
+import env from './production';
 import './global.jsx';
 
 import './index.less';
