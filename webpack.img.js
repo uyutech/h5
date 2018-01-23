@@ -4,7 +4,6 @@ module.exports = {
   entry: {
     head: './src/common/head.png',
     blank: './src/common/blank.png',
-    favicon: './src/common/favicon.ico',
   },
   output: {
     path: __dirname + '/www',

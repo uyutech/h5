@@ -75,14 +75,21 @@ class Relation extends migi.Component {
     self.hasData = true;
 
     let $root = $(self.element);
-    $root.on('click', 'a', function(e) {
+    $root.on('click', '.author', function(e) {
       e.preventDefault();
       let $this = $(this);
       let url = $this.attr('href');
       let title = $this.attr('title');
-      if(!url) {
-        throw new Error('relation url is null');
-      }
+      util.openAuthor({
+        url,
+        title,
+      });
+    });
+    $root.on('click', '.user', function(e) {
+      e.preventDefault();
+      let $this = $(this);
+      let url = $this.attr('href');
+      let title = $this.attr('title');
       jsBridge.pushWindow(url, {
         title,
       });
@@ -272,7 +279,7 @@ class Relation extends migi.Component {
     });
   }
   genItem(item) {
-    return <li>
+    return <li class="user">
       <a href={ `/user.html?userID=${item.UserID}` } class="pic" title={ item.UserNickName }>
         <img src={ util.autoSsl(util.img120_120_80(item.User_HeadUrl
           || '/src/common/head.png')) }/>
@@ -283,7 +290,7 @@ class Relation extends migi.Component {
     </li>;
   }
   genAuthor(item) {
-    return <li>
+    return <li class="author">
       <a href={ `/author.html?authorId=${item.AuthorID}` } class="pic" title={ item.AuthorName }>
         <img src={ util.autoSsl(util.img120_120_80(item.Head_url
           || '/src/common/head.png')) }/>

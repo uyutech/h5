@@ -15,10 +15,11 @@ class Works extends migi.Component {
       let $root = $(self.element);
       $root.on('click', 'a', function(e) {
         e.preventDefault();
-        let $a = $(this);
-        let url = $a.attr('href');
-        let title = $a.attr('title');
-        jsBridge.pushWindow(url, {
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        util.openAuthor({
+          url,
           title,
         });
       });
@@ -42,7 +43,8 @@ class Works extends migi.Component {
           {
             (author.AuthorInfo || []).map(function(item) {
               return <dd>
-                <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
+                <a href={ '/author.html?authorId=' + item.AuthorID }
+                   title={ item.AuthorName }>
                   <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/blank.png')) }/>
                   <span>{ item.AuthorName }</span>
                 </a>

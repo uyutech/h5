@@ -49,11 +49,13 @@ class Post extends migi.Component {
       let $this = $(this);
       let url = $this.attr('href');
       let title = $this.attr('title');
+      let transparentTitle = !!$this.attr('transparentTitle');
       if(!url) {
         throw new Error('post url is null');
       }
       jsBridge.pushWindow(url, {
         title,
+        transparentTitle,
       });
     });
     $root.on('click', '.comment', function() {
@@ -299,8 +301,10 @@ class Post extends migi.Component {
       <div class={ 'profile fn-clear' + (postData.IsAuthor ? ' author' : '') }>
         {
           postData.IsAuthor
-            ? <a class="pic" href={ '/author.html?authorId=' + postData.AuthorID }
-                 title={ postData.SendUserNickName }>
+            ? <a class="pic"
+                 href={ '/author.html?authorId=' + postData.AuthorID }
+                 title={ postData.SendUserNickName }
+                 transparentTitle={ true }>
               <img src={ util.autoSsl(util.img128_128_80(postData.SendUserHead_Url
                 || '/src/common/head.png')) }/>
             </a>
@@ -314,9 +318,12 @@ class Post extends migi.Component {
           <div>
             {
               postData.IsAuthor
-                ? <a class="name" href={ '/author.html?authorId=' + postData.AuthorID }
-                     title={ postData.SendUserNickName }>{ postData.SendUserNickName }</a>
-                : <a class="name" href={ '/user.html?userID=' + postData.SendUserID }
+                ? <a class="name"
+                     href={ '/author.html?authorId=' + postData.AuthorID }
+                     title={ postData.SendUserNickName }
+                     transparentTitle={ true }>{ postData.SendUserNickName }</a>
+                : <a class="name"
+                     href={ '/user.html?userID=' + postData.SendUserID }
                      title={ postData.SendUserNickName }>{ postData.SendUserNickName }</a>
             }
             <small class="time">{ util.formatDate(postData.Createtime) }</small>

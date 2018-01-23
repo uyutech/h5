@@ -23,6 +23,16 @@ class WaterFall extends migi.Component {
       }
       let imageView = self.ref.imageView;
       let $root = $(self.element);
+      $root.on('click', '.authors a', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('url');
+        let title = $this.attr('title');
+        util.openAuthor({
+          url,
+          title,
+        });
+      });
 
       function like() {
         if(!util.isLogin()) {
@@ -195,7 +205,7 @@ class WaterFall extends migi.Component {
       <img class="pic" src={ util.autoSsl(util.img360__80(data.FileUrl)) || '/src/common/blank.png' }
            rel={ index++ } height={ height / 2 }/>
       <div class="txt">
-        <div class="author">
+        <div class="authors">
           {
             (author.AuthorInfo || []).map(function(item) {
               return <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>

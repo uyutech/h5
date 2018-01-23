@@ -122,15 +122,21 @@ class HotPost extends migi.Component {
             });
           });
         });
-        $list.on('click', 'a', function(e) {
+        $list.on('click', '.author .pic, .author .name', function(e) {
           e.preventDefault();
           let $this = $(this);
-          let type = $this.attr('type');
+          let url = $this.attr('href');
+          let title = $this.attr('title');
+          util.openAuthor({
+            url,
+            title,
+          });
+        });
+        $list.on('click', '.time, .circle a, .wrap a, .user .pic, .user .name', function(e) {
+          e.preventDefault();
+          let $this = $(this);
           let title = $this.attr('title');
           let url = $this.attr('href');
-          if(!url) {
-            throw new Error('hotpost2 url is null');
-          }
           jsBridge.pushWindow(url, {
             title,
           });
@@ -197,13 +203,13 @@ class HotPost extends migi.Component {
       let authorUrl = '/author.html?authorId=' + item.AuthorID;
       return <li class="author" id={ 'post_' + id}>
         <div class="profile fn-clear">
-          <a class="pic" href={ authorUrl } type="2" title={ item.SendUserNickName }>
+          <a class="pic" href={ authorUrl } title={ item.SendUserNickName }>
             <img src={ util.autoSsl(util.img208_208_80(item.SendUserHead_Url
               || '/src/common/blank.png')) }/>
           </a>
           <div class="txt">
-            <a href={ authorUrl } class="name" type="2" title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
-            <a class="time" href={ url } type="1" title="画圈正文">{ util.formatDate(item.Createtime) }</a>
+            <a href={ authorUrl } class="name" title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
+            <a class="time" href={ url } title="画圈正文">{ util.formatDate(item.Createtime) }</a>
           </div>
           <div class="circle">
             <ul>
@@ -227,7 +233,7 @@ class HotPost extends migi.Component {
         <div class="wrap">
           {
             item.Title
-              ? <a href={ url } class="t" type="1" title="画圈正文">{ item.Title }</a>
+              ? <a href={ url } class="t" title="画圈正文">{ item.Title }</a>
               : ''
           }
           <div class="con" dangerouslySetInnerHTML={ html }/>
@@ -245,7 +251,7 @@ class HotPost extends migi.Component {
                         return <li class={ 'all ' + cn }
                                    style={ 'background-image:url(' + util.autoSsl(util.img208_208_80(item.FileUrl)) + ')' }>
                           <img src={ util.autoSsl(util.img208_208_80(item.FileUrl)) }/>
-                          <a href={ url } type="1" title="画圈正文">查看全部</a>
+                          <a href={ url } title="画圈正文">查看全部</a>
                         </li>;
                       }
                       return <li class={ cn }
@@ -296,15 +302,15 @@ class HotPost extends migi.Component {
       </li>;
     }
     let userUrl = '/user.html?userID=' + item.SendUserID;
-    return <li id={ 'post_' + id}>
+    return <li class="user" id={ 'post_' + id}>
       <div class="profile fn-clear">
-        <a class="pic" href={ userUrl } type="3" title={ item.SendUserNickName }>
+        <a class="pic" href={ userUrl } title={ item.SendUserNickName }>
           <img src={ util.autoSsl(util.img208_208_80(item.SendUserHead_Url
             || '/src/common/head.png')) }/>
         </a>
         <div class="txt">
-          <a class="name" href={ userUrl } type="3" title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
-          <a class="time" href={ url } type="1" title="画圈正文">{ util.formatDate(item.Createtime) }</a>
+          <a class="name" href={ userUrl } title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
+          <a class="time" href={ url } title="画圈正文">{ util.formatDate(item.Createtime) }</a>
         </div>
         <div class="circle">
           <ul>
@@ -325,7 +331,7 @@ class HotPost extends migi.Component {
       <div class="wrap">
         {
           item.Title
-            ? <a href={ url } class="t" type="1" title="画圈正文">{ item.Title }</a>
+            ? <a href={ url } class="t" title="画圈正文">{ item.Title }</a>
             : ''
         }
         <div class="con" dangerouslySetInnerHTML={ html }/>
@@ -343,7 +349,7 @@ class HotPost extends migi.Component {
                       return <li class={ 'all ' + cn }
                                  style={ 'background-image:url(' + util.autoSsl(util.img208_208_80(item.FileUrl)) + ')' }>
                         <img src={ util.autoSsl(util.img208_208_80(item.FileUrl)) }/>
-                        <a href={ url } type="1" title="画圈正文">查看全部</a>
+                        <a href={ url } title="画圈正文">查看全部</a>
                       </li>;
                     }
                     return <li class={ cn }

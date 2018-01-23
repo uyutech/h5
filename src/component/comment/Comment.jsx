@@ -130,14 +130,21 @@ class Comment extends migi.Component {
           });
         });
       });
-      $root.on('click', 'a', function(e) {
+      $root.on('click', '.author', function(e) {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
         let title = $this.attr('title');
-        if(!url) {
-          throw new Error('comment url is null');
-        }
+        util.openAuthor({
+          url,
+          title,
+        });
+      });
+      $root.on('click', '.user', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
         jsBridge.pushWindow(url, {
           title,
         });
@@ -283,11 +290,17 @@ class Comment extends migi.Component {
       return <li class="author" id={ 'comment_' + item.Send_ID }>
         <div class="t fn-clear">
           <div class="profile fn-clear">
-            <a class="pic" href={ '/author.html?authorId=' + authorID } title={ item.Send_AuthorName }>
+            <a class="pic"
+               href={ '/author.html?authorId=' + authorID }
+               title={ item.Send_AuthorName }
+               transparentTitle={ true }>
               <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '/src/common/head.png')) }/>
             </a>
             <div class="txt">
-              <a class="name" href={ '/author?authorID=' + authorID } title={ item.Send_AuthorName }>{ item.Send_AuthorName }</a>
+              <a class="name"
+                 href={ '/author.html?authorID=' + authorID }
+                 title={ item.Send_AuthorName }
+                 transparentTitle={ true }>{ item.Send_AuthorName }</a>
               <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
             </div>
           </div>
@@ -312,7 +325,7 @@ class Comment extends migi.Component {
         </div>
       </li>;
     }
-    return <li id={ 'comment_' + item.Send_ID }>
+    return <li class="user" id={ 'comment_' + item.Send_ID }>
       <div class="t fn-clear">
         <div class="profile fn-clear">
           <a class="pic" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>
@@ -350,12 +363,18 @@ class Comment extends migi.Component {
       return <li class="author" id={ 'comment_' + item.Send_ID }>
         <div class="t fn-clear">
           <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } title={ item.Send_AuthorName }>
-            <a class="pic" href={ '/author.html?authorId=' + authorID } name={ item.Send_AuthorName }>
+            <a class="pic"
+               href={ '/author.html?authorId=' + authorID }
+               title={ item.Send_AuthorName }
+               transparentTitle={ true }>
               <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '/src/common/head.png')) }/>
             </a>
             <div class="txt">
               <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
-              <a class="name" href={ '/author.html?authorId=' + authorID } title={ item.Send_AuthorName }>{ item.Send_AuthorName }</a>
+              <a class="name"
+                 href={ '/author.html?authorId=' + authorID }
+                 title={ item.Send_AuthorName }
+                 transparentTitle={ true }>{ item.Send_AuthorName }</a>
             </div>
           </div>
           <div class="fn fn-clear">
@@ -382,7 +401,7 @@ class Comment extends migi.Component {
         </div>
       </li>;
     }
-    return <li id={ 'comment_' + item.Send_ID }>
+    return <li class="user" id={ 'comment_' + item.Send_ID }>
       <div class="t fn-clear">
         <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_UserName }>
           <a class="pic" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>
