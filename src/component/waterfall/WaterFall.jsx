@@ -26,7 +26,7 @@ class WaterFall extends migi.Component {
       $root.on('click', '.authors a', function(e) {
         e.preventDefault();
         let $this = $(this);
-        let url = $this.attr('url');
+        let url = $this.attr('href');
         let title = $this.attr('title');
         util.openAuthor({
           url,

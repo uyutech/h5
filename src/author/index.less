@@ -108,8 +108,8 @@
       color:#B6B6B6;
       font-size:0.13rem;
       line-height:0.2rem;
+      overflow:hidden;
       li{
-        flex:1;
         position:relative;
         margin:0 0.1rem 0 0;
         padding:0 0.1rem 0 0;
@@ -131,9 +131,7 @@
       }
       .outside{
         display:flex;
-        overflow-x:scroll;
         align-items:center;
-        transform:translateZ(0);
         span{
           margin-right:0.05rem;
           white-space:nowrap;
@@ -143,6 +141,7 @@
           width:0.24rem;
           height:0.24rem;
           white-space:nowrap;
+          flex-shrink:0;
           &.sing5{
             background:url(../icon/link-5sing.png) no-repeat center 0;
             background-size:0.24rem auto;

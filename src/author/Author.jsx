@@ -49,7 +49,7 @@ class Author extends migi.Component {
     if(!data.authorDetail.ISSettled) {
       self.type = [
         {
-          cn: 'comment',
+          cn: 'comments',
           name: '留言',
         }
       ];
@@ -84,32 +84,32 @@ class Author extends migi.Component {
         name: '留言',
       });
       self.type = type;
-      switch(type[0].cn) {
-        case 'home':
-          self.ref.home = <Home ref="home"
-                                homeDetail={ data.homeDetail }
-                                album={ data.album }/>;
-          self.ref.home.show();
-          self.ref.home.after(self.ref.type.element);
-          break;
-        case 'ma':
-          self.ref.maList = <MAList ref="maList"
+    }
+    switch(self.type[0].cn) {
+      case 'home':
+        self.ref.home = <Home ref="home"
+                              homeDetail={ data.homeDetail }
+                              album={ data.album }/>;
+        self.ref.home.show();
+        self.ref.home.after(self.ref.type.element);
+        break;
+      case 'ma':
+        self.ref.maList = <MAList ref="maList"
+                                  authorId={ self.authorId }
+                                  dataList={ data.hotPlayList }/>;
+        self.ref.maList.show();
+        self.ref.maList.after(self.ref.type.element);
+        break;
+      case 'pic':
+        self.ref.picList = <PicList ref="picList"
                                     authorId={ self.authorId }
-                                    dataList={ data.hotPlayList }/>;
-          self.ref.maList.show();
-          self.ref.maList.after(self.ref.type.element);
-          break;
-        case 'pic':
-          self.ref.picList = <PicList ref="picList"
-                                      authorId={ self.authorId }
-                                      dataList={ data.hotPicList }/>;
-          self.ref.picList.show();
-          self.ref.picList.after(self.ref.type.element);
-          break;
-        case 'comments':
-          self.addComment(commentData);
-          break;
-      }
+                                    dataList={ data.hotPicList }/>;
+        self.ref.picList.show();
+        self.ref.picList.after(self.ref.type.element);
+        break;
+      case 'comments':
+        self.addComment(self.commentData);
+        break;
     }
 
     let inputCmt = self.ref.inputCmt;

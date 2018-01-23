@@ -21,7 +21,6 @@ jsBridge.ready(function() {
   );
   jsBridge.getPreference('authorPageNav_' + authorId, function(res) {
     if(res) {
-      console.log(res);
       author.ref.nav.setData(res);
     }
   });
