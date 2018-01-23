@@ -54,7 +54,7 @@ class PicList extends migi.Component {
     let hotPic = self.ref.hotPic;
     loading = true;
     hotPic.message = '正在加载...';
-    net.postJSON('/h5/author/picList', { authorID: self.props.authorID, skip, take }, function(res) {
+    net.postJSON('/h5/author/picList', { authorID: self.props.authorId, skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;

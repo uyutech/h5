@@ -21,7 +21,7 @@ class Comments extends migi.Component {
     super(...data);
     let self = this;
     hidden = this.props.hidden;
-    self.authorID = self.props.authorID;
+    self.authorId = self.props.authorId;
     self.on(migi.Event.DOM, function() {
       let $window = $(window);
       $window.on('scroll', function() {
@@ -44,7 +44,7 @@ class Comments extends migi.Component {
       });
     });
   }
-  @bind authorID
+  @bind authorId
   show() {
     let self = this;
     $(self.element).removeClass('fn-hide');
@@ -76,7 +76,7 @@ class Comments extends migi.Component {
     }
     loading = true;
     comment.message = '正在加载...';
-    ajax = net.postJSON('/h5/author/commentList', { authorID: self.authorID, skip, take, sortType, myComment, currentCount }, function(res) {
+    ajax = net.postJSON('/h5/author/commentList', { authorID: self.authorId, skip, take, sortType, myComment, currentCount }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;

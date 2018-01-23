@@ -23,7 +23,7 @@ class HotAuthor extends migi.Component {
       throw new Error('hotauthor url is null');
     }
     jsBridge.pushWindow(url, {
-      title,
+      transparentTitle: true,
     });
   }
   render() {
@@ -51,7 +51,7 @@ class HotAuthor extends migi.Component {
                     }
                     return seq.indexOf(a) > seq.indexOf(b);
                   });
-                  let url = `/author.html?authorID=${item.AuthorID}`;
+                  let url = `/author.html?authorId=${item.AuthorID}`;
                   return <li>
                     <a href={ url } class="pic" title={ item.AuthorName }>
                       <img src={ util.autoSsl(util.img120_120_80(item.Head_url

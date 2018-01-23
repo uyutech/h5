@@ -48,7 +48,7 @@ class MAList extends migi.Component {
     let hotPlayList = self.ref.hotPlayList;
     loading = true;
     hotPlayList.message = '正在加载...';
-    net.postJSON('/h5/author/maList', { authorID: self.props.authorID, skip, take }, function(res) {
+    net.postJSON('/h5/author/maList', { authorID: self.props.authorId, skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;

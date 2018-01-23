@@ -4,7 +4,7 @@
 
 'use strict';
 
-import Background from '../playlist/Background.jsx';
+import Background from '../component/background/Background.jsx';
 
 class Nav extends migi.Component {
   constructor(...data) {

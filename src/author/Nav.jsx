@@ -12,25 +12,13 @@ class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.authorID = self.props.authorID;
-    self.authorName = self.props.authorDetail.AuthorName;
-    self.sign = self.props.authorDetail.Sign;
-    self.headUrl = self.props.authorDetail.Head_url;
-    self.fansNumber = self.props.authorDetail.FansNumber;
-    self.like = self.props.authorDetail.IsLike;
-    self.settled = self.props.authorDetail.ISSettled;
-    self.type = self.props.authorDetail.Authortype;
-    self._5SingUrl = self.props.authorDetail._5SingUrl;
-    self._BilibiliUrl = self.props.authorDetail._BilibiliUrl;
-    self._BaiduUrl = self.props.authorDetail._BaiduUrl;
-    self._WangyiUrl = self.props.authorDetail._WangyiUrl;
-    self._WeiboUrl = self.props.authorDetail._WeiboUrl;
-    self.HuabanUrl = self.props.authorDetail.HuabanUrl;
-    self.LofterUrl = self.props.authorDetail.LofterUrl;
-    self.POCOUrl = self.props.authorDetail.POCOUrl;
-    self.ZcooUrl = self.props.authorDetail.ZcooUrl;
+    self.authorId = self.props.authorId;
+    self.loading = true;
+    if(self.props.authorDetail) {
+      self.setData(self.props.authorDetail);
+    }
   }
-  @bind authorID
+  @bind authorId
   @bind authorName
   @bind sign
   @bind authorType = []
@@ -48,6 +36,26 @@ class Nav extends migi.Component {
   @bind LofterUrl
   @bind POCOUrl
   @bind ZcooUrl
+  setData(data) {
+    let self = this;
+    self.authorName = data.AuthorName;
+    self.sign = data.Sign;
+    self.headUrl = data.Head_url;
+    self.fansNumber = data.FansNumber;
+    self.like = data.IsLike;
+    self.settled = data.ISSettled;
+    self.type = data.Authortype;
+    self._5SingUrl = data._5SingUrl;
+    self._BilibiliUrl = data._BilibiliUrl;
+    self._BaiduUrl = data._BaiduUrl;
+    self._WangyiUrl = data._WangyiUrl;
+    self._WeiboUrl = data._WeiboUrl;
+    self.HuabanUrl = data.HuabanUrl;
+    self.LofterUrl = data.LofterUrl;
+    self.POCOUrl = data.POCOUrl;
+    self.ZcooUrl = data.ZcooUrl;
+    self.loading = false;
+  }
   set type(v) {
     v = v || [];
     let hash = {};
@@ -64,13 +72,13 @@ class Nav extends migi.Component {
       return;
     }
     let self = this;
-    self.loading = true;
     if(self.like) {
       jsBridge.confirm('确定取关吗？', function(res) {
         if(!res) {
           return;
         }
-        net.postJSON('/h5/author/unFollow', { authorID: self.authorID }, function(res) {
+        self.loading = true;
+        net.postJSON('/h5/author/unFollow', { authorID: self.authorId }, function(res) {
           if(res.success) {
             self.like = false;
             self.fansNumber = res.data.followCount;
@@ -89,7 +97,8 @@ class Nav extends migi.Component {
       });
     }
     else {
-      net.postJSON('/h5/author/follow', { authorID: self.authorID } , function(res) {
+      self.loading = true;
+      net.postJSON('/h5/author/follow', { authorID: self.authorId } , function(res) {
         if(res.success) {
           self.like = true;
           self.fansNumber = res.data.followCount;

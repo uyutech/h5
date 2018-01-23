@@ -58,7 +58,8 @@ class Playlist extends migi.Component {
       });
       jsBridge.on('mediaEnd', function(e) {
         if(e.data) {
-          if(e.data.currentTime === e.data.duration) {
+          // 误差<1s认为播放完毕，因为end事件偶尔在加载出错过程中抛出
+          if(Math.abs(e.data.duration - e.data.currentTime) < 1000) {
             if(botPlayBar.mode === 'repeat') {
               media.repeat();
             }
@@ -84,16 +85,13 @@ class Playlist extends migi.Component {
 
       media.on('play', function(data) {
         botPlayBar.isPlaying = true;
-        // jsBridge.setPreference('playlist_playing', true);
         jsBridge.setPreference('playlist_cur', data);
       });
       media.on('pause', function() {
         botPlayBar.isPlaying = false;
-        // jsBridge.setPreference('playlist_playing', false);
       });
       media.on('stop', function() {
         botPlayBar.isPlaying = false;
-        // jsBridge.setPreference('playlist_playing', false);
       });
 
       botPlayBar.on('prev', function() {

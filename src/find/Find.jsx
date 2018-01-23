@@ -10,7 +10,6 @@ import util from '../common/util';
 import Nav from './Nav.jsx';
 import Recommend from "./Recommend.jsx";
 import ItemList from './ItemList.jsx';
-import Background from '../playlist/Background.jsx';
 
 let visible;
 let scrollY = 0;

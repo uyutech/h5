@@ -281,17 +281,16 @@ let jsBridge = {
     }
     else {
       let s = localStorage[key];
-      if(s && (s.charAt(0) === '{' && s.charAt(s.length - 1) === '}'
-        || s.charAt(0) === '[' && s.charAt(s.length - 1) === ']')) {
-        s = JSON.parse(s);
-      }
-      callback(s);
+      callback(JSON.parse(s || 'null'));
     }
   },
   setPreference: function(key, value, callback) {
     callback = callback || function() {};
     if(value === undefined) {
       value = null;
+    }
+    if(isString(value)) {
+      value = JSON.stringify(value);
     }
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('setPreference', { key, value }, callback);

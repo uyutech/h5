@@ -4,6 +4,8 @@
 
 'use strict';
 
+import util from "../../common/util";
+
 let interval;
 let isPlaying;
 
@@ -38,7 +40,7 @@ class Background extends migi.Component {
         setHeight($l3, 31);
         setHeight($l4, 62);
       }
-      jsBridge.on('mediaTimeupdate', function() {
+      jsBridge.on('mediaTimeupdate', function(e) {
         if(isPlaying) {
           return;
         }
@@ -48,12 +50,76 @@ class Background extends migi.Component {
       jsBridge.on('mediaEnd', function(e) {
         isPlaying = false;
         stop();
+        let playlist_cur;
+        let playlist;
+        let mode;
+        let count = 0;
+        function fin() {
+          if(count >= 3) {
+            if(mode === 'loop') {
+              // 异常情况，直接播放第一个，否则播放下一个
+              for(let i = 0, len = playlist.length; i < len; i++) {
+                let item = playlist[i];
+                if(item.worksId === playlist_cur.worksId && item.workId === playlist_cur.workId) {
+                  let next = i + 1;
+                  if(next === len) {
+                    next = 0;
+                  }
+                  playlist_cur = playlist[next];
+                  jsBridge.setPreference('playlist_cur', playlist_cur);
+                  jsBridge.media({
+                    key: 'info',
+                    value: {
+                      url: location.protocol + util.autoSsl(playlist_cur.url),
+                      name: playlist_cur.workId,
+                    },
+                  });
+                  jsBridge.media({
+                    key: 'play',
+                  });
+                  return;
+                }
+              }
+              playlist_cur = playlist[0];
+              jsBridge.setPreference('playlist_cur', playlist_cur);
+              jsBridge.media({
+                key: 'info',
+                value: {
+                  url: location.protocol + util.autoSsl(playlist_cur.url),
+                  name: playlist_cur.workId,
+                },
+              });
+              jsBridge.media({
+                key: 'play',
+              });
+            }
+            else if(mode === 'repeat') {
+              jsBridge.media({
+                key: 'play',
+              });
+            }
+          }
+        }
         if(e.data) {
-          if(e.data.currentTime === e.data.duration) {
+          // 误差<1s认为播放完毕，因为end事件偶尔在加载出错过程中抛出
+          if(Math.abs(e.data.duration - e.data.currentTime) < 1000) {
             jsBridge.getPreference('playlist_mode', function(res) {
               res = res || 'loop';
-              if(res === 'loop') {}
-              else if(res === 'repeat') {}
+              mode = res;
+              if(res === 'loop' || res === 'repeat') {
+                count++;
+                fin();
+              }
+            });
+            jsBridge.getPreference('playlist_cur', function(res) {
+              playlist_cur = res || {};
+              count++;
+              fin();
+            });
+            jsBridge.getPreference('playlist', function(res) {
+              playlist = res || [];
+              count++;
+              fin();
             });
           }
         }
@@ -78,7 +144,7 @@ class Background extends migi.Component {
     });
   }
   render() {
-    return <div class="g-playlist" onClick={ this.click }>
+    return <div class={ 'cp-background' + (this.props.topRight ? ' tr' : '') } onClick={ this.click }>
       <b ref="l1"/>
       <b ref="l2"/>
       <b ref="l3"/>

@@ -30,13 +30,16 @@ class Media extends migi.Component {
         }
       });
       jsBridge.on('mediaTimeupdate', function(e) {
-        if(self.data && e.data) {
-          self.isPlaying = true;
-          self.currentTime = e.data.currentTime * 0.001;
+        // 延迟导致拖动开始后，timeupdate还会抵达，需注意判断
+        if(self.data && e.data && !isStart) {
           self.duration = e.data.duration * 0.001;
           self.canControl = true;
-          self.updateLrc();
-          self.setBarPercent(self.currentTime / self.duration);
+          if(!isStart) {
+            self.isPlaying = true;
+            self.currentTime = e.data.currentTime * 0.001;
+            self.updateLrc();
+            self.setBarPercent(self.currentTime / self.duration);
+          }
         }
       });
       jsBridge.on('mediaProgress', function(e) {

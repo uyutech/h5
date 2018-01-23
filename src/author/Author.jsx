@@ -4,6 +4,7 @@
 
 'use strict';
 
+import net from '../common/net';
 import util from '../common/util';
 import Nav from './Nav.jsx';
 import Home from './Home.jsx';
@@ -12,37 +13,115 @@ import PicList from './PicList.jsx';
 import Comments from './Comments.jsx';
 import SubCmt from '../component/subcmt/SubCmt.jsx';
 import WorksTypeEnum from "../works/WorksTypeEnum";
+import InputCmt from '../component/inputcmt/InputCmt.jsx';
+import Background from '../component/background/Background.jsx';
 
 class Author extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.authorId = self.props.authorId;
+    self.on(migi.Event.DOM, function() {
+      net.postJSON('/h5/author/index', { authorID: self.authorId }, function(res) {
+        if(res.success) {
+          self.setData(res.data);
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      });
+    });
   }
-  @bind hasData
-  @bind authorID
+  @bind authorId
+  @bind type
   @bind rid
   @bind cid
-  setData(authorID, data) {
+  setData(data) {
     let self = this;
-    self.authorID = authorID;
-    self.authorDetail = data.authorDetail;
-    self.homeDetail = data.homeDetail;
-    self.album = data.album;
-    self.commentData = data.commentData;
     self.hotPlayList = data.hotPlayList;
+    self.album = data.album;
     self.hotPicList = data.hotPicList;
+    self.commentData = data.commentData;
+    self.ref.nav.setData(data.authorDetail);
 
-    self.hasData = true;
+    if(!data.authorDetail.ISSettled) {
+      self.type = [
+        {
+          cn: 'comment',
+          name: '留言',
+        }
+      ];
+    }
+    else {
+      let emptyHome = !data.album.length
+        && !data.homeDetail.Hot_Works_Items.length
+        && !data.homeDetail.AuthorToAuthor.length;
+      let emptyAudio = !data.hotPlayList.Size;
+      let emptyPic = !data.hotPicList.Size;
+      let type = [];
+      if(!emptyHome) {
+        type.push({
+          cn: 'home',
+          name: '主页',
+        });
+      }
+      if(!emptyAudio) {
+        type.push({
+          cn: 'ma',
+          name: '音乐',
+        });
+      }
+      if(!emptyPic) {
+        type.push({
+          cn: 'pic',
+          name: '图片',
+        });
+      }
+      type.push({
+        cn: 'comments',
+        name: '留言',
+      });
+      self.type = type;
+      switch(type[0].cn) {
+        case 'home':
+          self.ref.home = <Home ref="home"
+                                homeDetail={ data.homeDetail }
+                                album={ data.album }/>;
+          self.ref.home.show();
+          self.ref.home.after(self.ref.type.element);
+          break;
+        case 'ma':
+          self.ref.maList = <MAList ref="maList"
+                                    authorId={ self.authorId }
+                                    dataList={ data.hotPlayList }/>;
+          self.ref.maList.show();
+          self.ref.maList.after(self.ref.type.element);
+          break;
+        case 'pic':
+          self.ref.picList = <PicList ref="picList"
+                                      authorId={ self.authorId }
+                                      dataList={ data.hotPicList }/>;
+          self.ref.picList.show();
+          self.ref.picList.after(self.ref.type.element);
+          break;
+        case 'comments':
+          self.addComment(commentData);
+          break;
+      }
+    }
 
-    let subCmt = self.ref.subCmt;
-    subCmt.on('click', function() {
-      if(subCmt.to) {
+    let inputCmt = self.ref.inputCmt;
+    inputCmt.on('click', function() {
+      if(self.cid) {
         jsBridge.pushWindow('/subcomment.html?type=2&id='
-          + self.authorID + '&cid=' + self.cid + '&rid=' + self.rid, {
+          + self.authorId + '&cid=' + self.cid + '&rid=' + self.rid, {
           title: '评论',
         });
       }
       else {
-        jsBridge.pushWindow('/subcomment.html?type=2&id=' + self.authorID, {
+        jsBridge.pushWindow('/subcomment.html?type=2&id=' + self.authorId, {
           title: '评论',
         });
       }
@@ -71,20 +150,18 @@ class Author extends migi.Component {
         break;
       case 'ma':
         if(!maList) {
-          self.ref.maList = maList = migi.render(
-            <MAList ref="maList" authorID={ self.authorID }
-                    dataList={ self.hotPlayList }/>
-          );
+          self.ref.maList = maList = <MAList ref="maList"
+                                             authorId={ self.authorId }
+                                             dataList={ self.hotPlayList }/>;
           maList.after(self.ref.type.element);
         }
         maList.show();
         break;
       case 'pic':
         if(!picList) {
-          self.ref.picList = picList = migi.render(
-            <PicList ref="picList" authorID={ self.authorID }
-                     dataList={ self.hotPicList }/>
-          );
+          self.ref.picList = picList = <PicList ref="picList"
+                                                authorId={ self.authorId }
+                                                dataList={ self.hotPicList }/>;
           picList.after(self.ref.type.element);
         }
         picList.show();
@@ -103,7 +180,7 @@ class Author extends migi.Component {
     let comments = self.ref.comments = migi.render(
       <Comments ref="comments"
                 isLogin={ util.isLogin() }
-                authorID={ self.authorID }
+                authorId={ self.authorId }
                 commentData={ self.commentData }/>
     );
     self.ref.comments.after(self.ref.type.element);
@@ -117,95 +194,33 @@ class Author extends migi.Component {
       });
     }
     comment.on('chooseSubComment', function(rid, cid, name, n) {
-      subCmt.to = name;
       self.rid = rid;
       self.cid = cid;
       if(!n || n === '0') {
         jsBridge.pushWindow('/subcomment.html?type=2&id='
-          + self.authorID + '&cid=' + cid + '&rid=' + rid, {
+          + self.authorId + '&cid=' + cid + '&rid=' + rid, {
           title: '评论',
         });
       }
     });
     comment.on('closeSubComment', function() {
       subCmt.to = '';
+      self.rid = self.cid = null;
     });
-  }
-  genDom() {
-    let self = this;
-    if(!self.authorDetail.ISSettled) {
-      return <div>
-        <Nav ref="nav"
-             authorID={ self.authorID }
-             authorDetail={ self.authorDetail }/>
-        <ul class="type fn-clear" ref="type">
-          <li class="comments cur">留言</li>
-        </ul>
-        <Comments ref="comments"
-                  isLogin={ util.isLogin() }
-                  authorID={ self.authorID }
-                  commentData={ self.commentData }/>
-        <SubCmt ref="subCmt"
-                originTo={ self.authorDetail.AuthorName }
-                subText="发送"
-                tipText="-${n}"
-                readOnly={ true }
-                shareUrl={ '/author/' + self.authorID }
-                placeholder={ '给' + self.authorDetail.AuthorName + '留个言吧' }/>
-      </div>;
-    }
-    let emptyHome = !self.album.length
-      && !self.homeDetail.Hot_Works_Items.length
-      && !self.homeDetail.AuthorToAuthor.length;
-    let emptyMA = !self.hotPlayList.Size;
-    let emptyPic = !self.hotPicList.Size;
-    return <div>
-      <Nav ref="nav"
-           authorID={ self.authorID }
-           authorDetail={ self.authorDetail }/>
-      <ul class="type fn-clear" ref="type" onClick={ { li: this.clickType } }>
-        {
-          emptyHome
-            ? ''
-            : <li class="home cur" rel="home">主页</li>
-        }
-        {
-          emptyMA
-            ? ''
-            : <li class="ma" rel="ma">音乐</li>
-        }
-        {
-          emptyPic
-            ? ''
-            : <li class="pic" rel="pic">图片</li>
-        }
-        <li class="comments" rel="comments">留言</li>
-      </ul>
-      <Home ref="home"
-            authorID={ self.authorID }
-            homeDetail={ self.homeDetail }
-            album={ self.album }/>
-      <SubCmt ref="subCmt"
-              originTo={ self.authorDetail.AuthorName }
-              subText="发送"
-              tipText="-${n}"
-              readOnly={ true }
-              shareUrl={ '/author/' + self.authorID }
-              placeholder={ '给' + self.authorDetail.AuthorName + '留个言吧' }/>
-    </div>;
   }
   render() {
     return <div class="author">
-      {
-        this.hasData
-          ? this.genDom()
-          : <div>
-              <div class="fn-placeholder-pic"/>
-              <div class="fn-placeholder-tags"/>
-              <div class="fn-placeholder"/>
-              <div class="fn-placeholder"/>
-            </div>
-      }
+      <Background ref="background" topRight={ true }/>
+      <Nav ref="nav"
+           authorId={ this.authorId }/>
+      <ul class="type" ref="type" onClick={ { li: this.clickType } }>
+        {
+          (this.type || []).map(function(item, i) {
+            return <li class={ item.cn + (i ? '' : ' cur') } rel={ item.cn }>{ item.name }</li>;
+          })
+        }
+      </ul>
+      <InputCmt ref="inputCmt" placeholder={ '发表评论...' } readOnly={ true }/>
     </div>;
   }
 }
