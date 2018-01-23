@@ -163,7 +163,7 @@ class ItemList extends migi.Component {
 
     let tagList = self.ref.tagList;
     if(tagList) {
-      tagList.on('change', function(v) {console.log(v);
+      tagList.on('change', function(v) {
         self.typeID = null;
         self.groupID = v.GroupID;
         fn.dataList = v.itemsTypeList;

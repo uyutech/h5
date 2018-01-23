@@ -15,6 +15,15 @@ import List from './List.jsx';
 let playlistCur;
 let playlistCache;
 
+let take = 20;
+let skip = 0;
+let ajax;
+let loading;
+let loadEnd;
+let hasLoaded;
+let curTag = 0;
+let favorList = [];
+
 class Playlist extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -52,7 +61,7 @@ class Playlist extends migi.Component {
         fin();
       });
       jsBridge.getPreference('playlistCur', function(res) {
-        playlistCur = res;
+        playlistCur = res || {};
         count++;
         fin();
       });
@@ -79,6 +88,7 @@ class Playlist extends migi.Component {
       });
 
       list.on('choose', function(data) {
+        jsBridge.setTitle(data.workName);
         media.setData(data);
         media.play();
       });
@@ -135,12 +145,72 @@ class Playlist extends migi.Component {
       });
     });
   }
+  clickTag(e, vd, tvd) {
+    let self = this;
+    let $li = $(tvd.element);
+    if($li.hasClass('cur')) {
+      return;
+    }
+    $(vd.element).find('.cur').removeClass('cur');
+    $li.addClass('cur');
+    let list = self.ref.list;
+    curTag = tvd.props.rel;
+    switch(curTag) {
+      case 0:
+        if(ajax) {
+          ajax.abort();
+        }
+        jsBridge.getPreference('playlist', function(res) {
+          playlistCache = res || [];
+          list.setData(playlistCache);
+        });
+        break;
+      case 1:
+        if(ajax) {
+          ajax.abort();
+        }
+        if(loadEnd) {
+          return;
+        }
+        ajax = net.postJSON('/h5/my/favorMV', { skip, take }, function(res) {
+          if(res.success) {
+            let data = res.data;
+            (data.data || []).forEach(function(item) {
+              let works = item.Works_Items_Works[0];
+              favorList.push({
+                works: works.WorksID,
+                workId: item.ItemID,
+                workName: item.ItemName,
+                isLike: item.ISLike,
+                isFavor: item.ISFavor,
+                likeNum: item.LikeHis,
+                url: item.FileUrl,
+                lrc: item.lrc,
+                worksCover: works.WorksCoverPic,
+              });
+            });
+            list.setData(favorList);
+            hasLoaded = true;
+            skip += take;
+            if(skip >= data.Size) {
+              loadEnd = true;
+            }
+          }
+          else {
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          }
+        }, function(res) {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        });
+        break;
+    }
+  }
   render() {
     return <div class="playlist">
       <Media ref="media"/>
-      <ul class="tag">
-        <li class="cur">曲目</li>
-        <li>收藏列表</li>
+      <ul class="tag" onClick={ this.clickTag }>
+        <li class="cur" rel={ 0 }>最近播放</li>
+        <li rel={ 1 }>收藏列表</li>
       </ul>
       <List ref="list"/>
       <BotPlayBar ref="botPlayBar"/>

@@ -18,7 +18,7 @@ class AudioList extends migi.Component {
     return <div class="mod-audiolist">
       <ol>
         {
-          (this.dataList || []).map(function(item) {console.log(item);
+          (this.dataList || []).map(function(item) {
             return <li>
               <img src={ util.autoSsl(util.img80_80_80(item.FileUrl || '/src/common/blank.png')) }/>
             </li>;

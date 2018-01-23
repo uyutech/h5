@@ -1,0 +1,40 @@
+/**
+ * Created by army8735 on 2018/1/23.
+ */
+
+.cp-background{
+  position:relative;
+  display:block;
+  width:0.32rem;
+  height:0.32rem;
+  transform:translateZ(0);
+  &.tr{
+    position:fixed;
+    top:0.25rem;
+    right:0.1rem;
+  }
+  b{
+    position:absolute;
+    bottom:0.06rem;
+    width:0.02rem;
+    height:62%;
+    min-height:0.01rem;
+    background:#8bbde1;
+    border-radius:0.02rem;
+    transition:height 0.2s;
+    &:nth-child(1){
+      left:0.06rem;
+      height:31%;
+    }
+    &:nth-child(2){
+      left:0.12rem;
+    }
+    &:nth-child(3){
+      left:0.18rem;
+      height:31%;
+    }
+    &:nth-child(4){
+      left:0.24rem;
+    }
+  }
+}

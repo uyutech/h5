@@ -41,8 +41,10 @@ class InputCmt extends migi.Component {
   }
   render() {
     return <div class={ 'cp-inputcmt' + (this.hidden ? ' fn-hide' : '') }>
-      <img src={ this.head || '/src/common/blank.png' }/>
-      <input value={ this.value } placeholder={ this.placeholder } readOnly={ this.readOnly }
+      <img src={ this.head || '/src/common/head.png' }/>
+      <input value={ this.value }
+             placeholder={ this.placeholder }
+             readOnly={ this.readOnly }
              onClick={ this.clickInput }/>
       <b class="fn" onClick={ this.clickFn }/>
     </div>;

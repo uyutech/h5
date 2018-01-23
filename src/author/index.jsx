@@ -15,6 +15,10 @@ let search = qs.parse(location.search.replace(/^\?/, ''));
 let authorId = search.authorId;
 
 jsBridge.ready(function() {
+  if(!authorId) {
+    jsBridge.toast('未知authorId');
+    return;
+  }
   let author = migi.preExist(
     <Author/>,
     '#page'

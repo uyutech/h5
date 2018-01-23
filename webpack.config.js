@@ -67,7 +67,7 @@ module.exports = {
         use: extractLESS.extract(['css-loader', 'autoprefixer-loader', 'less-loader'])
       },
       {
-        test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)|(\.ico)$/,
+        test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)|(\.ico)|(\.webp)$/,
         use: 'url-loader?limit=10240&name=[path][name].[ext]'
       },
       {

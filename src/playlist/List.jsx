@@ -43,6 +43,12 @@ class List extends migi.Component {
   hide() {
     $(this.element).addClass('fn-hide');
   }
+  setData(data) {
+    let self = this;
+    self.clearData();
+    self.dataList = data || [];
+    self.appendData(data);
+  }
   appendData(data) {
     let self = this;
     data = data || [];

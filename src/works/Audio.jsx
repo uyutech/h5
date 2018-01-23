@@ -22,22 +22,23 @@ class Audio extends migi.Component {
       if(major > 0 || minor > 4) {
         mediaService = true;
         jsBridge.on('mediaPrepared', function(e) {
-          if(e.data) {
+          if(e.data && e.data.id.toString() === self.datas[self.index || 0].ItemID.toString()) {
             self.duration = e.data.duration * 0.001;
             self.canControl = true;
           }
         });
         jsBridge.on('mediaTimeupdate', function(e) {
-          if(e.data) {
+          if(e.data && !isStart && e.data.id.toString() === self.datas[self.index || 0].ItemID.toString()) {
             self.currentTime = e.data.currentTime * 0.001;
             self.duration = e.data.duration * 0.001;
             self.updateLrc();
             self.canControl = true;
+            self.isPlaying = true;
             self.setBarPercent(self.currentTime / self.duration);
           }
         });
         jsBridge.on('mediaProgress', function(e) {
-          if(e.data) {
+          if(e.data && e.data.id.toString() === self.datas[self.index || 0].ItemID.toString()) {
             let load = self.ref.load.element;
             load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
           }
@@ -59,8 +60,9 @@ class Audio extends migi.Component {
             jsBridge.media({
               key: 'info',
               value: {
-                url: location.protocol + util.autoSsl(this.datas[this.index || 0].FileUrl),
-                name: this.datas[this.index || 0].ItemID,
+                id: self.datas[self.index || 0].ItemID,
+                url: location.protocol + util.autoSsl(self.datas[self.index || 0].FileUrl),
+                name: self.datas[self.index || 0].ItemID,
               },
             }, function(res) {
               let load = self.ref.load.element;
@@ -116,7 +118,7 @@ class Audio extends migi.Component {
       }
       item.formatLyrics = l;
     });
-    return this;
+    return self;
   }
   addMedia() {
     let audio = <audio src={ this.datas[this.index || 0].FileUrl }
@@ -145,8 +147,9 @@ class Audio extends migi.Component {
       jsBridge.media({
         key: 'info',
         value: {
-          url: location.protocol + util.autoSsl(this.datas[this.index || 0].FileUrl),
-          name: this.datas[this.index || 0].ItemID,
+          id: self.datas[self.index || 0].ItemID,
+          url: location.protocol + util.autoSsl(self.datas[self.index || 0].FileUrl),
+          name: self.datas[self.index || 0].ItemID,
         },
       }, function(res) {
         self.currentTime = 0;
@@ -158,6 +161,12 @@ class Audio extends migi.Component {
         else {
           load.innerHTML = '';
         }
+        jsBridge.media({
+          key: 'pause',
+        }, function() {
+          self.isPlaying = false;
+          self.currentTime = 0;
+        });
       });
     }
     else {

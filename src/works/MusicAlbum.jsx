@@ -10,15 +10,47 @@ import util from '../common/util';
 let isStart;
 let offsetX;
 let altMedia;
+let mediaService;
 
 class MusicAlbum extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    if(jsBridge.appVersion && jsBridge.android) {
+      let version = jsBridge.appVersion.split('.');
+      let major = parseInt(version[0]) || 0;
+      let minor = parseInt(version[1]) || 0;
+      let patch = parseInt(version[2]) || 0;
+      if(major > 0 || minor > 4) {
+        mediaService = true;
+        jsBridge.on('mediaPrepared', function(e) {
+          if(e.data && e.data.id.toString() === self.item.ItemID.toString()) {
+            self.duration = e.data.duration * 0.001;
+            self.canControl = true;
+          }
+        });
+        jsBridge.on('mediaTimeupdate', function(e) {
+          if(e.data && !isStart && e.data.id.toString() === self.item.ItemID.toString()) {
+            self.currentTime = e.data.currentTime * 0.001;
+            self.duration = e.data.duration * 0.001;
+            self.updateLrc();
+            self.canControl = true;
+            self.isPlaying = true;
+            self.setBarPercent(self.currentTime / self.duration);
+          }
+        });
+        jsBridge.on('mediaProgress', function(e) {
+          if(e.data && e.data.id.toString() === self.item.ItemID.toString()) {
+            let load = self.ref.load.element;
+            load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
+          }
+        });
+      }
+    }
     if(self.props.workList && self.props.workList.length) {
       if(self.props.workID) {
         self.props.workList.forEach(function(item, i) {
-          if(self.props.workID === item.ItemID.toString()) {
+          if(self.props.workID.toString() === item.ItemID.toString()) {
             self.setItem(self.props.workList[i]);
           }
         });
@@ -27,13 +59,58 @@ class MusicAlbum extends migi.Component {
         self.setItem(self.props.workList[0]);
       }
       self.on(migi.Event.DOM, function() {
-        self.addOrAltMedia();
-      });
-      migi.eventBus.on('chooseMusic', function(item) {
-        self.av.element.currentTime = self.currentTime = 0;
-        self.setItem(item);
-        self.addOrAltMedia();
-        history.replaceState(null, '', '/works.html?worksID=' + self.props.worksID + '&workID=' + self.workID);
+        let load = self.ref.load.element;
+        if(mediaService) {
+          jsBridge.media({
+            key: 'info',
+            value: {
+              id: self.item.ItemID,
+              url: location.protocol + util.autoSsl(self.item.FileUrl),
+              name: self.item.ItemID,
+            },
+          }, function(res) {
+            if(res.isCached) {
+              load.innerHTML = `<b style="width:100%"/>`;
+            }
+            else {
+              load.innerHTML = '';
+            }
+            self.isPlaying = res.isPlaying;
+            if(res.isPlaying) {
+              self.canControl = true;
+            }
+          });
+        }
+        else {
+          self.addOrAltMedia();
+        }
+        migi.eventBus.on('chooseMusic', function(item) {
+          self.setItem(item);
+          if(mediaService) {
+            jsBridge.media({
+              key: 'info',
+              value: {
+                id: item.ItemID,
+                url: location.protocol + util.autoSsl(item.FileUrl),
+                name: item.ItemID,
+              },
+            }, function(res) {
+              if(res.isCached) {
+                load.innerHTML = `<b style="width:100%"/>`;
+              }
+              else {
+                load.innerHTML = '';
+              }
+            });
+            self.currentTime = 0;
+            self.isPlaying = false;
+          }
+          else {
+            self.av.element.currentTime = self.currentTime = 0;
+            self.addOrAltMedia();
+          }
+          history.replaceState(null, '', '/works.html?worksID=' + self.props.worksID + '&workID=' + self.workID);
+        });
       });
     }
   }
@@ -142,22 +219,7 @@ class MusicAlbum extends migi.Component {
     let self = this;
     let currentTime = self.currentTime = e.target.currentTime;
     self.duration = e.target.duration;
-    let formatLyrics = self.formatLyrics || {};
-    let formatLyricsData = formatLyrics.data;
-    if(formatLyrics.is && formatLyricsData.length) {
-      let tempIndex = self.lyricsIndex;
-      for (let i = 0, len = formatLyricsData.length; i < len; i++) {
-        if(currentTime * 1000 >= formatLyricsData[i].timestamp) {
-          tempIndex = i;
-        }
-        else {
-          break;
-        }
-      }
-      if(tempIndex !== self.lyricsIndex) {
-        self.lyricsIndex = tempIndex;
-      }
-    }
+    self.updateLrc();
     let percent = currentTime / self.duration;
     self.setBarPercent(percent);
   }
@@ -198,21 +260,55 @@ class MusicAlbum extends migi.Component {
     }
   }
   play() {
-    this.av && this.av.element.play();
-    this.isPlaying = true;
-    this.hasStart = true;
+    let self = this;
+    if(mediaService) {
+      jsBridge.media({
+        key: 'play',
+      });
+    }
+    else {
+      self.av && self.av.element.play();
+    }
+    self.isPlaying = true;
+    self.hasStart = true;
+    net.postJSON('/h5/works/addPlayCount', { workID: self.workID });
     migi.eventBus.emit('play');
-    net.postJSON('/h5/works/addPlayCount', { workID: this.workID });
     return this;
   }
   pause() {
-    this.av && this.av.element.pause();
+    if(mediaService) {
+      jsBridge.media({
+        key: 'pause',
+      });
+    }
+    else {
+      this.av && this.av.element.pause();
+    }
     this.isPlaying = false;
     migi.eventBus.emit('pause');
     return this;
   }
   altLyrics() {
     this.showLyricsMode = !this.showLyricsMode;
+  }
+  updateLrc() {
+    let self = this;
+    let formatLyrics = self.formatLyrics || {};
+    let formatLyricsData = formatLyrics.data;
+    if(formatLyrics.is && formatLyricsData.length) {
+      let tempIndex = self.lyricsIndex;
+      for (let i = 0, len = formatLyricsData.length; i < len; i++) {
+        if(self.currentTime * 1000 >= formatLyricsData[i].timestamp) {
+          tempIndex = i;
+        }
+        else {
+          break;
+        }
+      }
+      if(tempIndex !== self.lyricsIndex) {
+        self.lyricsIndex = tempIndex;
+      }
+    }
   }
   clickStart(e) {
     this.play();

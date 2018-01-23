@@ -6,8 +6,7 @@
 
 import util from "../../common/util";
 
-let interval;
-let isPlaying;
+let timeout;
 
 function setHeight($b, percent) {
   $b.css('height', Math.floor(percent) + '%');
@@ -23,33 +22,24 @@ class Background extends migi.Component {
       let $l3 = $(self.ref.l3.element);
       let $l4 = $(self.ref.l4.element);
       function play() {
-        stop();
-        interval = setInterval(function() {
-          setHeight($l1, Math.random() * 62);
-          setHeight($l2, Math.random() * 62);
-          setHeight($l3, Math.random() * 62);
-          setHeight($l4, Math.random() * 62);
-        }, 100);
-      }
-      function stop() {
-        if(interval) {
-          clearInterval(interval);
+        setHeight($l1, Math.random() * 62);
+        setHeight($l2, Math.random() * 62);
+        setHeight($l3, Math.random() * 62);
+        setHeight($l4, Math.random() * 62);
+        if(timeout) {
+          clearTimeout(timeout);
         }
-        setHeight($l1, 31);
-        setHeight($l2, 62);
-        setHeight($l3, 31);
-        setHeight($l4, 62);
+        timeout = setTimeout(function() {
+          setHeight($l1, 31);
+          setHeight($l2, 62);
+          setHeight($l3, 31);
+          setHeight($l4, 62);
+        }, 300);
       }
       jsBridge.on('mediaTimeupdate', function(e) {
-        if(isPlaying) {
-          return;
-        }
-        isPlaying = true;
         play();
       });
       jsBridge.on('mediaEnd', function(e) {
-        isPlaying = false;
-        stop();
         let playlistCur;
         let playlist;
         let mode;
@@ -124,14 +114,10 @@ class Background extends migi.Component {
           }
         }
       });
-      // 空绑service
+      // 空绑service，回到前台重绑以接收media事件
       jsBridge.media();
       jsBridge.on('resume', function() {
         jsBridge.media();
-      });
-      jsBridge.on('pause', function() {
-        isPlaying = false;
-        stop();
       });
     });
   }

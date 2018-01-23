@@ -25,14 +25,14 @@ class Media extends migi.Component {
     self.on(migi.Event.DOM, function() {
       WIDTH = $(window).width();
       jsBridge.on('mediaPrepared', function(e) {
-        if(self.data && e.data) {
+        if(self.data && e.data && self.data.workId.toString() === e.data.id.toString()) {
           self.duration = e.data.duration * 0.001;
           self.canControl = true;
         }
       });
       jsBridge.on('mediaTimeupdate', function(e) {
         // 延迟导致拖动开始后，timeupdate还会抵达，需注意判断
-        if(self.data && e.data && !isStart) {
+        if(self.data && e.data && !isStart && self.data.workId.toString() === e.data.id.toString()) {
           self.duration = e.data.duration * 0.001;
           self.canControl = true;
           if(!isStart) {
@@ -44,7 +44,7 @@ class Media extends migi.Component {
         }
       });
       jsBridge.on('mediaProgress', function(e) {
-        if(self.data && e.data) {
+        if(self.data && e.data && self.data.workId.toString() === e.data.id.toString()) {
           let load = self.ref.load.element;
           load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
         }
@@ -113,6 +113,7 @@ class Media extends migi.Component {
     jsBridge.media({
       key: 'info',
       value: {
+        id: data.workId,
         url: location.protocol + util.autoSsl(data.url),
         name: data.workId,
       },
