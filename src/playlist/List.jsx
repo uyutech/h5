@@ -156,6 +156,7 @@ class List extends migi.Component {
               list: self.dataList,
               isCur,
             });
+            botFn.cancel();
           }
         });
       },

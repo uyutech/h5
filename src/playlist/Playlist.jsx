@@ -120,17 +120,19 @@ class Playlist extends migi.Component {
       inputCmt.on('click', function() {});
 
       migi.eventBus.on(['likeWork', 'favorWork'], function(res) {
-        jsBridge.setPreference('playlist', res.dataList);
+        jsBridge.setPreference('playlist', res.list);
       });
       list.on('del', function(res) {
-        jsBridge.setPreference('playlist', res.dataList);
-        if(!res.dataList.length) {
+        jsBridge.setPreference('playlist', res.list);
+        if(!res.list.length) {
           media.setData(null);
           jsBridge.setPreference('playlist_cur');
         }
         else if(res.isCur) {
-          media.setData(res.dataList[0]);
-          jsBridge.setPreference('playlist_cur', res.dataList[0]);
+          media.setData(res.list[0]);
+          media.play();
+          list.setCurIndex(0);
+          jsBridge.setPreference('playlist_cur', res.list[0]);
         }
       });
     });

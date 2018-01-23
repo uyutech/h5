@@ -29,6 +29,12 @@ class BotFn extends migi.Component {
           self.clickCancel();
         }
       });
+      jsBridge.on('back', function(e) {
+        if(self.pop) {
+          e.preventDefault();
+          self.cancel();
+        }
+      });
     });
   }
   @bind canDel;
@@ -62,6 +68,9 @@ class BotFn extends migi.Component {
     if(clickCancel) {
       clickCancel(this);
     }
+    this.cancel();
+  }
+  cancel() {
     this.pop = false;
     clickDel = clickLike = clickFavor = clickCancel = null;
   }
