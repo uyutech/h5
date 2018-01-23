@@ -50,7 +50,7 @@ class Background extends migi.Component {
       jsBridge.on('mediaEnd', function(e) {
         isPlaying = false;
         stop();
-        let playlist_cur;
+        let playlistCur;
         let playlist;
         let mode;
         let count = 0;
@@ -60,18 +60,18 @@ class Background extends migi.Component {
               // 异常情况，直接播放第一个，否则播放下一个
               for(let i = 0, len = playlist.length; i < len; i++) {
                 let item = playlist[i];
-                if(item.worksId === playlist_cur.worksId && item.workId === playlist_cur.workId) {
+                if(item.worksId === playlistCur.worksId && item.workId === playlistCur.workId) {
                   let next = i + 1;
                   if(next === len) {
                     next = 0;
                   }
-                  playlist_cur = playlist[next];
-                  jsBridge.setPreference('playlist_cur', playlist_cur);
+                  playlistCur = playlist[next];
+                  jsBridge.setPreference('playlistCur', playlistCur);
                   jsBridge.media({
                     key: 'info',
                     value: {
-                      url: location.protocol + util.autoSsl(playlist_cur.url),
-                      name: playlist_cur.workId,
+                      url: location.protocol + util.autoSsl(playlistCur.url),
+                      name: playlistCur.workId,
                     },
                   });
                   jsBridge.media({
@@ -80,13 +80,13 @@ class Background extends migi.Component {
                   return;
                 }
               }
-              playlist_cur = playlist[0];
-              jsBridge.setPreference('playlist_cur', playlist_cur);
+              playlistCur = playlist[0];
+              jsBridge.setPreference('playlistCur', playlistCur);
               jsBridge.media({
                 key: 'info',
                 value: {
-                  url: location.protocol + util.autoSsl(playlist_cur.url),
-                  name: playlist_cur.workId,
+                  url: location.protocol + util.autoSsl(playlistCur.url),
+                  name: playlistCur.workId,
                 },
               });
               jsBridge.media({
@@ -111,8 +111,8 @@ class Background extends migi.Component {
                 fin();
               }
             });
-            jsBridge.getPreference('playlist_cur', function(res) {
-              playlist_cur = res || {};
+            jsBridge.getPreference('playlistCur', function(res) {
+              playlistCur = res || {};
               count++;
               fin();
             });

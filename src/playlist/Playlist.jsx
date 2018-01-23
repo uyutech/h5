@@ -51,7 +51,7 @@ class Playlist extends migi.Component {
         count++;
         fin();
       });
-      jsBridge.getPreference('playlist_cur', function(res) {
+      jsBridge.getPreference('playlistCur', function(res) {
         playlistCur = res;
         count++;
         fin();
@@ -85,7 +85,7 @@ class Playlist extends migi.Component {
 
       media.on('play', function(data) {
         botPlayBar.isPlaying = true;
-        jsBridge.setPreference('playlist_cur', data);
+        jsBridge.setPreference('playlistCur', data);
       });
       media.on('pause', function() {
         botPlayBar.isPlaying = false;
@@ -124,13 +124,13 @@ class Playlist extends migi.Component {
         jsBridge.setPreference('playlist', res.list);
         if(!res.list.length) {
           media.setData(null);
-          jsBridge.setPreference('playlist_cur');
+          jsBridge.setPreference('playlistCur');
         }
         else if(res.isCur) {
           media.setData(res.list[0]);
           media.play();
           list.setCurIndex(0);
-          jsBridge.setPreference('playlist_cur', res.list[0]);
+          jsBridge.setPreference('playlistCur', res.list[0]);
         }
       });
     });

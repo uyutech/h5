@@ -16,7 +16,14 @@ let authorId = search.authorId;
 
 jsBridge.ready(function() {
   let author = migi.preExist(
-    <Author authorId={ authorId }/>,
+    <Author/>,
     '#page'
   );
+  jsBridge.getPreference('authorPageNav_' + authorId, function(res) {
+    if(res) {
+      console.log(res);
+      author.ref.nav.setData(res);
+    }
+  });
+  author.load(authorId);
 });

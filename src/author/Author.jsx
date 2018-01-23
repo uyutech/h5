@@ -11,7 +11,6 @@ import Home from './Home.jsx';
 import MAList from './MAList.jsx';
 import PicList from './PicList.jsx';
 import Comments from './Comments.jsx';
-import SubCmt from '../component/subcmt/SubCmt.jsx';
 import WorksTypeEnum from "../works/WorksTypeEnum";
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import Background from '../component/background/Background.jsx';
@@ -19,32 +18,33 @@ import Background from '../component/background/Background.jsx';
 class Author extends migi.Component {
   constructor(...data) {
     super(...data);
-    let self = this;
-    self.authorId = self.props.authorId;
-    self.on(migi.Event.DOM, function() {
-      net.postJSON('/h5/author/index', { authorID: self.authorId }, function(res) {
-        if(res.success) {
-          self.setData(res.data);
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
-    });
   }
   @bind authorId
   @bind type
   @bind rid
   @bind cid
+  load(authorId) {
+    let self = this;
+    self.authorId = authorId;
+    self.ref.nav.authorId = authorId;
+    net.postJSON('/h5/author/index', { authorID: authorId }, function(res) {
+      if(res.success) {
+        self.setData(res.data);
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
+  }
   setData(data) {
     let self = this;
     self.hotPlayList = data.hotPlayList;
     self.album = data.album;
     self.hotPicList = data.hotPicList;
     self.commentData = data.commentData;
-    self.ref.nav.setData(data.authorDetail);
+    self.ref.nav.setData(data.authorDetail, 1);
 
     if(!data.authorDetail.ISSettled) {
       self.type = [
@@ -211,8 +211,7 @@ class Author extends migi.Component {
   render() {
     return <div class="author">
       <Background ref="background" topRight={ true }/>
-      <Nav ref="nav"
-           authorId={ this.authorId }/>
+      <Nav ref="nav"/>
       <ul class="type" ref="type" onClick={ { li: this.clickType } }>
         {
           (this.type || []).map(function(item, i) {

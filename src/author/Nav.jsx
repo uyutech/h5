@@ -2,21 +2,17 @@
  * Created by army on 2017/6/16.
  */
 
-import Profile from './Profile.jsx';
-import Link from './Link.jsx';
 import authorTemplate from "../component/author/authorTemplate";
 import util from "../common/util";
 import net from "../common/net";
+
+let currentPriority = 0;
 
 class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.authorId = self.props.authorId;
     self.loading = true;
-    if(self.props.authorDetail) {
-      self.setData(self.props.authorDetail);
-    }
   }
   @bind authorId
   @bind authorName
@@ -36,8 +32,13 @@ class Nav extends migi.Component {
   @bind LofterUrl
   @bind POCOUrl
   @bind ZcooUrl
-  setData(data) {
+  setData(data, priority) {
+    priority = priority || 0;
+    if(priority < currentPriority) {
+      return;
+    }
     let self = this;
+    jsBridge.setPreference('authorPageNav_' + self.authorId, data);
     self.authorName = data.AuthorName;
     self.sign = data.Sign;
     self.headUrl = data.Head_url;

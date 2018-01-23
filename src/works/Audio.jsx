@@ -251,8 +251,7 @@ class Audio extends migi.Component {
       }
       jsBridge.setPreference('playlist', res);
     });
-    jsBridge.setPreference('playlist_cur', o);
-    // jsBridge.setPreference('playlist_playing', true);
+    jsBridge.setPreference('playlistCur', o);
     if(mediaService) {
       jsBridge.media({
         key: 'play',
@@ -267,7 +266,6 @@ class Audio extends migi.Component {
     return this;
   }
   pause() {
-    // jsBridge.setPreference('playlist_playing', null);
     if(mediaService) {
       jsBridge.media({
         key: 'pause',
