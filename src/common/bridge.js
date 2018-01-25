@@ -289,7 +289,7 @@ let jsBridge = {
     if(value === undefined) {
       value = null;
     }
-    if(isString(value)) {
+    else if(isString(value)) {
       value = JSON.stringify(value);
     }
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
@@ -315,9 +315,100 @@ let jsBridge = {
       callback();
     }
   },
-  setCache: function(key, value, callback) {},
-  getCache: function(key, callback) {},
-  delCache: function(key, callback) {},
+  setCache: function(key, value, callback) {
+    callback = callback || function() {};
+    if(Array.isArray(key) && Array.isArray(value)) {
+      for(let i = 0, len = key.length; i < len; i++) {
+        let item = value[i];
+        if(item === undefined) {
+          value[i] = null;
+        }
+        else if(isString(item)) {
+          value[i] = JSON.stringify(item);
+        }
+      }
+      value.splice(key.length);
+      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+        ZhuanQuanJSBridge.call('setCache', { key, value, isArray: true }, callback);
+      }
+      else {
+        key.forEach(function(item, i) {
+          if(value[i] === null) {
+            delete localStorage[item];
+          }
+          else {
+            localStorage[item] = JSON.stringify(value[i]);
+          }
+        });
+        callback();
+      }
+    }
+    else {
+      if(value === undefined) {
+        value = null;
+      }
+      else if(isString(value)) {
+        value = JSON.stringify(value);
+      }
+      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+        ZhuanQuanJSBridge.call('setCache', { key, value }, callback);
+      }
+      else {
+        if(value === null) {
+          delete localStorage[key];
+        }
+        else {
+          localStorage[key] = JSON.stringify(value);
+        }
+        callback();
+      }
+    }
+  },
+  getCache: function(key, callback) {
+    callback = callback || function() {};
+    if(Array.isArray(key)) {
+      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+        ZhuanQuanJSBridge.call('getCache', { key, isArray: true }, callback);
+      }
+      else {
+        let res = [];
+        key.forEach(function(item) {
+          res.push(JSON.parse(localStorage[item] || 'null'));
+        });
+        callback.apply(null, res);
+      }
+    }
+    else {
+      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+        ZhuanQuanJSBridge.call('getCache', { key }, callback);
+      }
+      else {
+        let s = localStorage[key];
+        callback(JSON.parse(s || 'null'));
+      }
+    }
+  },
+  delCache: function(key, callback) {
+    callback = callback || function() {};
+    if(Array.isArray(key)) {
+      let value = [];
+      for(let i = 0, len = key.length; i < len; i++) {
+        value.push(null);
+      }
+      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+        ZhuanQuanJSBridge.call('setCache', { key, value, isArray: true }, callback);
+      }
+      else {
+        key.forEach(function(item) {
+          delete localStorage[item];
+        });
+        callback();
+      }
+    }
+    else {
+      delete localStorage[item];
+    }
+  },
   showOptionMenu: function() {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('showOptionMenu');
