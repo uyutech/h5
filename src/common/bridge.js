@@ -315,6 +315,9 @@ let jsBridge = {
       callback();
     }
   },
+  setCache: function(key, value, callback) {},
+  getCache: function(key, callback) {},
+  delCache: function(key, callback) {},
   showOptionMenu: function() {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('showOptionMenu');

@@ -164,9 +164,10 @@ class Media extends migi.Component {
     }
     jsBridge.media({
       key: 'play',
+    }, function() {
+      self.isPlaying = true;
+      self.emit('play', self.data);
     });
-    self.isPlaying = true;
-    self.emit('play', self.data);
     net.postJSON('/h5/works/addPlayCount', { workID: self.data.workId });
     return this;
   }
@@ -176,21 +177,21 @@ class Media extends migi.Component {
       key: 'pause',
     }, function() {
       self.isPlaying = false;
+      self.emit('pause', self.data);
     });
-    self.isPlaying = false;
-    self.emit('pause', self.data);
     return this;
   }
   stop() {
     let self = this;
     jsBridge.media({
       key: 'stop',
+    }, function() {
+      self.isPlaying = false;
+      self.currentTime = 0;
+      self.setBarPercent(0);
+      self.updateLrc();
+      self.emit('stop', self.data);
     });
-    self.isPlaying = false;
-    self.currentTime = 0;
-    self.setBarPercent(0);
-    self.updateLrc();
-    self.emit('stop', self.data);
     return this;
   }
   repeat() {

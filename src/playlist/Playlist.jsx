@@ -22,6 +22,7 @@ let loading;
 let loadEnd;
 let hasLoaded;
 let curTag = 0;
+let curPlayTag = 0;
 let favorList = [];
 
 class Playlist extends migi.Component {
@@ -38,7 +39,7 @@ class Playlist extends migi.Component {
         if(count >= 2) {
           for(let i = 0, len = playlistCache.length; i < len; i++) {
             let item = playlistCache[i];
-            if(item.worksId === playlistCur.worksId && item.workId === playlistCur.workId) {
+            if(playlistCur && item.worksId === playlistCur.worksId && item.workId === playlistCur.workId) {
               jsBridge.setTitle(item.workName);
               media.setData(item);
               list.setCurIndex(i);
@@ -61,20 +62,17 @@ class Playlist extends migi.Component {
         fin();
       });
       jsBridge.getPreference('playlistCur', function(res) {
-        playlistCur = res || {};
+        playlistCur = res;
         count++;
         fin();
       });
       jsBridge.on('mediaEnd', function(e) {
         if(e.data) {
-          // 误差<1s认为播放完毕，因为end事件偶尔在加载出错过程中抛出
-          if(Math.abs(e.data.duration - e.data.currentTime) < 1000) {
-            if(botPlayBar.mode === 'repeat') {
-              media.repeat();
-            }
-            else if(botPlayBar.mode === 'loop') {
-              list.nextLoop();
-            }
+          if(botPlayBar.mode === 'repeat') {
+            media.repeat();
+          }
+          else if(botPlayBar.mode === 'loop') {
+            list.nextLoop();
           }
         }
       });
@@ -82,20 +80,63 @@ class Playlist extends migi.Component {
         list.currentFn();
       });
       jsBridge.on('mediaTimeupdate', function(e) {
-        if(e.data) {
-          botPlayBar.isPlaying = true;
+        if(e.data && media.data && e.data.id.toString() === media.data.workId.toString()) {
+          media.isPlaying = botPlayBar.isPlaying = true;
         }
       });
 
       list.on('choose', function(data) {
         jsBridge.setTitle(data.workName);
+        curPlayTag = curTag;
+        if(media.data && media.data.worksId === data.worksId && media.data.workId === data.workId) {
+          media.play();
+          return;
+        }
+        media.stop();
         media.setData(data);
         media.play();
+        jsBridge.setPreference('playlistCur', data);
+        jsBridge.getPreference('playlist', function(res) {
+          playlistCache = res || [];
+          for(let i = 0, len = playlistCache.length; i < len; i++) {
+            let item = playlistCache[i];
+            if(item.worksId === data.worksId && item.workId === data.workId) {
+              return;
+            }
+          }
+          playlistCache.unshift(data);
+          jsBridge.setPreference('playlist', playlistCache);
+        });
+      });
+      list.on('change', function(res) {
+        let data = res.data;
+        jsBridge.setTitle(data.workName);
+        curPlayTag = curTag;
+        // 只有一首或者播放中切换到另外一个列表，结束时假如当前列表进行切换的和正在播放的相同，直接从0开始重新播放
+        if(media.data && media.data.worksId === data.worksId && media.data.workId === data.workId) {
+          media.currentTime = 0;
+          media.play();
+          list.setCurIndex(res.index);
+          return;
+        }
+        media.setData(data);
+        media.play();
+        jsBridge.setPreference('playlistCur', data);
+        jsBridge.getPreference('playlist', function(res) {
+          playlistCache = res || [];
+          for(let i = 0, len = playlistCache.length; i < len; i++) {
+            let item = playlistCache[i];
+            if(item.worksId === data.worksId && item.workId === data.workId) {
+              return;
+            }
+          }
+          playlistCache.unshift(data);
+          jsBridge.setPreference('playlist', playlistCache);
+        });
       });
 
-      media.on('play', function(data) {
+      media.on('play', function() {
         botPlayBar.isPlaying = true;
-        jsBridge.setPreference('playlistCur', data);
       });
       media.on('pause', function() {
         botPlayBar.isPlaying = false;
@@ -127,8 +168,19 @@ class Playlist extends migi.Component {
       });
       inputCmt.on('click', function() {});
 
-      migi.eventBus.on(['likeWork', 'favorWork'], function(res) {
-        jsBridge.setPreference('playlist', res.list);
+      list.on(['likeWork', 'favorWork'], function(res) {
+        let data = res.data;
+        jsBridge.getPreference('playlist', function(res) {
+          playlistCache = res || [];
+          for(let i = 0, len = playlistCache.length; i < len; i++) {
+            let item = playlistCache[i];
+            if(item.worksId === data.worksId && item.workId === data.workId) {
+              playlistCache[i] = data;
+              jsBridge.setPreference('playlist', playlistCache);
+              return;
+            }
+          }
+        });
       });
       list.on('del', function(res) {
         jsBridge.setPreference('playlist', res.list);
@@ -143,6 +195,11 @@ class Playlist extends migi.Component {
           jsBridge.setPreference('playlistCur', res.list[0]);
         }
       });
+
+      let $window = $(window);
+      $window.on('scroll', function() {
+        self.checkMore($window);
+      });
     });
   }
   clickTag(e, vd, tvd) {
@@ -151,34 +208,72 @@ class Playlist extends migi.Component {
     if($li.hasClass('cur')) {
       return;
     }
-    $(vd.element).find('.cur').removeClass('cur');
+    let $vd = $(vd.element);
+    $vd.find('.cur').removeClass('cur');
     $li.addClass('cur');
     let list = self.ref.list;
+    let media = self.ref.media;
     curTag = tvd.props.rel;
+    if(curTag === 1 && !util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      $vd.find('.cur').removeClass('cur');
+      $vd.find('li').eq(0).addClass('cur');
+      curTag = 0;
+      return;
+    }
+    let count = 0;
+    function fin() {
+      if(count >=2) {
+        for(let i = 0, len = playlistCache.length; i < len; i++) {
+          let item = playlistCache[i];
+          if(playlistCur && item.worksId === playlistCur.worksId && item.workId === playlistCur.workId) {
+            list.setCurIndex(i);
+            return;
+          }
+        }
+      }
+    }
     switch(curTag) {
       case 0:
-        if(ajax) {
-          ajax.abort();
-        }
         jsBridge.getPreference('playlist', function(res) {
           playlistCache = res || [];
           list.setData(playlistCache);
+          count++;
+          fin();
         });
+        if(curPlayTag === 0) {
+          jsBridge.getPreference('playlistCur', function(res) {
+            playlistCur = res;
+            count++;
+            fin();
+          });
+        }
         break;
       case 1:
-        if(ajax) {
-          ajax.abort();
+        list.setData(favorList);
+        if(curPlayTag === 1) {
+          jsBridge.getPreference('playlistCur', function(res) {
+            playlistCur = res;
+            for(let i = 0, len = favorList.length; i < len; i++) {
+              let item = favorList[i];
+              if(playlistCur && item.worksId === playlistCur.worksId && item.workId === playlistCur.workId) {
+                list.setCurIndex(i);
+                return;
+              }
+            }
+          });
         }
-        if(loadEnd) {
+        if(loading || loadEnd || hasLoaded) {
           return;
         }
-        ajax = net.postJSON('/h5/my/favorMV', { skip, take }, function(res) {
+        loading = true;
+        net.postJSON('/h5/my/favorMV', { skip, take }, function(res) {
           if(res.success) {
             let data = res.data;
             (data.data || []).forEach(function(item) {
               let works = item.Works_Items_Works[0];
               favorList.push({
-                works: works.WorksID,
+                worksId: works.WorksID,
                 workId: item.ItemID,
                 workName: item.ItemName,
                 isLike: item.ISLike,
@@ -189,21 +284,93 @@ class Playlist extends migi.Component {
                 worksCover: works.WorksCoverPic,
               });
             });
-            list.setData(favorList);
+            // 加载完可能切回最近播放
+            if(curTag === 1) {
+              list.setData(favorList);
+            }
             hasLoaded = true;
             skip += take;
             if(skip >= data.Size) {
               loadEnd = true;
             }
           }
+          else if(res.code === 1000) {
+            migi.eventBus.emit('NEED_LOGIN');
+            $vd.find('.cur').removeClass('cur');
+            $vd.find('li').eq(0).addClass('cur');
+            curTag = 0;
+          }
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
           }
+          loading = false;
         }, function(res) {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          loading = false;
         });
         break;
     }
+  }
+  checkMore($window) {
+    if(curTag !== 1 || loading || loadEnd || !hasLoaded) {
+      return;
+    }
+    let self = this;
+    let WIN_HEIGHT = $window.height();
+    let HEIGHT = $(document.body).height();
+    let bool;
+    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
+    if(bool) {
+      self.load();
+    }
+  }
+  load() {
+    let self = this;
+    if(loading) {
+      return;
+    }
+    loading = true;
+    let list = self.ref.list;
+    net.postJSON('/h5/my/favorMV', { skip, take }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        let temp = [];
+        (data.data || []).forEach(function(item) {
+          let works = item.Works_Items_Works[0];
+          temp.push({
+            worksId: works.WorksID,
+            workId: item.ItemID,
+            workName: item.ItemName,
+            isLike: item.ISLike,
+            isFavor: item.ISFavor,
+            likeNum: item.LikeHis,
+            url: item.FileUrl,
+            lrc: item.lrc,
+            worksCover: works.WorksCoverPic,
+          });
+        });
+        favorList = favorList.concat(temp);
+        // 加载完可能切回最近播放
+        if(curTag === 1) {
+          list.appendData(temp);
+        }
+        hasLoaded = true;
+        skip += take;
+        if(skip >= data.Size) {
+          loadEnd = true;
+        }
+      }
+      else if(res.code === 1000) {
+        migi.eventBus.emit('NEED_LOGIN');
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+      loading = false;
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      loading = false;
+    });
   }
   render() {
     return <div class="playlist">

@@ -47,7 +47,11 @@ class List extends migi.Component {
     let self = this;
     self.clearData();
     self.dataList = data || [];
-    self.appendData(data);
+    let s = '';
+    data.forEach(function(item, i) {
+      s += self.genItem(item, i) || '';
+    });
+    $(self.ref.list.element).html(s);
   }
   appendData(data) {
     let self = this;
@@ -56,7 +60,7 @@ class List extends migi.Component {
     let len = self.dataList.length;
     data.forEach(function(item, i) {
       s += self.genItem(item, i + len) || '';
-    }.bind(self));
+    });
     $(self.ref.list.element).append(s);
     self.dataList = self.dataList.concat(data);
   }
@@ -126,7 +130,10 @@ class List extends migi.Component {
     $prev.addClass('cur');
     let index = $prev.attr('index');
     let data = self.dataList[index];
-    self.emit('choose', data);
+    self.emit('change', {
+      data,
+      index,
+    });
   }
   nextLoop() {
     let self = this;
@@ -140,7 +147,10 @@ class List extends migi.Component {
     $next.addClass('cur');
     let index = $next.attr('index');
     let data = self.dataList[index];
-    self.emit('choose', data);
+    self.emit('change', {
+      data,
+      index,
+    });
   }
   fn($li) {
     let self = this;
@@ -175,8 +185,7 @@ class List extends migi.Component {
           if(res.success) {
             let data2 = res.data;
             data.isFavor = botFn.isFavor = data2.State === 'favorWork';
-            // 同步botFn
-            migi.eventBus.emit('favorWork', {
+            self.emit('favorWork', {
               data,
               list: self.dataList,
             });
@@ -199,8 +208,7 @@ class List extends migi.Component {
           if(res.success) {
             let data2 = res.data;
             data.isLike = botFn.isLike = data2.State === 'likeWordsUser';
-            // 同步botFn
-            migi.eventBus.emit('likeWork', {
+            self.emit('likeWork', {
               data,
               list: self.dataList,
             });

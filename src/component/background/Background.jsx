@@ -91,27 +91,24 @@ class Background extends migi.Component {
           }
         }
         if(e.data) {
-          // 误差<1s认为播放完毕，因为end事件偶尔在加载出错过程中抛出
-          if(Math.abs(e.data.duration - e.data.currentTime) < 1000) {
-            jsBridge.getPreference('playlist_mode', function(res) {
-              res = res || 'loop';
-              mode = res;
-              if(res === 'loop' || res === 'repeat') {
-                count++;
-                fin();
-              }
-            });
-            jsBridge.getPreference('playlistCur', function(res) {
-              playlistCur = res || {};
+          jsBridge.getPreference('playlist_mode', function(res) {
+            res = res || 'loop';
+            mode = res;
+            if(res === 'loop' || res === 'repeat') {
               count++;
               fin();
-            });
-            jsBridge.getPreference('playlist', function(res) {
-              playlist = res || [];
-              count++;
-              fin();
-            });
-          }
+            }
+          });
+          jsBridge.getPreference('playlistCur', function(res) {
+            playlistCur = res || {};
+            count++;
+            fin();
+          });
+          jsBridge.getPreference('playlist', function(res) {
+            playlist = res || [];
+            count++;
+            fin();
+          });
         }
       });
       // 空绑service，回到前台重绑以接收media事件
