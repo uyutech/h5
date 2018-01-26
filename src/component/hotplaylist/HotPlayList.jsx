@@ -5,6 +5,7 @@
 'use strict';
 
 import util from '../../common/util';
+import itemTemplate from '../../works/itemTemplate';
 
 class HotPlayList extends migi.Component {
   constructor(...data) {
@@ -27,13 +28,7 @@ class HotPlayList extends migi.Component {
     $(this.ref.list.element).append(s);
   }
   genItem(item) {
-    let type = '';
-    if(item.ItemType === 1111 || item.ItemType === 1113) {
-      type = 'audio';
-    }
-    else if(item.ItemType === 2110) {
-      type = 'video';
-    }
+    let type = itemTemplate.workType(item.ItemType).bigType;
     if(item.WorksState === 3) {
       return <li class="private">
         <span class="name">待揭秘</span>

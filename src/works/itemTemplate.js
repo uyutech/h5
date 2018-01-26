@@ -13,9 +13,19 @@ export default {
       case 1112:
         return {
           bigType: 'audio',
+          name: '原创纯音乐',
+        };
+      case 1121:
+        return {
+          bigType: 'audio',
           name: '纯音乐',
         };
       case 1113:
+        return {
+          bigType: 'audio',
+          name: '原创伴奏',
+        };
+      case 1131:
         return {
           bigType: 'audio',
           name: '原创伴奏',
@@ -24,6 +34,11 @@ export default {
         return {
           bigType: 'video',
           name: '原创视频',
+        };
+      case 2111:
+        return {
+          bigType: 'video',
+          name: '设计类MV',
         };
       case 3120:
         return {

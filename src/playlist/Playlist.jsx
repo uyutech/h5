@@ -17,7 +17,6 @@ let playlistCache;
 
 let take = 20;
 let skip = 0;
-let ajax;
 let loading;
 let loadEnd;
 let hasLoaded;
@@ -33,7 +32,6 @@ class Playlist extends migi.Component {
       let list = self.ref.list;
       let media = self.ref.media;
       let botPlayBar = self.ref.botPlayBar;
-      let inputCmt = self.ref.inputCmt;
       let count = 0;
       function fin() {
         if(count >= 2) {
@@ -158,15 +156,15 @@ class Playlist extends migi.Component {
         media.pause();
       });
       botPlayBar.on('comment', function() {
-        botPlayBar.hide();
-        inputCmt.show();
+        jsBridge.getPreference('playlistCur', function(res) {
+          if(res) {
+            jsBridge.pushWindow('/subcomment.html?type=3&id='
+              + res.worksId + '&sid=' + res.workId, {
+              title: '评论',
+            });
+          }
+        });
       });
-
-      inputCmt.on('fn', function() {
-        inputCmt.hide();
-        botPlayBar.show();
-      });
-      inputCmt.on('click', function() {});
 
       list.on(['likeWork', 'favorWork'], function(res) {
         let data = res.data;
@@ -212,15 +210,13 @@ class Playlist extends migi.Component {
     $vd.find('.cur').removeClass('cur');
     $li.addClass('cur');
     let list = self.ref.list;
-    let media = self.ref.media;
-    curTag = tvd.props.rel;
     if(curTag === 1 && !util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       $vd.find('.cur').removeClass('cur');
       $vd.find('li').eq(0).addClass('cur');
-      curTag = 0;
       return;
     }
+    list.curTag = curTag = tvd.props.rel;
     let count = 0;
     function fin() {
       if(count >=2) {
@@ -298,7 +294,7 @@ class Playlist extends migi.Component {
             migi.eventBus.emit('NEED_LOGIN');
             $vd.find('.cur').removeClass('cur');
             $vd.find('li').eq(0).addClass('cur');
-            curTag = 0;
+            list.curTag = curTag = 0;
           }
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -382,7 +378,6 @@ class Playlist extends migi.Component {
       <List ref="list"/>
       <BotPlayBar ref="botPlayBar"/>
       <BotFn ref="botFn"/>
-      <InputCmt ref="inputCmt" hidden={ true } placeholder={ '发表评论...' } readOnly={ true }/>
     </div>;
   }
 }

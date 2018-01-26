@@ -9,68 +9,44 @@
     padding:0.1rem;
   }
   ul{
-    margin-bottom:0.1rem;
+    margin-bottom:0.05rem;
     &:last-child{
       margin:0;
     }
-    li{
+    dl{
       display:inline-block;
-      margin:0 0.05rem 0.02rem 0;
-      line-height:0.24rem;
+      margin-right:0.05rem;
+      margin-bottom:0.05rem;
+    }
+    dt{
+      display:inline-block;
+      margin-right:0.05rem;
+      padding:0 0.05rem;
+      min-width:0.36rem;
+      border:1px solid @mainColor;
       box-sizing:border-box;
-      vertical-align:top;
-      span.item{
+      color:@mainColor;
+      line-height:0.22rem;
+      border-radius:0.24rem;
+      height:0.24rem;
+      text-align:center;
+      font-size:0.12rem;
+    }
+    dd{
+      display:inline-block;
+      margin-right:0.05rem;
+      line-height:0.24rem;
+      a{
         display:inline-block;
-        white-space:nowrap;
-        vertical-align:top;
-        line-height:1;
-        small{
-          display:inline-block;
-          margin-right:0.05rem;
-          padding:0 0.05rem;
-          min-width:0.36rem;
-          border:1px solid @mainColor;
-          box-sizing:border-box;
-          color:@mainColor;
-          line-height:0.22rem;
-          border-radius:0.24rem;
-          height:0.24rem;
-          text-align:center;
-          font-size:0.12rem;
-        }
       }
-      a.item{
+      img{
         display:inline-block;
-        white-space:nowrap;
-        vertical-align:top;
-        line-height:1;
-        img{
-          display:inline-block;
-          margin-right:0.05rem;
-          width:0.24rem;
-          height:0.24rem;
-          border-radius:100%;
-          vertical-align:top;
-          box-shadow:@headShadow;
-        }
-        span{
-          display:inline-block;
-          max-width:1rem;
-          overflow:hidden;
-          text-overflow:ellipsis;
-          line-height:0.24rem;
-        }
-        &:hover{
-          img{
-            box-shadow:@headHoverShadow;
-          }
-        }
-      }
-      > .item{
         margin-right:0.05rem;
-        &:last-child{
-          margin-right:0;
-        }
+        width:0.24rem;
+        height:0.24rem;
+        border-radius:100%;
+        vertical-align:top;
+        box-shadow:@headShadow;
       }
     }
   }

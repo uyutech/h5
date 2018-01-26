@@ -80,7 +80,8 @@ class Works extends migi.Component {
     let workList = [];
     if(self.worksType === WorksTypeEnum.TYPE.musicAlbum) {
       works.forEach(function(item) {
-        if(item.ItemType === 1111 || item.ItemType === 1113) {
+        let type = itemTemplate.workType(item.ItemType).bigType;
+        if(type === 'audio') {
           let l = {};
           if(LyricsParser.isLyrics(item.lrc)) {
             l.is = true;
@@ -94,7 +95,7 @@ class Works extends migi.Component {
           item.formatLyrics = l;
           workList.push(item);
         }
-        else if(item.ItemType === 2110) {
+        else if(type === 'video') {
           workList.push(item);
         }
       });
@@ -194,32 +195,6 @@ class Works extends migi.Component {
       }
     });
     self.isManager = hash.hasOwnProperty(self.props.authorID);
-    // 按类型将作者整理排序
-    let authorList = [];
-    itemTemplate.authorType.forEach(function(typeList) {
-      let list = [];
-      typeList.forEach(function(type) {
-        if(typeHash.hasOwnProperty(type)) {
-          list = list.concat(typeHash[type].list);
-          delete typeHash[type];
-        }
-      });
-      if(list.length) {
-        authorList.push(list);
-      }
-    });
-    let unKnowList = [];
-    let unKnowHash = {};
-    Object.keys(typeHash).forEach(function(type) {
-      typeHash[type].list.forEach(function(item) {
-        if(!unKnowHash.hasOwnProperty(item.ID)) {
-          unKnowHash[item.ID] = true;
-          unKnowList.push(item);
-        }
-      });
-    });
-    authorList = authorList.concat([unKnowList]);
-    self.authorList = authorList;
   }
   clickSel(e, vd, tvd) {
     let self = this;
@@ -345,7 +320,7 @@ class Works extends migi.Component {
                   worksID={ this.worksID } workID={ this.workID } workList={ this.workList }/>
         <div class="intro fn-hide" ref="intro">
           <Describe data={ self.worksDetail.Describe }/>
-          <Author authorList={ self.authorList }/>
+          <Author list={ self.worksDetail.GroupAuthorTypeHash }/>
           {
             self.worksDetail.WorkTimeLine && self.worksDetail.WorkTimeLine.length
               ? <Timeline datas={ self.worksDetail.WorkTimeLine }/>
@@ -378,7 +353,7 @@ class Works extends migi.Component {
         </ul>
         <PhotoAlbum ref="photoAlbum" worksID={ this.worksID } labelList={ self.labelList }/>
         <div class="intro fn-hide" ref="intro">
-          <Author authorList={ self.authorList }/>
+          <Author list={ self.worksDetail.GroupAuthorTypeHash }/>
           {
             self.worksDetail.WorkTimeLine && self.worksDetail.WorkTimeLine.length
               ? <Timeline datas={ self.worksDetail.WorkTimeLine }/>
@@ -421,7 +396,7 @@ class Works extends migi.Component {
         }
       </ul>
       <div class="intro" ref="intro">
-        <Author authorList={ this.authorList }/>
+        <Author list={ self.worksDetail.GroupAuthorTypeHash }/>
         {
           self.worksDetail.WorkTimeLine && self.worksDetail.WorkTimeLine.length
             ? <Timeline datas={ self.worksDetail.WorkTimeLine }/>

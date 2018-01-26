@@ -6,6 +6,7 @@
 
 import net from '../common/net';
 import util from '../common/util';
+import itemTemplate from './itemTemplate';
 
 let isStart;
 let offsetX;
@@ -162,9 +163,9 @@ class MusicAlbum extends migi.Component {
     let self = this;
     let isPlaying = self.isPlaying;
     self.pause();
+    let type = itemTemplate.workType(self.type).bigType;
     switch(self.type) {
-      case 1111:
-      case 1113:
+      case 'audio':
         if(!self.audio) {
           self.audio = <audio src={ self.url }
                               onTimeupdate={ self.onTimeupdate.bind(self) }
@@ -184,7 +185,7 @@ class MusicAlbum extends migi.Component {
         }
         self.av = self.audio;
         break;
-      case 2110:
+      case 'video':
         if(!self.video) {
           self.video = <video ref="video"
                               poster="/src/common/blank.png"

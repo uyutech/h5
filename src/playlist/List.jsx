@@ -18,6 +18,7 @@ class List extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.dataList = self.props.dataList || [];
+    self.curTag = self.props.curTag || 0;
     self.on(migi.Event.DOM, function() {
       let $root = $(self.element);
       $root.on('click', '.fn', function() {
@@ -72,7 +73,7 @@ class List extends migi.Component {
         <span class="name">{ item.workName }</span>
         <p class="author"></p>
       </div>
-      <b class="video"/>
+      {/*<b class="video"/>*/}
       <b class="fn"/>
     </li>;
   }
@@ -159,7 +160,7 @@ class List extends migi.Component {
     migi.eventBus.emit('BOT_FN', {
       isLike: data.isLike,
       isFavor: data.isFavor,
-      canDel: true,
+      canDel: self.curTag === 0,
       clickDel: function(botFn) {
         jsBridge.confirm('确认删除吗？', function(res) {
           if(res) {

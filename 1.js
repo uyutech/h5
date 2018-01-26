@@ -20,8 +20,10 @@ const sequelize = new Sequelize('circling', 'root', '87351984@', {
   dialectOptions: {
     charset: 'utf8',
   },
-  options: {
-    charset: 'utf8',
+  define: {
+    timestamps: false,
+    underscored: true,
+    freezeTableName: true,
   },
 });
 
@@ -36,15 +38,11 @@ const Author = sequelize.define('author', {
   name: Sequelize.STRING(32),
   fans_name: Sequelize.STRING(32),
   fans_circle_name: Sequelize.STRING(32),
-  head_url: Sequelize.STRING(255),
+  head_url: Sequelize.STRING,
   settled: Sequelize.BOOLEAN,
-  sign: Sequelize.STRING(255),
+  sign: Sequelize.STRING,
   create_time: Sequelize.DATE,
   update_time: Sequelize.DATE,
-}, {
-  timestamps: false,
-  underscored: true,
-  freezeTableName: true,
 });
 
 const AuthorOutSide = sequelize.define('author_outside', {
@@ -66,10 +64,6 @@ const AuthorOutSide = sequelize.define('author_outside', {
   url: Sequelize.STRING,
   create_time: Sequelize.DATE,
   update_time: Sequelize.DATE,
-}, {
-  timestamps: false,
-  underscored: true,
-  freezeTableName: true,
 });
 
 const AuthorNum = sequelize.define('author_num', {
@@ -88,10 +82,6 @@ const AuthorNum = sequelize.define('author_num', {
     unique: 'authorNumUnique',
   },
   num: Sequelize.INTEGER,
-}, {
-  timestamps: false,
-  underscored: true,
-  freezeTableName: true,
 });
 
 const Profession = sequelize.define('profession', {
@@ -111,13 +101,10 @@ const Profession = sequelize.define('profession', {
     unique: 'professionUnique',
   },
   category_name: Sequelize.STRING(16),
+  external_code: Sequelize.SMALLINT,
   state: Sequelize.BOOLEAN,
   create_time: Sequelize.DATE,
   update_time: Sequelize.DATE,
-}, {
-  timestamps: false,
-  underscored: true,
-  freezeTableName: true,
 });
 
 const User = sequelize.define('user', {
@@ -130,15 +117,32 @@ const User = sequelize.define('user', {
   reg_state: Sequelize.TINYINT,
   name: Sequelize.STRING(16),
   sex: Sequelize.TINYINT,
-  head_url: Sequelize.STRING(255),
-  sign: Sequelize.STRING(255),
+  head_url: Sequelize.STRING,
+  sign: Sequelize.STRING,
   password: Sequelize.CHAR(32),
   create_time: Sequelize.DATE,
   update_time: Sequelize.DATE,
-}, {
-  timestamps: false,
-  underscored: true,
-  freezeTableName: true,
+});
+
+const UserPrivate = sequelize.define('user_private', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    unique: true,
+    autoIncrement: true,
+  },
+  user_id: {
+    type: Sequelize.BIGINT,
+    unique: 'userPrivateUnique',
+  },
+  content: Sequelize.STRING,
+  state: Sequelize.BOOLEAN,
+  type: {
+    type: Sequelize.TINYINT,
+    unique: 'userPrivateUnique',
+  },
+  create_time: Sequelize.DATE,
+  update_time: Sequelize.DATE,
 });
 
 const UserAuthorRelation = sequelize.define('user_author_relation', {
@@ -153,10 +157,6 @@ const UserAuthorRelation = sequelize.define('user_author_relation', {
   state: Sequelize.BOOLEAN,
   create_time: Sequelize.DATE,
   update_time: Sequelize.DATE,
-}, {
-  timestamps: false,
-  underscored: true,
-  freezeTableName: true,
 });
 
 const UserAssociatePeople = sequelize.define('user_associate_people', {
@@ -170,10 +170,6 @@ const UserAssociatePeople = sequelize.define('user_associate_people', {
   target_id: Sequelize.BIGINT,
   type: Sequelize.TINYINT,
   create_time: Sequelize.DATE,
-}, {
-  timestamps: false,
-  underscored: true,
-  freezeTableName: true,
 });
 
 const UserIpRecord = sequelize.define('user_ip_record', {
@@ -186,10 +182,6 @@ const UserIpRecord = sequelize.define('user_ip_record', {
   user_id: Sequelize.BIGINT,
   ip: Sequelize.STRING,
   create_time: Sequelize.DATE,
-}, {
-  timestamps: false,
-  underscored: true,
-  freezeTableName: true,
 });
 
 const Works = sequelize.define('works', {
@@ -203,18 +195,48 @@ const Works = sequelize.define('works', {
   desc: Sequelize.STRING(256),
 });
 
+const Comment = sequelize.define('comment', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    unique: true,
+    autoIncrement: true,
+  },
+  user_id: Sequelize.BIGINT,
+  author_id: Sequelize.BIGINT,
+  user_type: Sequelize.BOOLEAN,
+  content: Sequelize.TEXT,
+  state: Sequelize.TINYINT,
+  parent_id: Sequelize.INTEGER,
+  root_id: Sequelize.INTEGER,
+  create_time: Sequelize.DATE,
+  update_time: Sequelize.DATE,
+});
+
+const CommentNum = sequelize.define('comment_num', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    unique: true,
+    autoIncrement: true,
+  },
+  comment_id: Sequelize.INTEGER,
+  type: Sequelize.TINYINT,
+  num: Sequelize.INTEGER,
+});
+
 (async () => {
   try {
     let pool = await sql.connect(config);
     await sequelize.sync();
 
-    console.log(Sequelize.TINYINT);
     // await author(pool);
     // await profession(pool);
-    // await user(pool);
+    await user(pool);
     // await user_associate_person(pool);
     // await user_ip_record(pool);
     // await works(pool);
+    // await comment(pool);
   } catch (err) {
     console.log(err)
   }
@@ -223,135 +245,134 @@ const Works = sequelize.define('works', {
 async function author(pool) {
   console.log('============ author start =============');
   // 查询作者
+  let last = 545;
   let result = await pool.request()
-    .query(`select count(*) as count from Authors_Info`);
-  let count = result.recordset[0].count || 0;
+    .query(`select * from Authors_Info where ID>${last}`);
+  let count = result.recordset.length;
   console.log('author count', count);
 
-  for(let i = 0; i < count; i += 100) {
-    result = await pool.request()
-      .query(`select * from Authors_Info`);
-      // .query(`select top 100 * from (select ROW_NUMBER() over(order by ID asc) as rowNumber, * from Authors_Info) A where rowNumber > ${i}`);
-    console.log('read author', i, i + 100, result.recordset.length);
-    for(let j = 0, len = result.recordset.length; j < len; j++) {
-      let item = result.recordset[j];
-      // 作者数据导入
-      await Author.create({
-        id: item.ID,
+
+  for(let i = 0, len = result.recordset.length; i < len; i++) {
+    let item = result.recordset[i];
+    if(item.AuthorName === 'string') {
+      continue;
+    }
+    // 作者数据导入
+    await Author.create({
+      id: item.ID,
+      create_time: item.CreateTime,
+      update_time: item.CreateTime,
+      state: 1,
+      type: 0,
+      name: item.AuthorName,
+      fans_name: item.FansName || '',
+      fans_circle_name: item.FansCirclingName || '',
+      head_url: item.Head_url || '',
+      settled: item.ISSettled || true,
+      sign: item.Sign || '',
+    });
+    // 站外链接数据导入
+    if(item.BaiduUrl) {
+      await AuthorOutSide.create({
+        author_id: item.ID,
         create_time: item.CreateTime,
         update_time: item.CreateTime,
-        state: 0,
+        state: 1,
         type: 0,
-        name: item.AuthorName,
-        fans_name: item.FansName || '',
-        fans_circle_name: item.FansCirclingName || '',
-        head_url: item.Head_url || '',
-        settled: item.ISSettled || true,
-        sign: item.Sign || '',
-      });
-      // 站外链接数据导入
-      if(item.BaiduUrl) {
-        await AuthorOutSide.create({
-          author_id: item.ID,
-          create_time: item.CreateTime,
-          update_time: item.CreateTime,
-          state: 0,
-          type: 0,
-          url: item.BaiduUrl,
-        });
-      }
-      if(item.BilibiliUrl) {
-        await AuthorOutSide.create({
-          author_id: item.ID,
-          create_time: item.CreateTime,
-          update_time: item.CreateTime,
-          state: 0,
-          type: 1,
-          url: item.BilibiliUrl,
-        });
-      }
-      if(item.FiveSingUrl) {
-        await AuthorOutSide.create({
-          author_id: item.ID,
-          create_time: item.CreateTime,
-          update_time: item.CreateTime,
-          state: 0,
-          type: 2,
-          url: item.FiveSingUrl,
-        });
-      }
-      if(item.HuabanUrl) {
-        await AuthorOutSide.create({
-          author_id: item.ID,
-          create_time: item.CreateTime,
-          update_time: item.CreateTime,
-          state: 0,
-          type: 3,
-          url: item.HuabanUrl,
-        });
-      }
-      if(item.LofterUrl) {
-        await AuthorOutSide.create({
-          author_id: item.ID,
-          create_time: item.CreateTime,
-          update_time: item.CreateTime,
-          state: 0,
-          type: 4,
-          url: item.LofterUrl,
-        });
-      }
-      if(item.POCOUrl) {
-        await AuthorOutSide.create({
-          author_id: item.ID,
-          create_time: item.CreateTime,
-          update_time: item.CreateTime,
-          state: 0,
-          type: 5,
-          url: item.POCOUrl,
-        });
-      }
-      if(item.WangyiUrl) {
-        await AuthorOutSide.create({
-          author_id: item.ID,
-          create_time: item.CreateTime,
-          update_time: item.CreateTime,
-          state: 0,
-          type: 6,
-          url: item.WangyiUrl,
-        });
-      }
-      if(item.WeiboUrl) {
-        await AuthorOutSide.create({
-          author_id: item.ID,
-          create_time: item.CreateTime,
-          update_time: item.CreateTime,
-          state: 0,
-          type: 7,
-          url: item.WeiboUrl,
-        });
-      }
-      if(item.ZcoolUrl) {
-        await AuthorOutSide.create({
-          author_id: item.ID,
-          create_time: item.CreateTime,
-          update_time: item.CreateTime,
-          state: 0,
-          type: 8,
-          url: item.ZcoolUrl,
-        });
-      }
-      // 作者粉丝数、评论数导入
-      await AuthorNum.create({
-        author_id: item.ID,
-        type: 0,
-        num: item.FansNumber,
-      });
-      await AuthorNum.create({
-        author_id: item.ID,
-        type: 1,
-        num: item.CommentCountRaw,
+        url: item.BaiduUrl,
       });
     }
+    if(item.BilibiliUrl) {
+      await AuthorOutSide.create({
+        author_id: item.ID,
+        create_time: item.CreateTime,
+        update_time: item.CreateTime,
+        state: 1,
+        type: 1,
+        url: item.BilibiliUrl,
+      });
+    }
+    if(item.FiveSingUrl) {
+      await AuthorOutSide.create({
+        author_id: item.ID,
+        create_time: item.CreateTime,
+        update_time: item.CreateTime,
+        state: 1,
+        type: 2,
+        url: item.FiveSingUrl,
+      });
+    }
+    if(item.HuabanUrl) {
+      await AuthorOutSide.create({
+        author_id: item.ID,
+        create_time: item.CreateTime,
+        update_time: item.CreateTime,
+        state: 1,
+        type: 3,
+        url: item.HuabanUrl,
+      });
+    }
+    if(item.LofterUrl) {
+      await AuthorOutSide.create({
+        author_id: item.ID,
+        create_time: item.CreateTime,
+        update_time: item.CreateTime,
+        state: 1,
+        type: 4,
+        url: item.LofterUrl,
+      });
+    }
+    if(item.POCOUrl) {
+      await AuthorOutSide.create({
+        author_id: item.ID,
+        create_time: item.CreateTime,
+        update_time: item.CreateTime,
+        state: 1,
+        type: 5,
+        url: item.POCOUrl,
+      });
+    }
+    if(item.WangyiUrl) {
+      await AuthorOutSide.create({
+        author_id: item.ID,
+        create_time: item.CreateTime,
+        update_time: item.CreateTime,
+        state: 1,
+        type: 6,
+        url: item.WangyiUrl,
+      });
+    }
+    if(item.WeiboUrl) {
+      await AuthorOutSide.create({
+        author_id: item.ID,
+        create_time: item.CreateTime,
+        update_time: item.CreateTime,
+        state: 1,
+        type: 7,
+        url: item.WeiboUrl,
+      });
+    }
+    if(item.ZcoolUrl) {
+      await AuthorOutSide.create({
+        author_id: item.ID,
+        create_time: item.CreateTime,
+        update_time: item.CreateTime,
+        state: 1,
+        type: 8,
+        url: item.ZcoolUrl,
+      });
+    }
+    // 作者粉丝数、评论数导入
+    await AuthorNum.create({
+      author_id: item.ID,
+      type: 0,
+      num: item.FansNumber,
+    });
+    await AuthorNum.create({
+      author_id: item.ID,
+      type: 1,
+      num: item.CommentCountRaw,
+    });
   }
   console.log('============ author end =============');
 }
@@ -384,7 +405,7 @@ async function profession(pool) {
       name: item.Remark || item.AuthorTypeName,
       category_code: item.AuthorTypeID,
       category_name: item.AuthorTypeName,
-      state: 0,
+      state: 1,
       create_time: item.CreateTime,
       update_time: item.CreateTime,
     });
@@ -395,14 +416,15 @@ async function profession(pool) {
 async function user(pool) {
   // 查询用户
   console.log('============ user start =============');
+  let last = 2018000000018521;
   let result = await pool.request()
-    .query(`SELECT * from Users_Info;`);
+    .query(`SELECT * from Users_Info where ID>${last};`);
   console.log('user count', result.recordset.length);
   for(let i = 0, len = result.recordset.length; i < len; i++) {
     let item = result.recordset[i];
     await User.create({
       id: item.ID,
-      state: 0,
+      state: 1,
       sign: item.Sign || '',
       head_url: item.User_Head_Url || '',
       name: item.User_NickName || '',
@@ -416,7 +438,17 @@ async function user(pool) {
       await UserAuthorRelation.create({
         user_id: item.ID,
         author_id: item.CurrentAuthorID,
-        state: 0,
+        state: 1,
+        create_time: item.CreateTime,
+        update_time: item.CreateTime,
+      });
+    }
+    if(item.User_Phone && item.User_Phone !== '-') {
+      await UserPrivate.create({
+        user_id: item.ID,
+        state:1,
+        type: 0,
+        content: item.User_Phone,
         create_time: item.CreateTime,
         update_time: item.CreateTime,
       });
@@ -458,10 +490,11 @@ async function user_associate_person(pool) {
 
 async function user_ip_record(pool) {
   // 用户ip
-  console.log('============ user_ip start =============');
+  console.log('============ user_ip_record start =============');
+  let last = 172175;
   let result = await pool.request()
-    .query(`SELECT * from Users_RecordIP WHERE uid>0;`);
-  console.log('user_ip count', result.recordset.length);
+    .query(`SELECT * from Users_RecordIP WHERE uid>0 and ID>${last};`);
+  console.log('user_ip_record count', result.recordset.length);
   for(let i = 0, len = result.recordset.length; i < len; i++) {
     let item = result.recordset[i];
     await UserIpRecord.create({
@@ -470,10 +503,50 @@ async function user_ip_record(pool) {
       create_time: item.CreateTime,
     });
   }
-  console.log('============ user_ip end =============');
+  console.log('============ user_ip_record end =============');
 }
 
 async function works(pool) {
   // 查询作品
   console.log('============ works start =============');
+  let last = 0;
+  let result = await pool.request()
+    .query(`SELECT * from Works_Info WHERE ID>${last};`);
+  console.log('works count', result.recordset.length);
+}
+
+async function comment(pool) {
+  // 评论
+  console.log('============ comment start =============');
+  let last = 143118;
+  let result = await pool.request()
+    .query(`SELECT * from Users_Comment where ID>${last}`);
+  console.log('comment count', result.recordset.length);
+  for(let i = 0, len = result.recordset.length; i < len; i++) {
+    let item = result.recordset[i];
+    let rootId = item.RootID || 0;
+    if(rootId < 0) {
+      rootId = Math.abs(rootId) + 100000000;
+    }
+    await Comment.create({
+      id: item.ID,
+      user_id: item.UID || 0,
+      author_id: item.CurrentAuthorID || 0,
+      user_type: item.CurrentAuthorID ? 1 : 0,
+      content: item.Content,
+      state: item.ISDel ? 0 : 1,
+      parent_id: item.parentID || 0,
+      root_id: rootId,
+      create_time: item.CreateTime,
+      update_time: item.CreateTime,
+    });
+    if(item.CommentCountRaw > 0) {
+      await CommentNum.create({
+        comment_id: item.ID,
+        type: 1,
+        num: item.CommentCountRaw,
+      });
+    }
+  }
+  console.log('============ comment end =============');
 }

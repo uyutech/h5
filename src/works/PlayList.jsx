@@ -6,6 +6,7 @@
 
 import net from '../common/net';
 import util from '../common/util';
+import itemTemplate from './itemTemplate';
 
 function setTranform($elem, n) {
   $elem.css('-moz-transform', `scaleY(${n})`);
@@ -97,13 +98,7 @@ class PlayList extends migi.Component {
       <ol class="list" ref="list" onClick={ { li: this.clickItem, a: this.clickLink } }>
         {
           (this.list || []).map(function(item, i) {
-            let type = '';
-            if(item.ItemType === 1111 || item.ItemType === 1113) {
-              type = 'audio';
-            }
-            else if(item.ItemType === 2110) {
-              type = 'video';
-            }
+            let type = itemTemplate.workType(item.ItemType).bigType;
             if(item.WorksState === 3) {
               return <li class="private">
                 <span class="name">待揭秘</span>
