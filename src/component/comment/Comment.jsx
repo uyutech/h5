@@ -130,7 +130,7 @@ class Comment extends migi.Component {
           });
         });
       });
-      $root.on('click', '.author', function(e) {
+      $root.on('click', '.author a', function(e) {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
@@ -298,7 +298,7 @@ class Comment extends migi.Component {
             </a>
             <div class="txt">
               <a class="name"
-                 href={ '/author.html?authorID=' + authorID }
+                 href={ '/author.html?authorId=' + authorID }
                  title={ item.Send_AuthorName }
                  transparentTitle={ true }>{ item.Send_AuthorName }</a>
               <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
