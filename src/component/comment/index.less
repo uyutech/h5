@@ -135,9 +135,6 @@
           }
           .like{
             margin-right:0.05rem;
-            &:hover{
-              color:@mainHoverColor;
-            }
             &:after{
               display:inline-block;
               margin-left:0.02rem;
@@ -152,14 +149,8 @@
             &.liked:after{
               background-image:url(liked.png);
             }
-            &:hover:after{
-              background-image:url(like-hover.png);
-            }
           }
           .sub{
-            &:hover{
-              color:@mainHoverColor;
-            }
             &:after{
               display:inline-block;
               margin-left:0.02rem;
@@ -170,14 +161,6 @@
               content:' ';
               vertical-align:top;
               transform:translateY(0.02rem);
-            }
-            &:hover:after{
-              background-image:url(comment-hover.png);
-            }
-          }
-          span{
-            &:hover{
-              color:@mainHoverColor;
             }
           }
         }
@@ -261,9 +244,6 @@
                 white-space:nowrap;
                 overflow:hidden;
                 cursor:pointer;
-                &:hover{
-                  background-image:url(../../icon/bold-del-hover.png);
-                }
               }
             }
           }
@@ -327,9 +307,6 @@
               }
               .like{
                 margin-right:0.05rem;
-                &:hover{
-                  color:@mainHoverColor;
-                }
                 &:after{
                   display:inline-block;
                   margin-left:0.02rem;
@@ -344,28 +321,6 @@
                 &.liked:after{
                   background-image:url(liked.png);
                 }
-                &:hover:after{
-                  background-image:url(like-hover.png);
-                }
-              }
-              .sub{
-                &:hover{
-                  color:@mainHoverColor;
-                }
-                //&:after{
-                //  display:inline-block;
-                //  margin-left:0.02rem;
-                //  width:0.16rem;
-                //  height:0.16rem;
-                //  background:url(comment.png) no-repeat;
-                //  background-size:contain;
-                //  content:' ';
-                //  vertical-align:top;
-                //  transform:translateY(0.02rem);
-                //}
-                //&:hover:after{
-                //  background-image:url(comment-hover.png);
-                //}
               }
             }
           }

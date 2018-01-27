@@ -18,6 +18,15 @@ class Works extends migi.Component {
         let $this = $(this);
         let url = $this.attr('href');
         let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+        });
+      });
+      $root.on('click', 'dd a', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
         util.openAuthor({
           url,
           title,
