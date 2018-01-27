@@ -48,7 +48,7 @@ class My extends migi.Component {
       if(res.success) {
         let data = res.data;
         self.setData(data);
-        jsBridge.setPreference('loginInfo', JSON.stringify(data));
+        jsBridge.setPreference('loginInfo', data);
       }
       else if(res.code === 1000) {
         self.isLogin = false;
@@ -123,7 +123,7 @@ class My extends migi.Component {
             let data = res.data;
             migi.eventBus.emit('LOGIN', data);
             migi.eventBus.emit('USER_INFO', data.userInfo);
-            jsBridge.setPreference('loginInfo', JSON.stringify(data));
+            jsBridge.setPreference('loginInfo', data);
             $.cookie('isLogin', true);
             $.cookie('uid', data.userInfo.UID);
           }

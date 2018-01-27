@@ -45,7 +45,7 @@ class Profile extends migi.Component {
               self.updateNickNameTimeDiff = 0;
               jsBridge.getPreference('loginInfo', function(loginInfo) {
                 loginInfo.userInfo.NickName = newName;
-                jsBridge.setPreference('loginInfo', JSON.stringify(loginInfo));
+                jsBridge.setPreference('loginInfo', loginInfo);
                 migi.eventBus.emit('USER_INFO', loginInfo.userInfo);
               });
             }
@@ -74,7 +74,7 @@ class Profile extends migi.Component {
             self.updateHeadTimeDiff = 0;
             jsBridge.getPreference('loginInfo', function(loginInfo) {
               loginInfo.userInfo.Head_Url = res.url;
-              jsBridge.setPreference('loginInfo', JSON.stringify(loginInfo));
+              jsBridge.setPreference('loginInfo', loginInfo);
               migi.eventBus.emit('USER_INFO', loginInfo.userInfo);
             });
           }

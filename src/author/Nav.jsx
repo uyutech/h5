@@ -7,6 +7,7 @@ import util from "../common/util";
 import net from "../common/net";
 
 let currentPriority = 0;
+let hash = {};
 
 class Nav extends migi.Component {
   constructor(...data) {
@@ -38,6 +39,7 @@ class Nav extends migi.Component {
       return;
     }
     let self = this;
+    hash = {};
     jsBridge.setPreference('authorPageNav_' + self.authorId, data);
     self.authorName = data.AuthorName;
     self.sign = data.Sign;
@@ -122,7 +124,12 @@ class Nav extends migi.Component {
             <h3>{ this.authorName }</h3>
             {
               (this.authorType || []).map(function(item) {
-                return <span class={ `cp-author-type-${item.NewAuthorTypeID}` }/>;
+                let css = authorTemplate.code2css[item.NewAuthorTypeID];
+                if(hash[css]) {
+                  return;
+                }
+                hash[css] = true;
+                return <span class={ `cp-author-type-${css}` }/>;
               })
             }
           </div>

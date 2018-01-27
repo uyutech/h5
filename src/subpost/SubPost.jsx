@@ -263,7 +263,7 @@ class SubPost extends migi.Component {
         cache = [];
       }
       cache.push(url);
-      jsBridge.setPreference(key, JSON.stringify(cache));
+      jsBridge.setPreference(key, cache);
     });
   }
   delCache(url) {
@@ -274,7 +274,7 @@ class SubPost extends migi.Component {
         let i = cache.indexOf(url);
         if(i > -1) {
           cache.splice(i, 1);
-          jsBridge.setPreference(key, JSON.stringify(cache));
+          jsBridge.setPreference(key, cache);
         }
       }
     });

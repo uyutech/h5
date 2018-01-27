@@ -31,6 +31,7 @@ module.exports = {
     phone: './src/phone/index.jsx',
     guide: './src/guide/index.jsx',
     playlist: './src/playlist/index.jsx',
+    search: './src/search/index.jsx',
   },
   output: {
     path: __dirname + '/www',

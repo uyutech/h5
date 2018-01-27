@@ -27,6 +27,7 @@ module.exports = {
     passport: './src/passport/pre.jsx',
     phone: './src/phone/pre.jsx',
     playlist: './src/playlist/pre.jsx',
+    search: './src/search/pre.jsx',
   },
   output: {
     path: __dirname + '/www',

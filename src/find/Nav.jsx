@@ -25,9 +25,14 @@ class Nav extends migi.Component {
     });
   }
   @bind dataList
+  click() {
+    jsBridge.pushWindow('/search.html', {
+      title: '搜索',
+    });
+  }
   render() {
     return <div class="mod-nav">
-      <b class="search"/>
+      <b class="search" onClick={ this.click }/>
       <ul ref="list">
         {
           (this.dataList || []).map(function(item, i) {

@@ -79,7 +79,7 @@ class TopNav extends migi.Component {
             return;
           }
           loginInfo.userInfo.ISOpen = self.isPublic;
-          jsBridge.setPreference('loginInfo', JSON.stringify(loginInfo));
+          jsBridge.setPreference('loginInfo', loginInfo);
         });
       }
       else {

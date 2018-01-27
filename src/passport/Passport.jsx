@@ -133,7 +133,7 @@ class Login extends migi.Component {
       if(res.success) {
         let data = res.data;
         jsBridge.toast('登录成功');
-        jsBridge.setPreference('loginInfo', JSON.stringify(data), function() {
+        jsBridge.setPreference('loginInfo', data, function() {
           jsBridge.popWindow({
             passport: true,
           });
@@ -192,7 +192,7 @@ class Login extends migi.Component {
           if(res.success) {
             let data = res.data;
             jsBridge.toast('注册成功');
-            jsBridge.setPreference('loginInfo', JSON.stringify(data), function() {
+            jsBridge.setPreference('loginInfo', data, function() {
               jsBridge.popWindow({
                 passport: true,
               });

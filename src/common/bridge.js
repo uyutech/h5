@@ -289,10 +289,10 @@ let jsBridge = {
     if(value === undefined) {
       value = null;
     }
-    else if(isString(value)) {
-      value = JSON.stringify(value);
-    }
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      if(isString(value)) {
+        value = JSON.stringify(value);
+      }
       ZhuanQuanJSBridge.call('setPreference', { key, value }, callback);
     }
     else {
@@ -317,18 +317,19 @@ let jsBridge = {
   },
   setCache: function(key, value, callback) {
     callback = callback || function() {};
+    let native = window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call;
     if(Array.isArray(key) && Array.isArray(value)) {
       for(let i = 0, len = key.length; i < len; i++) {
         let item = value[i];
         if(item === undefined) {
           value[i] = null;
         }
-        else if(isString(item)) {
+        else if(isString(item) && native) {
           value[i] = JSON.stringify(item);
         }
       }
       value.splice(key.length);
-      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      if(native) {
         ZhuanQuanJSBridge.call('setCache', { key, value, isArray: true }, callback);
       }
       else {
@@ -347,10 +348,10 @@ let jsBridge = {
       if(value === undefined) {
         value = null;
       }
-      else if(isString(value)) {
-        value = JSON.stringify(value);
-      }
       if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+        if(isString(value)) {
+          value = JSON.stringify(value);
+        }
         ZhuanQuanJSBridge.call('setCache', { key, value }, callback);
       }
       else {

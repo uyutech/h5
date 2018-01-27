@@ -48,7 +48,7 @@ class AuthorList extends migi.Component {
           (data.authorlist || []).slice(this.index, this.index + 6).map(function(item) {
             return <li>
               <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName } class="pic">
-                <img src={ util.autoSsl(util.img120_120_80(item.Head_url)) || '/src/common/blank.png' }/>
+                <img src={ util.autoSsl(util.img120_120_80(item.Head_url)) || '/src/common/head.png' }/>
               </a>
               <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName } class="name">{ item.AuthorName }</a>
               <p class="fans">{ item.FansNumber }</p>
