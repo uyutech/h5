@@ -45,6 +45,39 @@ class Search extends migi.Component {
       loading = false;
     });
   }
+  clickAuthor(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    util.openAuthor({
+      url,
+      title,
+    });
+  }
+  clickUser(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+    });
+  }
+  clickWorks(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+    });
+  }
+  clickTag(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+    });
+  }
   render() {
     return <div class="search">
       <form class="input" onSubmit={ this.submit }>
@@ -52,7 +85,7 @@ class Search extends migi.Component {
         <input type="submit" value="确定" class="sub"/>
       </form>
       <h3 class={ this.authorList ? '' : 'fn-hide' }>作者</h3>
-      <ul class="author">
+      <ul class="author" onClick={ { a: this.clickAuthor } }>
         {
           (this.authorList || []).map(function(item) {
             return <li>
@@ -66,12 +99,12 @@ class Search extends migi.Component {
         }
       </ul>
       <h3 class={ this.userList ? '' : 'fn-hide' }>用户</h3>
-      <ul class="author">
+      <ul class="author" onClick={ { a: this.clickUser } }>
         {
           (this.userList || []).map(function(item) {
             return <li>
-              <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName } class="pic">
-                <img src={ util.autoSsl(util.img120_120_80(item.Headurl)) || '/src/common/blank.png' }/>
+              <a href={ '/user.html?userID=' + item.uid } title={ item.User_Nickname } class="pic">
+                <img src={ util.autoSsl(util.img120_120_80(item.Headurl)) || '/src/common/head.png' }/>
               </a>
               <a href={ '/user.html?userID=' + item.uid } title={ item.User_Nickname } class="name">{ item.User_Nickname }</a>
             </li>;
@@ -79,7 +112,7 @@ class Search extends migi.Component {
         }
       </ul>
       <h3 class={ this.worksList ? '' : 'fn-hide' }>作品</h3>
-      <ul class="works">
+      <ul class="works" onClick={ { a: this.clickWorks } }>
         {
           (this.worksList || []).map(function(item) {
             let GroupAuthorTypeHash = item.GroupAuthorTypeHash || {};
@@ -96,11 +129,11 @@ class Search extends migi.Component {
         }
       </ul>
       <h3 class={ this.tagList ? '' : 'fn-hide' }>标签</h3>
-      <ul class="tag">
+      <ul class="tag" onClick={ { a: this.clickTag } }>
         {
           (this.tagList || []).map(function(item) {
             return <li>
-              <a href={ '/tag.html?tag=' + item.TagName }>{ item.TagName }</a>
+              <a href={ '/tag.html?tag=' + item.TagName } title={ item.TagName }>{ item.TagName }</a>
             </li>;
           })
         }
