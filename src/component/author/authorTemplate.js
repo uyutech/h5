@@ -13,16 +13,16 @@ let code2Data = {
     display: '策划',
     css: 'ce',
   },
-  '111': {
+  '110': {
     name: '演唱',
     display: '演唱',
     css: 'ge',
   },
-  '112': {
+  '111': {
     name: '和声',
     display: '和声',
   },
-  '113': {
+  '112': {
     name: '伴唱',
     display: '伴唱',
   },
@@ -35,22 +35,26 @@ let code2Data = {
     display: '合唱',
     css: 'ge',
   },
-  '121': {
+  '153': {
+    name: '和声编写',
+    display: '和声编写',
+  },
+  '151': {
     name: '作曲',
     display: '作曲',
     css: 'qu',
   },
-  '122': {
+  '152': {
     name: '编曲',
     display: '编曲',
     css: 'qu',
   },
-  '131': {
+  '160': {
     name: '混音',
     display: '混音',
     css: 'hun',
   },
-  '132': {
+  '161': {
     name: '母带',
     display: '母带',
     css: 'hun',
@@ -59,7 +63,7 @@ let code2Data = {
     name: '录音',
     display: '录音',
   },
-  '134': {
+  '163': {
     name: '修音',
     display: '修音',
     css: 'hun',
@@ -69,11 +73,11 @@ let code2Data = {
     display: '演奏', //优先显示乐器名。
     css: 'yue',
   },
-  '151': {
+  '120': {
     name: '配音',
     display: '配音',
   },
-  '211': {
+  '202': {
     name: '视频',
     display: '视频',
     css: 'ying',
@@ -124,13 +128,13 @@ let code2Data = {
     css: 'tu',
   },
   '331': {
-    name: '设计',
-    display: '设计',
+    name: '美工',
+    display: '美工',
     css: 'she',
   },
   '332': {
-    name: '海报',
-    display: '海报',
+    name: '美工',
+    display: '美工',
     css: 'she',
   },
   '333': {
@@ -158,7 +162,7 @@ let code2Data = {
     display: '作词',
     css: 'wen',
   },
-  '421': {
+  '301': {
     name: '文案',
     display: '文案',
     css: 'wen',
@@ -168,7 +172,7 @@ let code2Data = {
     display: '剧本',
     css: 'wen',
   },
-  '423': {
+  '302': {
     name: '小说',
     display: '小说',
     css: 'wen',

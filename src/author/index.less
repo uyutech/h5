@@ -33,6 +33,7 @@
       padding-top:0.05rem;
       height:0.6rem;
       .pic{
+        flex-shrink:0;
         position:relative;
         top:-0.75rem;
         margin-right:0.2rem;
@@ -61,12 +62,17 @@
       }
       .txt{
         flex:1;
+        margin-right:-0.15rem;
+        overflow:hidden;
         .n{
           display:flex;
           align-items:center;
           flex-shrink:0;
           overflow-x:scroll;
           transform:translateZ(0);
+          * {
+            flex-shrink:0;
+          }
           h3{
             margin-right:0.08rem;
             font-size:0.19rem;

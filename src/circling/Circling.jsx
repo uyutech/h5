@@ -2,11 +2,13 @@
  * Created by army8735 on 2017/12/3.
  */
 
+
 'use strict';
 
 import net from '../common/net';
 import util from '../common/util';
 import HotPost from '../component/hotpost/HotPost.jsx';
+import HotCircle from '../component/hotcircle/HotCircle.jsx';
 
 let take = 10;
 let skip = take;
@@ -56,6 +58,7 @@ class Circling extends migi.Component {
   setData(data) {
     let self = this;
 
+    self.hotCircleList = data.hotCircleList;
     self.hotCircle = data.hotCircle;
     self.postList = data.postList;
     loadEnd = self.postList.Size <= take;
@@ -98,7 +101,7 @@ class Circling extends migi.Component {
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON(circleID ? '/h5/circle/postList' : '/h5/circling/postList', { skip, take, circleID }, function(res) {
+    ajax = net.postJSON('/h5/circle/postList', { skip, take, circleID }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
@@ -145,6 +148,7 @@ class Circling extends migi.Component {
         }
       </ul>
       <p class="cinfo">↑未来，这里将可以复选多个圈子一起逛哦↑</p>
+      <HotCircle ref="hotCircle" dataList={ self.hotCircleList.data }/>
       <HotPost ref="hotPost" dataList={ self.postList.data }/>
     </div>;
   }

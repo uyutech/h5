@@ -19,12 +19,17 @@ class HotAuthor extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
-    if(!url) {
-      throw new Error('hotauthor url is null');
+    if(tvd.parent.props.class === 'more') {
+      jsBridge.pushWindow(url, {
+        title,
+      });
     }
-    jsBridge.pushWindow(url, {
-      transparentTitle: true,
-    });
+    else {
+      util.openAuthor({
+        url,
+        title,
+      });
+    }
   }
   render() {
     return <div class="cp-hotauthor" onClick={ { a: this.click } }>

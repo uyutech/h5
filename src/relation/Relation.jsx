@@ -75,7 +75,7 @@ class Relation extends migi.Component {
     self.hasData = true;
 
     let $root = $(self.element);
-    $root.on('click', '.author', function(e) {
+    $root.on('click', '.author a', function(e) {
       e.preventDefault();
       let $this = $(this);
       let url = $this.attr('href');
@@ -85,7 +85,7 @@ class Relation extends migi.Component {
         title,
       });
     });
-    $root.on('click', '.user', function(e) {
+    $root.on('click', '.user a', function(e) {
       e.preventDefault();
       let $this = $(this);
       let url = $this.attr('href');

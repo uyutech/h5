@@ -662,7 +662,7 @@ const WorksWorkRelation = sequelize.define('works_work_relation', {
       fields: ['work_id'],
     }
   ],
-  comment: '大作品作品关系',
+  comment: '大作品小作品关系',
 });
 
 const Works = sequelize.define('works', {
@@ -772,8 +772,6 @@ const CommentNum = sequelize.define('comment_num', {
     }
   ],
   comment: '评论相关数字汇总',
-  charset: 'utf8mb4',
-  collate: 'utf8mb4_unicode_ci',
 });
 
 (async () => {

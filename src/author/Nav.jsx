@@ -45,7 +45,7 @@ class Nav extends migi.Component {
     self.fansNumber = data.FansNumber;
     self.like = data.IsLike;
     self.settled = data.ISSettled;
-    self.type = data.Authortype;
+    self.authorType = data.Authortype;
     self._5SingUrl = data._5SingUrl;
     self._BilibiliUrl = data._BilibiliUrl;
     self._BaiduUrl = data._BaiduUrl;
@@ -56,15 +56,6 @@ class Nav extends migi.Component {
     self.POCOUrl = data.POCOUrl;
     self.ZcooUrl = data.ZcooUrl;
     self.loading = false;
-  }
-  set type(v) {
-    v = v || [];
-    let hash = {};
-    v.forEach(function(item) {
-      let css = (authorTemplate.code2Data[item.AuthorTypeID] || {}).css || '';
-      hash[css] = true;
-    });
-    this.authorType = Object.keys(hash);
   }
   clickFollow(e) {
     e.preventDefault();
@@ -130,8 +121,8 @@ class Nav extends migi.Component {
           <div class="n">
             <h3>{ this.authorName }</h3>
             {
-              this.authorType.map(function(item) {
-                return <span class={ `cp-author-type-${item}` }/>;
+              (this.authorType || []).map(function(item) {
+                return <span class={ `cp-author-type-${item.NewAuthorTypeID}` }/>;
               })
             }
           </div>
