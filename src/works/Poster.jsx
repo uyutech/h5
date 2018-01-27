@@ -13,7 +13,7 @@ class Poster extends migi.Component {
   click(e, vd, tvd) {
     e.preventDefault();
     let url = tvd.props.href;
-    jsBridge.openUri(url);
+    jsBridge.openUri('https://' + url);
   }
   render() {
     return <div class="mod mod-poster">
@@ -22,7 +22,7 @@ class Poster extends migi.Component {
         {
           (this.props.datas.value || []).map(function(item) {
             return <li>
-              <a href={ item.FileUrl || '/src/common/blank.png' }>
+              <a href={ util.autoSsl(item.FileUrl) || '/src/common/blank.png' }>
                 <img src={ util.autoSsl(util.img720__80(item.FileUrl)) || '/src/common/blank.png' }/>
               </a>
             </li>;

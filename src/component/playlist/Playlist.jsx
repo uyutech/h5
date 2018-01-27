@@ -108,7 +108,7 @@ class Playlist extends migi.Component {
     if(item.WorksState === 2) {
       return <li>
         <a href={ url } title={ item.ItemName || '待揭秘' } class="pic">
-          <img src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
+          <img class="pic" src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
         </a>
         <div class="txt">
           <a href={ url } title={ item.ItemName || '待揭秘' }
@@ -121,7 +121,7 @@ class Playlist extends migi.Component {
     }
     return <li>
       <a href={ url } title={ item.ItemName || '待揭秘' } class="pic">
-        <img src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
+        <img class="pic" src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
       </a>
       <div class="txt">
         <a href={ url } title={ item.ItemName || '待揭秘' }
