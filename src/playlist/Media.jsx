@@ -102,7 +102,7 @@ class Media extends migi.Component {
       l.is = false;
       l.txt = data.lrc;
     }
-    self.lrc = l;console.log(l);
+    self.lrc = l;
     if(ajaxLike) {
       ajaxLike.abort();
     }

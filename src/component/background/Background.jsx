@@ -60,6 +60,7 @@ class Background extends migi.Component {
                   jsBridge.media({
                     key: 'info',
                     value: {
+                      id: playlistCur.workId,
                       url: location.protocol + util.autoSsl(playlistCur.url),
                       name: playlistCur.workId,
                     },

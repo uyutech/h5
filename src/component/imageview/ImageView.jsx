@@ -42,6 +42,12 @@ class ImageView extends migi.Component {
       $i1 = $(self.ref.i1.element);
       $i2 = $(self.ref.i2.element);
       $i3 = $(self.ref.i3.element);
+      jsBridge.on('back', function(e) {
+        if(!$(self.element).hasClass('fn-hide')) {
+          e.preventDefault();
+          self.hide();
+        }
+      });
     });
   }
   @bind list = []
@@ -53,7 +59,6 @@ class ImageView extends migi.Component {
   hide() {
     $(this.element).addClass('fn-hide');
     jsBridge.refreshState(true);
-    this.emit('hide');
   }
   isHide() {
     return  $(this.element).hasClass('fn-hide');

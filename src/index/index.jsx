@@ -13,7 +13,6 @@ import Find from '../find/Find.jsx';
 import Circling from '../circling/Circling.jsx';
 import Follow from '../follow/Follow.jsx';
 import My from '../my/My.jsx';
-import ImageView from '../post/ImageView.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
 jsBridge.ready(function() {
@@ -138,17 +137,6 @@ jsBridge.ready(function() {
       last = my;
     }
     last.show();
-  });
-
-  let imageView = migi.render(<ImageView/>, '#page');
-  jsBridge.on('back', function(e) {
-    if(!imageView.isHide()) {
-      e.preventDefault();
-      imageView.hide();
-    }
-    else {
-      jsBridge.moveTaskToBack();
-    }
   });
   migi.render(<BotFn/>, '#page');
 

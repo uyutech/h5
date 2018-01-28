@@ -125,7 +125,7 @@ class Circling extends migi.Component {
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON('/h5/circle/postList', { skip, take, circleID }, function(res) {
+    ajax = net.postJSON(circleID ? '/h5/circle/postList' : '/h5/circling/postList', { skip, take, circleID }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;

@@ -69,7 +69,6 @@ class Banner extends migi.Component {
     }
     jsBridge.pushWindow(url, {
       title,
-      transparentTitle: true,
     });
   }
   render() {
