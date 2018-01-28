@@ -8,7 +8,7 @@ const config = {
   database: 'CirclingDB',
 };
 
-const sequelize = new Sequelize('circling', 'root', '87351984@', {
+const sequelizeCircling = new Sequelize('circling', 'root', '87351984@', {
   host: 'localhost',
   dialect: 'mysql',
   pool: {
@@ -31,7 +31,30 @@ const sequelize = new Sequelize('circling', 'root', '87351984@', {
   },
 });
 
-const Author = sequelize.define('author', {
+const sequelizeStats = new Sequelize('stats', 'root', '87351984@', {
+  host: 'localhost',
+  dialect: 'mysql',
+  pool: {
+    max: 5,
+    min: 0,
+    acquire: 30000,
+    idle: 10000
+  },
+  dialectOptions: {
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_unicode_ci'
+  },
+  options: {
+    charset: 'utf8mb4',
+  },
+  define: {
+    timestamps: false,
+    underscored: true,
+    freezeTableName: true,
+  },
+});
+
+const Author = sequelizeCircling.define('author', {
   id: {
     type: Sequelize.BIGINT.UNSIGNED,
     primaryKey: true,
@@ -92,7 +115,7 @@ const Author = sequelize.define('author', {
   comment: '作者基本信息',
 });
 
-const AuthorOutSide = sequelize.define('author_outside', {
+const AuthorOutSide = sequelizeCircling.define('author_outside', {
   id: {
     type: Sequelize.INTEGER.UNSIGNED,
     primaryKey: true,
@@ -138,7 +161,7 @@ const AuthorOutSide = sequelize.define('author_outside', {
   comment: '作者站外链接',
 });
 
-const AuthorNum = sequelize.define('author_num', {
+const AuthorNum = sequelizeStats.define('author_num', {
   id: {
     type: Sequelize.INTEGER.UNSIGNED,
     primaryKey: true,
@@ -160,6 +183,11 @@ const AuthorNum = sequelize.define('author_num', {
     allowNull: false,
     defaultValue: 0,
   },
+  update_time: {
+    type: Sequelize.DATE,
+    allowNull: false,
+    defaultValue: Sequelize.NOW,
+  },
 }, {
   indexes: [
     {
@@ -170,7 +198,7 @@ const AuthorNum = sequelize.define('author_num', {
   comment: '作者相关数字汇总',
 });
 
-const Profession = sequelize.define('profession', {
+const Profession = sequelizeCircling.define('profession', {
   id: {
     type: Sequelize.INTEGER.UNSIGNED,
     primaryKey: true,
@@ -226,7 +254,7 @@ const Profession = sequelize.define('profession', {
   comment: '职种信息',
 });
 
-const User = sequelize.define('user', {
+const User = sequelizeCircling.define('user', {
   id: {
     type: Sequelize.BIGINT.UNSIGNED,
     primaryKey: true,
@@ -284,7 +312,7 @@ const User = sequelize.define('user', {
   comment: '用户基本信息',
 });
 
-const UserPrivate = sequelize.define('user_private', {
+const UserPrivate = sequelizeCircling.define('user_private', {
   id: {
     type: Sequelize.INTEGER.UNSIGNED,
     primaryKey: true,
@@ -329,7 +357,7 @@ const UserPrivate = sequelize.define('user_private', {
   comment: '用户隐私信息',
 });
 
-const UserAuthorRelation = sequelize.define('user_author_relation', {
+const UserAuthorRelation = sequelizeCircling.define('user_author_relation', {
   id: {
     type: Sequelize.INTEGER.UNSIGNED,
     primaryKey: true,
@@ -373,7 +401,7 @@ const UserAuthorRelation = sequelize.define('user_author_relation', {
   comment: '用户对应作者关系',
 });
 
-const UserAssociatePeople = sequelize.define('user_associate_people', {
+const UserAssociatePeople = sequelizeCircling.define('user_associate_people', {
   id: {
     type: Sequelize.INTEGER.UNSIGNED,
     primaryKey: true,
@@ -412,7 +440,7 @@ const UserAssociatePeople = sequelize.define('user_associate_people', {
   comment: '用户对其他用户和作者的操作关联',
 });
 
-const UserIpRecord = sequelize.define('user_ip_record', {
+const UserIpRecord = sequelizeStats.define('user_ip_record', {
   id: {
     type: Sequelize.INTEGER.UNSIGNED,
     primaryKey: true,
@@ -442,7 +470,7 @@ const UserIpRecord = sequelize.define('user_ip_record', {
   comment: '用户登录ip记录',
 });
 
-const WorkType = sequelize.define('work_type', {
+const WorkType = sequelizeCircling.define('work_type', {
   id: {
     type: Sequelize.SMALLINT.UNSIGNED,
     primaryKey: true,
@@ -459,7 +487,7 @@ const WorkType = sequelize.define('work_type', {
     allowNull: false,
     defaultValue: '',
   },
-  category_code: {
+  category: {
     type: Sequelize.SMALLINT.UNSIGNED,
     allowNull: false,
   },
@@ -498,7 +526,7 @@ const WorkType = sequelize.define('work_type', {
   comment: '小作品类型',
 });
 
-const Work = sequelize.define('work', {
+const Work = sequelizeCircling.define('work', {
   id: {
     type: Sequelize.BIGINT.UNSIGNED,
     primaryKey: true,
@@ -543,7 +571,7 @@ const Work = sequelize.define('work', {
   comment: '小作品基本信息',
 });
 
-const WorkPic = sequelize.define('work_image', {
+const WorkPic = sequelizeCircling.define('work_image', {
   work_id: {
     type: Sequelize.BIGINT.UNSIGNED,
     primaryKey: true,
@@ -564,7 +592,7 @@ const WorkPic = sequelize.define('work_image', {
   comment: '图片类小作品扩展信息',
 });
 
-const WorkMedia = sequelize.define('work_media', {
+const WorkMedia = sequelizeCircling.define('work_media', {
   work_id: {
     type: Sequelize.BIGINT.UNSIGNED,
     primaryKey: true,
@@ -605,7 +633,7 @@ const WorkMedia = sequelize.define('work_media', {
   comment: '媒体类小作品扩展信息',
 });
 
-const WorkText = sequelize.define('work_text', {
+const WorkText = sequelizeCircling.define('work_text', {
   work_id: {
     type: Sequelize.BIGINT.UNSIGNED,
     primaryKey: true,
@@ -621,7 +649,7 @@ const WorkText = sequelize.define('work_text', {
   comment: '文本类小作品扩展信息',
 });
 
-const WorksWorkRelation = sequelize.define('works_work_relation', {
+const WorksWorkRelation = sequelizeCircling.define('works_work_relation', {
   id: {
     type: Sequelize.SMALLINT.UNSIGNED,
     primaryKey: true,
@@ -665,7 +693,7 @@ const WorksWorkRelation = sequelize.define('works_work_relation', {
   comment: '大作品小作品关系',
 });
 
-const Works = sequelize.define('works', {
+const Works = sequelizeCircling.define('works', {
   id: {
     type: Sequelize.BIGINT.UNSIGNED,
     primaryKey: true,
@@ -676,7 +704,7 @@ const Works = sequelize.define('works', {
   desc: Sequelize.STRING(256),
 });
 
-const Comment = sequelize.define('comment', {
+const Comment = sequelizeCircling.define('comment', {
   id: {
     type: Sequelize.INTEGER.UNSIGNED,
     primaryKey: true,
@@ -742,7 +770,7 @@ const Comment = sequelize.define('comment', {
   comment: '评论基本信息',
 });
 
-const CommentNum = sequelize.define('comment_num', {
+const CommentNum = sequelizeStats.define('comment_num', {
   id: {
     type: Sequelize.INTEGER.UNSIGNED,
     primaryKey: true,
@@ -764,6 +792,11 @@ const CommentNum = sequelize.define('comment_num', {
     allowNull: false,
     defaultValue: 0,
   },
+  update_time: {
+    type: Sequelize.DATE,
+    allowNull: false,
+    defaultValue: Sequelize.NOW,
+  },
 }, {
   indexes: [
     {
@@ -774,10 +807,52 @@ const CommentNum = sequelize.define('comment_num', {
   comment: '评论相关数字汇总',
 });
 
+const WorksNum = sequelizeStats.define('works_num', {
+  id: {
+    type: Sequelize.INTEGER.UNSIGNED,
+    primaryKey: true,
+    unique: true,
+    autoIncrement: true,
+    allowNull: false,
+  },
+  works_id: {
+    type: Sequelize.BIGINT.UNSIGNED,
+    allowNull: false,
+  },
+  work_id: {
+    type: Sequelize.BIGINT.UNSIGNED,
+    allowNull: false,
+  },
+  type: {
+    type: Sequelize.TINYINT,
+    allowNull: false,
+    comment: '0评论数，1浏览数，2播放数，3点赞数，4收藏数',
+  },
+  num: {
+    type: Sequelize.INTEGER.UNSIGNED,
+    allowNull: false,
+    defaultValue: 0,
+  },
+  update_time: {
+    type: Sequelize.DATE,
+    allowNull: false,
+    defaultValue: Sequelize.NOW,
+  },
+}, {
+  indexes: [
+    {
+      unique: true,
+      fields: ['works_id', 'work_id', 'type'],
+    }
+  ],
+  comment: '作品相关数字汇总',
+});
+
 (async () => {
   try {
     let pool = await sql.connect(config);
-    await sequelize.sync();
+    // await sequelizeCircling.sync();
+    // await sequelizeStats.sync();
 
     // await author(pool);
     // await profession(pool);

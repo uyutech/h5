@@ -110,32 +110,32 @@ jsBridge.ready(function() {
   botNav.on('change', function(i) {
     last.hide();
     if(i === 0) {
+      topNav.hide();
       if(!find) {
         find = migi.render(<Find/>, '#page');
       }
       last = find;
-      topNav.hide();
     }
     else if(i === 1) {
+      topNav.show();
       if(!circling) {
         circling = migi.render(<Circling/>, '#page');
       }
       last = circling;
-      topNav.show();
     }
     else if(i === 2) {
+      topNav.show();
       if(!follow) {
         follow = migi.render(<Follow/>, '#page');
       }
       last = follow;
-      topNav.show();
     }
     else if(i === 3) {
+      topNav.show();
       if(!my) {
         my = migi.render(<My loginInfo={ loginInfo }/>, '#page');
       }
       last = my;
-      topNav.show();
     }
     last.show();
   });

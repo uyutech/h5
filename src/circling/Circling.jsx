@@ -18,6 +18,8 @@ let loadEnd;
 let circleID;
 let visible;
 let scrollY = 0;
+let y;
+let $circles;
 
 class Circling extends migi.Component {
   constructor(...data) {
@@ -28,12 +30,20 @@ class Circling extends migi.Component {
       net.postJSON('/h5/circling/index', function(res) {
         if(res.success) {
           self.setData(res.data);
+          y = $(self.ref.hotCircle.element).height();
+          $circles = $(self.ref.circles.element);
         }
         else {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
       }, function(res) {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      });
+      let $window = $(window);
+      $window.on('scroll', function() {
+        if(visible) {
+          self.checkFix($window.scrollTop());
+        }
       });
     });
   }
@@ -42,10 +52,24 @@ class Circling extends migi.Component {
     $(this.element).removeClass('fn-hide');
     $(window).scrollTop(scrollY);
     visible = true;
+    y = $('#topNav').height();
+    if(this.ref.circles) {
+      this.checkFix(y, $(this.ref.circles.element));
+    }
   }
   hide() {
     $(this.element).addClass('fn-hide');
     visible = false;
+  }
+  checkFix(top) {
+    if($circles) {
+      if(top > y) {
+        $circles.addClass('fix');
+      }
+      else {
+        $circles.removeClass('fix');
+      }
+    }
   }
   refresh() {
     let self = this;
@@ -139,7 +163,8 @@ class Circling extends migi.Component {
   genDom() {
     let self = this;
     return <div>
-      <ul class="circles" onClick={ { li: self.clickTag.bind(self) } }>
+      <HotCircle ref="hotCircle" dataList={ self.hotCircleList.data }/>
+      <ul class="circles" ref="circles" onClick={ { li: self.clickTag.bind(self) } }>
         <li class="cur">全部</li>
         {
           (self.hotCircle.data || []).map(function(item) {
@@ -148,7 +173,6 @@ class Circling extends migi.Component {
         }
       </ul>
       <p class="cinfo">↑未来，这里将可以复选多个圈子一起逛哦↑</p>
-      <HotCircle ref="hotCircle" dataList={ self.hotCircleList.data }/>
       <HotPost ref="hotPost" dataList={ self.postList.data }/>
     </div>;
   }

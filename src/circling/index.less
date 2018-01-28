@@ -9,10 +9,6 @@
 #page > .circling{
   > div{
     .circles{
-      position:fixed;
-      left:0;
-      top:0.64rem;
-      width:100%;
       display:flex;
       box-sizing:border-box;
       padding:0.1rem 0.1rem 0.05rem;
@@ -22,6 +18,12 @@
       z-index:200;
       background:#FFF;
       box-shadow:@boxShadow;
+      &.fix{
+        position:fixed;
+        left:0;
+        top:0.64rem;
+        width:100%;
+      }
       li{
         display:block;
         margin-right:0.05rem;
@@ -47,12 +49,11 @@
       }
     }
     .cinfo{
-      margin:0.45rem 0 0.1rem;
-      padding:0 0.1rem;
+      margin:0.1rem;
       color:@secondTextColor;
     }
     .cp-hotcircle{
-      margin-bottom:0.1rem;
+      padding-top:0.1rem;
     }
   }
 }

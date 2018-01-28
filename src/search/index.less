@@ -16,9 +16,9 @@
   overflow-y:scroll;
   .input{
     display:flex;
-    margin-bottom:0.1rem;
+    margin-bottom:0.2rem;
     align-items:center;
-    padding:0 0.2rem;
+    padding:0 0.15rem;
     .text{
       flex:1;
       box-sizing:border-box;
@@ -26,8 +26,14 @@
       height:0.24rem;
       border:1px solid #999;
     }
+    select{
+      margin-right:0.05rem;
+      box-sizing:border-box;
+      height:0.24rem;
+      border:1px solid #999;
+    }
     .sub{
-      margin-left:0.1rem;
+      margin-left:0.05rem;
       padding:0 0.1rem;
       box-sizing:border-box;
       border-width:1px;
@@ -38,20 +44,19 @@
     padding:0.1rem;
   }
   .author{
-    display:flex;
-    margin-left:-0.15rem;
-    margin-right:-0.15rem;
-    padding-left:0.15rem;
-    overflow-x:scroll;
-    line-height:1.25;
-    transform:translateZ(0);
+    padding:0 0.1rem;
     li{
-      flex-shrink:0;
-      width:0.75rem;
+      float:left;
+      margin-right:0.1rem;
+      margin-bottom:0.1rem;
+      width:30%;
       text-align:center;
+      &:nth-child(3n) {
+        margin-right:0;
+      }
       .pic{
         display:block;
-        margin:0 auto 0.06rem;
+        margin:0 auto 0.05rem;
         width:0.6rem;
         height:0.6rem;
       }
@@ -79,19 +84,18 @@
     }
   }
   .tag{
-    padding:0 0.15rem;
+    padding:0 0.1rem;
     li{
       display:inline-block;
       margin-right:0.1rem;
-      margin-bottom:0.05rem;
+      margin-bottom:0.1rem;
       padding:0 0.05rem;
-      height:0.17rem;
-      line-height:0.17rem;
+      height:0.2rem;
+      line-height:0.2rem;
       border:1px solid #8BBDE1;
-      border-radius:0.19rem;
+      border-radius:0.2rem;
       color:#8BBDE1;
-      font-size:0.11rem;
-      flex-shrink:0;
+      font-size:0.12rem;
       a{
         display:block;
         color:#8BBDE1;
@@ -99,20 +103,21 @@
     }
   }
   .works{
-    display:flex;
-    padding-left:0.15rem;
-    overflow-x:scroll;
-    line-height:1.25;
-    transform:translateZ(0);
+    padding:0 0.1rem;
     li{
-      flex-shrink:0;
+      float:left;
       margin-right:0.1rem;
-      width:0.85rem;
+      margin-bottom:0.1rem;
+      width:30%;
+      text-align:center;
+      &:nth-child(3n) {
+        margin-right:0;
+      }
       .pic{
         position:relative;
         display:block;
-        margin-bottom:0.06rem;
-        width:100%;
+        margin:0 auto 0.05rem;
+        width:0.85rem;
         height:0.85rem;
         &:before{
           position:absolute;
