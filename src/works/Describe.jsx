@@ -10,7 +10,7 @@ class Describe extends migi.Component {
   }
   render() {
     return <div class="mod mod-describe">
-      <h4>专辑简介</h4>
+      <h4>{ this.props.title }</h4>
       <pre>{ this.props.data }</pre>
     </div>;
   }

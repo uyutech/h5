@@ -319,7 +319,7 @@ class Works extends migi.Component {
         <PlayList ref="playList" cover={ self.worksDetail.cover_Pic }
                   worksID={ this.worksID } workID={ this.workID } workList={ this.workList }/>
         <div class="intro fn-hide" ref="intro">
-          <Describe data={ self.worksDetail.Describe }/>
+          <Describe title="专辑简介" data={ self.worksDetail.Describe }/>
           <Author list={ self.worksDetail.GroupAuthorTypeHash }/>
           {
             self.worksDetail.WorkTimeLine && self.worksDetail.WorkTimeLine.length
@@ -396,6 +396,11 @@ class Works extends migi.Component {
         }
       </ul>
       <div class="intro" ref="intro">
+        {
+          self.worksDetail.Describe
+            ? <Describe title="简介" data={ self.worksDetail.Describe }/>
+            : ''
+        }
         <Author list={ self.worksDetail.GroupAuthorTypeHash }/>
         {
           self.worksDetail.WorkTimeLine && self.worksDetail.WorkTimeLine.length
