@@ -121,6 +121,7 @@ class MusicAlbum extends migi.Component {
   @bind sname
   @bind url
   @bind playNum
+  @bind likeNum
   @bind isPlaying
   @bind hasStart
   @bind formatLyrics = {}
@@ -133,6 +134,7 @@ class MusicAlbum extends migi.Component {
   @bind favor
   @bind cover
   @bind showFn = true
+  @bind lrc
   get currentTime() {
     return this._currentTime || 0;
   }
@@ -158,6 +160,7 @@ class MusicAlbum extends migi.Component {
     self.like = item.ISLike;
     self.favor = item.ISFavor;
     self.cover = item.ItemCoverPic;
+    self.likeNum = item.LikeHis;
   }
   addOrAltMedia() {
     let self = this;
@@ -262,6 +265,27 @@ class MusicAlbum extends migi.Component {
   }
   play() {
     let self = this;
+    let o = {
+      worksId: self.props.worksID,
+      workId: self.workID,
+    };
+    jsBridge.getPreference('playlist', function(res) {
+      if(!res) {
+        res = [];
+      }
+      for(let i = 0, len = res.length; i < len; i++) {
+        if(res[i].workId.toString() === o.workId.toString()) {
+          res.splice(i, 1);
+          break;
+        }
+      }
+      res.unshift(o);
+      if(res.length > 20) {
+        res.pop();
+      }
+      jsBridge.setPreference('playlist', res);
+    });
+    jsBridge.setPreference('playlistCur', o);
     if(mediaService) {
       jsBridge.media({
         key: 'play',

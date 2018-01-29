@@ -19,9 +19,11 @@ let take = 20;
 let skip = 0;
 let loading;
 let loadEnd;
-let hasLoaded;
+let hasLoadedFavor;
+let hasLoadedHis;
 let curTag = 0;
 let curPlayTag = 0;
+let hisList = [];
 let favorList = [];
 
 class Playlist extends migi.Component {
@@ -35,27 +37,60 @@ class Playlist extends migi.Component {
       let count = 0;
       function fin() {
         if(count >= 2) {
-          for(let i = 0, len = playlistCache.length; i < len; i++) {
-            let item = playlistCache[i];
-            if(playlistCur && item.worksId === playlistCur.worksId && item.workId === playlistCur.workId) {
-              jsBridge.setTitle(item.workName);
-              media.setData(item);
-              list.setCurIndex(i);
-              return;
+          let workIDs = playlistCache.map(function(item) {
+            return item.workId;
+          });
+          if(!workIDs.length) {
+            return;
+          }
+          net.postJSON('/h5/playlist/index', { workIDs: workIDs.join(',') }, function(res) {
+            if(res.success) {
+              let data = res.data;
+              let format = data.data.map(function(item) {
+                let works = item.Works_Items_Works[0];
+                return {
+                  workId: item.ItemID,
+                  worksCover: works.WorksCoverPic,
+                  workName: item.ItemName,
+                  isLike: item.ISLike,
+                  likeNum: item.LikeHis,
+                  isFavor: item.ISFavor,
+                  lrc: item.lrc,
+                };
+              });
+              hisList = format;
+              hasLoadedHis = true;
+              if(curTag !== 0) {
+                return;
+              }
+              list.setData(format);
+              for(let i = 0, len = format.length; i < len; i++) {
+                let item = format[i];
+                if(playlistCur && item.workId === playlistCur.workId) {
+                  jsBridge.setTitle(item.workName);
+                  media.setData(item);
+                  list.setCurIndex(i);
+                  return;
+                }
+              }
+              // 找不到默认展示第一个
+              let item = format[0];
+              if(item) {
+                jsBridge.setTitle(item.workName);
+                media.setData(item);
+                list.setCurIndex(0);
+              }
             }
-          }
-          // 找不到默认播第一个
-          let item = playlistCache[0];
-          if(item) {
-            jsBridge.setTitle(item.workName);
-            media.setData(item);
-            list.setCurIndex(0);
-          }
+            else {
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            }
+          }, function(res) {
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          });
         }
       }
       jsBridge.getPreference('playlist', function(res) {
         playlistCache = res || [];
-        list.appendData(playlistCache);
         count++;
         fin();
       });
@@ -86,7 +121,7 @@ class Playlist extends migi.Component {
       list.on('choose', function(data) {
         jsBridge.setTitle(data.workName);
         curPlayTag = curTag;
-        if(media.data && media.data.worksId === data.worksId && media.data.workId === data.workId) {
+        if(media.data && media.data.workId === data.workId) {
           media.play();
           return;
         }
@@ -94,43 +129,46 @@ class Playlist extends migi.Component {
         media.setData(data);
         media.play();
         jsBridge.setPreference('playlistCur', data);
-        jsBridge.getPreference('playlist', function(res) {
-          playlistCache = res || [];
-          for(let i = 0, len = playlistCache.length; i < len; i++) {
-            let item = playlistCache[i];
-            if(item.worksId === data.worksId && item.workId === data.workId) {
-              return;
-            }
+        for(let i = 0, len = hisList.length; i < len; i++) {
+          let item = hisList[i];
+          if(item.workId.toString() === data.workId.toString()) {
+            return;
           }
-          playlistCache.unshift(data);
-          jsBridge.setPreference('playlist', playlistCache);
-        });
+        }
+        hisList.unshift(data);
+        jsBridge.setPreference('playlist', hisList.map(function(item) {
+          return {
+            worksId: item.worksId,
+            workId: item.workId,
+          };
+        }));
       });
       list.on('change', function(res) {
         let data = res.data;
         jsBridge.setTitle(data.workName);
         curPlayTag = curTag;
         // 只有一首或者播放中切换到另外一个列表，结束时假如当前列表进行切换的和正在播放的相同，直接从0开始重新播放
-        if(media.data && media.data.worksId === data.worksId && media.data.workId === data.workId) {
-          media.currentTime = 0;
-          media.play();
+        if(media.data && media.data.workId === data.workId) {
+          media.repeat();
           list.setCurIndex(res.index);
           return;
         }
         media.setData(data);
         media.play();
         jsBridge.setPreference('playlistCur', data);
-        jsBridge.getPreference('playlist', function(res) {
-          playlistCache = res || [];
-          for(let i = 0, len = playlistCache.length; i < len; i++) {
-            let item = playlistCache[i];
-            if(item.worksId === data.worksId && item.workId === data.workId) {
-              return;
-            }
+        for(let i = 0, len = hisList.length; i < len; i++) {
+          let item = hisList[i];
+          if(item.workId.toString() === data.workId.toString()) {
+            return;
           }
-          playlistCache.unshift(data);
-          jsBridge.setPreference('playlist', playlistCache);
-        });
+        }
+        hisList.unshift(data);
+        jsBridge.setPreference('playlist', hisList.map(function(item) {
+          return {
+            worksId: item.worksId,
+            workId: item.workId,
+          };
+        }));
       });
 
       media.on('play', function() {
@@ -156,41 +194,43 @@ class Playlist extends migi.Component {
         media.pause();
       });
       botPlayBar.on('comment', function() {
-        jsBridge.getPreference('playlistCur', function(res) {
-          if(res) {
-            jsBridge.pushWindow('/subcomment.html?type=3&id='
-              + res.worksId + '&sid=' + res.workId, {
-              title: '评论',
-            });
-          }
-        });
+        if(media.data) {
+          jsBridge.pushWindow('/subcomment.html?type=3&id='
+            + media.data.worksId + '&sid=' + media.data.workId, {
+            title: '评论',
+          });
+        }
       });
 
-      list.on(['likeWork', 'favorWork'], function(res) {
-        let data = res.data;
-        jsBridge.getPreference('playlist', function(res) {
-          playlistCache = res || [];
-          for(let i = 0, len = playlistCache.length; i < len; i++) {
-            let item = playlistCache[i];
-            if(item.worksId === data.worksId && item.workId === data.workId) {
-              playlistCache[i] = data;
-              jsBridge.setPreference('playlist', playlistCache);
-              return;
-            }
-          }
-        });
-      });
       list.on('del', function(res) {
-        jsBridge.setPreference('playlist', res.list);
-        if(!res.list.length) {
+        let data = res.data;
+        for(let i = 0, len = hisList.length; i < len; i++) {
+          let item = hisList[i];
+          if(item.workId.toString() === data.workId.toString()) {
+            hisList.splice(i, 1);
+            jsBridge.setPreference('playlist', hisList.map(function(item) {
+              return {
+                worksId: item.worksId,
+                workId: item.workId,
+              };
+            }));
+            return;
+          }
+        }
+        if(!res.hisList.length) {
+          jsBridge.setTitle('');
           media.setData(null);
           jsBridge.setPreference('playlistCur');
         }
         else if(res.isCur) {
-          media.setData(res.list[0]);
+          jsBridge.setTitle(hisList[0].workName);
+          media.setData({
+            worksId: hisList[0].worksId,
+            workId: hisList[0].workId,
+          });
           media.play();
           list.setCurIndex(0);
-          jsBridge.setPreference('playlistCur', res.list[0]);
+          jsBridge.setPreference('playlistCur', hisList[0]);
         }
       });
 
@@ -217,31 +257,19 @@ class Playlist extends migi.Component {
       return;
     }
     list.curTag = curTag = tvd.props.rel;
-    let count = 0;
-    function fin() {
-      if(count >=2) {
-        for(let i = 0, len = playlistCache.length; i < len; i++) {
-          let item = playlistCache[i];
-          if(playlistCur && item.worksId === playlistCur.worksId && item.workId === playlistCur.workId) {
-            list.setCurIndex(i);
-            return;
-          }
-        }
-      }
-    }
     switch(curTag) {
       case 0:
-        jsBridge.getPreference('playlist', function(res) {
-          playlistCache = res || [];
-          list.setData(playlistCache);
-          count++;
-          fin();
-        });
+        list.setData(hisList);
         if(curPlayTag === 0) {
           jsBridge.getPreference('playlistCur', function(res) {
             playlistCur = res;
-            count++;
-            fin();
+            for(let i = 0, len = hisList.length; i < len; i++) {
+              let item = hisList[i];
+              if(playlistCur && item.workId === playlistCur.workId) {
+                list.setCurIndex(i);
+                return;
+              }
+            }
           });
         }
         break;
@@ -252,14 +280,14 @@ class Playlist extends migi.Component {
             playlistCur = res;
             for(let i = 0, len = favorList.length; i < len; i++) {
               let item = favorList[i];
-              if(playlistCur && item.worksId === playlistCur.worksId && item.workId === playlistCur.workId) {
+              if(playlistCur && item.workId === playlistCur.workId) {
                 list.setCurIndex(i);
                 return;
               }
             }
           });
         }
-        if(loading || loadEnd || hasLoaded) {
+        if(loading || loadEnd || hasLoadedFavor) {
           return;
         }
         loading = true;
@@ -284,7 +312,7 @@ class Playlist extends migi.Component {
             if(curTag === 1) {
               list.setData(favorList);
             }
-            hasLoaded = true;
+            hasLoadedFavor = true;
             skip += take;
             if(skip >= data.Size) {
               loadEnd = true;
@@ -308,7 +336,7 @@ class Playlist extends migi.Component {
     }
   }
   checkMore($window) {
-    if(curTag !== 1 || loading || loadEnd || !hasLoaded) {
+    if(curTag !== 1 || loading || loadEnd || !hasLoadedFavor) {
       return;
     }
     let self = this;
@@ -350,7 +378,7 @@ class Playlist extends migi.Component {
         if(curTag === 1) {
           list.appendData(temp);
         }
-        hasLoaded = true;
+        hasLoadedFavor = true;
         skip += take;
         if(skip >= data.Size) {
           loadEnd = true;

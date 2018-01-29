@@ -236,20 +236,13 @@ class Audio extends migi.Component {
     let o = {
       worksId: self.props.worksID,
       workId: work.ItemID,
-      isLike: work.ISLike,
-      isFavor: work.ISFavor,
-      likeNum: work.LikeHis,
-      url: work.FileUrl,
-      workName: work.ItemName,
-      worksCover: self.props.cover,
-      lrc: work.lrc,
     };
     jsBridge.getPreference('playlist', function(res) {
       if(!res) {
         res = [];
       }
       for(let i = 0, len = res.length; i < len; i++) {
-        if(res[i].worksId.toString() === o.worksId.toString() && res[i].workId.toString() === o.workId.toString()) {
+        if(res[i].workId.toString() === o.workId.toString()) {
           res.splice(i, 1);
           break;
         }

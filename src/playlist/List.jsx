@@ -170,7 +170,6 @@ class List extends migi.Component {
             self.dataList.splice(index, 1);
             self.emit('del', {
               data,
-              list: self.dataList,
               isCur,
             });
             botFn.cancel();
