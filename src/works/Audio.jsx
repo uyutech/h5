@@ -27,7 +27,7 @@ class Audio extends migi.Component {
             self.canControl = true;
           }
         });
-        jsBridge.on('mediaTimeupdate', function(e) {
+        jsBridge.on('mediaTimeupdate', function(e) {console.log(e);
           if(e.data && !isStart && e.data.id.toString() === self.datas[self.index || 0].ItemID.toString()) {
             self.currentTime = e.data.currentTime * 0.001;
             self.duration = e.data.duration * 0.001;
@@ -41,6 +41,11 @@ class Audio extends migi.Component {
           if(e.data && e.data.id.toString() === self.datas[self.index || 0].ItemID.toString()) {
             let load = self.ref.load.element;
             load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
+          }
+        });
+        jsBridge.on('mediaEnd', function(e) {
+          if(e.data && e.data.id.toString() === self.datas[self.index || 0].ItemID.toString()) {
+            self.onEnded();
           }
         });
       }
@@ -312,7 +317,6 @@ class Audio extends migi.Component {
           },
         });
         this.currentTime = currentTime;
-        this.setBarPercent(percent);
       }
       else {
         this.audio.element.currentTime = this.currentTime = currentTime;

@@ -77,7 +77,7 @@ class ItemList extends migi.Component {
         playlist = self.ref.playlist;
         playlist.message = '正在加载...';
         break;
-      case 5:
+      case 4:
         waterFall = self.ref.waterFall;
         waterFall.message = '正在加载...';
         break;
@@ -106,7 +106,7 @@ class ItemList extends migi.Component {
             playlist.appendData(data.data);
             playlist.message = self.loadEnd ? '已经到底了' : '';
             break;
-          case 5:
+          case 4:
             waterFall.appendData(data.data);
             waterFall.message = self.loadEnd ? '已经到底了' : '';
             break;
@@ -134,7 +134,7 @@ class ItemList extends migi.Component {
       case 3:
         self.ref.playlist.clearData();
         break;
-      case 5:
+      case 4:
         self.ref.waterFall.clearData();
         break;
     }
@@ -240,7 +240,7 @@ class ItemList extends migi.Component {
       }
       <div ref="list"/>
       {
-        self.typeList.length
+        self.typeList.length && self.typeList.length > 1
           ? <TagList ref="tagList" dataList={ self.typeList }/>
           : ''
       }
@@ -254,7 +254,7 @@ class ItemList extends migi.Component {
           ? {
               2: <VideoList ref="videoList" dataList={ self.itemList.data }/>,
               3: <Playlist ref="playlist" dataList={ self.itemList.data }/>,
-              5: <WaterFall ref="waterFall" dataList={ self.itemList.data }/>
+              4: <WaterFall ref="waterFall" dataList={ self.itemList.data }/>
             }[tag.ID]
           : ''
       }

@@ -25,13 +25,13 @@ class MusicAlbum extends migi.Component {
       if(major > 0 || minor > 4) {
         mediaService = true;
         jsBridge.on('mediaPrepared', function(e) {
-          if(e.data && e.data.id.toString() === self.item.ItemID.toString()) {
+          if(e.data && e.data.id.toString() === self.workID.toString()) {
             self.duration = e.data.duration * 0.001;
             self.canControl = true;
           }
         });
         jsBridge.on('mediaTimeupdate', function(e) {
-          if(e.data && !isStart && e.data.id.toString() === self.item.ItemID.toString()) {
+          if(e.data && !isStart && e.data.id.toString() === self.workID.toString()) {
             self.currentTime = e.data.currentTime * 0.001;
             self.duration = e.data.duration * 0.001;
             self.updateLrc();
@@ -41,9 +41,14 @@ class MusicAlbum extends migi.Component {
           }
         });
         jsBridge.on('mediaProgress', function(e) {
-          if(e.data && e.data.id.toString() === self.item.ItemID.toString()) {
+          if(e.data && e.data.id.toString() === self.workID.toString()) {
             let load = self.ref.load.element;
             load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
+          }
+        });
+        jsBridge.on('mediaEnd', function(e) {
+          if(e.data && e.data.id.toString() === self.workID.toString()) {
+            self.onEnded();
           }
         });
       }
@@ -102,13 +107,18 @@ class MusicAlbum extends migi.Component {
               else {
                 load.innerHTML = '';
               }
+              self.currentTime = 0;
+              self.isPlaying = true;
             });
-            self.currentTime = 0;
-            self.isPlaying = false;
+            jsBridge.media({
+              key: 'play',
+            });
           }
           else {
             self.av.element.currentTime = self.currentTime = 0;
             self.addOrAltMedia();
+            self.isPlaying = true;
+            self.play();
           }
           history.replaceState(null, '', '/works.html?worksID=' + self.props.worksID + '&workID=' + self.workID);
         });
@@ -167,7 +177,7 @@ class MusicAlbum extends migi.Component {
     let isPlaying = self.isPlaying;
     self.pause();
     let type = itemTemplate.workType(self.type).bigType;
-    switch(self.type) {
+    switch(type) {
       case 'audio':
         if(!self.audio) {
           self.audio = <audio src={ self.url }
@@ -356,7 +366,19 @@ class MusicAlbum extends migi.Component {
       diff = Math.min(width, diff);
       let percent = diff / width;
       this.setBarPercent(percent);
-      this.video.element.currentTime = this.currentTime = Math.floor(this.duration * percent);
+      let currentTime = Math.floor(this.duration * percent);
+      if(mediaService) {
+        jsBridge.media({
+          key: 'seek',
+          value: {
+            time: currentTime * 1000,
+          },
+        });
+        this.currentTime = currentTime;
+      }
+      else {
+        this.av.element.currentTime = this.currentTime = currentTime;
+      }
     }
   }
   touchEnd(e) {
