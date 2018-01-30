@@ -110,9 +110,7 @@ class MusicAlbum extends migi.Component {
               self.currentTime = 0;
               self.isPlaying = true;
             });
-            jsBridge.media({
-              key: 'play',
-            });
+            self.play();
           }
           else {
             self.av.element.currentTime = self.currentTime = 0;

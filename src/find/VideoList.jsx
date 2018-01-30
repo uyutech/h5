@@ -71,7 +71,7 @@ class VideoList extends migi.Component {
     let author = item.GroupAuthorTypeHash.AuthorTypeHashlist[0] || {};
     return <li>
       <a href={ url } title={ item.ItemName } class="pic">
-        <img src={ util.autoSsl(util.img750__80(works.WorksCoverPic || '/src/common/blank.png')) }/>
+        <img src={ util.autoSsl(util.img750__80(item.ItemCoverPic || works.WorksCoverPic || '/src/common/blank.png')) }/>
         <div class="num">
           <span class="play-times">{ util.abbrNum(item.PlayHis) }次播放</span>
         </div>

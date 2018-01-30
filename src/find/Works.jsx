@@ -54,7 +54,7 @@ class Works extends migi.Component {
               return <dd>
                 <a href={ '/author.html?authorId=' + item.AuthorID }
                    title={ item.AuthorName }>
-                  <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/blank.png')) }/>
+                  <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/head.png')) }/>
                   <span>{ item.AuthorName }</span>
                 </a>
               </dd>;
