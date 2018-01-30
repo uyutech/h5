@@ -163,7 +163,9 @@ class Circling extends migi.Component {
   genDom() {
     let self = this;
     return <div>
-      <HotCircle ref="hotCircle" dataList={ self.hotCircleList.data }/>
+      <HotCircle ref="hotCircle"
+                 dataList={ self.hotCircleList.data }
+                 more={ '/allcircles.html' }/>
       <ul class="circles" ref="circles" onClick={ { li: self.clickTag.bind(self) } }>
         <li class="cur">全部</li>
         {

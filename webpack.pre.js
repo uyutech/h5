@@ -17,7 +17,7 @@ module.exports = {
     // allworks: './src/allworks/pre.jsx',
     // allalbums: './src/allalbums/pre.jsx',
     // allauthors: './src/allauthors/pre.jsx',
-    // allcircles: './src/allcircles/pre.jsx',
+    allcircles: './src/allcircles/pre.jsx',
     private: './src/private/pre.jsx',
     mall: './src/mall/pre.jsx',
     mall_new: './src/mall_new/pre.jsx',

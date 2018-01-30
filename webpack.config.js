@@ -20,7 +20,7 @@ module.exports = {
     // allworks: './src/allworks/index.jsx',
     // allalbums: './src/allalbums/index.jsx',
     // allauthors: './src/allauthors/index.jsx',
-    // allcircles: './src/allcircles/index.jsx',
+    allcircles: './src/allcircles/index.jsx',
     private: './src/private/index.jsx',
     mall: './src/mall/index.jsx',
     mall_new: './src/mall_new/index.jsx',
