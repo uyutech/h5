@@ -65,7 +65,7 @@ class VideoList extends migi.Component {
     }.bind(this));
     $(this.ref.list.element).append(s);
   }
-  genItem(item) {
+  genItem(item) {console.log(item)
     let works = item.Works_Items_Works[0];
     let url = '/works.html?worksID=' + works.WorksID + '&workID=' + item.ItemID;
     let author = item.GroupAuthorTypeHash.AuthorTypeHashlist[0] || {};

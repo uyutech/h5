@@ -93,7 +93,7 @@ class Playlist extends migi.Component {
     }.bind(this));
     $(this.ref.list.element).append(s);
   }
-  genItem(item) {console.log(item);
+  genItem(item) {
     if(item.WorksState === 3) {
       return <li class="private">
         <span class="name">待揭秘</span>
@@ -130,7 +130,7 @@ class Playlist extends migi.Component {
           return item.AuthorName;
         }).join(' ') }</p>
       </div>
-      <b class="video"/>
+      {/*<b class="video"/>*/}
       <b class="fn" workID={ item.ItemID } isLike={ item.ISLike } isFavor={ item.ISFavor }/>
     </li>;
   }

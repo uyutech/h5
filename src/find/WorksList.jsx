@@ -51,7 +51,7 @@ class WorksList extends migi.Component {
             return <li class={ 't' + item.WorkType }>
               <a href={ '/works.html?worksID=' + item.WorksID } title={ item.Title } class="pic">
                 <img src={ util.autoSsl(util.img170_170_80(item.cover_Pic)) }/>
-                <span>{ item.Popular }</span>
+                <span>{ item.CommentCount }</span>
               </a>
               <a href={ '/works.html?worksID=' + item.WorksID } title={ item.Title } class="name">{ item.Title }</a>
               <p class="author">{ (author.AuthorInfo || []).map(function(item) {

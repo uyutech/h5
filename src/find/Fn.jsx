@@ -68,7 +68,7 @@ class Fn extends migi.Component {
       </label>
       <span onClick={ this.clickSort }>{ this.sortText || '按时间' }</span>
       <ul class={ this.showSort ? '' : 'fn-hide' } onClick={ { li: this.clickSelSort } }>
-        <li class="cur" rel="0">按时间</li>
+        <li class="cur" rel="">按时间</li>
         <li rel="1">按热度</li>
       </ul>
       <div class={ 'pop' + (this.showPop ? ' on' : '') }>
