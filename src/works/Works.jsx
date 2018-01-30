@@ -246,7 +246,7 @@ class Works extends migi.Component {
           $(self.ref.comments.element).removeClass('fn-hide');
         }
       }
-      else if(self.worksType === WorksTypeEnum.TYPE.originMusic) {
+      else {
         if(rel === 'intro') {
           self.ref.comments && $(self.ref.comments.element).addClass('fn-hide');
           $(self.ref.intro.element).removeClass('fn-hide');
