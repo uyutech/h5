@@ -20,7 +20,6 @@ class SubCmt extends migi.Component {
     self.toPlaceholder = self.props.toPlaceholder;
     self.originTo = self.props.originTo;
     self.readOnly = self.props.readOnly;
-    self.shareUrl = self.props.shareUrl;
   }
   @bind hidden
   @bind maxlength
@@ -33,7 +32,6 @@ class SubCmt extends migi.Component {
   @bind originTo
   @bind invalid = true
   @bind readOnly
-  @bidn shareUrl
   input(e, vd) {
     if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
@@ -61,18 +59,23 @@ class SubCmt extends migi.Component {
     this.to = '';
     migi.eventBus.emit('subCmtDelTo');
   }
-  clickShare() {
-    migi.eventBus.emit('SHARE', this.shareUrl);
-  }
   render() {
     return <div class={ 'cp-subcmt' + (!this.hidden ? '' : ' fn-hide') }>
-      <form class={ 'fn-clear' + (this.to || this.originTo ? ' to' : '') } ref="form" onSubmit={ this.submit }>
-        <label onClick={ this.click }>TO: { this.to || this.originTo }</label>
+      <form class={ 'fn-clear' + (this.to || this.originTo ? ' to' : '') } ref="form" onSubmit={ this.submit } onClick={ this.click }>
+        <label>TO: { this.to || this.originTo }</label>
         <b class={ 'del' + (this.to ? '' : ' fn-hide') } onClick={ this.clickDel }/>
         <input type="text" class="text" ref="input" placeholder={ this.to ? ('回复' + this.to + (this.toPlaceholder || '的评论')) : this.placeholder }
                onInput={ this.input } onFocus={ this.onFocus } maxlength={ this.maxlength || 2048 }
-               value={ this.value } readonly={ this.readOnly} onClick={ this.click }/>
-        <button class={ 'share' + (this.shareUrl ? '' : ' fn-hide') } onClick={ this.clickShare }/>
+               value={ this.value } readonly={ this.readOnly}/>
+        <input type="submit"
+               class={ 'submit' + (this.invalid ? ' dis' : '') }
+               value={ this.value.trim().length
+                 ? this.value.trim().length < 3
+                   ? this.tipText
+                     ? this.tipText.replace('${n}', (3 - this.value.trim().length))
+                     : '还少' + (3 - this.value.trim().length) + '个字哦'
+                   : this.subText || '发布评论'
+                 : this.subText || '发布评论' }/>
       </form>
     </div>;
   }

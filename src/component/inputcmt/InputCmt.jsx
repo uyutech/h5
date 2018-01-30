@@ -36,8 +36,8 @@ class InputCmt extends migi.Component {
   clickInput() {
     this.emit('click');
   }
-  clickFn() {
-    this.emit('fn');
+  clickShare() {
+    this.emit('share');
   }
   render() {
     return <div class={ 'cp-inputcmt' + (this.hidden ? ' fn-hide' : '') }>
@@ -46,7 +46,7 @@ class InputCmt extends migi.Component {
              placeholder={ this.placeholder }
              readOnly={ this.readOnly }
              onClick={ this.clickInput }/>
-      <b class="fn" onClick={ this.clickFn }/>
+      <b class="share" onClick={ this.clickShare }/>
     </div>;
   }
 }

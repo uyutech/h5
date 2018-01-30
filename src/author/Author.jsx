@@ -18,6 +18,13 @@ import Background from '../component/background/Background.jsx';
 class Author extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      let inputCmt = self.ref.inputCmt;
+      inputCmt.on('share', function() {
+        migi.eventBus.emit('SHARE', '/author/' + self.authorId);
+      });
+    });
   }
   @bind authorId
   @bind type
