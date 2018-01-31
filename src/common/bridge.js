@@ -22,6 +22,9 @@ let jsBridge = {
   appVersion: appVersion,
   android: !ios,
   ios,
+  call: function(data) {
+    ZhuanQuanJsBridgeNative.call(JSON.stringify(data));
+  },
   ready: function(cb) {
     cb = cb || function() {};
     if(this.isInApp) {
@@ -68,24 +71,25 @@ let jsBridge = {
   },
   pushWindow: function(url, params) {
     if(this.isInApp) {
-      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-        url = url.trim();
-        if (url) {
-          if (/^\w+:\/\//i.test(url)) {
-          }
-          else if (/^\//.test(url)) {
-            url = location.origin + url;
-          }
-          else {
-            let i = location.href.lastIndexOf('/');
-            url = location.href.slice(0, i) + '/' + url;
-          }
-          params = params || {};
-          ZhuanQuanJSBridge.call('pushWindow', {
+      url = url.trim();
+      if(url) {
+        if (/^\w+:\/\//i.test(url)) {
+        }
+        else if (/^\//.test(url)) {
+          url = location.origin + url;
+        }
+        else {
+          let i = location.href.lastIndexOf('/');
+          url = location.href.slice(0, i) + '/' + url;
+        }
+        params = params || {};
+        this.call({
+          key: 'pushWindow',
+          value: {
             url,
             params,
-          });
-        }
+          },
+        });
       }
     }
     else {
