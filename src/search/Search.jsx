@@ -10,30 +10,40 @@ import util from '../common/util';
 let skip = 0;
 let take = 30;
 let loading;
-let type = '0';
+let ajax;
 
 class Search extends migi.Component {
   constructor(...data) {
     super(...data);
+    this.type = '0';
   }
   @bind value
+  @bind type
   @bind authorList
   @bind tagList
   @bind userList
   @bind worksList
   change(e, vd) {
-    type = vd.element.value
+    this.type = vd.element.value;
   }
   submit(e) {
     e.preventDefault();
+    this.load();
+  }
+  load() {
     let self = this;
-    let keyword = self.value.trim();
+    let keyword = (self.value || '').trim();
     if(!keyword || loading) {
       return;
     }
     loading = true;
-    let cType = type;
-    net.postJSON('/h5/find/search', { keyword, type, skip, take }, function(res) {
+    let cType = this.type;
+    if(ajax) {
+      ajax.abort();
+    }
+    let $message = $(self.ref.message.element);
+    $message.addClass('fn-hide');
+    ajax = net.postJSON('/h5/find/search', { keyword, type: cType, skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         let $author = $(self.ref.author.element);
@@ -44,6 +54,13 @@ class Search extends migi.Component {
         $user.addClass('fn-hide');
         $works.addClass('fn-hide');
         $tag.addClass('fn-hide');
+        if(data.data.length) {
+          $message.addClass('fn-hide');
+        }
+        else {
+          $message.removeClass('fn-hide');
+          $message.addClass('empty');
+        }
         switch(cType) {
           case '0':
             self.authorList = data.data;
@@ -105,18 +122,41 @@ class Search extends migi.Component {
       title,
     });
   }
+  clickClear() {
+    let self = this;
+    self.value = '';
+    self.authorList = [];
+    self.userList = [];
+    self.worksList = [];
+    self.tagList = [];
+    if(ajax) {
+      ajax.abort();
+    }
+    let $message = $(self.ref.message.element);
+    $message.removeClass('fn-hide empty');
+  }
+  clickBack() {
+    jsBridge.popWindow();
+  }
+  clickType(e, vd, tvd) {
+    this.type = tvd.props.rel;
+    this.load();
+  }
   render() {
     return <div class="search">
-      <form class="input" onSubmit={ this.submit }>
-        <select onChange={ this.change }>
-          <option value="0">作者</option>
-          <option value="1">用户</option>
-          <option value="2">作品</option>
-          <option value="3">标签</option>
-        </select>
-        <input type="text" value={ this.value } class="text" placeholder="请输入搜索内容"/>
-        <input type="submit" value="确定" class="sub"/>
-      </form>
+      <div class="top">
+        <form class="input" onSubmit={ this.submit }>
+          <input type="text" value={ this.value } class="text" placeholder="请输入搜索内容" maxlength="20"/>
+          <b class={ 'clear' + (this.value ? '' : ' fn-hide') } onClick={ this.clickClear }/>
+        </form>
+        <span class="back" onClick={ this.clickBack }>取消</span>
+      </div>
+      <ul class="type" onClick={ { li: this.clickType } }>
+        <li class={ this.type === '0' ? 'cur' : '' } rel="0">作者</li>
+        <li class={ this.type === '1' ? 'cur' : '' } rel="1">用户</li>
+        <li class={ this.type === '2' ? 'cur' : '' } rel="2">作品</li>
+        <li class={ this.type === '3' ? 'cur' : '' } rel="3">标签</li>
+      </ul>
       <ul class="author fn-clear fn-hide" ref="author" onClick={ { a: this.clickAuthor } }>
         {
           (this.authorList || []).map(function(item) {
@@ -167,6 +207,7 @@ class Search extends migi.Component {
           })
         }
       </ul>
+      <div class="message fn-hide1" ref="message"/>
     </div>;
   }
 }
