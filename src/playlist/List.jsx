@@ -172,8 +172,12 @@ class List extends migi.Component {
             self.emit('del', {
               data,
               isCur,
+              favor: self.curTag === 1,
             });
             botFn.cancel();
+            if(self.curTag === 1) {
+              net.postJSON('/h5/works/favorWork', { workID: data.workId });
+            }
           }
         });
       },
@@ -186,10 +190,7 @@ class List extends migi.Component {
           if(res.success) {
             let data2 = res.data;
             data.isFavor = botFn.isFavor = data2.State === 'favorWork';
-            self.emit('favorWork', {
-              data,
-              list: self.dataList,
-            });
+            migi.eventBus.emit('favorWork', data);
           }
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -209,10 +210,7 @@ class List extends migi.Component {
           if(res.success) {
             let data2 = res.data;
             data.isLike = botFn.isLike = data2.State === 'likeWordsUser';
-            self.emit('likeWork', {
-              data,
-              list: self.dataList,
-            });
+            migi.eventBus.emit('likeWork', data);
           }
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
