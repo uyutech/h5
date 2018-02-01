@@ -130,7 +130,7 @@ class Comment extends migi.Component {
           });
         });
       });
-      $root.on('click', '.author a', function(e) {
+      $root.on('click', 'li.author a', function(e) {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
@@ -140,7 +140,7 @@ class Comment extends migi.Component {
           title,
         });
       });
-      $root.on('click', '.user', function(e) {
+      $root.on('click', 'li.user a', function(e) {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
