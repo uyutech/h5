@@ -217,12 +217,7 @@ class Playlist extends migi.Component {
             return;
           }
         }
-        if(!res.hisList.length) {
-          jsBridge.setTitle('');
-          media.setData(null);
-          jsBridge.setPreference('playlistCur');
-        }
-        else if(res.isCur) {
+        if(res.isCur) {
           jsBridge.setTitle(hisList[0].workName);
           media.setData({
             worksId: hisList[0].worksId,

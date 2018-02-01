@@ -47,7 +47,7 @@ class List extends migi.Component {
   setData(data) {
     let self = this;
     self.clearData();
-    self.dataList = data || [];
+    self.dataList = (data || []).concat();
     let s = '';
     data.forEach(function(item, i) {
       s += self.genItem(item, i) || '';
@@ -160,7 +160,8 @@ class List extends migi.Component {
     migi.eventBus.emit('BOT_FN', {
       isLike: data.isLike,
       isFavor: data.isFavor,
-      canDel: self.curTag === 0,
+      canDel: true,
+      delText: '移除列表',
       clickDel: function(botFn) {
         jsBridge.confirm('确认删除吗？', function(res) {
           if(res) {
