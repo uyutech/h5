@@ -191,7 +191,7 @@ class Search extends migi.Component {
             return <li class={ 't' + item.WorkType }>
               <a href={ '/works.html?worksID=' + item.WorkID } title={ item.WorkName } class="pic">
                 <img src={ util.autoSsl(util.img170_170_80(item.CoverPic)) }/>
-                <span>{ item.Popular }</span>
+                <span>{ item.CommentCount }</span>
               </a>
               <a href={ '/works.html?worksID=' + item.WorkID } title={ item.WorkName } class="name">{ item.WorkName }</a>
             </li>;
