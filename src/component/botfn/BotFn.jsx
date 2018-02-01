@@ -15,6 +15,7 @@ class BotFn extends migi.Component {
     let self = this;
     self.on(migi.Event.DOM, function() {
       migi.eventBus.on('BOT_FN', function(data) {
+        self.delText = data.delText;
         self.canDel = data.canDel;
         self.isFavor = data.isFavor;
         self.isLike = data.isLike;
@@ -37,6 +38,7 @@ class BotFn extends migi.Component {
       });
     });
   }
+  @bind delText
   @bind canDel;
   @bind isFavor
   @bind isLike
@@ -78,9 +80,9 @@ class BotFn extends migi.Component {
     return <div class={ 'cp-botfn' + (this.pop ? ' on' : '') }>
       <div class={ 'c' + (this.pop ? ' on' : '') }>
         <ul class="list">
-          <li class={ 'like' + (this.isLike ? ' liked' : '') } onClick={ this.clickLike }><b/>点赞</li>
-          <li class={ 'favor' + (this.isFavor ? ' favored' : '') } onClick={ this.clickFavor }><b/>收藏</li>
-          <li class={ 'del' + (this.canDel ? '' : ' fn-hide') } ref="del" onClick={ this.clickDel }><b/>删除</li>
+          <li class={ 'like' + (this.isLike ? ' liked' : '') } onClick={ this.clickLike }><b/>{ this.isLike ? '已点赞' : '点赞' }</li>
+          <li class={ 'favor' + (this.isFavor ? ' favored' : '') } onClick={ this.clickFavor }><b/>{ this.isFavor ? '已收藏' : '收藏' }</li>
+          <li class={ 'del' + (this.canDel ? '' : ' fn-hide') } ref="del" onClick={ this.clickDel }><b/>{ this.delText || '删除' }</li>
         </ul>
         <button class="cancel" onClick={ this.clickCancel }>取消</button>
       </div>

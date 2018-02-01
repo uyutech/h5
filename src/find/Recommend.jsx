@@ -24,6 +24,22 @@ let ajax;
 class Recommend extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      let $window = $(window);
+      let WIN_HEIGHT = $window.height();
+      $window.on('scroll', function() {
+        if(!visible || loadEnd || loading) {
+          return;
+        }
+        let HEIGHT = $(document.body).height();
+        let bool;
+        bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
+        if(bool) {
+          self.loadMore();
+        }
+      });
+    });
   }
   @bind hasData
   @bind message

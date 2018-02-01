@@ -27,7 +27,8 @@ class Nav extends migi.Component {
   @bind dataList
   click() {
     jsBridge.pushWindow('/search.html', {
-      title: '搜索',
+      hideBackButton: true,
+      transparentTitle: true,
     });
   }
   render() {

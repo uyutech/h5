@@ -116,7 +116,7 @@ let jsBridge = {
   },
   showLoading: function(s) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      if (isString(s)) {
+      if(isString(s)) {
         s = {
           title: '',
           message: s || '加载中...',
@@ -141,7 +141,7 @@ let jsBridge = {
   },
   alert: function(s) {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      if (isString(s)) {
+      if(isString(s)) {
         s = {
           title: '',
           message: s || '消息'
@@ -428,8 +428,8 @@ let jsBridge = {
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       if(isString(data)) {
         data = {
-
-        }
+          text: data,
+        };
       }
       ZhuanQuanJSBridge.call('setOptionMenu', data);
     }
