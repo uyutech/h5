@@ -78,8 +78,8 @@ class BotFn extends migi.Component {
     return <div class={ 'cp-botfn' + (this.pop ? ' on' : '') }>
       <div class={ 'c' + (this.pop ? ' on' : '') }>
         <ul class="list">
-          <li class={ 'like' + (this.isLike ? ' liked' : '') } onClick={ this.clickLike }><b/>点赞</li>
-          <li class={ 'favor' + (this.isFavor ? ' favored' : '') } onClick={ this.clickFavor }><b/>收藏</li>
+          <li class={ 'like' + (this.isLike ? ' liked' : '') } onClick={ this.clickLike }><b/>{ this.isLike ? '已点赞' : '点赞' }</li>
+          <li class={ 'favor' + (this.isFavor ? ' favored' : '') } onClick={ this.clickFavor }><b/>{ this.isFavor ? '已收藏' : '收藏' }</li>
           <li class={ 'del' + (this.canDel ? '' : ' fn-hide') } ref="del" onClick={ this.clickDel }><b/>删除</li>
         </ul>
         <button class="cancel" onClick={ this.clickCancel }>取消</button>
