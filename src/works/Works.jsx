@@ -6,73 +6,283 @@
 
 import net from "../common/net";
 import util from "../common/util";
-import WorksTypeEnum from './WorksTypeEnum';
-import itemTemplate from './itemTemplate';
+// import WorksTypeEnum from './WorksTypeEnum';
+// import itemTemplate from './itemTemplate';
+// import worksState from './worksState';
+// import Lyric from './Lyric.jsx';
+// import Timeline from './Timeline.jsx';
+// import Insp from './Insp.jsx';
+// import Poster from './Poster.jsx';
+// import Comments from './Comments.jsx';
+// import Text from './Text.jsx';
+// import SubCmt from '../component/subcmt/SubCmt.jsx';
+// import LyricsParser from './LyricsParser.jsx';
+// import MusicAlbum from './MusicAlbum.jsx';
+// import PlayList from './PlayList.jsx';
+// import ImageView from './ImageView.jsx';
+// import Describe from './Describe.jsx';
+// import PhotoAlbum from './PhotoAlbum.jsx';
+
 import Media from './Media.jsx';
-import worksState from './worksState';
+import Info from './Info.jsx';
+import Select from './Select.jsx';
+import Column from './Column.jsx';
 import Author from './Author.jsx';
-import Lyric from './Lyric.jsx';
-import Timeline from './Timeline.jsx';
-import Insp from './Insp.jsx';
 import Poster from './Poster.jsx';
-import Comments from './Comments.jsx';
-import Text from './Text.jsx';
-import SubCmt from '../component/subcmt/SubCmt.jsx';
-import LyricsParser from './LyricsParser.jsx';
-import MusicAlbum from './MusicAlbum.jsx';
-import PlayList from './PlayList.jsx';
-import ImageView from './ImageView.jsx';
-import Describe from './Describe.jsx';
-import PhotoAlbum from './PhotoAlbum.jsx';
+import CommentWrap from './CommentWrap.jsx';
+import InputCmt from '../component/inputcmt/InputCmt.jsx';
 
 let first;
+let worksId;
+let workId;
+let curWorkId;
+let TEMPLATE = {
+  1: 0,
+  2: 0,
+  3: 0,
+  4: 0,
+  7: 0,
+  5: 1,
+  6: 1,
+  11: 2,
+  12: 2,
+};
+let template;
+let worksDetail;
+let workList = [];
+
+function hide(arr) {
+  arr.forEach(function(cp) {
+    if(cp && cp.element) {
+      $(cp.element).addClass('fn-hidden');
+    }
+  });
+}
 
 class Works extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    worksId = self.props.worksId;
+    workId = self.props.workId;
+    curWorkId = workId;
+    self.on(migi.Event.DOM, function() {
+      net.postJSON('/h5/works/index', { worksID: worksId, workID: workId }, function(res) {
+        if(res.success) {
+          self.setData(res.data);
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      });
+    });
   }
-  @bind hasData
-  @bind worksID
-  @bind workID
-  @bind worksType
-  setData(worksID, workID, data) {
+  @bind curColumn
+  setData(data) {
     let self = this;
-    self.worksID = worksID;
-    self.workID = workID;
-    self.worksType = data.worksDetail.WorkType;
-    self.worksDetail = data.worksDetail;
-    self.commentData = data.commentData;
-    self.setWorks(data.worksDetail);
+    let info = self.ref.info;
+    let select = self.ref.select;
+    let author = self.ref.author;
+    let comment = self.ref.comment;
+    worksDetail = data.worksDetail;
+    workList = worksDetail.Works_Items || [];
 
-    self.hasData = true;
+    jsBridge.setSubTitle(worksDetail.sub_Title);
+    template = TEMPLATE[worksDetail.WorkType];
 
-    let subCmt = self.ref.subCmt;
-    subCmt.on('click', function() {
-      if(subCmt.to) {
-        jsBridge.pushWindow('/subcomment.html?type=3&id='
-          + self.worksID + '&sid=' + (self.workID || '') + '&cid=' + self.cid + '&rid=' + self.rid, {
-          title: '评论',
-        });
-      }
-      else {
-        jsBridge.pushWindow('/subcomment.html?type=3&id='
-          + self.worksID + '&sid=' + (self.workID || ''), {
-          title: '评论',
-        });
+    // 音视频区域初始化
+    let seq = [2111,2112,2113,2000,2001,2002,2003,1220,1210,1230,1111,1121,1112,1122,1114,1113,1123,1140,1131,1132];
+    migi.sort(workList, function(a, b) {
+      return seq.indexOf(a.ItemType) > seq.indexOf(b.ItemType);
+    });
+    if(template === 0 || template === 1) {
+      self.setMedia(workId);
+    }
+
+    let hash = {};
+    workList.map(function(item) {
+      if(item.ItemType === 3120) {
+        hash.poster = true;
       }
     });
 
-    let imageView = self.ref.imageView;
-    if(imageView) {
-      jsBridge.on('back', function(e) {
-        if(!imageView.isHide()) {
-          e.preventDefault();
-          imageView.hide();
+    info.worksType = worksDetail.WorkType;
+    info.title = worksDetail.Title;
+    info.subTitle = worksDetail.sub_Title;
+    info.state = worksDetail.WorkState;
+
+    select.workId = workId;
+    select.list = workList;
+
+    let commentData = data.commentData;
+    self.setColumn(hash, commentData);
+    author.list = worksDetail.GroupAuthorTypeHash;
+    self.setText(workList);
+    if(hash.poster) {
+      self.setPoster(workList);
+    }
+    comment.setData(commentData);
+  }
+  setMedia(workId) {
+    let item;
+    if(workId) {
+      for(let i = 0, len = workList.length; i < len; i++) {
+        if(/^[12]/.test(workList[i].ItemType) && workList[i].ItemID === workId) {
+          item = workList[i];
+          break;
         }
-      });
+      }
+    }
+    else {
+      for(let i = 0, len = workList.length; i < len; i++) {
+        if(/^[12]/.test(workList[i].ItemType)) {
+          item = workList[i];
+          break;
+        }
+      }
+    }
+    if(item) {
+      let o = {
+        worksId,
+        workId: item.ItemID,
+        workType: item.ItemType,
+        worksTitle: worksDetail.Title,
+        workTitle: item.ItemName,
+        url: item.FileUrl,
+        isFavor: item.ISFavor,
+        isLike: item.ISLike,
+        worksCover: worksDetail.cover_Pic,
+        workCover: item.ItemCoverPic,
+        likeNum: item.LikeHis,
+        lrc: item.lrc,
+      };
+      this.ref.media.setData(o);
     }
   }
+  setColumn(hash, commentData) {
+    let self = this;
+    let column = self.ref.column;
+    let list;
+    switch(template) {
+      case 0:
+        list = [
+          {
+            id: 0,
+            name: '简介',
+          }
+        ];
+        if(hash.poster) {
+          list.push({
+            id: 1,
+            name: '海报',
+          });
+        }
+        list.push({
+          id: 2,
+          name: '评论 ' + (commentData.Count || ''),
+        });
+        self.curColumn = 0;
+        break;
+      case 1:
+        list = [
+          {
+            id: 3,
+            name: '曲目',
+          },
+          {
+            id: 0,
+            name: '简介',
+          }
+        ];
+        if(hash.poster) {
+          list.push({
+            id: 1,
+            name: '海报',
+          });
+        }
+        list.push({
+          id: 2,
+          name: '评论 ' + (commentData.Count || ''),
+        });
+        self.curColumn = 3;
+        break;
+      case 2:
+        list = [
+          {
+            id: 4,
+            name: '相册',
+          },
+          {
+            id: 0,
+            name: '简介',
+          },
+          {
+            id: 2,
+            name: '评论 ' + (commentData.Count || ''),
+          }
+        ];
+        self.curColumn = 4;
+        break;
+    }
+    column.list = list;
+  }
+  setText(list = []) {
+    let res = [];
+    list.forEach(function(item) {
+      if(item.ItemType.toString().charAt(0) === '4') {
+        res.push(item);
+      }
+    });
+    this.textWorkList = res;
+  }
+  setPoster(list = []) {
+    let res = [];
+    list.forEach(function(item) {
+      if(item.ItemType === 3120) {
+        res.push(item);
+      }
+    });
+    this.ref.poster.list = res;
+  }
+  // setData(worksID, workID, data) {
+  //   let self = this;
+  //   self.worksID = worksID;
+  //   self.workID = workID;
+  //   self.worksType = data.worksDetail.WorkType;
+  //   self.worksDetail = data.worksDetail;
+  //   self.commentData = data.commentData;
+  //   self.setWorks(data.worksDetail);
+  //
+  //   self.hasData = true;
+  //
+  //   let subCmt = self.ref.subCmt;
+  //   subCmt.on('click', function() {
+  //     if(subCmt.to) {
+  //       jsBridge.pushWindow('/subcomment.html?type=3&id='
+  //         + self.worksID + '&sid=' + (self.workID || '') + '&cid=' + self.cid + '&rid=' + self.rid, {
+  //         title: '评论',
+  //       });
+  //     }
+  //     else {
+  //       jsBridge.pushWindow('/subcomment.html?type=3&id='
+  //         + self.worksID + '&sid=' + (self.workID || ''), {
+  //         title: '评论',
+  //       });
+  //     }
+  //   });
+  //
+  //   let imageView = self.ref.imageView;
+  //   if(imageView) {
+  //     jsBridge.on('back', function(e) {
+  //       if(!imageView.isHide()) {
+  //         e.preventDefault();
+  //         imageView.hide();
+  //       }
+  //     });
+  //   }
+  // }
   setWorks(worksDetail) {
     let self = this;
     let works = worksDetail.Works_Items;
@@ -437,18 +647,71 @@ class Works extends migi.Component {
               placeholder="夸夸这个作品吧"/>
     </div>;
   }
+  changeColumn(id) {
+    let self = this;
+    self.curColumn = id;
+    switch(id) {
+      case 2:
+        self.ref.comment.show();
+        break;
+      default:
+        self.ref.comment.hide();
+        break;
+    }
+  }
+  share() {
+    migi.eventBus.emit('SHARE', '/works/' + worksId + (curWorkId ? ('/' + curWorkId) : ''));
+  }
+  change(workId) {
+    this.setMedia(workId);
+  }
   render() {
     return <div class="works">
-      {
-        this.hasData
-          ? this.genDom()
-          : <div>
-              <div class="fn-placeholder-pic"/>
-              <div class="fn-placeholder-tags"/>
-              <div class="fn-placeholder"/>
-              <div class="fn-placeholder"/>
-            </div>
-      }
+      <Media ref="media"/>
+      <Info ref="info"/>
+      <Select ref="select"
+              workId={ workId }
+              on-change={ this.change.bind(this) }/>
+      <Column ref="column" on-change={ this.changeColumn.bind(this) }/>
+      <div class={ 'intro' + (this.curColumn === 0 ? '' : ' fn-hide') }>
+        <Author ref="author"/>
+        {
+          (this.textWorkList || []).map(function(item) {
+            switch(item.ItemType) {
+              case 4110:
+                return <Text title="文案" data={ item.Text }/>;
+              case 4120:
+                return <Text title="随笔" data={ item.Text }/>;
+              case 4210:
+                return <Text title="诗词" data={ item.Text }/>;
+              case 4211:
+                return <Text title="原创歌词" data={ item.Text }/>;
+              case 4212:
+                return <Text title="改编歌词" data={ item.Text }/>;
+              case 4310:
+                return <Text title="小说" data={ item.Text }/>;
+              case 4320:
+                return <Text title="剧本" data={ item.Text }/>;
+              case 4330:
+                return <Text title="散文" data={ item.Text }/>;
+              case 4340:
+                return <Text title="故事" data={ item.Text }/>;
+            }
+          }.bind(this))
+        }
+      </div>
+      <div class={ 'poster' + (this.curColumn === 1 ? '' : ' fn-hide') }>
+        {
+          <Poster title="海报" ref="poster"/>
+        }
+      </div>
+      <div class={ 'comment' + (this.curColumn === 2 ? '' : ' fn-hide') }>
+        <CommentWrap ref="comment" worksId={ worksId }/>
+      </div>
+      <InputCmt ref="inputCmt"
+                placeholder={ '发表评论...' }
+                readOnly={ true }
+                on-share={ this.share.bind(this) }/>
     </div>;
   }
 }

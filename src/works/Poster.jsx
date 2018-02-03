@@ -10,6 +10,7 @@ class Poster extends migi.Component {
   constructor(...data) {
     super(...data);
   }
+  @bind list
   click(e, vd, tvd) {
     e.preventDefault();
     let url = tvd.props.href;
@@ -17,10 +18,10 @@ class Poster extends migi.Component {
   }
   render() {
     return <div class="mod mod-poster">
-      <h5>{ this.props.datas.name }</h5>
+      <h5>{ this.props.title }</h5>
       <ul class="c" onClick={ { a: this.click } }>
         {
-          (this.props.datas.value || []).map(function(item) {
+          (this.list || []).map(function(item) {
             return <li>
               <a href={ util.autoSsl(item.FileUrl) || '/src/common/blank.png' }>
                 <img src={ util.autoSsl(util.img720__80(item.FileUrl)) || '/src/common/blank.png' }/>

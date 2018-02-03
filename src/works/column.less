@@ -1,0 +1,44 @@
+/**
+ * Created by army8735 on 2018/2/2.
+ */
+
+.mod-column{
+  display:flex;
+  li{
+    position:relative;
+    flex:1;
+    color:#9C9C9C;
+    text-align:center;
+    line-height:0.3rem;
+    &.cur{
+      background:linear-gradient(#5D99C4, #B9D9ED);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      &:after{
+        position:absolute;
+        left:50%;
+        bottom:0;
+        width:0.4rem;
+        height:0.01rem;
+        background:#8BBDE1;
+        border-radius:0.01rem;
+        content:' ';
+        transform:translateX(-50%);
+      }
+    }
+    &:before{
+      position:absolute;
+      left:0;
+      top:50%;
+      width:1px;
+      height:0.12rem;
+      background:#D5E0E6;
+      content:' ';
+      transform:translateY(-50%) scaleX(0.5);
+      &:first-child{
+        display:none;
+        content:'';
+      }
+    }
+  }
+}

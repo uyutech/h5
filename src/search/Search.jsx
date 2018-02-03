@@ -110,7 +110,8 @@ class Search extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
+    util.openWorks({
+      url,
       title,
     });
   }
@@ -189,11 +190,11 @@ class Search extends migi.Component {
             let AuthorTypeHashlist = GroupAuthorTypeHash.AuthorTypeHashlist || [];
             let author = AuthorTypeHashlist[0] || {};
             return <li class={ 't' + item.WorkType }>
-              <a href={ '/works.html?worksID=' + item.WorkID } title={ item.WorkName } class="pic">
+              <a href={ '/works.html?worksId=' + item.WorkID } title={ item.WorkName } class="pic">
                 <img src={ util.autoSsl(util.img170_170_80(item.CoverPic)) }/>
                 <span>{ item.CommentCount }</span>
               </a>
-              <a href={ '/works.html?worksID=' + item.WorkID } title={ item.WorkName } class="name">{ item.WorkName }</a>
+              <a href={ '/works.html?worksId=' + item.WorkID } title={ item.WorkName } class="name">{ item.WorkName }</a>
             </li>;
           })
         }

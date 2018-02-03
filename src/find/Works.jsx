@@ -18,7 +18,8 @@ class Works extends migi.Component {
         let $this = $(this);
         let url = $this.attr('href');
         let title = $this.attr('title');
-        jsBridge.pushWindow(url, {
+        util.openWorks({
+          url,
           title,
         });
       });
@@ -39,14 +40,14 @@ class Works extends migi.Component {
     let works = data.worklist[0];
     let author = ((works.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     return <div class={ 'mod-works' + (this.props.last ? ' last' : '') }>
-      <a href={ '/works.html?worksID=' + works.WorksID } title={ works.Title } class="pic">
+      <a href={ '/works.html?worksId=' + works.WorksID } title={ works.Title } class="pic">
         <img src={ util.autoSsl(util.img250_250_80(data.coverpic || works.cover_Pic)) || '/src/common/blank.png' }/>
         <div>
           <span>{ data.Describe }</span>
         </div>
       </a>
       <div class="txt">
-        <a href={ '/works.html?worksID=' + works.WorksID } title={ works.Title } class="name">{ works.Title }</a>
+        <a href={ '/works.html?worksId=' + works.WorksID } title={ works.Title } class="name">{ works.Title }</a>
         <dl>
           <dt>{ author.Describe }</dt>
           {
@@ -61,7 +62,7 @@ class Works extends migi.Component {
             })
           }
         </dl>
-        <a href={ '/works.html?worksID=' + works.WorksID } title={ works.Title } class="intro"><pre>{ data.Intro }</pre></a>
+        <a href={ '/works.html?worksId=' + works.WorksID } title={ works.Title } class="intro"><pre>{ data.Intro }</pre></a>
       </div>
     </div>;
   }

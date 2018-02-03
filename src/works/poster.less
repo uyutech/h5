@@ -3,8 +3,41 @@
  */
 
 .mod.mod-poster{
-  .c{
-    padding:0.1rem;
+  position:relative;
+  margin:0.1rem 0.15rem;
+  &:after{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:1px;
+    background:#B6B6B6;
+    content:' ';
+    overflow:hidden;
+    transform:scaleY(0.5);
+  }
+  h5{
+    position:relative;
+    margin-bottom:0.04rem;
+    padding-left:0.1rem;
+    font-size:0.14rem;
+    color:#636365;
+    font-weight:400;
+    &:before{
+      position:absolute;
+      left:0;
+      top:50%;
+      width:0.03rem;
+      height:0.12rem;
+      background:#8BBDE1;
+      border-radius:0.03rem;
+      overflow:hidden;
+      content:' ';
+      transform:translateY(-50%);
+    }
+  }
+  li{
+    padding-bottom:0.05rem;
   }
   img{
     display:block;

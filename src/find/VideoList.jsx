@@ -20,7 +20,8 @@ class VideoList extends migi.Component {
         let $a = $(this);
         let url = $a.attr('href');
         let title = $a.attr('title');
-        jsBridge.pushWindow(url, {
+        util.openWorks({
+          url,
           title,
         });
       });
@@ -67,7 +68,7 @@ class VideoList extends migi.Component {
   }
   genItem(item) {console.log(item)
     let works = item.Works_Items_Works[0];
-    let url = '/works.html?worksID=' + works.WorksID + '&workID=' + item.ItemID;
+    let url = '/works.html?worksId=' + works.WorksID + '&workID=' + item.ItemID;
     let author = item.GroupAuthorTypeHash.AuthorTypeHashlist[0] || {};
     return <li>
       <a href={ url } title={ item.ItemName } class="pic">

@@ -9,15 +9,9 @@ class Lyric extends migi.Component {
     super(...data);
   }
   render() {
-    return <div class="mod mod-lyric">
-      <h5>{ this.props.datas.name }</h5>
-      <ul class="c">
-        {
-          (this.props.datas.value || []).map(function(item) {
-            return <li><pre>{ item.Text }</pre></li>;
-          })
-        }
-      </ul>
+    return <div class="mod-lyric">
+      <h5>{ this.props.title }</h5>
+      <pre>{ this.props.data }</pre>
     </div>;
   }
 }

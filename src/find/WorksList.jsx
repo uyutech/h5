@@ -19,7 +19,8 @@ class WorksList extends migi.Component {
         let $a = $(this);
         let url = $a.attr('href');
         let title = $a.attr('title');
-        jsBridge.pushWindow(url, {
+        util.openWorks({
+          url,
           title,
         });
       });
@@ -49,11 +50,11 @@ class WorksList extends migi.Component {
             let AuthorTypeHashlist = GroupAuthorTypeHash.AuthorTypeHashlist || [];
             let author = AuthorTypeHashlist[0] || {};
             return <li class={ 't' + item.WorkType }>
-              <a href={ '/works.html?worksID=' + item.WorksID } title={ item.Title } class="pic">
+              <a href={ '/works.html?worksId=' + item.WorksID } title={ item.Title } class="pic">
                 <img src={ util.autoSsl(util.img170_170_80(item.cover_Pic)) }/>
                 <span>{ item.CommentCount }</span>
               </a>
-              <a href={ '/works.html?worksID=' + item.WorksID } title={ item.Title } class="name">{ item.Title }</a>
+              <a href={ '/works.html?worksId=' + item.WorksID } title={ item.Title } class="name">{ item.Title }</a>
               <p class="author">{ (author.AuthorInfo || []).map(function(item) {
                 return item.AuthorName;
               }).join(' ') }</p>
