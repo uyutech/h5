@@ -32,6 +32,7 @@ module.exports = {
     guide: './src/guide/index.jsx',
     playlist: './src/playlist/index.jsx',
     search: './src/search/index.jsx',
+    music: './src/music/index.jsx',
   },
   output: {
     path: __dirname + '/www',

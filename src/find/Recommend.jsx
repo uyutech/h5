@@ -89,8 +89,10 @@ class Recommend extends migi.Component {
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
+      loading = false;
     }, function(res) {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      loading = false;
     });
   }
   setData(data) {

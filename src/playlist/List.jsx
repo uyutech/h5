@@ -161,7 +161,7 @@ class List extends migi.Component {
       isLike: data.isLike,
       isFavor: data.isFavor,
       canDel: true,
-      delText: '移除列表',
+      delText: '移出列表',
       clickDel: function(botFn) {
         jsBridge.confirm('确认删除吗？', function(res) {
           if(res) {

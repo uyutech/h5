@@ -66,10 +66,10 @@ class VideoList extends migi.Component {
     }.bind(this));
     $(this.ref.list.element).append(s);
   }
-  genItem(item) {console.log(item)
+  genItem(item) {
     let works = item.Works_Items_Works[0];
-    let url = '/works.html?worksId=' + works.WorksID + '&workID=' + item.ItemID;
     let author = item.GroupAuthorTypeHash.AuthorTypeHashlist[0] || {};
+    let url = util.getWorksUrl(works.WorksID, works.WorksType, item.ItemID);
     return <li>
       <a href={ url } title={ item.ItemName } class="pic">
         <img src={ util.autoSsl(util.img750__80(item.ItemCoverPic || works.WorksCoverPic || '/src/common/blank.png')) }/>

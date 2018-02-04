@@ -1,0 +1,347 @@
+/**
+ * Created by army8735 on 2018/2/3.
+ */
+
+'use strict';
+
+import net from '../common/net';
+import util from '../common/util';
+
+import Media from '../works/Media.jsx';
+import Info from '../works/Info.jsx';
+import Column from '../works/Column.jsx';
+import List from './List.jsx';
+import Author from '../works/Author.jsx';
+import Poster from '../works/Poster.jsx';
+import CommentWrap from '../works/CommentWrap.jsx';
+import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
+import BotFn from '../component/botfn/BotFn.jsx';
+
+let worksId;
+let workId;
+let curWorkId;
+let worksDetail;
+let workList = [];
+let avList = [];
+let avHash = {};
+let loadingLike;
+let loadingFavor;
+let ajaxLike;
+let ajaxFavor;
+
+class Music extends migi.Component {
+  constructor(...data) {
+    super(...data);
+    let self = this;
+    worksId = self.props.worksId;
+    workId = self.props.workId;
+    curWorkId = workId;
+    self.on(migi.Event.DOM, function() {
+      net.postJSON('/h5/works/index', { worksID: worksId, workID: workId }, function(res) {
+        if(res.success) {
+          self.setData(res.data);
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      });
+    });
+  }
+  @bind curColumn
+  setData(data) {
+    worksDetail = data.worksDetail;
+    workList = worksDetail.Works_Items || [];
+    let commentData = data.commentData;
+    jsBridge.setTitle(worksDetail.Title);
+    jsBridge.setSubTitle(worksDetail.sub_Title);
+
+    let self = this;
+    let list = self.ref.list;
+    let info = self.ref.info;
+    let author = self.ref.author;
+    let comment = self.ref.comment;
+
+    let hash = {};
+    workList.forEach(function(item) {
+      if(item.ItemType === 3120) {
+        hash.poster = true;
+      }
+      if(/^[12]/.test(item.ItemType)) {
+        avList.push(item);
+        avHash[item.ItemID] = item;
+      }
+    });
+    let index = 0;
+    if(workId) {
+      for(let i = 0, len = avList.length; i < len; i++) {
+        if(avList[i].ItemID === workId) {
+          index = i;
+          break;
+        }
+      }
+    }
+
+    self.setMedia(avList[index]);
+
+    list.workId = avList[index].ItemID;
+    list.list = avList;
+
+    info.worksType = worksDetail.WorkType;
+    info.title = worksDetail.Title;
+    info.subTitle = worksDetail.sub_Title;
+    info.state = worksDetail.WorkState;
+
+    self.setColumn(hash, commentData);
+
+    author.list = worksDetail.GroupAuthorTypeHash;
+    if(hash.poster) {
+      self.setPoster(workList);
+    }
+    comment.setData(commentData);
+  }
+  setMedia(item) {
+    if(item) {
+      let o = {
+        worksId,
+        workId: item.ItemID,
+        workType: item.ItemType,
+        worksTitle: worksDetail.Title,
+        workTitle: item.ItemName,
+        url: item.FileUrl,
+        isFavor: item.ISFavor,
+        isLike: item.ISLike,
+        worksCover: worksDetail.cover_Pic,
+        workCover: item.ItemCoverPic,
+        likeNum: item.LikeHis,
+        lrc: item.lrc,
+      };
+      this.ref.media.setData(o);
+    }
+    else {
+      this.ref.media.setData(null);
+    }
+  }
+  setColumn(hash, commentData) {
+    let self = this;
+    let column = self.ref.column;
+    let list = [
+      {
+        id: 0,
+        name: '曲目',
+      },
+      {
+        id: 1,
+        name: '简介',
+      }
+    ];
+    if(hash.poster) {
+      list.push({
+        id: 2,
+        name: '海报',
+      });
+    }
+    list.push({
+      id: 3,
+      name: '评论 ' + (commentData.Count || ''),
+    });
+    self.curColumn = 0;
+    column.list = list;
+  }
+  changeColumn(id) {
+    let self = this;
+    self.curColumn = id;
+  }
+  change(workId) {
+    this.setMedia(avHash[workId]);
+    history.replaceState(null, '', '/works.html?worksId=' + worksId + '&workId=' + workId);
+  }
+  fn(workId) {
+    let o = avHash[workId];
+    let media = this.ref.media;
+    if(o) {
+      migi.eventBus.emit('BOT_FN', {
+        isLike: o.ISLike,
+        isFavor: o.ISFavor,
+        clickLike: function(botFn) {
+          if(!util.isLogin()) {
+            migi.eventBus.emit('NEED_LOGIN');
+            return;
+          }
+          if(loadingLike) {
+            return;
+          }
+          loadingLike = true;
+          ajaxLike = net.postJSON('/h5/works/likeWork', { workID: o.ItemID }, function(res) {
+            if(res.success) {
+              botFn.isLike = o.ISLike = res.data.State === 'likeWordsUser';
+              if(media.data && media.data.workId === o.ItemID) {
+                media.isLike = media.data.isLike = o.ISLike;
+              }
+            }
+            else if(res.code === 1000) {
+              migi.eventBus.emit('NEED_LOGIN');
+            }
+            else {
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            }
+            loadingLike = false;
+          }, function(res) {
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            loadingLike = false;
+          });
+        },
+        clickFavor: function(botFn) {
+          if(!util.isLogin()) {
+            migi.eventBus.emit('NEED_LOGIN');
+            return;
+          }
+          if(loadingFavor) {
+            return;
+          }
+          loadingFavor = true;
+          if(o.ISFavor) {
+            ajaxFavor = net.postJSON('/h5/works/unFavorWork', { workID: o.ItemID }, function (res) {
+              if(res.success) {
+                botFn.isFavor = o.ISFavor = false;
+                if(media.data && media.data.workId === o.ItemID) {
+                  media.isFavor = media.data.isFavor = o.ISFavor;
+                }
+              }
+              else if(res.code === 1000) {
+                migi.eventBus.emit('NEED_LOGIN');
+              }
+              else {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              }
+              loadingFavor = false;
+            }, function(res) {
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              loadingFavor = false;
+            });
+          }
+          else {
+            ajaxFavor = net.postJSON('/h5/works/favorWork', { workID: o.ItemID }, function (res) {
+              if(res.success) {
+                botFn.isFavor = o.ISFavor = true;
+                if(media.data && media.data.workId === o.ItemID) {
+                  media.isFavor = media.data.isFavor = o.ISFavor;
+                }
+              }
+              else if(res.code === 1000) {
+                migi.eventBus.emit('NEED_LOGIN');
+              }
+              else {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              }
+              loadingFavor = false;
+            }, function(res) {
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              loadingFavor = false;
+            });
+          }
+        },
+        clickCancel: function() {
+          loadingLike = loadingFavor = false;
+          if(ajaxLike) {
+            ajaxLike.abort();
+          }
+          if(ajaxFavor) {
+            ajaxFavor.abort();
+          }
+        },
+      });
+    }
+  }
+  mediaPlay() {
+    this.ref.botPlayBar.isPlaying = true;
+  }
+  mediaPause() {
+    this.ref.botPlayBar.isPlaying = false;
+  }
+  play() {
+    this.ref.media.play();
+  }
+  pause() {
+    this.ref.media.pause();
+  }
+  prev() {
+    if(avList.length < 2) {
+      return;
+    }
+    let workId = this.ref.list.workId;
+    let index = 0;
+    for(let i = 0, len = avList.length; i < len; i++) {
+      if(avList[i].ItemID === workId) {
+        index = i - 1;
+        break;
+      }
+    }
+    if(index < 0) {
+      index = avList.length - 1;
+    }
+    let newWorkId = avList[index].ItemID;
+    this.change(newWorkId);
+    this.ref.list.workId = newWorkId;
+  }
+  next() {
+    if(avList.length < 2) {
+      return;
+    }
+    let workId = this.ref.list.workId;
+    let index = avList.length - 1;
+    for(let i = 0, len = avList.length; i < len; i++) {
+      if(avList[i].ItemID === workId) {
+        index = i + 1;
+        break;
+      }
+    }
+    if(index > avList.length - 1) {
+      index = 0;
+    }
+    let newWorkId = avList[index].ItemID;
+    this.change(newWorkId);
+    this.ref.list.workId = newWorkId;
+  }
+  comment() {
+    jsBridge.pushWindow('/subcomment.html?type=3&id='
+      + worksId + '&sid=' + workId, {
+      title: '评论',
+    });
+  }
+  render() {
+    return <div class="music">
+      <Media ref="media"
+             on-play={ this.mediaPlay }
+             on-pause={ this.mediaPause }/>
+      <Info ref="info"/>
+      <Column ref="column" on-change={ this.changeColumn }/>
+      <div class={ 'list' + (this.curColumn === 0 ? '' : ' fn-hide') }>
+        <List ref="list"
+              on-change={ this.change }
+              on-fn={ this.fn }/>
+      </div>
+      <div class={ 'intro' + (this.curColumn === 1 ? '' : ' fn-hide') }>
+        <Author ref="author"/>
+      </div>
+      <div class={ 'poster' + (this.curColumn === 2 ? '' : ' fn-hide') }>
+        {
+          <Poster title="海报" ref="poster"/>
+        }
+      </div>
+      <div class={ 'comment' + (this.curColumn === 3 ? '' : ' fn-hide') }>
+        <CommentWrap ref="comment" worksId={ worksId }/>
+      </div>
+      <BotPlayBar ref="botPlayBar"
+                  on-play={ this.play }
+                  on-pause={ this.pause }
+                  on-prev={ this.prev }
+                  on-next={ this.next }
+                  on-comment={ this.comment }/>
+      <BotFn ref="botFn"/>
+    </div>;
+  }
+}
+
+export default Music;

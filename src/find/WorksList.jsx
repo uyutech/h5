@@ -49,12 +49,13 @@ class WorksList extends migi.Component {
             let GroupAuthorTypeHash = item.GroupAuthorTypeHash || {};
             let AuthorTypeHashlist = GroupAuthorTypeHash.AuthorTypeHashlist || [];
             let author = AuthorTypeHashlist[0] || {};
+            let url = util.getWorksUrl(item.WorksID, item.WorkType);
             return <li class={ 't' + item.WorkType }>
-              <a href={ '/works.html?worksId=' + item.WorksID } title={ item.Title } class="pic">
+              <a href={ url } title={ item.Title } class="pic">
                 <img src={ util.autoSsl(util.img170_170_80(item.cover_Pic)) }/>
                 <span>{ item.CommentCount }</span>
               </a>
-              <a href={ '/works.html?worksId=' + item.WorksID } title={ item.Title } class="name">{ item.Title }</a>
+              <a href={ url } title={ item.Title } class="name">{ item.Title }</a>
               <p class="author">{ (author.AuthorInfo || []).map(function(item) {
                 return item.AuthorName;
               }).join(' ') }</p>

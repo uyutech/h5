@@ -8,19 +8,7 @@ class Select extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  get list() {
-    return this._list || [];
-  }
-  @bind
-  set list(v) {
-    let res = [];
-    (v || []).forEach(function(item) {
-      if(/^[12]/.test(item.ItemType)) {
-        res.push(item);
-      }
-    });
-    this._list = res;
-  }
+  @bind list
   @bind workId
   click(e, vd, tvd) {
     if(tvd.props.workId === this.workId) {
@@ -30,7 +18,8 @@ class Select extends migi.Component {
     this.emit('change', this.workId);
   }
   render() {
-    return <ul class="mod-select" onClick={ { li: this.click } }>
+    return <ul class={ 'mod-select' + (this.list && this.list.length > 1 ? '' : ' fn-hide') }
+               onClick={ { li: this.click } }>
       {
         (this.workId, this.list || []).map(function(item, i) {
           let category = 0;

@@ -3,7 +3,19 @@
  */
 
 .mod-column{
+  position:relative;
   display:flex;
+  &:before{
+    position:absolute;
+    left:-0.15rem;
+    right:-0.15rem;
+    top:0;
+    height:1px;
+    background:#B6B6B6;
+    content:' ';
+    overflow:hidden;
+    transform:scaleY(0.5);
+  }
   li{
     position:relative;
     flex:1;

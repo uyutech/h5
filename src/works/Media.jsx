@@ -31,13 +31,59 @@ class Media extends migi.Component {
       if(major > 0 || minor > 4) {
         mediaService = true;
         jsBridge.on('mediaPrepared', function(e) {
-          if(e.data && e.data.id.toString() === self.datas.workId.toString()) {
+          if(self.data && e.data && e.data.id === self.data.workId.toString()) {
             self.duration = e.data.duration * 0.001;
             self.canControl = true;
           }
         });
+        jsBridge.on('mediaTimeupdate', function(e) {
+          // 延迟导致拖动开始后，timeupdate还会抵达，需注意判断
+          if(self.data && e.data && !isStart && e.data.id === self.data.workId.toString()) {
+            self.duration = e.data.duration * 0.001;
+            self.canControl = true;
+            if(!isStart) {
+              self.isPlaying = true;
+              self.currentTime = e.data.currentTime * 0.001;
+              self.updateLrc();
+              self.setBarPercent(self.currentTime / self.duration);
+            }
+          }
+        });
+        jsBridge.on('mediaProgress', function(e) {
+          if(self.data && e.data && e.data.id === self.data.workId.toString()) {
+            let load = self.ref.load.element;
+            load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
+          }
+        });
       }
     }
+    jsBridge.on('optionMenu1', function() {
+      if(self.data) {
+        migi.eventBus.emit('BOT_FN', {
+          isLike: self.isLike,
+          isFavor: self.isFavor,
+          clickLike: function(botFn) {
+            self.like(function() {
+              botFn.isLike = self.isLike;
+            });
+          },
+          clickFavor: function(botFn) {
+            self.favor(function() {
+              botFn.isFavor = self.isFavor;
+            });
+          },
+          clickCancel: function() {
+            loadingLike = loadingFavor = false;
+            if(ajaxLike) {
+              ajaxLike.abort();
+            }
+            if(ajaxFavor) {
+              ajaxFavor.abort();
+            }
+          },
+        });
+      }
+    });
     self.on(migi.Event.DOM, function() {
       WIDTH = $(window).width();
     });
@@ -56,9 +102,14 @@ class Media extends migi.Component {
   @bind isVideo
   setData(data) {
     let self = this;
-    self.data = data;
+    let old = self.data;
     let load = self.ref.load.element;
     if(data === null) {
+      // 有数据之前传空无效
+      if(first) {
+        return;
+      }
+      self.data = data;
       self.stop();
       self.duration = 0;
       self.isLike = self.isFavor = false;
@@ -66,6 +117,13 @@ class Media extends migi.Component {
       self.canControl = false;
       self.lrc = {};
       load.innerHTML = '';
+      if(ajaxLike) {
+        ajaxLike.abort();
+      }
+      if(ajaxFavor) {
+        ajaxFavor.abort();
+      }
+      loadingLike = loadingFavor = false;
       if(mediaService) {
         jsBridge.media({
           key: 'stop',
@@ -82,6 +140,12 @@ class Media extends migi.Component {
       }
       return;
     }
+
+    // 如果传入相同信息则忽略
+    if(old && old.workId === data.workId) {
+      return;
+    }
+    self.data = data;
     self.duration = 0;
     self.currentTime = 0;
     self.canControl = false;
@@ -89,10 +153,21 @@ class Media extends migi.Component {
     self.likeNum = data.likeNum;
     self.isFavor = data.isFavor;
     self.setBarPercent(0);
+
+    // 除了第一次，每次设置后除非信息相同，否则停止播放
     if(!first) {
       self.pause();
     }
     first = false;
+
+    if(ajaxLike) {
+      ajaxLike.abort();
+    }
+    if(ajaxFavor) {
+      ajaxFavor.abort();
+    }
+    loadingLike = loadingFavor = false;
+
     // 1音频2视频
     self.isVideo = data.workType.toString().charAt(0) === '2';
     let l = {};
@@ -106,18 +181,34 @@ class Media extends migi.Component {
       l.txt = data.lrc;
     }
     self.lrc = l;
-    if(ajaxLike) {
-      ajaxLike.abort();
-    }
-    if(ajaxFavor) {
-      ajaxFavor.abort();
-    }
-    loadingLike = loadingFavor = false;
+
     if(self.isVideo) {
       self.ref.video.element.src = data.url;
     }
     else if(mediaService) {
-      info = true;
+      jsBridge.media({
+        key: 'info',
+        value: {
+          id: self.data.workId,
+          url: location.protocol + util.autoSsl(self.data.url),
+          name: self.data.workId,
+        },
+      }, function(res) {
+        if(res.isCached) {
+          load.innerHTML = `<b style="width:100%"/>`;
+        }
+        else {
+          load.innerHTML = '';
+        }
+        if(res.same) {
+          if(res.prepared) {
+            self.canControl = true;
+          }
+          if(res.duration) {
+            self.duration = res.duration * 0.001;
+          }
+        }
+      });
     }
     else {
       self.ref.audio.element.src = data.url;
@@ -166,54 +257,52 @@ class Media extends migi.Component {
   }
   play() {
     let self = this;
+    if(!self.data) {
+      return;
+    }
     if(self.isVideo) {
       self.ref.video.element.play();
+      self.isPlaying = true;
+      self.emit('play');
       jsBridge.media({
         key: 'stop',
       });
     }
     else if(mediaService) {
-      if(info) {
-        jsBridge.media({
-          key: 'info',
-          value: {
-            id: self.data.workId,
-            url: location.protocol + util.autoSsl(self.data.url),
-            name: self.data.workId,
-          },
-        }, function() {
-          self.isPlaying = true;
-        });
-      }
-      info = false;
       jsBridge.media({
         key: 'play',
       }, function() {
         self.isPlaying = true;
+        self.emit('play');
       });
     }
     else {
       self.ref.audio.element.play();
+      self.isPlaying = true;
+      self.emit('play');
     }
-    self.isPlaying = true;
     net.postJSON('/h5/works/addPlayCount', { workID: self.data.workId });
   }
   pause() {
     let self = this;
     if(self.isVideo) {
       self.ref.video.element.pause();
+      self.isPlaying = false;
+      self.emit('pause');
     }
     else if(mediaService) {
       jsBridge.media({
         key: 'pause',
       }, function() {
         self.isPlaying = false;
+        self.emit('pause');
       });
     }
     else {
       self.ref.audio.element.pause();
+      self.isPlaying = false;
+      self.emit('pause');
     }
-    self.isPlaying = false;
   }
   clickPlay() {
     if(this.data) {
@@ -289,7 +378,10 @@ class Media extends migi.Component {
       }
     }
   }
-  clickLike() {
+  clickLike(e) {
+    this.like();
+  }
+  like(cb) {
     let self = this;
     if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
@@ -305,6 +397,7 @@ class Media extends migi.Component {
     ajaxLike = net.postJSON('/h5/works/likeWork', { workID: self.data.workId }, function(res) {
       if(res.success) {
         self.isLike = self.data.isLike = res.data.State === 'likeWordsUser';
+        cb && cb();
       }
       else if(res.code === 1000) {
         migi.eventBus.emit('NEED_LOGIN');
@@ -318,12 +411,15 @@ class Media extends migi.Component {
       loadingLike = false;
     });
   }
-  clickFavor() {
+  clickFavor(e) {
+    this.favor();
+  }
+  favor(cb) {
+    let self = this;
     if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
-    let self = this;
     if(!self.data) {
       return;
     }
@@ -335,6 +431,7 @@ class Media extends migi.Component {
       ajaxFavor = net.postJSON('/h5/works/unFavorWork', { workID: self.data.workId }, function (res) {
         if(res.success) {
           self.isFavor = self.data.isFavor = false;
+          cb && cb();
         }
         else if(res.code === 1000) {
           migi.eventBus.emit('NEED_LOGIN');
@@ -352,6 +449,7 @@ class Media extends migi.Component {
       ajaxFavor = net.postJSON('/h5/works/favorWork', { workID: self.data.workId }, function (res) {
         if(res.success) {
           self.isFavor = self.data.isFavor = true;
+          cb && cb();
         }
         else if(res.code === 1000) {
           migi.eventBus.emit('NEED_LOGIN');
