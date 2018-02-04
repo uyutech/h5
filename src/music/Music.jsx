@@ -83,9 +83,17 @@ class Music extends migi.Component {
       }
     }
 
-    self.setMedia(avList[index]);
+    let work = avList[index];
+    jsBridge.setTitle(work.ItemName);
+    let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
+    let s = (authorList.AuthorInfo || []).map(function(item) {
+      return item.AuthorName;
+    });
+    jsBridge.setSubTitle(s.join('、'));
 
-    list.workId = avList[index].ItemID;
+    self.setMedia(work);
+
+    list.workId = work.ItemID;
     list.list = avList;
 
     info.worksType = worksDetail.WorkType;
@@ -103,6 +111,7 @@ class Music extends migi.Component {
   }
   setMedia(item) {
     if(item) {
+      let works = (item.Works_Items_Works || [])[0] || {};
       let o = {
         worksId,
         workId: item.ItemID,
@@ -112,7 +121,7 @@ class Music extends migi.Component {
         url: item.FileUrl,
         isFavor: item.ISFavor,
         isLike: item.ISLike,
-        worksCover: worksDetail.cover_Pic,
+        worksCover: works.WorksCoverPic || worksDetail.cover_Pic,
         workCover: item.ItemCoverPic,
         likeNum: item.LikeHis,
         lrc: item.lrc,
@@ -154,7 +163,14 @@ class Music extends migi.Component {
     self.curColumn = id;
   }
   change(workId) {
-    this.setMedia(avHash[workId]);
+    let work = avHash[workId];
+    jsBridge.setTitle(work.ItemName);
+    let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
+    let s = (authorList.AuthorInfo || []).map(function(item) {
+      return item.AuthorName;
+    });
+    jsBridge.setSubTitle(s.join('、'));
+    this.setMedia(work);
     history.replaceState(null, '', '/works.html?worksId=' + worksId + '&workId=' + workId);
   }
   fn(workId) {
@@ -260,6 +276,13 @@ class Music extends migi.Component {
   mediaPause() {
     this.ref.botPlayBar.isPlaying = false;
   }
+  mediaEnd() {
+    let mode = this.ref.botPlayBar.mode;
+    if(mode === 'repeat') {
+      this.ref.media.repeat();
+    }
+    else if(mode === 'loop') {}
+  }
   play() {
     this.ref.media.play();
   }
@@ -314,7 +337,8 @@ class Music extends migi.Component {
     return <div class="music">
       <Media ref="media"
              on-play={ this.mediaPlay }
-             on-pause={ this.mediaPause }/>
+             on-pause={ this.mediaPause }
+             on-end={ this.mediaEnd }/>
       <Info ref="info"/>
       <Column ref="column" on-change={ this.changeColumn }/>
       <div class={ 'list' + (this.curColumn === 0 ? '' : ' fn-hide') }>

@@ -108,14 +108,22 @@ class Works extends migi.Component {
       }
     }
 
-    self.setMedia(avList[index]);
+    let work = avList[index];
+    jsBridge.setTitle(work.ItemName);
+    let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
+    let s = (authorList.AuthorInfo || []).map(function(item) {
+      return item.AuthorName;
+    });
+    jsBridge.setSubTitle(s.join('、'));
+
+    self.setMedia(work);
 
     info.worksType = worksDetail.WorkType;
     info.title = worksDetail.Title;
     info.subTitle = worksDetail.sub_Title;
     info.state = worksDetail.WorkState;
 
-    select.workId = avList[index].ItemID;
+    select.workId = work.ItemID;
     select.list = avList;
 
     self.setColumn(hash, commentData);
@@ -194,7 +202,14 @@ class Works extends migi.Component {
     self.curColumn = id;
   }
   change(workId) {
-    this.setMedia(avHash[workId]);
+    let work = avHash[workId];
+    jsBridge.setTitle(work.ItemName);
+    let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
+    let s = (authorList.AuthorInfo || []).map(function(item) {
+      return item.AuthorName;
+    });
+    jsBridge.setSubTitle(s.join('、'));
+    this.setMedia(work);
     history.replaceState(null, '', '/works.html?worksId=' + worksId + '&workId=' + workId);
   }
   share() {
@@ -246,7 +261,7 @@ class Works extends migi.Component {
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }
-                on-share={ this.share.bind(this) }/>
+                on-share={ this.share }/>
       <BotFn ref="botFn"/>
     </div>;
   }

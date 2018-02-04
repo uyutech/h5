@@ -55,6 +55,9 @@ class Media extends migi.Component {
             load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
           }
         });
+        jsBridge.on('mediaEnd', function() {
+          self.emit('end');
+        });
       }
     }
     jsBridge.on('optionMenu1', function() {
@@ -250,6 +253,7 @@ class Media extends migi.Component {
   }
   onEnded(e) {
     this.isPlaying = false;
+    this.emit('end');
   }
   onPlaying(e) {
     this.isPlaying = true;
@@ -303,6 +307,24 @@ class Media extends migi.Component {
       self.isPlaying = false;
       self.emit('pause');
     }
+  }
+  repeat() {
+    let self = this;
+    if(self.isVideo) {
+      self.ref.video.currentTime = 0;
+    }
+    else if(mediaService) {
+      jsBridge.media({
+        key: 'seek',
+        value: {
+          time: 0,
+        },
+      });
+    }
+    else {
+      self.ref.audio.currentTime = 0;
+    }
+    self.play();
   }
   clickPlay() {
     if(this.data) {
