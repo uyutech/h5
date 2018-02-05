@@ -21,6 +21,7 @@ class CommentWrap extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    self.isLogin = util.isLogin();
     self.on(migi.Event.DOM, function() {
       let $body = $(document.body);
       $body.on('click', function() {
@@ -42,6 +43,7 @@ class CommentWrap extends migi.Component {
   @bind worksId
   @bind showSort
   @bind sortText
+  @bind isLogin
   setData(data) {
     let self = this;
     if(data.Size) {
@@ -110,6 +112,25 @@ class CommentWrap extends migi.Component {
   hide() {
     visible = false;
   }
+  clickType(e, vd, tvd) {
+    let self = this;
+    let $li = $(tvd.element);
+    if($li.hasClass('cur')) {
+      return;
+    }
+    $(vd.element).find('.cur').removeClass('cur');
+    $li.addClass('cur');
+    myComment = tvd.props.rel;
+    skip = 0;
+    if(ajax) {
+      ajax.abort();
+    }
+    loadEnd = false;
+    loading = false;
+    self.ref.comment.clearData();
+    self.ref.comment.empty = false;
+    self.load();
+  }
   clickSort(e) {
     e.stopPropagation();
     this.showSort = true;
@@ -148,10 +169,10 @@ class CommentWrap extends migi.Component {
   render() {
     return <div class="mod-comment">
       <div class="fn">
-        <ul class="type fn-clear" onClick={ { li: this.switchType2 } }>
-          <li class="cur" rel="0">全部</li>
+        <ul class="type fn-clear" onClick={ { li: this.clickType } }>
+          <li class="cur" rel="0">全部评论</li>
           {
-            this.props.isLogin
+            this.isLogin
               ? <li rel="1">我的</li>
               : ''
           }
