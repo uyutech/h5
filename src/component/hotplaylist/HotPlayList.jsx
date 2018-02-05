@@ -40,7 +40,7 @@ class HotPlayList extends migi.Component {
       return item.AuthName;
     });
     let works = item.Works_Items_Works[0];
-    let url = '/works.html?worksID=' + works.WorksID + '&workID=' + item.ItemID;
+    let url = '/music.html?worksId=' + works.WorksID + '&workId=' + item.ItemID;
     if(item.WorksState === 2) {
       return <li class={ type + ' rel' }>
         <a href={ url } title={ item.ItemName || '待揭秘' } class="pic">
@@ -65,11 +65,9 @@ class HotPlayList extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
-    if(!url) {
-      throw new Error('hotplaylist url is null');
-    }
     jsBridge.pushWindow(url, {
       title,
+      transparentTitle: true,
     });
   }
   render() {

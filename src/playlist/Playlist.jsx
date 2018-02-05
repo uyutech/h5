@@ -36,12 +36,14 @@ class Playlist extends migi.Component {
       let count = 0;
       function fin() {
         if(count >= 2) {
-          let workIDs = playlistCache.map(function(item) {
+          let workIDs = playlistCache.filter(function(item) {
+            return !!item.workId;
+          }).map(function(item) {
             return item.workId;
           });
           if(!workIDs.length) {
             return;
-          }
+          }console.log(workIDs)
           net.postJSON('/h5/playlist/index', { workIDs: workIDs.join(',') }, function(res) {
             if(res.success) {
               let data = res.data;

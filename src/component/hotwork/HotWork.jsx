@@ -14,11 +14,9 @@ class HotWork extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
-    if(!url) {
-      throw new Error('hotwork url is null');
-    }
     jsBridge.pushWindow(url, {
       title,
+      transparentTitle: true,
     });
   }
   render() {
@@ -28,7 +26,7 @@ class HotWork extends migi.Component {
           ? <ul>
               {
                 this.dataList.map(function(item) {
-                  let url = `/works.html?worksID=${item.WorksID}`;
+                  let url = `/works.html?worksId=${item.WorksID}`;
                   return <li>
                     <a href={ url } class="pic" title={ item.Title }>
                       <img src={ util.autoSsl(util.img200_200_80(item.cover_Pic)) || '/src/common/blank.png' }/>

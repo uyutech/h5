@@ -201,15 +201,19 @@ class Works extends migi.Component {
       jsBridge.getPreference('playlist', function(res) {
         res = res || [];
         for (let i = 0, len = res.length; i < len; i++) {
-          if(res[i] === data.workId) {
+          if(res[i].workId === data.workId) {
             res.splice(i, 1);
             break;
           }
         }
-        res.unshift(data.workId);
+        res.unshift({
+          workId: data.workId,
+        });
         jsBridge.setPreference('playlist', res);
       });
-      jsBridge.setPreference('playlistCur', data.workId);
+      jsBridge.setPreference('playlistCur', {
+        workId: data.workId,
+      });
     }
   }
   changeColumn(id) {

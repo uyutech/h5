@@ -104,7 +104,7 @@ class Playlist extends migi.Component {
       return;
     }
     let author = item.GroupAuthorTypeHash.AuthorTypeHashlist[0] || {};
-    let url = '/works.html?worksID=' + works.WorksID + '&workID=' + item.ItemID;
+    let url = '/music.html?worksId=' + works.WorksID + '&workId=' + item.ItemID;
     if(item.WorksState === 2) {
       return <li>
         <a href={ url } title={ item.ItemName || '待揭秘' } class="pic">
@@ -143,6 +143,7 @@ class Playlist extends migi.Component {
     let title = tvd.props.title;
     jsBridge.pushWindow(url, {
       title,
+      transparentTitle: true,
     });
   }
   render() {
