@@ -125,8 +125,14 @@ class CommentWrap extends migi.Component {
     self.ref.comment.empty = false;
     self.load();
   }
-  chooseSubComment(rid, cid) {
-    console.log(rid, cid);
+  chooseSubComment(rid, cid, name, n) {
+    let self = this;
+    if(!n || n === '0') {
+      jsBridge.pushWindow('/subcomment.html?type=3&id='
+        + self.worksId + '&cid=' + cid + '&rid=' + rid, {
+        title: '评论',
+      });
+    }
   }
   render() {
     return <div class="mod-comment">

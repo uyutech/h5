@@ -265,7 +265,7 @@ class Comment extends migi.Component {
     this.genComment(item).prependTo(this.ref.list.element);
     this.empty = false;
   }
-  prependChild(item, parentID) {
+  prependChild(item) {
     let $comment = $('#comment_' + item.RootID);
     let $list2 = $comment.find('.list2');
     let $ul = $list2.find('ul');
@@ -279,10 +279,6 @@ class Comment extends migi.Component {
     }
     let $num = $comment.find('.slide small.sub');
     $num.text((parseInt($num.text()) || 0) + 1);
-    // if(item.RootID !== parentID) {
-    //   let $num = $('#comment_' + parentID).find('small.sub');
-    //   $num.text((parseInt($num.text()) || 0) + 1);
-    // }
   }
   genComment(item) {
     if(item.IsAuthor) {

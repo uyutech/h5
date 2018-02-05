@@ -37,7 +37,7 @@ class Works extends migi.Component {
          option={ option }
          class="pic">
         <img src={ util.autoSsl(util.img250_250_80(data.coverpic || works.cover_Pic)) || '/src/common/blank.png' }/>
-        <div>
+        <div class={ data.Describe ? '' : 'fn-hide' }>
           <span>{ data.Describe }</span>
         </div>
       </a>
