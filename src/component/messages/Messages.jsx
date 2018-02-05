@@ -59,7 +59,7 @@ class Messages extends migi.Component {
       title = item.Send_UserName;
     }
     else if(type === 2) {
-      url = '/works.html?worksID=' + item.urlID;
+      url = '/works.html?worksId=' + item.urlID;
       title = '作品详情';
     }
     else if(type === 3 || type === 4) {

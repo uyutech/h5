@@ -3,99 +3,108 @@
  */
 
 @import '../common/var';
+//@import './lyric';
+//@import './timeline';
+//@import './insp';
+//@import './poster';
+//@import './comments';
+//@import './text';
+//@import '../component/subcmt/index';
+//@import './musicalbum';
+//@import './playlist';
+//@import './imageview';
+//@import './describe';
+//@import './photoalbum';
+
 @import './media';
+@import './info';
+@import './select';
+@import './column';
 @import './author';
-@import './lyric';
-@import './timeline';
-@import './insp';
-@import './poster';
-@import './comments';
 @import './text';
-@import '../component/subcmt/index';
-@import './musicalbum';
-@import './playlist';
-@import './imageview';
-@import './describe';
-@import './photoalbum';
+@import './poster';
+@import './comment';
+@import '../component/inputcmt/index';
+@import '../component/botfn/index';
 
 #page > .works{
-  > .placeholder{
-    .pic{
-      margin:0.2rem;
-      padding-top:56.25%;
-      background:rgba(0,0,0,0.05);
-      border-radius:0.05rem;
-    }
-  }
-  > div{
-    > .sel{
-      position:relative;
-      display:flex;
-      margin-top:-0.3rem;
-      padding:1px 0 0 0.1rem;
-      height:0.3rem;
-      box-sizing:border-box;
-      text-align:center;
-      overflow:hidden;
-      li{
-        position:relative;
-        padding:0 0.2rem;
-        height:100%;
-        box-shadow:@tagShadow;
-        border-top-left-radius:0.16rem;
-        border-top-right-radius:0.16rem;
-        color:@secondTextColor;
-        background:rgba(255,255,255,0.7);
-        line-height:0.32rem;
-        cursor:pointer;
-        font-size:0.12rem;
-        &:first-child{
-          z-index:9;
-        }
-        &:nth-child(2) {
-          z-index:8;
-        }
-        &:nth-child(3) {
-          z-index:7;
-        }
-        &.cur{
-          background-color:@mainColor;
-          color:@mainTextColor;
-          cursor:default;
-          font-size:0.14rem;
-          z-index:10;
-        }
-      }
-      .state{
-        position:absolute;
-        top:0.02rem;
-        right:0.05rem;
-        display:block;
-        height:0.24rem;
-        line-height:0.24rem;
-        padding:0 0.1rem;
-        background:@mainColor;
-        border-radius:0.24rem;
-        color:@thirdTextColor;
-      }
-    }
-    &.t11 .sel{
-      margin-top:0.1rem;
-    }
-    h5{
-      padding:0 0.2rem;
-      line-height:0.24rem;
-      color:@thirdTextColor;
-      font-size:0.12rem;
-      font-weight:400;
-      background:@mainColor;
-    }
-    pre{
-      margin:0;
-    }
-    h1.private{
-      text-align:center;
-      line-height:3;
-    }
-  }
+  //> .placeholder{
+  //  .pic{
+  //    margin:0.2rem;
+  //    padding-top:56.25%;
+  //    background:rgba(0,0,0,0.05);
+  //    border-radius:0.05rem;
+  //  }
+  //}
+  //> div{
+  //  > .sel{
+  //    position:relative;
+  //    display:flex;
+  //    margin-top:-0.3rem;
+  //    padding:1px 0 0 0.1rem;
+  //    height:0.3rem;
+  //    box-sizing:border-box;
+  //    text-align:center;
+  //    overflow:hidden;
+  //    li{
+  //      position:relative;
+  //      padding:0 0.2rem;
+  //      height:100%;
+  //      box-shadow:@tagShadow;
+  //      border-top-left-radius:0.16rem;
+  //      border-top-right-radius:0.16rem;
+  //      color:@secondTextColor;
+  //      background:rgba(255,255,255,0.7);
+  //      line-height:0.32rem;
+  //      cursor:pointer;
+  //      font-size:0.12rem;
+  //      &:first-child{
+  //        z-index:9;
+  //      }
+  //      &:nth-child(2) {
+  //        z-index:8;
+  //      }
+  //      &:nth-child(3) {
+  //        z-index:7;
+  //      }
+  //      &.cur{
+  //        background-color:@mainColor;
+  //        color:@mainTextColor;
+  //        cursor:default;
+  //        font-size:0.14rem;
+  //        z-index:10;
+  //      }
+  //    }
+  //    .state{
+  //      position:absolute;
+  //      top:0.02rem;
+  //      right:0.05rem;
+  //      display:block;
+  //      height:0.24rem;
+  //      line-height:0.24rem;
+  //      padding:0 0.1rem;
+  //      background:@mainColor;
+  //      border-radius:0.24rem;
+  //      color:@thirdTextColor;
+  //    }
+  //  }
+  //  &.t11 .sel{
+  //    margin-top:0.1rem;
+  //  }
+  //  h5{
+  //    padding:0 0.2rem;
+  //    line-height:0.24rem;
+  //    color:@thirdTextColor;
+  //    font-size:0.12rem;
+  //    font-weight:400;
+  //    background:@mainColor;
+  //  }
+  //  pre{
+  //    margin:0;
+  //  }
+  //  h1.private{
+  //    text-align:center;
+  //    line-height:3;
+  //  }
+  //}
 }

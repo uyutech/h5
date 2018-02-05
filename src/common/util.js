@@ -86,6 +86,12 @@ let util = {
     }
     return url ? util.img(url) + '-480_480_80' : url;
   },
+  img375__80: function(url) {
+    if(!/\/\/zhuanquan\./i.test(url)) {
+      return url;
+    }
+    return url ? util.img(url) + '-375__80' : url;
+  },
   img360__80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {
       return url;
@@ -367,8 +373,32 @@ let util = {
   openAuthor: function(data) {
     jsBridge.pushWindow(data.url || ('/author.html?authorId=' + data.authorId), {
       transparentTitle: true,
-      backIcon: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAb1BMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+/v7W1tby8vL9/f0AAACWlpbb29sAAAD+/v79/f37+/vDw8O4uLgyMjLS0tL6+vrv7+/S0tL39/fz8/PY2NimpqaUlJSjo6Ozs7PY2Nj///9WoHXJAAAAJHRSTlMAAgUIJg8XDBMf9ZCP8RxVRiL459NOMCgWu7OIg2hoXFZOQ0I8A0qaAAAAy0lEQVRYw+3Wxw7CQAxFUWxnSiiBFEjobf7/G/EkrJGwJRbIb3/PKopnZrPZvhmArsZhQLkBiKeUzmIBkJYppZYQNH3qAoGmXz0coaa/ewYU/bpmABR9UUVCUPWBtD2C9b/u94qeAdrlfn4rSlmPb+BaeyfoGQjxMArbGLgXAeViEoQAxaqYhA2JBAq+1AiA5Ez4S+FJoBO6/FFrhDYfFrFwbJpLPm1ioe57nwGpEH3lx9MkFYKLbvy1SQUknuaRxATnoHzm2Wy2j3sBzCEcEv1zv9AAAAAASUVORK5CYII=',
     });
+  },
+  openWorks: function(data, option) {
+    option.title = data.title;
+    option.subTitle = data.subTitle;
+    jsBridge.pushWindow(data.url || ('/works.html?worksId=' + data.worksId + '&workId=' + data.workId), option);
+  },
+  getWorksUrl: function(worksId, worksType, workId) {
+    if([11, 12].indexOf(worksType) > -1) {
+      return '/image.html?worksId=' + worksId;
+    }
+    else if([5, 6].indexOf(worksType) > -1) {
+      return '/music.html?worksId=' + worksId;
+    }
+    else if([1, 2, 3, 4, 7, 8].indexOf(worksType) > -1) {
+      return '/works.html?worksId=' + worksId + (workId ? '&workId=' + workId : '');
+    }
+  },
+  getWorksUrlOption: function(worksType) {
+    if([11, 12].indexOf(worksType) > -1) {
+      return {};
+    }
+    return {
+      transparentTitle: true,
+      optionMenuIcon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAALVBMVEUAAAAAAAAAAAAAAAD+/v4AAAD5+fnk5OTq6uoAAAAwMDAAAAAAAACAgID///8waL84AAAADnRSTlMABxEL8BqUoZ0nIiITDIsBZnQAAABpSURBVEjHYxgFgxYICuKXl01xu4hPnlHs3btEAXwKTN69c8anQFDl3TsnfK4Q1nj3rskQnwlaJe6L8CpQ3Tk7CJ8VjDahoYfx+kJYSclQAG9AChsKEgxqCgHjaGyOxuZobA7K2BwFNAMAj1k2xo1Ti1oAAAAASUVORK5CYII=',
+    };
   },
 };
 

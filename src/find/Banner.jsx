@@ -64,12 +64,25 @@ class Banner extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
-    if(!url) {
-      throw new Error('banner url is null');
+    switch(tvd.props.class) {
+      case 'works':
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle: true,
+        });
+        break;
+      case 'author':
+        util.openAuthor({
+          url,
+          title,
+        });
+        break;
+      default:
+        jsBridge.pushWindow(url, {
+          title,
+        });
+        break;
     }
-    jsBridge.pushWindow(url, {
-      title,
-    });
   }
   render() {
     return <div class="mod-banner" onSwipeLeft={ this.left } onSwipeRight={ this.right } onClick={ { a: this.click } }>
@@ -77,21 +90,28 @@ class Banner extends migi.Component {
         {
           this.dataList.map(function(item) {
             let url = '';
+            let cn = 'item';
             switch(item.urltype) {
               case 1:
-                url = '/works.html?worksID=' + item.urlid;
+                url = '/works.html?worksId=' + item.urlid;
+                cn = 'works';
                 break;
               case 2:
                 url = '/post.html?postID=' + item.urlid;
                 break;
               case 3:
                 url = '/author.html?authorId=' + item.urlid;
+                cn = 'author';
                 break;
               case 4:
                 url = '/user.html?userID=' + item.urlid;
                 break;
             }
-            return <li><a href={ url } target="_blank" title={ item.Describe }><img src={ util.autoSsl(util.img750__80(item.coverpic)) || '/src/common/blank.png' }/></a></li>;
+            return <li>
+              <a href={ url } target="_blank" title={ item.Describe } class={ cn }>
+                <img src={ util.autoSsl(util.img750__80(item.coverpic)) || '/src/common/blank.png' }/>
+              </a>
+            </li>;
           })
         }
       </ul>

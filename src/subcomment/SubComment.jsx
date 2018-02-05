@@ -41,7 +41,7 @@ class SubComment extends migi.Component {
     return '_subcmt_content';
   }
   input(e, vd) {
-    let self = this;
+    let self = this;console.log(self.cid, self.rid)
     let $vd = $(vd.element);
     self.num = $vd.val().length;
     self.num = $vd.val().trim().length;
@@ -64,6 +64,9 @@ class SubComment extends migi.Component {
       }, function(res) {
         if(res.success) {
           jsBridge.setPreference(self.getContentKey(), null);
+          // TODO: 无法区分留言为一级还是二级，特殊字段告知入口
+          res.data.cid = self.cid;
+          res.data.rid = self.rid;
           jsBridge.popWindow(res.data);
         }
         else {

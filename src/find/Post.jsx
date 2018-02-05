@@ -29,7 +29,7 @@ class Post extends migi.Component {
     let post = data.commentlist[0];
     let content = post.Content;
     content = content.length > 50 ? (content.slice(0, 50) + '...') : content;
-    return <div class={ 'mod-post' + (this.props.last ? ' last' : '') }>
+    return <div class="mod-post">
       <a href={ '/post.html?postID=' + post.CommentID } title={ data.Describe } class="pic">
         <img src={ util.autoSsl(util.img750__80(data.coverpic || '/src/common/blank.png')) }/>
       </a>

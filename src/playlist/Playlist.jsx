@@ -6,10 +6,9 @@
 
 import net from '../common/net';
 import util from '../common/util';
-import Media from './Media.jsx';
+import Media from '../works/Media.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
-import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import List from './List.jsx';
 
 let playlistCur;
@@ -37,13 +36,15 @@ class Playlist extends migi.Component {
       let count = 0;
       function fin() {
         if(count >= 2) {
-          let workIDs = playlistCache.map(function(item) {
+          let workIds = playlistCache.filter(function(item) {
+            return !!item.workId;
+          }).map(function(item) {
             return item.workId;
           });
-          if(!workIDs.length) {
+          if(!workIds.length) {
             return;
           }
-          net.postJSON('/h5/playlist/index', { workIDs: workIDs.join(',') }, function(res) {
+          net.postJSON('/h5/playlist/index', { workIDs: workIds.join(',') }, function(res) {
             if(res.success) {
               let data = res.data;
               let format = data.data.map(function(item) {
@@ -52,10 +53,12 @@ class Playlist extends migi.Component {
                   workId: item.ItemID,
                   worksCover: works.WorksCoverPic,
                   workName: item.ItemName,
+                  workType: item.ItemType,
                   isLike: item.ISLike,
                   likeNum: item.LikeHis,
                   isFavor: item.ISFavor,
                   lrc: item.lrc,
+                  url: item.FileUrl,
                 };
               });
               hisList = format;

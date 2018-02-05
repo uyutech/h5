@@ -23,33 +23,30 @@ class Author extends migi.Component {
     });
   }
   render() {
-    return <div class="mod mod-author">
-      <h5>作者</h5>
-      <div class="c" onClick={ { a: this.click } }>
-        {
-          (this.list || []).map(function(arr) {
-            return <ul>
-              {
-                (arr.AuthorTypeHashlist || []).map(function(item) {
-                  return <dl>
-                    <dt>{ item.Describe }</dt>
-                    {
-                      (item.AuthorInfo || []).map(function(author) {
-                        return <dd>
-                          <a href={ '/author.html?authorId=' + author.AuthorID } title={ author.AuthorName }>
-                            <img src={ util.autoSsl(util.img48_48_80(author.Head_url)) || '/src/common/head.png' }/>
-                            <span>{ author.AuthorName }</span>
-                          </a>
-                        </dd>;
-                      })
-                    }
-                  </dl>;
-                })
-              }
-            </ul>;
-          })
-        }
-      </div>
+    return <div class="mod mod-author" onClick={ { a: this.click } }>
+      {
+        (this.list || []).map(function(arr) {
+          return <ul>
+            {
+              (arr.AuthorTypeHashlist || []).map(function(item) {
+                return <dl>
+                  <dt>{ item.Describe }</dt>
+                  {
+                    (item.AuthorInfo || []).map(function(author) {
+                      return <dd>
+                        <a href={ '/author.html?authorId=' + author.AuthorID } title={ author.AuthorName }>
+                          <img src={ util.autoSsl(util.img48_48_80(author.Head_url)) || '/src/common/head.png' }/>
+                          <span>{ author.AuthorName }</span>
+                        </a>
+                      </dd>;
+                    })
+                  }
+                </dl>;
+              })
+            }
+          </ul>;
+        })
+      }
     </div>;
   }
 }
