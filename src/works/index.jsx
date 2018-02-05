@@ -15,7 +15,7 @@ let search = qs.parse(location.search.replace(/^\?/, ''));
 let worksId = parseInt(search.worksId);
 let workId = parseInt(search.workId) || undefined;
 
-jsBridge.ready(function() {
+jsBridge.ready(function() {1
   let works = migi.preExist(
     <Works/>,
     '#page'

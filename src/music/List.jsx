@@ -22,8 +22,21 @@ class List extends migi.Component {
   clickFn(e, vd, tvd) {
     this.emit('fn', tvd.props.workId);
   }
+  clickPic(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    jsBridge.pushWindow(url, {
+      title: tvd.props.title,
+      transparentTitle: true,
+    });
+  }
   render() {
-    return <div class="mod-list" onClick={ { '.item .txt': this.clickItem, '.fn': this.clickFn } }>
+    return <div class="mod-list"
+                onClick={ {
+                  '.item .txt': this.clickItem,
+                  '.fn': this.clickFn,
+                  '.pic': this.clickPic,
+                } }>
       <ol>
         {
           (this.workId, this.list || []).map(function(item) {

@@ -66,9 +66,9 @@ class Banner extends migi.Component {
     let title = tvd.props.title;
     switch(tvd.props.class) {
       case 'works':
-        util.openWorks({
-          url,
+        jsBridge.pushWindow(url, {
           title,
+          transparentTitle: true,
         });
         break;
       case 'author':
