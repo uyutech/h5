@@ -23,72 +23,72 @@ class Media extends migi.Component {
     let self = this;
     self.lrc = {};
     self.lrcIndex = 0;
-    if(jsBridge.appVersion && jsBridge.android) {
-      let version = jsBridge.appVersion.split('.');
-      let major = parseInt(version[0]) || 0;
-      let minor = parseInt(version[1]) || 0;
-      let patch = parseInt(version[2]) || 0;
-      if(major > 0 || minor > 4) {
-        mediaService = true;
-        jsBridge.on('mediaPrepared', function(e) {
-          if(self.data && e.data && e.data.id === self.data.workId.toString()) {
-            self.duration = e.data.duration * 0.001;
-            self.canControl = true;
-          }
-        });
-        jsBridge.on('mediaTimeupdate', function(e) {
-          // 延迟导致拖动开始后，timeupdate还会抵达，需注意判断
-          if(self.data && e.data && !isStart && e.data.id === self.data.workId.toString()) {
-            self.duration = e.data.duration * 0.001;
-            self.canControl = true;
-            if(!isStart) {
-              self.isPlaying = true;
-              self.currentTime = e.data.currentTime * 0.001;
-              self.updateLrc();
-              self.setBarPercent(self.currentTime / self.duration);
-            }
-          }
-        });
-        jsBridge.on('mediaProgress', function(e) {
-          if(self.data && e.data && e.data.id === self.data.workId.toString()) {
-            let load = self.ref.load.element;
-            load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
-          }
-        });
-        jsBridge.on('mediaEnd', function() {
-          self.emit('end');
-        });
-      }
-    }
-    jsBridge.on('optionMenu1', function() {
-      if(self.data) {
-        migi.eventBus.emit('BOT_FN', {
-          isLike: self.isLike,
-          isFavor: self.isFavor,
-          clickLike: function(botFn) {
-            self.like(function() {
-              botFn.isLike = self.isLike;
-            });
-          },
-          clickFavor: function(botFn) {
-            self.favor(function() {
-              botFn.isFavor = self.isFavor;
-            });
-          },
-          clickCancel: function() {
-            loadingLike = loadingFavor = false;
-            if(ajaxLike) {
-              ajaxLike.abort();
-            }
-            if(ajaxFavor) {
-              ajaxFavor.abort();
-            }
-          },
-        });
-      }
-    });
     self.on(migi.Event.DOM, function() {
       WIDTH = $(window).width();
+      if(jsBridge.appVersion && jsBridge.android) {
+        let version = jsBridge.appVersion.split('.');
+        let major = parseInt(version[0]) || 0;
+        let minor = parseInt(version[1]) || 0;
+        let patch = parseInt(version[2]) || 0;
+        if(major > 0 || minor > 4) {
+          mediaService = true;
+          jsBridge.on('mediaPrepared', function(e) {
+            if(self.data && e.data && e.data.id === self.data.workId.toString()) {
+              self.duration = e.data.duration * 0.001;
+              self.canControl = true;
+            }
+          });
+          jsBridge.on('mediaTimeupdate', function(e) {
+            // 延迟导致拖动开始后，timeupdate还会抵达，需注意判断
+            if(self.data && e.data && !isStart && e.data.id === self.data.workId.toString()) {
+              self.duration = e.data.duration * 0.001;
+              self.canControl = true;
+              if(!isStart) {
+                self.isPlaying = true;
+                self.currentTime = e.data.currentTime * 0.001;
+                self.updateLrc();
+                self.setBarPercent(self.currentTime / self.duration);
+              }
+            }
+          });
+          jsBridge.on('mediaProgress', function(e) {
+            if(self.data && e.data && e.data.id === self.data.workId.toString()) {
+              let load = self.ref.load.element;
+              load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
+            }
+          });
+          jsBridge.on('mediaEnd', function() {
+            self.emit('end');
+          });
+        }
+      }
+      jsBridge.on('optionMenu1', function() {
+        if(self.data) {
+          migi.eventBus.emit('BOT_FN', {
+            isLike: self.isLike,
+            isFavor: self.isFavor,
+            clickLike: function(botFn) {
+              self.like(function() {
+                botFn.isLike = self.isLike;
+              });
+            },
+            clickFavor: function(botFn) {
+              self.favor(function() {
+                botFn.isFavor = self.isFavor;
+              });
+            },
+            clickCancel: function() {
+              loadingLike = loadingFavor = false;
+              if(ajaxLike) {
+                ajaxLike.abort();
+              }
+              if(ajaxFavor) {
+                ajaxFavor.abort();
+              }
+            },
+          });
+        }
+      });
     });
   }
   @bind data

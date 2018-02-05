@@ -15,7 +15,7 @@ const config = require('./webpack.pre');
 let flag = '<div id="page">';
 
 Object.keys(config.entry).forEach(function(item) {
-  migi.Element.resetUid();
+  migi.resetUid();
   let js = require('./www/' + item + '.pre.js');
   let html = './www/' + item + '.html';
   let s = fs.readFileSync(html, { encoding: 'utf-8' });

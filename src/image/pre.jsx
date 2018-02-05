@@ -4,3 +4,9 @@
 
 'use strict';
 
+import Image from './Image.jsx';
+
+let s = '';
+s += migi.preRender(<Image/>);
+
+export default s;

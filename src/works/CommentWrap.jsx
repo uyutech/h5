@@ -21,23 +21,23 @@ class CommentWrap extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.isLogin = util.isLogin();
     self.on(migi.Event.DOM, function() {
       let $body = $(document.body);
       $body.on('click', function() {
         self.showSort = false;
       });
-    });
-    jsBridge.on('resume', function(e) {
-      let data = e.data;console.log(data)
-      if(data) {
-        if(data.rid) {
-          self.ref.comment.prependChild(data);
+      self.isLogin = util.isLogin();
+      jsBridge.on('resume', function(e) {
+        let data = e.data;console.log(data)
+        if(data) {
+          if(data.rid) {
+            self.ref.comment.prependChild(data);
+          }
+          else {
+            self.ref.comment.prependData(data);
+          }
         }
-        else {
-          self.ref.comment.prependData(data);
-        }
-      }
+      });
     });
   }
   @bind worksId
