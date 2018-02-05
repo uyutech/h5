@@ -198,7 +198,7 @@ class Music extends migi.Component {
     });
     jsBridge.setSubTitle(s.join('、'));
     self.setMedia(work);
-    history.replaceState(null, '', '/works.html?worksId=' + self.worksId + '&workId=' + self.workId);
+    history.replaceState(null, '', '/works.html?worksId=' + self.worksId + '&workId=' + workId);
   }
   fn(workId) {
     let o = avHash[workId];
@@ -297,8 +297,22 @@ class Music extends migi.Component {
       });
     }
   }
-  mediaPlay() {
+  mediaPlay(data) {
     this.ref.botPlayBar.isPlaying = true;
+    if(data.workType.toString().charAt(0) === '1') {
+      jsBridge.getPreference('playlist', function(res) {
+        res = res || [];
+        for (let i = 0, len = res.length; i < len; i++) {
+          if(res[i] === data.workId) {
+            res.splice(i, 1);
+            break;
+          }
+        }
+        res.unshift(data.workId);
+        jsBridge.setPreference('playlist', res);
+      });
+      jsBridge.setPreference('playlistCur', data.workId);
+    }
   }
   mediaPause() {
     this.ref.botPlayBar.isPlaying = false;

@@ -125,6 +125,9 @@ class CommentWrap extends migi.Component {
     self.ref.comment.empty = false;
     self.load();
   }
+  chooseSubComment(rid, cid) {
+    console.log(rid, cid);
+  }
   render() {
     return <div class="mod-comment">
       <div class="fn">
@@ -145,7 +148,8 @@ class CommentWrap extends migi.Component {
       <Comment ref="comment"
                zanUrl="/h5/works/likeComment"
                subUrl="/h5/works/subCommentList"
-               delUrl="/h5/works/delComment"/>
+               delUrl="/h5/works/delComment"
+               on-chooseSubComment={ this.chooseSubComment }/>
     </div>;
   }
 }

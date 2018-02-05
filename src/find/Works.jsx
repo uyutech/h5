@@ -12,7 +12,7 @@ class Works extends migi.Component {
     super(...data);
   }
   clickWorks(e, vd, tvd) {
-    e.preventDefault();console.log(tvd.props.option)
+    e.preventDefault();
     util.openWorks({
       url: tvd.props.href,
       title: tvd.props.title,

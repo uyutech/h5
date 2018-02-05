@@ -267,7 +267,7 @@ class Media extends migi.Component {
     if(self.isVideo) {
       self.ref.video.element.play();
       self.isPlaying = true;
-      self.emit('play');
+      self.emit('play', self.data);
       jsBridge.media({
         key: 'stop',
       });
@@ -277,13 +277,13 @@ class Media extends migi.Component {
         key: 'play',
       }, function() {
         self.isPlaying = true;
-        self.emit('play');
+        self.emit('play', self.data);
       });
     }
     else {
       self.ref.audio.element.play();
       self.isPlaying = true;
-      self.emit('play');
+      self.emit('play', self.data);
     }
     net.postJSON('/h5/works/addPlayCount', { workID: self.data.workId });
   }

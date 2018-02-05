@@ -6,23 +6,6 @@
 
 import net from '../common/net';
 import util from '../common/util';
-// import WorksTypeEnum from './WorksTypeEnum';
-// import itemTemplate from './itemTemplate';
-// import worksState from './worksState';
-// import Lyric from './Lyric.jsx';
-// import Timeline from './Timeline.jsx';
-// import Insp from './Insp.jsx';
-// import Poster from './Poster.jsx';
-// import Comments from './Comments.jsx';
-// import Text from './Text.jsx';
-// import SubCmt from '../component/subcmt/SubCmt.jsx';
-// import LyricsParser from './LyricsParser.jsx';
-// import MusicAlbum from './MusicAlbum.jsx';
-// import PlayList from './PlayList.jsx';
-// import ImageView from './ImageView.jsx';
-// import Describe from './Describe.jsx';
-// import PhotoAlbum from './PhotoAlbum.jsx';
-
 import Media from './Media.jsx';
 import Info from './Info.jsx';
 import Select from './Select.jsx';
@@ -213,6 +196,22 @@ class Works extends migi.Component {
     });
     this.ref.poster.list = res;
   }
+  mediaPlay(data) {
+    if(data.workType.toString().charAt(0) === '1') {
+      jsBridge.getPreference('playlist', function(res) {
+        res = res || [];
+        for (let i = 0, len = res.length; i < len; i++) {
+          if(res[i] === data.workId) {
+            res.splice(i, 1);
+            break;
+          }
+        }
+        res.unshift(data.workId);
+        jsBridge.setPreference('playlist', res);
+      });
+      jsBridge.setPreference('playlistCur', data.workId);
+    }
+  }
   changeColumn(id) {
     let self = this;
     self.curColumn = id;
@@ -227,7 +226,7 @@ class Works extends migi.Component {
     });
     jsBridge.setSubTitle(s.join('、'));
     self.setMedia(work);
-    history.replaceState(null, '', '/works.html?worksId=' + self.worksId + '&workId=' + self.workId);
+    history.replaceState(null, '', '/works.html?worksId=' + self.worksId + '&workId=' + workId);
   }
   comment() {
     let self = this;
@@ -241,7 +240,8 @@ class Works extends migi.Component {
   }
   render() {
     return <div class="works">
-      <Media ref="media"/>
+      <Media ref="media"
+             on-play={ this.mediaPlay }/>
       <Info ref="info"/>
       <Select ref="select"
               on-change={ this.change }/>

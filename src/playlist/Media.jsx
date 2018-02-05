@@ -6,7 +6,7 @@
 
 import util from '../common/util';
 import net from '../common/net';
-import LyricsParser from '../works/LyricsParser.jsx';
+import lrcParser from '../works/lrcParser';
 
 let loadingLike;
 let loadingFavor;
@@ -91,10 +91,10 @@ class Media extends migi.Component {
     self.likeNum = data.likeNum;
     self.isFavor = data.isFavor;
     let l = {};
-    if(LyricsParser.isLyrics(data.lrc)) {
+    if(lrcParser.isLrc(data.lrc)) {
       l.is = true;
-      l.txt = LyricsParser.getTxt(data.lrc);
-      l.data = LyricsParser.parse(data.lrc);
+      l.txt = lrcParser.getTxt(data.lrc);
+      l.data = lrcParser.parse(data.lrc);
     }
     else {
       l.is = false;

@@ -9,7 +9,6 @@ import util from '../common/util';
 import Media from './Media.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
-import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import List from './List.jsx';
 
 let playlistCur;
