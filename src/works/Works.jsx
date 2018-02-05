@@ -50,7 +50,7 @@ class Works extends migi.Component {
     let self = this;
     self.worksId = worksId;
     self.workId = workId;
-    net.postJSON('/h5/works/index', { worksID: self.worksId, workID: self.workId }, function(res) {
+    net.postJSON('/h5/works/index', { worksID: worksId, workID: workId }, function(res) {
       if(res.success) {
         self.setData(res.data);
       }

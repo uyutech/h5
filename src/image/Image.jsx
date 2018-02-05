@@ -37,7 +37,7 @@ class Image extends migi.Component {
   init(worksId) {
     let self = this;
     self.worksId = worksId;
-    net.postJSON('/h5/works/index', { worksID: self.worksId }, function(res) {
+    net.postJSON('/h5/works/index', { worksID: worksId }, function(res) {
       if(res.success) {
         self.setData(res.data);
       }

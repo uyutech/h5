@@ -18,9 +18,6 @@ import CommentWrap from '../works/CommentWrap.jsx';
 import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let worksId;
-let workId;
-let curWorkId;
 let worksDetail;
 let workList = [];
 let avList = [];
@@ -33,24 +30,25 @@ let ajaxFavor;
 class Music extends migi.Component {
   constructor(...data) {
     super(...data);
+  }
+  @bind worksId
+  @bind workId
+  @bind curColumn = 0
+  init(worksId, workId) {
     let self = this;
-    worksId = self.props.worksId;
-    workId = self.props.workId;
-    curWorkId = workId;
-    self.on(migi.Event.DOM, function() {
-      net.postJSON('/h5/works/index', { worksID: worksId, workID: workId }, function(res) {
-        if(res.success) {
-          self.setData(res.data);
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
+    self.worksId = worksId;
+    self.workId = workId;
+    net.postJSON('/h5/works/index', { worksID: worksId, workID: workId }, function(res) {
+      if(res.success) {
+        self.setData(res.data);
+      }
+      else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  @bind curColumn
   setData(data) {
     worksDetail = data.worksDetail;
     workList = worksDetail.Works_Items || [];
@@ -75,9 +73,9 @@ class Music extends migi.Component {
       }
     });
     let index = 0;
-    if(workId) {
+    if(self.workId) {
       for(let i = 0, len = avList.length; i < len; i++) {
-        if(avList[i].ItemID === workId) {
+        if(avList[i].ItemID === self.workId) {
           index = i;
           break;
         }
@@ -109,13 +107,16 @@ class Music extends migi.Component {
     if(hash.poster) {
       self.setPoster(workList);
     }
+
+    comment.worksId = self.worksId;
     comment.setData(commentData);
   }
   setMedia(item) {
+    let self = this;
     if(item) {
       let works = (item.Works_Items_Works || [])[0] || {};
       let o = {
-        worksId,
+        worksId: self.worksId,
         workId: item.ItemID,
         workType: item.ItemType,
         worksTitle: worksDetail.Title,
@@ -188,6 +189,7 @@ class Music extends migi.Component {
     self.curColumn = id;
   }
   change(workId) {
+    let self = this;
     let work = avHash[workId];
     jsBridge.setTitle(work.ItemName);
     let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
@@ -195,8 +197,8 @@ class Music extends migi.Component {
       return item.AuthorName;
     });
     jsBridge.setSubTitle(s.join('、'));
-    this.setMedia(work);
-    history.replaceState(null, '', '/works.html?worksId=' + worksId + '&workId=' + workId);
+    self.setMedia(work);
+    history.replaceState(null, '', '/works.html?worksId=' + self.worksId + '&workId=' + self.workId);
   }
   fn(workId) {
     let o = avHash[workId];
@@ -353,8 +355,9 @@ class Music extends migi.Component {
     this.ref.list.workId = newWorkId;
   }
   comment() {
+    let self = this;
     jsBridge.pushWindow('/subcomment.html?type=3&id='
-      + worksId + '&sid=' + workId, {
+      + self.worksId + '&sid=' + self.workId, {
       title: '评论',
     });
   }
@@ -365,7 +368,8 @@ class Music extends migi.Component {
              on-pause={ this.mediaPause }
              on-end={ this.mediaEnd }/>
       <Info ref="info"/>
-      <Column ref="column" on-change={ this.changeColumn }/>
+      <Column ref="column"
+              on-change={ this.changeColumn }/>
       <div class={ 'list' + (this.curColumn === 0 ? '' : ' fn-hide') }>
         <List ref="list"
               on-change={ this.change }
@@ -381,7 +385,7 @@ class Music extends migi.Component {
         }
       </div>
       <div class={ 'comment' + (this.curColumn === 3 ? '' : ' fn-hide') }>
-        <CommentWrap ref="comment" worksId={ worksId }/>
+        <CommentWrap ref="comment"/>
       </div>
       <BotPlayBar ref="botPlayBar"
                   on-play={ this.play }

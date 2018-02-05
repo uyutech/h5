@@ -17,7 +17,8 @@ let workId = parseInt(search.workId) || undefined;
 
 jsBridge.ready(function() {
   let music = migi.preExist(
-    <Music worksId={ worksId } workId={ workId }/>,
+    <Music/>,
     '#page'
   );
+  music.init(worksId, workId);
 });
