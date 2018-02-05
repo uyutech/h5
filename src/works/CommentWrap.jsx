@@ -27,6 +27,17 @@ class CommentWrap extends migi.Component {
         self.showSort = false;
       });
     });
+    jsBridge.on('resume', function(e) {
+      let data = e.data;console.log(data)
+      if(data) {
+        if(data.rid) {
+          self.ref.comment.prependChild(data);
+        }
+        else {
+          self.ref.comment.prependData(data);
+        }
+      }
+    });
   }
   @bind worksId
   @bind showSort
