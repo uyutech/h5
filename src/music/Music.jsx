@@ -12,6 +12,7 @@ import Info from '../works/Info.jsx';
 import Column from '../works/Column.jsx';
 import List from './List.jsx';
 import Author from '../works/Author.jsx';
+import Text from '../works/Text.jsx';
 import Poster from '../works/Poster.jsx';
 import CommentWrap from '../works/CommentWrap.jsx';
 import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
@@ -104,6 +105,7 @@ class Music extends migi.Component {
     self.setColumn(hash, commentData);
 
     author.list = worksDetail.GroupAuthorTypeHash;
+    self.setText(workList);
     if(hash.poster) {
       self.setPoster(workList);
     }
@@ -157,6 +159,29 @@ class Music extends migi.Component {
     });
     self.curColumn = 0;
     column.list = list;
+  }
+  setText(list = []) {
+    let res = [];
+    list.forEach(function(item) {
+      let hash = {
+        4140: '文案',
+        4120: '随笔',
+        4210: '诗词',
+        4211: '原创歌词',
+        4212: '改编歌词',
+        4310: '小说',
+        4320: '剧本',
+        4330: '散文',
+        4340: '故事',
+      };
+      if(hash.hasOwnProperty(item.ItemType)) {
+        res.push({
+          title: hash[item.ItemType],
+          data: item.Text,
+        });
+      }
+    });
+    this.ref.text.list = res;
   }
   changeColumn(id) {
     let self = this;
@@ -348,6 +373,7 @@ class Music extends migi.Component {
       </div>
       <div class={ 'intro' + (this.curColumn === 1 ? '' : ' fn-hide') }>
         <Author ref="author"/>
+        <Text ref="text"/>
       </div>
       <div class={ 'poster' + (this.curColumn === 2 ? '' : ' fn-hide') }>
         {

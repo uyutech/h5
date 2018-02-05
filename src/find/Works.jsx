@@ -10,29 +10,19 @@ import util from '../common/util';
 class Works extends migi.Component {
   constructor(...data) {
     super(...data);
-    let self = this;
-    self.on(migi.Event.DOM, function() {
-      let $root = $(self.element);
-      $root.on('click', 'a', function(e) {
-        e.preventDefault();
-        let $this = $(this);
-        let url = $this.attr('href');
-        let title = $this.attr('title');
-        util.openWorks({
-          url,
-          title,
-        });
-      });
-      $root.on('click', 'dd a', function(e) {
-        e.preventDefault();
-        let $this = $(this);
-        let url = $this.attr('href');
-        let title = $this.attr('title');
-        util.openAuthor({
-          url,
-          title,
-        });
-      });
+  }
+  clickWorks(e, vd, tvd) {
+    e.preventDefault();console.log(tvd.props.option)
+    util.openWorks({
+      url: tvd.props.href,
+      title: tvd.props.title,
+    }, tvd.props.option);
+  }
+  clickAuthor(e, vd, tvd) {
+    e.preventDefault();
+    util.openAuthor({
+      url: tvd.props.href,
+      title: tvd.props.title,
     });
   }
   render() {
@@ -40,15 +30,22 @@ class Works extends migi.Component {
     let works = data.worklist[0];
     let author = ((works.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     let url = util.getWorksUrl(works.WorksID, works.WorkType);
-    return <div class={ 'mod-works' + (this.props.last ? ' last' : '') }>
-      <a href={ url } title={ works.Title } class="pic">
+    let option = util.getWorksUrlOption(works.WorkType);
+    return <div class="mod-works" onClick={ { '.pic,.name': this.clickWorks, 'dd a': this.clickAuthor } }>
+      <a href={ url }
+         title={ works.Title }
+         option={ option }
+         class="pic">
         <img src={ util.autoSsl(util.img250_250_80(data.coverpic || works.cover_Pic)) || '/src/common/blank.png' }/>
         <div>
           <span>{ data.Describe }</span>
         </div>
       </a>
       <div class="txt">
-        <a href={ url } title={ works.Title } class="name">{ works.Title }</a>
+        <a href={ url }
+           title={ works.Title }
+           option={ option }
+           class="name">{ works.Title }</a>
         <dl>
           <dt>{ author.Describe }</dt>
           {

@@ -28,6 +28,7 @@ class CommentWrap extends migi.Component {
       });
     });
   }
+  @bind worksId
   @bind showSort
   @bind sortText
   setData(data) {
@@ -63,7 +64,7 @@ class CommentWrap extends migi.Component {
     }
     loading = true;
     comment.message = '正在加载...';
-    ajax = net.postJSON('/h5/works/commentList', { worksID: self.props.worksId, skip, take, sortType, myComment }, function(res) {
+    ajax = net.postJSON('/h5/works/commentList', { worksID: self.worksId, skip, take, sortType, myComment }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;

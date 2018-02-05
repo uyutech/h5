@@ -149,9 +149,8 @@ class ItemList extends migi.Component {
 
     let list = self.ref.list;
     let arr = (data.dataList.data || []);
-    let length = arr.length;
-    arr.forEach(function(item, i) {
-      let cp = self.genItem(item, i === length - 1);
+    arr.forEach(function(item) {
+      let cp = self.genItem(item);
       if(cp) {
         cp.appendTo(list.element);
       }
@@ -204,27 +203,27 @@ class ItemList extends migi.Component {
       }
     });
   }
-  genItem(item, last) {
+  genItem(item) {
     let type = item.Level + ',' + item.urltype;
     switch(type) {
       case '1,1':
         if(item.worklist.length) {
-          return <Works data={ item } last={ last }/>;
+          return <Works data={ item }/>;
         }
         break;
       case '1,2':
         if(item.commentlist.length) {
-          return <Post data={ item } last={ last }/>;
+          return <Post data={ item }/>;
         }
         break;
       case '2,1':
         if(item.worklist.length) {
-          return <WorksList data={ item } last={ last }/>;
+          return <WorksList data={ item }/>;
         }
         break;
       case '2,3':
         if(item.authorlist.length) {
-          return <AuthorList data={ item } last={ last }/>;
+          return <AuthorList data={ item }/>;
         }
         break;
     }

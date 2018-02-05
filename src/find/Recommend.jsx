@@ -103,9 +103,8 @@ class Recommend extends migi.Component {
 
     let list = self.ref.list.element;
     let arr = (data.dataList.data || []);
-    let length = arr.length;
-    (data.dataList.data || []).forEach(function(item, i) {
-      let cp = self.genItem(item, i === data.dataList.Size - 1);
+    (data.dataList.data || []).forEach(function(item) {
+      let cp = self.genItem(item);
       if(cp) {
         cp.appendTo(list);
       }
@@ -141,27 +140,27 @@ class Recommend extends migi.Component {
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;
   }
-  genItem(item, last) {
+  genItem(item) {
     let type = item.Level + ',' + item.urltype;
     switch(type) {
       case '1,1':
         if(item.worklist.length) {
-          return <Works data={item} last={ last }/>;
+          return <Works data={item}/>;
         }
         break;
       case '1,2':
         if(item.commentlist.length) {
-          return <Post data={item} last={ last }/>;
+          return <Post data={item}/>;
         }
         break;
       case '2,1':
         if(item.worklist.length) {
-          return <WorksList data={item} last={ last }/>;
+          return <WorksList data={item}/>;
         }
         break;
       case '2,3':
         if(item.authorlist.length) {
-          return <AuthorList data={item} last={ last }/>;
+          return <AuthorList data={item}/>;
         }
         break;
     }

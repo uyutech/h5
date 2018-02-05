@@ -1,24 +1,23 @@
 /**
- * Created by army8735 on 2017/12/3.
+ * Created by army8735 on 2018/2/4.
  */
 
 'use strict';
 
-import './works.html';
+import './image.html';
 import './index.less';
 
 import qs from 'anima-querystring';
 
-import Works from './Works.jsx';
+import Image from './Image.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
 let worksId = parseInt(search.worksId);
-let workId = parseInt(search.workId) || undefined;
 
 jsBridge.ready(function() {
-  let works = migi.preExist(
-    <Works/>,
+  let image = migi.preExist(
+    <Image/>,
     '#page'
   );
-  works.init(worksId, workId);
+  image.init(worksId);
 });

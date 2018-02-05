@@ -8,11 +8,18 @@ class Text extends migi.Component {
   constructor(...data) {
     super(...data);
   }
+  @bind list
   render() {
-    return <div class="mod-text">
-      <h5>{ this.props.title }</h5>
-      <pre>{ this.props.data }</pre>
-    </div>;
+    return <ul class={ 'mod-text' + (this.list && this.list.length ? '' : ' fn-hide') }>
+      {
+        (this.list || []).map(function(item) {
+          return <li>
+            <h5>{ item.title }</h5>
+            <pre>{ item.data }</pre>
+          </li>;
+        })
+      }
+    </ul>;
   }
 }
 

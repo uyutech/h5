@@ -28,14 +28,12 @@ import Info from './Info.jsx';
 import Select from './Select.jsx';
 import Column from './Column.jsx';
 import Author from './Author.jsx';
+import Text from './Text.jsx';
 import Poster from './Poster.jsx';
 import CommentWrap from './CommentWrap.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let worksId;
-let workId;
-let curWorkId;
 let worksDetail;
 let workList = [];
 let avList = [];
@@ -44,32 +42,33 @@ let avHash = {};
 class Works extends migi.Component {
   constructor(...data) {
     super(...data);
+  }
+  @bind worksId
+  @bind workId
+  @bind curColumn = 0
+  init(worksId, workId) {
     let self = this;
-    worksId = self.props.worksId;
-    workId = self.props.workId;
-    curWorkId = workId;
-    self.on(migi.Event.DOM, function() {
-      net.postJSON('/h5/works/index', { worksID: worksId, workID: workId }, function(res) {
-        if(res.success) {
-          self.setData(res.data);
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
+    self.worksId = worksId;
+    self.workId = workId;
+    net.postJSON('/h5/works/index', { worksID: self.worksId, workID: self.workId }, function(res) {
+      if(res.success) {
+        self.setData(res.data);
+      }
+      else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  @bind curColumn
   setData(data) {
     worksDetail = data.worksDetail;
     if([5, 6].indexOf(worksDetail.WorkType) > -1) {
-      location.replace('/music.html?worksId=' + worksId);
+      location.replace('/music.html?worksId=' + self.worksId + '&workId=' + self.workId);
       return;
     }
     else if([11, 12].indexOf(worksDetail.WorkType) > -1) {
-      location.replace('/image.html?worksId=' + worksId);
+      location.replace('/image.html?worksId=' + self.worksId);
       return;
     }
     workList = worksDetail.Works_Items || [];
@@ -93,15 +92,15 @@ class Works extends migi.Component {
       if(item.ItemType === 3120) {
         hash.poster = true;
       }
-      if(/^[12]/.test(item.ItemType)) {
+      else if(/^[12]/.test(item.ItemType)) {
         avList.push(item);
         avHash[item.ItemID] = item;
       }
     });
     let index = 0;
-    if(workId) {
+    if(self.workId) {
       for(let i = 0, len = avList.length; i < len; i++) {
-        if(avList[i].ItemID === workId) {
+        if(avList[i].ItemID === self.workId) {
           index = i;
           break;
         }
@@ -133,12 +132,15 @@ class Works extends migi.Component {
     if(hash.poster) {
       self.setPoster(workList);
     }
+
+    comment.worksId = self.worksId;
     comment.setData(commentData);
   }
   setMedia(item) {
+    let self = this;
     if(item) {
       let o = {
-        worksId,
+        worksId: self.worksId,
         workId: item.ItemID,
         workType: item.ItemType,
         worksTitle: worksDetail.Title,
@@ -151,10 +153,10 @@ class Works extends migi.Component {
         likeNum: item.LikeHis,
         lrc: item.lrc,
       };
-      this.ref.media.setData(o);
+      self.ref.media.setData(o);
     }
     else {
-      this.ref.media.setData(null);
+      self.ref.media.setData(null);
     }
   }
   setColumn(hash, commentData) {
@@ -182,11 +184,25 @@ class Works extends migi.Component {
   setText(list = []) {
     let res = [];
     list.forEach(function(item) {
-      if(item.ItemType.toString().charAt(0) === '4') {
-        res.push(item);
+      let hash = {
+        4140: '文案',
+        4120: '随笔',
+        4210: '诗词',
+        4211: '原创歌词',
+        4212: '改编歌词',
+        4310: '小说',
+        4320: '剧本',
+        4330: '散文',
+        4340: '故事',
+      };
+      if(hash.hasOwnProperty(item.ItemType)) {
+        res.push({
+          title: hash[item.ItemType],
+          data: item.Text,
+        });
       }
     });
-    this.textWorkList = res;
+    this.ref.text.list = res;
   }
   setPoster(list = []) {
     let res = [];
@@ -202,6 +218,7 @@ class Works extends migi.Component {
     self.curColumn = id;
   }
   change(workId) {
+    let self = this;
     let work = avHash[workId];
     jsBridge.setTitle(work.ItemName);
     let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
@@ -209,46 +226,29 @@ class Works extends migi.Component {
       return item.AuthorName;
     });
     jsBridge.setSubTitle(s.join('、'));
-    this.setMedia(work);
-    history.replaceState(null, '', '/works.html?worksId=' + worksId + '&workId=' + workId);
+    self.setMedia(work);
+    history.replaceState(null, '', '/works.html?worksId=' + self.worksId + '&workId=' + self.workId);
+  }
+  comment() {
+    let self = this;
+    jsBridge.pushWindow('/subcomment.html?type=3&id='
+      + self.worksId + '&sid=' + (self.workId || ''), {
+      title: '评论',
+    });
   }
   share() {
-    migi.eventBus.emit('SHARE', '/works/' + worksId + (workId ? ('/' + workId) : ''));
+    migi.eventBus.emit('SHARE', '/works/' + this.worksId + (this.workId ? ('/' + this.workId) : ''));
   }
   render() {
     return <div class="works">
       <Media ref="media"/>
       <Info ref="info"/>
       <Select ref="select"
-              workId={ workId }
               on-change={ this.change }/>
       <Column ref="column" on-change={ this.changeColumn }/>
       <div class={ 'intro' + (this.curColumn === 0 ? '' : ' fn-hide') }>
         <Author ref="author"/>
-        {
-          (this.textWorkList || []).map(function(item) {
-            switch(item.ItemType) {
-              case 4110:
-                return <Text title="文案" data={ item.Text }/>;
-              case 4120:
-                return <Text title="随笔" data={ item.Text }/>;
-              case 4210:
-                return <Text title="诗词" data={ item.Text }/>;
-              case 4211:
-                return <Text title="原创歌词" data={ item.Text }/>;
-              case 4212:
-                return <Text title="改编歌词" data={ item.Text }/>;
-              case 4310:
-                return <Text title="小说" data={ item.Text }/>;
-              case 4320:
-                return <Text title="剧本" data={ item.Text }/>;
-              case 4330:
-                return <Text title="散文" data={ item.Text }/>;
-              case 4340:
-                return <Text title="故事" data={ item.Text }/>;
-            }
-          }.bind(this))
-        }
+        <Text ref="text"/>
       </div>
       <div class={ 'poster' + (this.curColumn === 1 ? '' : ' fn-hide') }>
         {
@@ -256,11 +256,12 @@ class Works extends migi.Component {
         }
       </div>
       <div class={ 'comment' + (this.curColumn === 2 ? '' : ' fn-hide') }>
-        <CommentWrap ref="comment" worksId={ worksId }/>
+        <CommentWrap ref="comment"/>
       </div>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }
+                on-click={ this.comment }
                 on-share={ this.share }/>
       <BotFn ref="botFn"/>
     </div>;

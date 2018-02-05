@@ -29,6 +29,7 @@ module.exports = {
     playlist: './src/playlist/pre.jsx',
     search: './src/search/pre.jsx',
     music: './src/music/pre.jsx',
+    image: './src/image/pre.jsx',
   },
   output: {
     path: __dirname + '/www',

@@ -166,7 +166,6 @@ class WaterFall extends migi.Component {
         return;
       }
     }
-    this.emit('poolEnd');
   }
   append(li) {
     let self = this;
@@ -179,11 +178,11 @@ class WaterFall extends migi.Component {
     li.appendTo($min[0]);
   }
   genItem(data) {
-    let author = data.GroupAuthorTypeHash.AuthorTypeHashlist[0] || {};
-    data.preview = util.autoSsl(util.img360__80(data.FileUrl));
-    if(data.Width <= 360) {
+    let author = ((data.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
+    data.preview = util.autoSsl(util.img375__80(data.FileUrl));
+    if(data.Width <= 375) {
       return <li id={ 'image_' + data.ItemID }>
-        <img class="pic" src={ util.autoSsl(util.img360__80(data.FileUrl)) || '/src/common/blank.png' }
+        <img class="pic" src={ util.autoSsl(util.img375__80(data.FileUrl)) || '/src/common/blank.png' }
              rel={ index++ } height={ data.Height / 2 }/>
         <div class="txt">
           <div class="author">
@@ -200,9 +199,9 @@ class WaterFall extends migi.Component {
         </div>
       </li>;
     }
-    let height = data.Height * 360 / data.Width;
+    let height = data.Height * 375 / data.Width;
     return <li id={ 'image_' + data.ItemID }>
-      <img class="pic" src={ util.autoSsl(util.img360__80(data.FileUrl)) || '/src/common/blank.png' }
+      <img class="pic" src={ util.autoSsl(util.img375__80(data.FileUrl)) || '/src/common/blank.png' }
            rel={ index++ } height={ height / 2 }/>
       <div class="txt">
         <div class="authors">
