@@ -376,6 +376,7 @@ let util = {
     });
   },
   openWorks: function(data, option) {
+    option = option || {};
     option.title = data.title;
     option.subTitle = data.subTitle;
     jsBridge.pushWindow(data.url || ('/works.html?worksId=' + data.worksId + '&workId=' + data.workId), option);

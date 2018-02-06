@@ -28,7 +28,7 @@ class CommentWrap extends migi.Component {
       });
       self.isLogin = util.isLogin();
       jsBridge.on('resume', function(e) {
-        let data = e.data;console.log(data)
+        let data = e.data;
         if(data) {
           if(data.rid) {
             self.ref.comment.prependChild(data);

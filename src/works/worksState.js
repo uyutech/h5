@@ -4,20 +4,18 @@
 
 'use strict';
 
-import WorksTypeEnum from './WorksTypeEnum';
-
 export default {
   getStateStr: function(type, state) {
     switch(type) {
-      case WorksTypeEnum.TYPE.originMusic:
-      case WorksTypeEnum.TYPE.musicAlbum:
+      case 1:
+      case 5:
         switch(state) {
           case 2:
           case 3:
             return '填坑中';
         }
         return '';
-      case WorksTypeEnum.TYPE.photoAlbum:
+      case 11:
         switch(state) {
           case 2:
           case 3:

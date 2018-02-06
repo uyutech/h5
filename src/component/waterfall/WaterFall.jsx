@@ -11,6 +11,7 @@ import ImageView from '../imageview/ImageView.jsx';
 let pool = [];
 let list = [];
 let index = 0;
+let WIDTH = 0;
 
 class WaterFall extends migi.Component {
   constructor(...data) {
@@ -23,6 +24,7 @@ class WaterFall extends migi.Component {
       }
       let imageView = self.ref.imageView;
       let $root = $(self.element);
+      WIDTH = $root.find('ul:first-child').width();
       $root.on('click', '.authors a', function(e) {
         e.preventDefault();
         let $this = $(this);
@@ -180,7 +182,7 @@ class WaterFall extends migi.Component {
   genItem(data) {
     let author = ((data.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     data.preview = util.autoSsl(util.img375__80(data.FileUrl));
-    if(data.Width <= 375) {
+    if(data.Width <= WIDTH * 2) {
       return <li id={ 'image_' + data.ItemID }>
         <img class="pic" src={ util.autoSsl(util.img375__80(data.FileUrl)) || '/src/common/blank.png' }
              rel={ index++ } height={ data.Height / 2 }/>
@@ -199,7 +201,7 @@ class WaterFall extends migi.Component {
         </div>
       </li>;
     }
-    let height = data.Height * 375 / data.Width;
+    let height = data.Height * WIDTH * 2 / data.Width;
     return <li id={ 'image_' + data.ItemID }>
       <img class="pic" src={ util.autoSsl(util.img375__80(data.FileUrl)) || '/src/common/blank.png' }
            rel={ index++ } height={ height / 2 }/>

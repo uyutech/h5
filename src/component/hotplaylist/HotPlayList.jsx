@@ -40,7 +40,7 @@ class HotPlayList extends migi.Component {
       return item.AuthName;
     });
     let works = item.Works_Items_Works[0];
-    let url = '/music.html?worksId=' + works.WorksID + '&workId=' + item.ItemID;
+    let url = '/works.html?worksId=' + works.WorksID + '&workId=' + item.ItemID;
     if(item.WorksState === 2) {
       return <li class={ type + ' rel' }>
         <a href={ url } title={ item.ItemName || '待揭秘' } class="pic">

@@ -101,7 +101,7 @@ class Works extends migi.Component {
     self.setMedia(work);
 
     info.worksType = worksDetail.WorkType;
-    info.title = worksDetail.Title;
+    info.title = worksDetail.Title || '歌名待揭秘';
     info.subTitle = worksDetail.sub_Title;
     info.state = worksDetail.WorkState;
 
@@ -171,8 +171,8 @@ class Works extends migi.Component {
         4140: '文案',
         4120: '随笔',
         4210: '诗词',
-        4211: '原创歌词',
-        4212: '改编歌词',
+        4211: '歌词',
+        4212: '歌词',
         4310: '小说',
         4320: '剧本',
         4330: '散文',
@@ -256,7 +256,7 @@ class Works extends migi.Component {
       </div>
       <div class={ 'poster' + (this.curColumn === 1 ? '' : ' fn-hide') }>
         {
-          <Poster title="海报" ref="poster"/>
+          <Poster ref="poster"/>
         }
       </div>
       <div class={ 'comment' + (this.curColumn === 2 ? '' : ' fn-hide') }>

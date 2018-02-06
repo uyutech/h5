@@ -4,7 +4,7 @@
 
 'use strict';
 
-import WorksTypeEnum from './WorksTypeEnum';
+import worksType from './worksType';
 import worksState from './worksState';
 
 class Info extends migi.Component {
@@ -17,7 +17,7 @@ class Info extends migi.Component {
   @bind state
   render() {
     return <div class="mod-info">
-      <span class={ 'type' + (this.worksType && WorksTypeEnum.NAME[this.worksType] ? '' : ' fn-hide') }>{ WorksTypeEnum.NAME[this.worksType] }</span>
+      <span class={ 'type' + (this.worksType && worksType[this.worksType] ? '' : ' fn-hide') }>{ worksType[this.worksType] }</span>
       <div class="title">
         <h1>{ this.title }</h1>
         <h2 class={ this.subTitle ? '' : 'fn-hide' }>{ this.subTitle }</h2>

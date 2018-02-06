@@ -18,7 +18,6 @@ class Poster extends migi.Component {
   }
   render() {
     return <div class="mod mod-poster">
-      <h5>{ this.props.title }</h5>
       <ul class="c" onClick={ { a: this.click } }>
         {
           (this.list || []).map(function(item) {

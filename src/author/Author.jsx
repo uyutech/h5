@@ -11,7 +11,6 @@ import Home from './Home.jsx';
 import MAList from './MAList.jsx';
 import PicList from './PicList.jsx';
 import Comments from './Comments.jsx';
-import WorksTypeEnum from "../works/WorksTypeEnum";
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import Background from '../component/background/Background.jsx';
 
@@ -194,12 +193,6 @@ class Author extends migi.Component {
 
     let comment = comments.ref.comment;
     let subCmt = self.ref.subCmt;
-    if(self.worksType === WorksTypeEnum.TYPE.originMusic) {
-      let media = self.ref.media;
-      media.on('switchTo', function(data) {
-        comments.workID = data.ItemID;
-      });
-    }
     comment.on('chooseSubComment', function(rid, cid, name, n) {
       self.rid = rid;
       self.cid = cid;

@@ -8,6 +8,7 @@ import net from '../common/net';
 import util from '../common/util';
 import HotPost from '../component/hotpost/HotPost.jsx';
 import ImageView from '../post/ImageView.jsx';
+import InputCmt from '../component/inputcmt/InputCmt.jsx';
 
 let take = 10;
 let skip = take;
@@ -91,6 +92,13 @@ class Tag extends migi.Component {
       <ImageView ref="imageView"/>
     </div>;
   }
+  comment() {
+    jsBridge.pushWindow('/subpost.html', {
+      title: '画个圈',
+      showOptionMenu: 'true',
+      optionMenu: '发布',
+    });
+  }
   render() {
     return <div class="tag">
       {
@@ -102,6 +110,10 @@ class Tag extends migi.Component {
               <div class="fn-placeholder"/>
             </div>
       }
+      <InputCmt ref="inputCmt"
+                placeholder={ '发表评论...' }
+                readOnly={ true }
+                on-click={ this.comment }/>
     </div>;
   }
 }
