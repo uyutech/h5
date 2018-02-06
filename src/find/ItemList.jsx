@@ -24,8 +24,8 @@ class ItemList extends migi.Component {
     super(...data);
     let self = this;
     self.first = true;
-    self.take = 10;
-    self.skip = self.take;
+    self.take = 20;
+    self.skip = 0;
   }
   @bind hasData
   show() {
@@ -47,7 +47,9 @@ class ItemList extends migi.Component {
     let self = this;
     let tag = self.props.tag;
     let id = tag.ID;
-    net.postJSON('/h5/find/typeList', { id }, function(res) {
+    let skip = self.skip;
+    let take = self.take;
+    net.postJSON('/h5/find/typeList', { id, skip, take }, function(res) {
       if(res.success) {
         self.setData(res.data);
       }
