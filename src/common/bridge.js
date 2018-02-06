@@ -22,8 +22,16 @@ let jsBridge = {
   appVersion: appVersion,
   android: !ios,
   ios,
-  call: function(data) {
-    ZhuanQuanJsBridgeNative.call(JSON.stringify(data));
+  call: function(key, value, cb) {
+    if(isFunction(value)) {
+      cb = value;
+      value = null;
+    }
+    let clientId = new Date().getTime() + '' + Math.random();
+    if(cb && window.ZhuanQuanJsBridge) {
+      ZhuanQuanJsBridge.record(clientId, cb);
+    }
+    ZhuanQuanJsBridgeNative.call(clientId, key, JSON.stringify(value));
   },
   ready: function(cb) {
     cb = cb || function() {};
@@ -83,12 +91,9 @@ let jsBridge = {
           url = location.href.slice(0, i) + '/' + url;
         }
         params = params || {};
-        this.call({
-          key: 'pushWindow',
-          value: {
-            url,
-            params,
-          },
+        this.call('pushWindow', {
+          url,
+          params,
         });
       }
     }
@@ -107,8 +112,8 @@ let jsBridge = {
     }
   },
   toast: function(s) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('toast', s);
+    if(this.isInApp) {
+      this.call('toast', s);
     }
     else {
       console.log(s);
@@ -140,50 +145,42 @@ let jsBridge = {
     }
   },
   alert: function(s) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      if(isString(s)) {
-        s = {
-          title: '',
-          message: s || '消息'
-        };
-      }
-      else {
-        s = s || {};
-        s.title = s.title || '';
-        s.message = s.message || '消息';
-      }
-      ZhuanQuanJSBridge.call('alert', s);
-    }
-  },
-  confirm: function(s, callback) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      if(isString(s)) {
-        s = {
-          title: '',
-          message: s || '确认吗？'
-        };
-      }
-      else {
-        s = s || {};
-        s.title = s.title || '';
-        s.message = s.message || '确认吗？';
-      }
-      ZhuanQuanJSBridge.call('confirm', s, callback);
+    if(isString(s)) {
+      s = {
+        title: '',
+        message: s || '',
+      };
     }
     else {
-      if(isString(s)) {
-        s = {
-          title: '',
-          message: s || '确认吗？'
-        };
-      }
-      else {
-        s = s || {};
-        s.title = s.title || '';
-        s.message = s.message || '确认吗？';
-      }
+      s = s || {};
+      s.title = s.title || '';
+      s.message = s.message || '';
+    }
+    if(this.isInApp) {
+      this.call('alert', s);
+    }
+    else {
+      alert(s.message);
+    }
+  },
+  confirm: function(s, cb) {
+    if(isString(s)) {
+      s = {
+        title: '',
+        message: s || '确认吗？'
+      };
+    }
+    else {
+      s = s || {};
+      s.title = s.title || '';
+      s.message = s.message || '确认吗？';
+    }
+    if(this.isInApp) {
+      this.call('confirm', s, cb);
+    }
+    else {
       if(window.confirm(s.message)) {
-        callback(true);
+        cb(true);
       }
     }
   },
@@ -222,10 +219,7 @@ let jsBridge = {
   },
   back: function() {
     if(this.isInApp) {
-      // 复用back event，模拟没有调用preventDefault()方法
-      if (window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-        ZhuanQuanJSBridge.call('back', { prevent: false });
-      }
+      this.call('back');
     }
     else {
       history.go(-1);
@@ -245,18 +239,15 @@ let jsBridge = {
       location.reload(true);
     }
   },
-  loginWeibo: function(callback) {
-    callback = callback || function() {};
+  loginWeibo: function(cb) {
     if(this.isInApp) {
-      this.call({
-        key: 'loginWeibo',
-      });
+      this.call('loginWeibo', cb);
     }
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('loginWeibo', function(res) {
-        callback(res);
-      });
-    }
+    // if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+    //   ZhuanQuanJSBridge.call('loginWeibo', function(res) {
+    //     callback(res);
+    //   });
+    // }
   },
   weiboLogin: function(data, callback) {
     callback = callback || function() {};
