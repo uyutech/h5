@@ -120,7 +120,7 @@ let jsBridge = {
     }
   },
   showLoading: function(s) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+    if(this.isInApp) {
       if(isString(s)) {
         s = {
           title: '',
@@ -132,16 +132,14 @@ let jsBridge = {
         s = s || {};
         s.title = s.title || '';
         s.message = s.message || '加载中...';
-        if(s.cancelable === undefined) {
-          s.cancelable = true;
-        }
+        s.cancelable = s.cancelable || true;
       }
-      ZhuanQuanJSBridge.call('showLoading', s);
+      this.call('showLoading', s);
     }
   },
   hideLoading: function() {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('hideLoading');
+    if(this.isInApp) {
+      this.call('hideLoading');
     }
   },
   alert: function(s) {
@@ -166,14 +164,14 @@ let jsBridge = {
   confirm: function(s, cb) {
     if(isString(s)) {
       s = {
-        title: '',
-        message: s || '确认吗？'
+        title: '确认吗？',
+        message: s || '',
       };
     }
     else {
       s = s || {};
-      s.title = s.title || '';
-      s.message = s.message || '确认吗？';
+      s.title = s.title || '确认吗？';
+      s.message = s.message || '';
     }
     if(this.isInApp) {
       this.call('confirm', s, cb);
@@ -208,13 +206,13 @@ let jsBridge = {
     }
   },
   hideBackButton: function() {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('hideBackButton');
+    if(this.isInApp) {
+      this.call('hideBackButton');
     }
   },
   showBackButton: function() {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('showBackButton');
+    if(this.isInApp) {
+      this.call('showBackButton');
     }
   },
   back: function() {
@@ -257,102 +255,70 @@ let jsBridge = {
       });
     }
   },
-  login: function(url, data, callback) {
-    callback = callback || function() {};
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('login', {
+  login: function(url, data, cb) {
+    if(this.isInApp) {
+      this.call('login', {
         url,
         data,
-      }, function(res) {
-        callback(res);
-      });
+      }, cb);
     }
   },
-  loginOut: function(callback) {
-    callback = callback || function() {};
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('loginOut', callback);
+  loginOut: function(cb) {
+    if(this.isInApp) {
+      this.call('loginOut', cb);
     }
   },
-  getPreference: function(key, callback) {
-    callback = callback || function() {};
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('getPreference', key, callback);
-    }
-    else {
-      let s = localStorage[key];
-      callback(JSON.parse(s || 'null'));
-    }
+  getPreference: function(key, cb) {
+    this.getCache(key, cb);
   },
-  setPreference: function(key, value, callback) {
-    callback = callback || function() {};
-    if(value === undefined) {
-      value = null;
-    }
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      if(isString(value)) {
-        value = JSON.stringify(value);
-      }
-      ZhuanQuanJSBridge.call('setPreference', { key, value }, callback);
-    }
-    else {
-      if(value === null) {
-        delete localStorage[key];
-      }
-      else {
-        localStorage[key] = JSON.stringify(value);
-      }
-      callback();
-    }
+  setPreference: function(key, value, cb) {
+    this.setCache(key, value, cb);
   },
-  delPreference: function(key, callback) {
-    callback = callback || function() {};
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('setPreference', { key, value: null }, callback);
-    }
-    else {
-      delete localStorage[key];
-      callback();
-    }
+  delPreference: function(key, cb) {
+    this.delCache(key, cb);
   },
-  setCache: function(key, value, callback) {
-    callback = callback || function() {};
-    let native = window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call;
-    if(Array.isArray(key) && Array.isArray(value)) {
+  setCache: function(key, value, cb) {
+    cb = cb || function() {};
+    let native = this.isInApp;
+    if(Array.isArray(key)) {
+      let temp = [];
       for(let i = 0, len = key.length; i < len; i++) {
-        let item = value[i];
+        let item = Array.isArray(value) ? value[i] : value;
         if(item === undefined) {
-          value[i] = null;
+          temp[i] = null;
         }
         else if(isString(item) && native) {
-          value[i] = JSON.stringify(item);
+          temp[i] = JSON.stringify(item);
+        }
+        else {
+          temp[i] = item;
         }
       }
-      value.splice(key.length);
+      temp.splice(key.length);
       if(native) {
-        ZhuanQuanJSBridge.call('setCache', { key, value, isArray: true }, callback);
+        this.call('setCache', { key, value: temp, isArray: true }, cb);
       }
       else {
         key.forEach(function(item, i) {
-          if(value[i] === null) {
+          if(temp[i] === null) {
             delete localStorage[item];
           }
           else {
-            localStorage[item] = JSON.stringify(value[i]);
+            localStorage[item] = JSON.stringify(temp[i]);
           }
         });
-        callback();
+        cb();
       }
     }
     else {
       if(value === undefined) {
         value = null;
       }
-      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+      if(this.isInApp) {
         if(isString(value)) {
           value = JSON.stringify(value);
         }
-        ZhuanQuanJSBridge.call('setCache', { key, value }, callback);
+        this.call('setCache', { key, value }, cb);
       }
       else {
         if(value === null) {
@@ -361,53 +327,57 @@ let jsBridge = {
         else {
           localStorage[key] = JSON.stringify(value);
         }
-        callback();
+        cb && cb();
       }
     }
   },
-  getCache: function(key, callback) {
-    callback = callback || function() {};
+  getCache: function(key, cb) {
     if(Array.isArray(key)) {
-      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-        ZhuanQuanJSBridge.call('getCache', { key, isArray: true }, callback);
+      if(this.isInApp) {
+        this.call('getCache', { key, isArray: true }, cb);
       }
       else {
         let res = [];
         key.forEach(function(item) {
           res.push(JSON.parse(localStorage[item] || 'null'));
         });
-        callback.apply(null, res);
+        cb && cb.apply(null, res);
       }
     }
     else {
-      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-        ZhuanQuanJSBridge.call('getCache', { key }, callback);
+      if(this.isInApp) {
+        this.call('getCache', { key }, cb);
       }
       else {
         let s = localStorage[key];
-        callback(JSON.parse(s || 'null'));
+        cb && cb(JSON.parse(s || 'null'));
       }
     }
   },
-  delCache: function(key, callback) {
-    callback = callback || function() {};
+  delCache: function(key, cb) {
     if(Array.isArray(key)) {
       let value = [];
       for(let i = 0, len = key.length; i < len; i++) {
         value.push(null);
       }
-      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-        ZhuanQuanJSBridge.call('setCache', { key, value, isArray: true }, callback);
+      if(this.isInApp) {
+        this.call('setCache', { key, value, isArray: true }, callback);
       }
       else {
         key.forEach(function(item) {
           delete localStorage[item];
         });
-        callback();
+        cb && cb();
       }
     }
     else {
-      delete localStorage[item];
+      if(this.isInApp) {
+        this.call('setCache', { key, value: null }, cb);
+      }
+      else {
+        delete localStorage[item];
+        cb && cb();
+      }
     }
   },
   showOptionMenu: function() {
@@ -431,8 +401,8 @@ let jsBridge = {
     }
   },
   moveTaskToBack: function() {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('moveTaskToBack');
+    if(this.isInApp) {
+      this.call('moveTaskToBack');
     }
   },
   openUri: function(uri) {
@@ -491,7 +461,7 @@ let jsBridge = {
     }
   },
   download: function(data) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+    if(this.isInApp) {
       if(isString(data)) {
         data = {
           url: data,
@@ -500,16 +470,13 @@ let jsBridge = {
       if(!data.name) {
         data.name = data.url;
       }
-      ZhuanQuanJSBridge.call('download', data);
-      jsBridge.toast('开始下载，请关注通知栏进度');
+      this.call('download', data);
+      this.toast('开始下载，请关注通知栏进度');
     }
   },
-  networkInfo: function(callback) {
-    callback = callback || function() {};
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('networkInfo', function(res) {
-        callback(res);
-      });
+  networkInfo: function(cb) {
+    if(this.isInApp) {
+      this.call('networkInfo', cb);
     }
   },
   media: function(data, callback) {
