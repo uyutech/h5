@@ -146,7 +146,7 @@ jsBridge.ready(function() {
     let major = parseInt(version[0]) || 0;
     let minor = parseInt(version[1]) || 0;
     let patch = parseInt(version[2]) || 0;
-    if(minor < 4) {
+    if(minor < 5) {
       old = true;
     }
   }
@@ -154,7 +154,7 @@ jsBridge.ready(function() {
     let notice = migi.render(
       <a class="notice" href="#" onClick={ function(e) {
         e.preventDefault();
-        jsBridge.openUri('https://circling.net.cn/android/circling-0.4.1.apk');
+        jsBridge.openUri('https://circling.net.cn/android/circling-0.5.2.apk');
       } }>您的app版本过低，考虑到功能和体验，请点击下载更新</a>
     );
     notice.prependTo('#page');
