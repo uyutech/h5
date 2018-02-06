@@ -40,6 +40,7 @@ class VideoList extends migi.Component {
             else {
               $b.removeClass('liked');
             }
+            $b.text(data.LikeCount);
           }
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);

@@ -313,6 +313,9 @@ class Media extends migi.Component {
       self.emit('pause');
     }
   }
+  toggle() {
+    this.isPlaying ? this.pause() : this.play();
+  }
   stop() {
     let self = this;
     if(self.isVideo) {
@@ -449,7 +452,9 @@ class Media extends migi.Component {
     loadingLike = true;
     ajaxLike = net.postJSON('/h5/works/likeWork', { workID: self.data.workId }, function(res) {
       if(res.success) {
-        self.isLike = self.data.isLike = res.data.State === 'likeWordsUser';
+        let data = res.data;
+        self.isLike = self.data.isLike = data.State === 'likeWordsUser';
+        self.data.likeNum = self.likeNum = data.LikeCount;
         cb && cb();
       }
       else if(res.code === 1000) {
@@ -583,6 +588,7 @@ class Media extends migi.Component {
                onPause={ this.onPause }
                onEnded={ this.onEnded }
                onPlaying={ this.onPlaying }
+               onClick={ this.toggle }
                preload="meta"
                playsinline="true"
                webkit-playsinline="true"/>
@@ -617,6 +623,7 @@ class Media extends migi.Component {
           <b class={ 'lrc' + (this.lrc.is ? '' : ' fn-hide') + (this.lrcMode ? ' roll' : '') }
              onClick={ this.clickLrcMode }/>
         </div>
+        <b class={ 'start' + (this.isPlaying ? ' fn-hide' : '') } onClick={ this.play }/>
         <div class="time">
           <span class="now">{ util.formatTime(this.currentTime) }</span>
           <span class="total">{ util.formatTime(this.duration) }</span>
@@ -631,7 +638,7 @@ class Media extends migi.Component {
       <ul class="btn">
         <li onClick={ this.clickLike }>
           <b class={ 'like' + (this.isLike ? ' liked' : '') }/>
-          <span>{ this.isLike ? ((this.data || {}).likeNum || 0) : '点赞' }</span>
+          <span>{ this.isLike ? (this.likeNum || 0) : '点赞' }</span>
         </li>
         <li onClick={ this.clickFavor }>
           <b class={ 'favor' + (this.isFavor ? ' favored' : '') }/>

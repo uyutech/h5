@@ -31,7 +31,8 @@ class Works extends migi.Component {
     let author = ((works.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     let url = util.getWorksUrl(works.WorksID, works.WorkType);
     let option = util.getWorksUrlOption(works.WorkType);
-    return <div class="mod-works" onClick={ { '.pic,.name': this.clickWorks, 'dd a': this.clickAuthor } }>
+    return <div class="mod-works"
+                onClick={ { '.pic,.name,.intro': this.clickWorks, 'dd a': this.clickAuthor } }>
       <a href={ url }
          title={ works.Title }
          option={ option }
@@ -60,7 +61,10 @@ class Works extends migi.Component {
             })
           }
         </dl>
-        <a href={ url } title={ works.Title } class="intro"><pre>{ data.Intro }</pre></a>
+        <a href={ url }
+           title={ works.Title }
+           option={ option }
+           class="intro"><pre>{ data.Intro }</pre></a>
       </div>
     </div>;
   }

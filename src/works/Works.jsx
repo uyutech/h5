@@ -45,9 +45,10 @@ class Works extends migi.Component {
     });
   }
   setData(data) {
+    let self = this;
     worksDetail = data.worksDetail;
     if([5, 6].indexOf(worksDetail.WorkType) > -1) {
-      location.replace('/music.html?worksId=' + self.worksId + '&workId=' + self.workId);
+      location.replace('/music.html?worksId=' + self.worksId + '&workId=' + (self.workId || ''));
       return;
     }
     else if([11, 12].indexOf(worksDetail.WorkType) > -1) {
@@ -56,10 +57,9 @@ class Works extends migi.Component {
     }
     workList = worksDetail.Works_Items || [];
     let commentData = data.commentData;
-    jsBridge.setTitle(worksDetail.Title);
-    jsBridge.setSubTitle(worksDetail.sub_Title);
+    // jsBridge.setTitle(worksDetail.Title);
+    // jsBridge.setSubTitle(worksDetail.sub_Title);
 
-    let self = this;
     let info = self.ref.info;
     let select = self.ref.select;
     let author = self.ref.author;

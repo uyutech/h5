@@ -210,6 +210,7 @@ class List extends migi.Component {
           if(res.success) {
             let data2 = res.data;
             data.isLike = botFn.isLike = data2.State === 'likeWordsUser';
+            data.likeNum = data2.LikeCount;
             migi.eventBus.emit('likeWork', data);
           }
           else {

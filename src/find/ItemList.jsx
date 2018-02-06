@@ -139,6 +139,10 @@ class ItemList extends migi.Component {
         break;
     }
   }
+  reload() {
+    this.reset();
+    this.loadMore();
+  }
   setData(data) {
     let self = this;
     self.bannerList = data.bannerList;

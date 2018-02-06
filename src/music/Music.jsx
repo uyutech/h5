@@ -53,8 +53,8 @@ class Music extends migi.Component {
     worksDetail = data.worksDetail;
     workList = worksDetail.Works_Items || [];
     let commentData = data.commentData;
-    jsBridge.setTitle(worksDetail.Title);
-    jsBridge.setSubTitle(worksDetail.sub_Title);
+    // jsBridge.setTitle(worksDetail.Title);
+    // jsBridge.setSubTitle(worksDetail.sub_Title);
 
     let self = this;
     let list = self.ref.list;
@@ -230,6 +230,7 @@ class Music extends migi.Component {
               botFn.isLike = o.ISLike = res.data.State === 'likeWordsUser';
               if(media.data && media.data.workId === o.ItemID) {
                 media.isLike = media.data.isLike = o.ISLike;
+                media.likeNum = media.data.likeNum = res.data.LikeCount;
               }
             }
             else if(res.code === 1000) {
