@@ -16,7 +16,6 @@ export default {
       let ms = times[2];
       let timestamp = parseInt(times[0]) * 60 * 1000 + parseInt(times[1]) * 1000 + (ms.length === 3 ? parseInt(ms) : parseInt(ms) * 10);
       let txt = item.slice(item.indexOf(']') + 1);
-      // console.log(time, timestamp, txt);
       return {
         time,
         timestamp,
@@ -24,7 +23,4 @@ export default {
       };
     });
   },
-  getTxt: function(s) {
-    return s.replace(/\n\s*\n/g, '\n').replace(/\[\d{2,}:\d{2}\.\d{2,3}]/g, '').replace(/\[\w+:\w+]/g, '');
-  }
 };

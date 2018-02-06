@@ -50,6 +50,7 @@ class Playlist extends migi.Component {
               let format = data.data.map(function(item) {
                 let works = item.Works_Items_Works[0];
                 return {
+                  worksId: works.WorksID,
                   workId: item.ItemID,
                   worksCover: works.WorksCoverPic,
                   workName: item.ItemName,

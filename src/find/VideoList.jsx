@@ -20,9 +20,9 @@ class VideoList extends migi.Component {
         let $a = $(this);
         let url = $a.attr('href');
         let title = $a.attr('title');
-        util.openWorks({
-          url,
+        jsBridge.pushWindow(url, {
           title,
+          transparentTitle: true,
         });
       });
       $root.on('click', '.like', function() {

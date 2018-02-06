@@ -176,8 +176,12 @@ class Media extends migi.Component {
     let l = {};
     if(lrcParser.isLrc(data.lrc)) {
       l.is = true;
-      l.txt = lrcParser.getTxt(data.lrc);
       l.data = lrcParser.parse(data.lrc);
+      let s = '';
+      l.data.forEach(function(item) {
+        s += item.txt + '\n';
+      });
+      l.txt = s;
     }
     else {
       l.is = false;
@@ -222,6 +226,7 @@ class Media extends migi.Component {
     this.duration = e.target.duration;
     let percent = currentTime / this.duration;
     this.setBarPercent(percent);
+    this.updateLrc();
   }
   onLoadedmetadata(e) {
     this.duration = e.target.duration;
@@ -306,6 +311,32 @@ class Media extends migi.Component {
       self.ref.audio.element.pause();
       self.isPlaying = false;
       self.emit('pause');
+    }
+  }
+  stop() {
+    let self = this;
+    if(self.isVideo) {
+      self.ref.video.element.pause();
+      self.ref.video.element.src = '';
+      self.currentTime = 0;
+      self.isPlaying = false;
+      self.emit('stop');
+    }
+    else if(mediaService) {
+      jsBridge.media({
+        key: 'stop',
+      }, function() {
+        self.currentTime = 0;
+        self.isPlaying = false;
+        self.emit('stop');
+      });
+    }
+    else {
+      self.ref.audio.element.pause();
+      self.ref.audio.element.src = '';
+      self.currentTime = 0;
+      self.isPlaying = false;
+      self.emit('stop');
     }
   }
   repeat() {
@@ -564,7 +595,7 @@ class Media extends migi.Component {
                onEnded={ this.onEnded }
                onPlaying={ this.onPlaying }
                preload="meta"/>
-        <div class="lrc" ref="lrc">
+        <div class={ 'lrc' + (this.lrc.data && this.lrc.is ? '' : ' fn-hide') } ref="lrc">
           <div class={ 'roll' + (this.lrcMode && this.lrc.data ? '' : ' fn-hide') }>
             <div class="c"
                  ref="lrcRoll"
@@ -581,8 +612,10 @@ class Media extends migi.Component {
           </div>
         </div>
         <div class="control">
-          <b class={ 'play' + (this.isPlaying ? ' pause' : '') } onClick={ this.clickPlay }/>
-          <b class={ 'lrc' + (this.lrcMode ? ' roll' : '') } onClick={ this.clickLrcMode }/>
+          <b class={ 'play' + (this.isPlaying ? ' pause' : '') }
+             onClick={ this.clickPlay }/>
+          <b class={ 'lrc' + (this.lrc.is ? '' : ' fn-hide') + (this.lrcMode ? ' roll' : '') }
+             onClick={ this.clickLrcMode }/>
         </div>
         <div class="time">
           <span class="now">{ util.formatTime(this.currentTime) }</span>

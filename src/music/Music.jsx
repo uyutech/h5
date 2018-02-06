@@ -96,7 +96,7 @@ class Music extends migi.Component {
     list.list = avList;
 
     info.worksType = worksDetail.WorkType;
-    info.title = worksDetail.Title;
+    info.title = worksDetail.Title || '歌名待揭秘';
     info.subTitle = worksDetail.sub_Title;
     info.state = worksDetail.WorkState;
 
@@ -168,8 +168,8 @@ class Music extends migi.Component {
         4140: '文案',
         4120: '随笔',
         4210: '诗词',
-        4211: '原创歌词',
-        4212: '改编歌词',
+        4211: '歌词',
+        4212: '歌词',
         4310: '小说',
         4320: '剧本',
         4330: '散文',
@@ -183,6 +183,15 @@ class Music extends migi.Component {
       }
     });
     this.ref.text.list = res;
+  }
+  setPoster(list = []) {
+    let res = [];
+    list.forEach(function(item) {
+      if(item.ItemType === 3120) {
+        res.push(item);
+      }
+    });
+    this.ref.poster.list = res;
   }
   changeColumn(id) {
     let self = this;
@@ -395,7 +404,7 @@ class Music extends migi.Component {
       </div>
       <div class={ 'poster' + (this.curColumn === 2 ? '' : ' fn-hide') }>
         {
-          <Poster title="海报" ref="poster"/>
+          <Poster ref="poster"/>
         }
       </div>
       <div class={ 'comment' + (this.curColumn === 3 ? '' : ' fn-hide') }>
