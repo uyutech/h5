@@ -70,8 +70,8 @@ let jsBridge = {
     }
   },
   pushWindow: function(url, params) {
+    url = url.trim();
     if(this.isInApp) {
-      url = url.trim();
       if(url) {
         if (/^\w+:\/\//i.test(url)) {
         }
@@ -247,6 +247,11 @@ let jsBridge = {
   },
   loginWeibo: function(callback) {
     callback = callback || function() {};
+    if(this.isInApp) {
+      this.call({
+        key: 'loginWeibo',
+      });
+    }
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
       ZhuanQuanJSBridge.call('loginWeibo', function(res) {
         callback(res);
