@@ -47,7 +47,7 @@ class MallWait extends migi.Component {
         <li><a href="/mall_new.html">新福利</a></li>
         <li><a href="/mall_wait.html" class="cur">等待收货</a></li>
       </ul>
-      <p>本次发货时间为：12月20-27日的一周。<br/>考虑到邮件到付邮费较贵，并且可能导致在校学生很难收到，因此临时决定邮费统一由转圈平台垫付，之后会开通付邮费的方式~</p>
+      <p>考虑到小伙伴们寒假的地址和开学以后的地址不相同以及春节快递停止发货。所以发货将于3月份开始，在此之间，发货功能将被锁定。具体发货时间将会在转圈微博通知，请小伙伴谅解。</p>
       <ul class="list" onClick={ { button: this.click } }>
         {
           (this.data || []).map(function(item, i) {

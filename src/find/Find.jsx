@@ -59,7 +59,7 @@ class Find extends migi.Component {
     visible = false;
   }
   refresh() {
-    this.ref.recommend.reload();
+    last.reload();
   }
   setData(data) {
     let self = this;
