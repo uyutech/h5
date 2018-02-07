@@ -103,9 +103,7 @@ let jsBridge = {
   },
   popWindow: function(data) {
     if(this.isInApp) {
-      if (window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-        ZhuanQuanJSBridge.call('popWindow', JSON.stringify(data));
-      }
+      this.call('popWindow', JSON.stringify(data));
     }
     else {
       history.go(-1);
@@ -182,7 +180,7 @@ let jsBridge = {
       }
     }
   },
-  prompt: function(s, callback) {
+  prompt: function(s, cb) {
     if(isString(s)) {
       s = {
         message: '请输入',
@@ -194,12 +192,12 @@ let jsBridge = {
       s.message = s.message || '请输入';
       s.value = s.value || '';
     }
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('prompt', s, callback);
+    if(this.isInApp) {
+      this.call('prompt', s, cb);
     }
     else {
       let res = window.prompt(s.message, s.value);
-      callback({
+      cb({
         success: true,
         value: res,
       });
@@ -375,7 +373,7 @@ let jsBridge = {
         this.call('setCache', { key, value: null }, cb);
       }
       else {
-        delete localStorage[item];
+        delete localStorage[key];
         cb && cb();
       }
     }
@@ -406,8 +404,8 @@ let jsBridge = {
     }
   },
   openUri: function(uri) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('openUri', uri);
+    if(this.isInApp) {
+      this.call('openUri', uri);
     }
     else {
       window.open(uri);
@@ -423,7 +421,7 @@ let jsBridge = {
     }
   },
   notify: function(data, params) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+    if(this.isInApp) {
       if(isString(data)) {
         data = {
           title: data,
@@ -440,7 +438,7 @@ let jsBridge = {
           data.url = location.href.slice(0, i) + '/' + data.url;
         }
       }
-      ZhuanQuanJSBridge.call('notify', {
+      this.call('notify', {
         data,
         params,
       });
