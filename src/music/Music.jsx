@@ -214,6 +214,8 @@ class Music extends migi.Component {
     let media = this.ref.media;
     if(o) {
       migi.eventBus.emit('BOT_FN', {
+        canLike: true,
+        canFavor: true,
         isLike: o.ISLike,
         isFavor: o.ISFavor,
         clickLike: function(botFn) {

@@ -65,6 +65,8 @@ class Media extends migi.Component {
       jsBridge.on('optionMenu1', function() {
         if(self.data) {
           migi.eventBus.emit('BOT_FN', {
+            canLike: true,
+            canFavor: true,
             isLike: self.isLike,
             isFavor: self.isFavor,
             clickLike: function(botFn) {

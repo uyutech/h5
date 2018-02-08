@@ -25,6 +25,8 @@ class Playlist extends migi.Component {
         let isLike = $fn.attr('isLike') === 'true';
         let isFavor = $fn.attr('isFavor') === 'true';
         migi.eventBus.emit('BOT_FN', {
+          canLike: true,
+          canFavor: true,
           isLike,
           isFavor,
           clickFavor: function(botFn) {
