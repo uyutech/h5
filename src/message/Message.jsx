@@ -13,20 +13,39 @@ let take = 10;
 let skip = take;
 let loading;
 let loadEnd;
+let ajax;
 
 class Message extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      net.postJSON('/h5/my/message', function(res) {
+        if(res.success) {
+          let data = res.data;
+          self.setData(data);
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      });
+      jsBridge.on('refresh', function(e) {
+        e.preventDefault();
+        skip = 0;
+        loading = loadEnd = false;
+        self.ref.messages.clearData();
+        self.load();
+      });
+    });
   }
-  @bind hasData
   setData(data) {
     let self = this;
-    self.data = data;
-
-    self.hasData = true;
-    loadEnd = self.data.Size <= take;
-
     let messages = self.ref.messages;
+    messages.setData(data.data);
+    loadEnd = data.Size <= take;
+
     let subCmt = self.ref.subCmt;
     messages.on('comment', function(mid, rid, cid, name, type, tid) {
       subCmt.readOnly = false;
@@ -78,11 +97,14 @@ class Message extends migi.Component {
       });
     });
 
+    if(loadEnd) {
+      return;
+    }
     let $window = $(window);
     $window.on('scroll', function() {
       self.checkMore($window);
     });
-    self.read(self.data.data);
+    self.read(data.data);
   }
   checkMore($window) {
     let self = this;
@@ -101,7 +123,10 @@ class Message extends migi.Component {
     let self = this;
     loading = true;
     self.ref.messages.message = '正在加载...';
-    net.postJSON('/h5/my/message', { skip, take }, function(res) {
+    if(ajax) {
+      ajax.abort();
+    }
+    ajax = net.postJSON('/h5/my/message', { skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
@@ -143,18 +168,10 @@ class Message extends migi.Component {
       });
     }
   }
-  genDom() {
-    let self = this;
-    return <Messages ref="messages" dataList={ self.data.data }/>;
-  }
   render() {
     return <div class="message">
       <h4>圈消息</h4>
-      {
-        this.hasData
-          ? this.genDom()
-          : <div class="fn-placeholder"/>
-      }
+      <Messages ref="messages"/>
       <SubCmt ref="subCmt"
               readOnly={ true }
               placeholder="请选择留言回复"

@@ -42,7 +42,7 @@ class InputCmt extends migi.Component {
     this.emit('share');
   }
   render() {
-    return <div class={ 'cp-inputcmt' + (this.hidden ? ' fn-hide' : '') }>
+    return <form class={ 'cp-inputcmt' + (this.hidden ? ' fn-hide' : '') }>
       <img src={ this.head || '/src/common/head.png' }/>
       <input ref="input"
              value={ this.value }
@@ -50,7 +50,7 @@ class InputCmt extends migi.Component {
              readOnly={ this.readOnly }
              onClick={ this.clickInput }/>
       <b class="share" onClick={ this.clickShare }/>
-    </div>;
+    </form>;
   }
 }
 
