@@ -34,8 +34,9 @@ class HotAuthor extends migi.Component {
   render() {
     return <div class="cp-hotauthor" onClick={ { a: this.click } }>
       {
-        this.dataList && this.dataList.length
-          ? <ul>
+        this.dataList
+          ? this.dataList.length
+            ? <ul>
               {
                 this.dataList.map(function(item) {
                   let type = [];
@@ -82,7 +83,8 @@ class HotAuthor extends migi.Component {
                   : ''
               }
             </ul>
-          : <div class="empty">{ this.props.empty || '暂无数据' }</div>
+            : <div class="empty">{ this.props.empty || '暂无数据' }</div>
+          : ''
       }
     </div>;
   }
