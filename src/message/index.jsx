@@ -24,14 +24,4 @@ jsBridge.ready(function() {
     <Message/>,
     '#page'
   );
-  net.postJSON('/h5/my/message', function(res) {
-    if(res.success) {
-      message.setData(res.data);
-    }
-    else {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-    }
-  }, function(res) {
-    jsBridge.toast(res.message || util.ERROR_MESSAGE);
-  });
 });

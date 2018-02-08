@@ -15,7 +15,6 @@
         position:relative;
         padding-right:1rem;
         > .profile{
-          float:left;
           .pic{
             float:left;
             display:block;
@@ -47,23 +46,13 @@
           }
         }
         > .fn{
-          float:left;
-          margin-left:0.1rem;
-          padding-top:0.03rem;
-          .remove{
-            float:right;
-            width:0.24rem;
-            height:0.24rem;
-            background:url(../../icon/bold-del.png) no-repeat center;
-            background-size:contain;
-            text-indent:999rem;
-            white-space:nowrap;
-            overflow:hidden;
-            cursor:pointer;
-            &:active{
-              background-image:url(../../icon/bold-del-hover.png);
-            }
-          }
+          position:absolute;
+          top:0;
+          right:0;
+          width:0.3rem;
+          height:0.3rem;
+          background:url(fn.png) no-repeat center;
+          background-size:0.16rem auto;
         }
       }
       > .c{
@@ -189,7 +178,6 @@
             position:relative;
             text-align:right;
             > .profile{
-              float:right;
               .pic{
                 float:right;
                 display:block;
@@ -217,34 +205,16 @@
                   color:@secondTextColor;
                   font-size:0.12rem;
                 }
-                .arrow{
-                  display:inline-block;
-                  margin-right:0.1rem;
-                  width:0;
-                  height:0;
-                  border:0.04rem solid #DDD;
-                  border-top-color:transparent;
-                  border-bottom-color:transparent;
-                  border-left-color:transparent;
-                  transform:scaleX(1.5);
-                }
               }
             }
             > .fn{
-              float:right;
-              margin-right:0.1rem;
-              padding-top:0.03rem;
-              .remove{
-                float:right;
-                width:0.24rem;
-                height:0.24rem;
-                background:url(../../icon/bold-del.png) no-repeat center;
-                background-size:contain;
-                text-indent:999rem;
-                white-space:nowrap;
-                overflow:hidden;
-                cursor:pointer;
-              }
+              position:absolute;
+              top:0;
+              left:0;
+              width:0.3rem;
+              height:0.3rem;
+              background:url(fn.png) no-repeat center;
+              background-size:0.16rem auto;
             }
           }
           &.author{
@@ -278,6 +248,28 @@
               }
               span{
                 vertical-align:middle;
+              }
+            }
+            .arrow{
+              position:absolute;
+              right:0.1rem;
+              top:-1px;
+              display:block;
+              width:0.1rem;
+              height:0.1rem;
+              border-top:1px solid #FFF;
+              &:after{
+                position:absolute;
+                left:0;
+                top:-0.06rem;
+                display:block;
+                width:0.1rem;
+                height:0.1rem;
+                border:1px solid #D9D9D9;
+                border-left:none;
+                border-bottom:none;
+                transform:scaleX(0.7) rotateZ(-45deg);
+                content:' ';
               }
             }
             > pre{

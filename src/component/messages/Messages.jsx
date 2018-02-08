@@ -11,17 +11,7 @@ class Messages extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    if(self.props.dataList && self.props.dataList.length) {
-      self.empty = false;
-      let html = '';
-      self.props.dataList.forEach(function(item) {
-        html += self.genItem(item);
-      });
-      self.html = html;
-    }
-    else {
-      self.empty = true;
-    }
+    self.empty = self.props.empty;
     self.on(migi.Event.DOM, function() {
       let $list = $(self.ref.list.element);
       $list.on('click', '.comment', function() {
@@ -39,9 +29,6 @@ class Messages extends migi.Component {
           return;
         }
         let title = $this.attr('title');
-        if(!url) {
-          throw new Error('messages url is null');
-        }
         jsBridge.pushWindow(url, {
           title,
         });
@@ -116,7 +103,7 @@ class Messages extends migi.Component {
   setData(data) {
     let self = this;
     let html = '';
-    data.forEach(function(item) {
+    (data || []).forEach(function(item) {
       html += self.genItem(item);
     });
     $(self.ref.list.element).html(html);
@@ -124,7 +111,7 @@ class Messages extends migi.Component {
   appendData(data) {
     let self = this;
     let html = '';
-    data.forEach(function(item) {
+    (data || []).forEach(function(item) {
       html += self.genItem(item);
     });
     $(self.ref.list.element).append(html);
@@ -132,6 +119,10 @@ class Messages extends migi.Component {
   appendChild(content, mid) {
     let $li = $('#' + mid);
     $li.find('.wrap').append(`<pre class="reply">我：${content}</pre>`);
+  }
+  clearData() {
+    let self = this;
+    $(self.ref.list.element).html('');
   }
   render() {
     return <div class="cp-messages">

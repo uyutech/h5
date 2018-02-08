@@ -81,7 +81,7 @@ jsBridge.ready(function() {
   if(util.isLogin()) {
     net.postJSON('/h5/my/message', function(res) {
       if(res.success) {
-        topNav.setNum(res.data);
+        // topNav.setNum(res.data);
       }
     });
   }
@@ -146,7 +146,7 @@ jsBridge.ready(function() {
     let major = parseInt(version[0]) || 0;
     let minor = parseInt(version[1]) || 0;
     let patch = parseInt(version[2]) || 0;
-    if(minor < 5) {
+    if(minor < 5 || patch < 2) {
       old = true;
     }
   }

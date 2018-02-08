@@ -9,7 +9,7 @@ import util from '../common/util';
 import Title from './Title.jsx';
 import HotPost from '../component/hotpost/HotPost.jsx';
 import ImageView from '../post/ImageView.jsx';
-import SubCmt from '../component/subcmt/SubCmt.jsx';
+import InputCmt from '../component/inputcmt/InputCmt.jsx';
 
 let take = 10;
 let skip = take;
@@ -44,14 +44,6 @@ class Circle extends migi.Component {
     imageView.on('clickLike', function(sid) {
       hotPost.like(sid, function(res) {
         imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
-      });
-    });
-    let subCmt = self.ref.subCmt;
-    subCmt.on('click', function() {
-      jsBridge.pushWindow('/subpost.html?circleID=' + self.circleID, {
-        title: '画个圈',
-        showOptionMenu: 'true',
-        optionMenu: '发布',
       });
     });
     jsBridge.on('back', function(e) {
@@ -113,6 +105,16 @@ class Circle extends migi.Component {
       loading = false;
     });
   }
+  share() {
+    migi.eventBus.emit('SHARE', '/circle/' + this.circleID);
+  }
+  comment() {
+    let self = this;
+    jsBridge.pushWindow('/subpost.html?circleID=' + self.circleID, {
+      title: '画个圈',
+      optionMenu: '发布',
+    });
+  }
   genDom() {
     let self = this;
     return <div>
@@ -126,12 +128,6 @@ class Circle extends migi.Component {
       <HotPost ref="hotPost"
                dataList={ self.postList.data }
                message={ self.postList.Size > take ? '' : '已经到底了' }/>
-      <SubCmt ref="subCmt"
-              tipText="-${n}"
-              subText="发送"
-              readOnly={ true }
-              placeholder={ '在' + self.circleDetail.TagName +'圈画个圈吧。小小的提示：现在可以把一个圈画在好几个圈子里哦！' }/>
-      <ImageView ref="imageView"/>
     </div>;
   }
   render() {
@@ -145,6 +141,12 @@ class Circle extends migi.Component {
             <div class="fn-placeholder"/>
           </div>
       }
+      <InputCmt ref="inputCmt"
+                placeholder={ '发表评论...' }
+                readOnly={ true }
+                on-click={ this.comment }
+                on-share={ this.share }/>
+      <ImageView ref="imageView"/>
     </div>;
   }
 }

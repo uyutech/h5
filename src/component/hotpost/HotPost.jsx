@@ -414,6 +414,10 @@ class HotPost extends migi.Component {
     });
     $(self.ref.list.element).append(html);
   }
+  clearData() {
+    let self = this;
+    $(self.ref.list.element).html('');
+  }
   prependData(data) {
     let self = this;
     let html = '';

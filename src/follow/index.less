@@ -8,23 +8,108 @@
 @import '../component/hotpost/index';
 
 #page > .follow{
-  > div{
+  > .author{
+    display:flex;
+    align-items:center;
+    padding:0.1rem 0 0.1rem 0.15rem;
+    height:0.6rem;
+    overflow:hidden;
     h4{
-      position:relative;
-      margin:0.1rem;
-      padding-left:0.05rem;
-      font-size:0.12rem;
-      &:before{
-        position:absolute;
-        left:0;
-        top:0.02rem;
-        bottom:0.02rem;
-        width:0.02rem;
-        background:@secondColor;
-        content:' ';
-        border-radius:0.05rem;
+      margin-right:0.1rem;
+      width:0.12rem;
+      color:#9C9C9C;
+      font-weight:400;
+      line-height:1.2;
+    }
+    .cp-hotauthor{
+      flex:1;
+      overflow:hidden;
+      ul li{
+        width:0.6rem;
+      }
+      .txt{
+        display:none;
       }
     }
+  }
+  .circles{
+    position:relative;
+    display:flex;
+    padding:0.1rem 0 0.1rem 0.5rem;
+    height:0.24rem;
+    background:url(circle.png) no-repeat 0.15rem center;
+    background-size:0.24rem auto;
+    overflow-x:auto;
+    transform:translateZ(0);
+    &:before{
+      position:absolute;
+      left:0;
+      top:0;
+      width:100%;
+      height:1px;
+      background:#B6B6B6;
+      transform:scaleY(0.5);
+      content:' ';
+      overflow:hidden;
+    }
+    li{
+      display:block;
+      margin-right:0.05rem;
+      padding:0 0.1rem;
+      line-height:0.22rem;
+      border:1px solid @mainColor;
+      color:@mainColor;
+      border-radius:0.22rem;
+      white-space:nowrap;
+      flex-shrink:0;
+      a{
+        color:@mainColor;
+        white-space:nowrap;
+      }
+      &:active{
+        a{
+          color:@secondColor;
+        }
+        border-color:@secondColor;
+      }
+    }
+    .empty{
+      white-space:nowrap;
+      line-height:0.24rem;
+      color:@fourthTextColor;
+    }
+  }
+  > .type{
+    display:flex;
+    justify-content:space-around;
+    height:0.4rem;
+    border-top:0.05rem solid #edf3f7;
+    li{
+      width:0.6rem;
+      position:relative;
+      margin:0 0.1rem;
+      height:0.4rem;
+      line-height:0.4rem;
+      color:#636365;
+      font-size:0.15rem;
+      text-align:center;
+      &.cur{
+        color:#8BBDE1;
+        &:after{
+          position:absolute;
+          left:50%;
+          bottom:0.03rem;
+          width:70%;
+          height:0.02rem;
+          background:#8BBDE1;
+          border-radius:0.02rem;
+          content:' ';
+          transform:translateX(-50%);
+        }
+      }
+    }
+  }
+  > div{
     .circles{
       display:flex;
       padding-left:0.1rem;

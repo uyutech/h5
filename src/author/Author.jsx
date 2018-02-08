@@ -13,6 +13,7 @@ import PicList from './PicList.jsx';
 import Comments from './Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import Background from '../component/background/Background.jsx';
+import BotFn from '../component/botfn/BotFn.jsx';
 
 class Author extends migi.Component {
   constructor(...data) {
@@ -220,6 +221,7 @@ class Author extends migi.Component {
         }
       </ul>
       <InputCmt ref="inputCmt" placeholder={ '发表评论...' } readOnly={ true }/>
+      <BotFn ref="botFn"/>
     </div>;
   }
 }

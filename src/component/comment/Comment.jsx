@@ -107,27 +107,73 @@ class Comment extends migi.Component {
           $message.addClass('more').text(res.message || util.ERROR_MESSAGE);
         });
       });
-      $root.on('click', '.remove', function() {
-        let $btn = $(this);
-        jsBridge.confirm('会删除子留言哦，确定要删除吗？', function(res) {
-          if(!res) {
-            return;
-          }
-          let cid = $btn.attr('cid');
-          net.postJSON(self.props.delUrl, {commentID: cid}, function(res) {
-            if(res.success) {
-              $btn.closest('li').remove();
-              self.empty = !$(self.ref.list.element).children('li').length;
-            }
-            else if(res.code === 1000) {
-              migi.eventBus.emit('NEED_LOGIN');
-            }
-            else {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
-            }
-          }, function(res) {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
-          });
+      $root.on('click', '.fn', function() {
+        let $fn = $(this);
+        let $like = $fn.closest('li').find('.like');
+        let commentID = $like.attr('cid');
+        migi.eventBus.emit('BOT_FN', {
+          canLike: true,
+          isLike: $like.hasClass('liked'),
+          canDel: $fn.attr('own') === 'true',
+          canBlock: true,
+          canReport: true,
+          clickLike: function(botFn) {
+            net.postJSON(self.props.zanUrl, { commentID }, function(res) {
+              if(res.success) {
+                let data = res.data;
+                botFn.isLike = data.State === 'likeWordsUser';
+                if(data.State === 'likeWordsUser') {
+                  $like.addClass('liked');
+                }
+                else {
+                  $like.removeClass('liked');
+                }
+                $like.text(data.LikeCount);
+              }
+              else if(res.code === 1000) {
+                migi.eventBus.emit('NEED_LOGIN');
+              }
+              else {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              }
+            });
+          },
+          clickBlock: function(botFn) {
+            let type = $fn.attr('isAuthor') === 'true' ? 5 : 6;
+            let id = $fn.attr(type === 5 ? 'authorId' : 'userId');
+            self.block(id, type, function() {
+              jsBridge.toast('屏蔽成功');
+              botFn.cancel();
+            });
+          },
+          clickReport: function(botFn) {
+            self.report(commentID, function() {
+              jsBridge.toast('举报成功');
+              botFn.cancel();
+            });
+          },
+          clickDel: function(botFn) {
+            jsBridge.confirm('会删除子留言哦，确定要删除吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              net.postJSON(self.props.delUrl, { commentID }, function(res) {
+                if(res.success) {
+                  $fn.closest('li').remove();
+                  self.empty = !$(self.ref.list.element).children('li').length;
+                  botFn.cancel();
+                }
+                else if(res.code === 1000) {
+                  migi.eventBus.emit('NEED_LOGIN');
+                }
+                else {
+                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                }
+              }, function(res) {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              });
+            });
+          },
         });
       });
       $root.on('click', 'li.author a', function(e) {
@@ -149,6 +195,7 @@ class Comment extends migi.Component {
           title,
         });
       });
+      // TODO: del
       migi.eventBus.on('subCmtDelTo', function() {
         if($last && $last.hasClass('on')) {
           self.hideLast();
@@ -280,11 +327,49 @@ class Comment extends migi.Component {
     let $num = $comment.find('.slide small.sub');
     $num.text((parseInt($num.text()) || 0) + 1);
   }
+  block(id, type, cb) {
+    if(!util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
+    jsBridge.confirm('确认屏蔽吗？', function(res) {
+      if(!res) {
+        return;
+      }
+      net.postJSON('/h5/report/index', { reportType: type, businessId: id }, function(res) {
+        if(res.success) {
+          cb && cb();
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      });
+    });
+  }
+  report(id, cb) {
+    jsBridge.confirm('确认举报吗？', function(res) {
+      if(!res) {
+        return;
+      }
+      net.postJSON('/h5/report/index', { reportType: 4, businessId: id }, function(res) {
+        if(res.success) {
+          cb && cb();
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      });
+    });
+  }
   genComment(item) {
     if(item.IsAuthor) {
-      let authorID = item.AuthorID || item.IsAuthor;
+      let authorID = item.IsAuthor;
       return <li class="author" id={ 'comment_' + item.Send_ID }>
-        <div class="t fn-clear">
+        <div class="t">
           <div class="profile fn-clear">
             <a class="pic"
                href={ '/author.html?authorId=' + authorID }
@@ -300,11 +385,7 @@ class Comment extends migi.Component {
               <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
             </div>
           </div>
-          <div class="fn fn-clear">
-            {
-              item.ISOwn ? <span cid={ item.Send_ID } class="remove">删除</span> : ''
-            }
-          </div>
+          <b class="fn" own={ item.ISOwn } isAuthor={ true } authorId={ authorID }/>
         </div>
         <div class="c">
           <pre>{ item.Send_Content }<span class="placeholder"/></pre>
@@ -322,7 +403,7 @@ class Comment extends migi.Component {
       </li>;
     }
     return <li class="user" id={ 'comment_' + item.Send_ID }>
-      <div class="t fn-clear">
+      <div class="t">
         <div class="profile fn-clear">
           <a class="pic" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>
             <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_UserHeadUrl || '/src/common/head.png')) }/>
@@ -332,11 +413,7 @@ class Comment extends migi.Component {
             <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
           </div>
         </div>
-        <div class="fn fn-clear">
-          {
-            item.ISOwn ? <span cid={ item.Send_ID } class="remove">删除</span> : ''
-          }
-        </div>
+        <b class="fn" own={ item.ISOwn } userId={ item.Send_UserID }/>
       </div>
       <div class="c">
         <pre>{ item.Send_Content }<span class="placeholder"/></pre>
@@ -355,9 +432,9 @@ class Comment extends migi.Component {
   }
   genChildComment(item) {
     if(item.IsAuthor) {
-      let authorID = item.AuthorID || item.IsAuthor; //兼容老逻辑IsAuthor作为id
+      let authorID = item.IsAuthor;
       return <li class="author" id={ 'comment_' + item.Send_ID }>
-        <div class="t fn-clear">
+        <div class="t">
           <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } title={ item.Send_AuthorName }>
             <a class="pic"
                href={ '/author.html?authorId=' + authorID }
@@ -373,11 +450,7 @@ class Comment extends migi.Component {
                  transparentTitle={ true }>{ item.Send_AuthorName }</a>
             </div>
           </div>
-          <div class="fn fn-clear">
-            {
-              item.ISOwn ? <span cid={ item.Send_ID } class="remove">删除</span> : ''
-            }
-          </div>
+          <b class="fn" own={ item.ISOwn } isAuthor={ true } authorId={ authorID }/>
         </div>
         <div class="c">
           {
@@ -398,7 +471,7 @@ class Comment extends migi.Component {
       </li>;
     }
     return <li class="user" id={ 'comment_' + item.Send_ID }>
-      <div class="t fn-clear">
+      <div class="t">
         <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_UserName }>
           <a class="pic" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>
             <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_UserHeadUrl || '/src/common/head.png')) }/>
@@ -408,11 +481,7 @@ class Comment extends migi.Component {
             <a class="name" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>{ item.Send_UserName }</a>
           </div>
         </div>
-        <div class="fn fn-clear">
-          {
-            item.ISOwn ? <span cid={ item.Send_ID } class="remove">删除</span> : ''
-          }
-        </div>
+        <b class="fn" own={ item.ISOwn } userId={ item.Send_UserID }/>
       </div>
       <div class="c">
         {

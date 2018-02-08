@@ -15,6 +15,7 @@ let take = 10;
 let skip = take;
 let loading;
 let loadEnd;
+let ajax;
 let visible;
 let scrollY = 0;
 
@@ -26,22 +27,28 @@ class Follow extends migi.Component {
       visible = true;
       self.init();
       migi.eventBus.on('LOGIN_OUT', function() {
-        self.hasData = false;
+        let hotAuthor = self.ref.hotAuthor;
+        hotAuthor.dataList = [];
+
+        let circles = self.ref.circles;
+        circles.dataList = [];
+
+        let hotPost = self.ref.hotPost;
+        hotPost.clearData();
+
+        self.type = '0';
       });
       migi.eventBus.on('LOGIN', function() {
-        if(!$(self.element).hasClass('fn-hide')) {
-          self.show();
+        if(visible) {
+          self.init();
         }
       });
     });
   }
-  @bind hasData
+  @bind type = '0'
   show() {
     $(this.element).removeClass('fn-hide');
     $(window).scrollTop(scrollY);
-    if(!this.hasData) {
-      this.init();
-    }
     visible = true;
   }
   hide() {
@@ -50,28 +57,16 @@ class Follow extends migi.Component {
   }
   refresh() {
     let self = this;
-    if(self.hasData && visible) {
-      net.postJSON('/h5/follow/index', function(res) {
-        if(res.success) {
-          let data = res.data;
-          self.ref.circles.dataList = data.hotCircle;
-          self.ref.hotAuthor.dataList = data.follows.data;
-          self.ref.hotUser.dataList = data.userFollows.data;
-        }
-        else if(res.code === 1000) {
-          migi.eventBus.emit('NEED_LOGIN');
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
+    if(visible) {
+      if(ajax) {
+        ajax.abort();
+      }
+      self.init();
     }
   }
   init() {
     let self = this;
-    net.postJSON('/h5/follow/index', function(res) {
+    net.postJSON('/h5/follow/index', { type: self.type }, function(res) {
       if(res.success) {
         self.setData(res.data);
       }
@@ -88,13 +83,16 @@ class Follow extends migi.Component {
   setData(data) {
     let self = this;
 
-    self.hotCircle = data.hotCircle;
-    self.follows = data.follows;
-    self.userFollows = data.userFollows;
-    self.postList = data.postList;
-    loadEnd = self.postList.Size <= take;
+    let hotAuthor = self.ref.hotAuthor;
+    hotAuthor.dataList = data.follows || [];
 
-    self.hasData = true;
+    let circles = self.ref.circles;
+    circles.dataList = data.hotCircle || [];
+
+    let hotPost = self.ref.hotPost;
+    if(data.postList && data.postList.Size > 0) {
+      hotPost.appendData(data.postList.data);
+    }
 
     let $window = $(window);
     $window.on('scroll', function() {
@@ -129,7 +127,10 @@ class Follow extends migi.Component {
     let hotPost = self.ref.hotPost;
     loading = true;
     hotPost.message = '正在加载...';
-    net.postJSON('/h5/follow/postList', { skip, take }, function(res) {
+    if(ajax) {
+      ajax.abort();
+    }
+    ajax = net.postJSON('/h5/follow/postList', { skip, take, type: self.type }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
@@ -151,63 +152,32 @@ class Follow extends migi.Component {
       loading = false;
     });
   }
-  click(e, vd) {
-    e.preventDefault();
-    let url = vd.props.href;
-    let title = vd.props.title;
-    if(!url) {
-      throw new Error('follow url is null');
-    }
-    jsBridge.pushWindow(url, {
-      title,
-    });
-  }
-  click2(e, vd, tvd) {
-    e.preventDefault();
-    let url = tvd.props.href;
-    let title = tvd.props.title;
-    if(!url) {
-      throw new Error('follow2 url is null');
-    }
-    jsBridge.pushWindow(url, {
-      title,
-    });
-  }
-  genDom() {
+  clickType(e, vd, tvd) {
     let self = this;
-    return <div>
-      <h4>关注话题</h4>
-      <Circles ref="circles"
-               empty={ '你还没有关注话题哦，快去发现页看看有没有喜欢的话题吧！' }
-               dataList={ self.hotCircle }/>
-      <h4>关注作者</h4>
-      <HotAuthor ref="hotAuthor"
-                 dataList={ self.follows.data }
-                 empty={ '你还没有关注作者哦，快去发现页看看有没有喜欢的作者吧！' }
-                 more={ self.follows.Size > 10 ? '/relation.html' : '' }/>
-      <h4>关注圈er</h4>
-      <HotUser ref="hotUser"
-               dataList={ self.userFollows.data }
-               empty={ '你还没有关注的圈er哦，快去转圈页看看有没有有趣的小伙伴吧~' }
-               more={ self.userFollows.Size > 10 ? '/relation.html?tag=follow' : '' }/>
-      <p><small>小提示：</small>互相关注和关注我的可以在 <a href="/relation.html" title="圈关系" onClick={ self.click.bind(self) }>圈关系</a> 里查看</p>
-      <h4>Ta们画的圈</h4>
-      <HotPost ref="hotPost" dataList={ self.postList.data }/>
-    </div>;
+    if(tvd.props.rel === self.type) {
+      return;
+    }
+    self.type = tvd.props.rel;
+    skip = 0;
+    loading = loadEnd = false;
+    self.ref.hotPost.clearData();
+    self.load();
   }
   render() {
     return <div class="follow">
-      {
-        this.hasData
-          ? this.genDom()
-          : <div>
-              <div class="fn-placeholder-tags"/>
-              <div class="fn-placeholder-circles"/>
-              <div class="fn-placeholder-circles"/>
-              <div class="fn-placeholder"/>
-              <div class="fn-placeholder"/>
-            </div>
-      }
+      <div class="author">
+        <h4>关注作者</h4>
+        <HotAuthor ref="hotAuthor"
+                   more="/relation.html"/>
+      </div>
+      <Circles ref="circles"
+               empty={ '你还没有关注话题哦，快去发现页看看有没有喜欢的话题吧！' }/>
+      <ul class="type"
+          onClick={ { li: this.clickType } }>
+        <li class={ this.type === '0' ? 'cur': '' } rel="0">全部</li>
+        <li class={ this.type === '1' ? 'cur': '' } rel="1">圈友</li>
+      </ul>
+      <HotPost ref="hotPost"/>
     </div>;
   }
 }
