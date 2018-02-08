@@ -145,26 +145,21 @@ class Message extends migi.Component {
   }
   genDom() {
     let self = this;
-    return <div>
-      <h4>圈消息</h4>
-      <Messages ref="messages" dataList={ self.data.data }/>
-      <SubCmt ref="subCmt" readOnly={ true } placeholder="请选择留言回复"
-              subText="发送" tipText="-${n}"/>
-    </div>;
+    return <Messages ref="messages" dataList={ self.data.data }/>;
   }
   render() {
     return <div class="message">
+      <h4>圈消息</h4>
       {
         this.hasData
           ? this.genDom()
-          : <div>
-              <div class="fn-placeholder-tag"/>
-              <div class="fn-placeholder-roundlet"/>
-              <div class="fn-placeholder"/>
-              <div class="fn-placeholder-roundlet"/>
-              <div class="fn-placeholder"/>
-            </div>
+          : <div class="fn-placeholder"/>
       }
+      <SubCmt ref="subCmt"
+              readOnly={ true }
+              placeholder="请选择留言回复"
+              subText="发送"
+              tipText="-${n}"/>
     </div>;
   }
 }

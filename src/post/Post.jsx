@@ -63,40 +63,15 @@ class Post extends migi.Component {
         title: '评论',
       });
     });
-    // let subCmt = self.ref.subCmt;
-    // let comment = self.ref.comment;
-    // subCmt.on('click', function() {
-    //   if(subCmt.to) {
-    //     jsBridge.pushWindow('/subcomment.html?type=1&id='
-    //       + self.postID + '&cid=' + self.cid + '&rid=' + self.rid, {
-    //       title: '评论',
-    //     });
-    //   }
-    //   else {
-    //     jsBridge.pushWindow('/subcomment.html?type=1&id=' + self.postID, {
-    //       title: '评论',
-    //     });
-    //   }
-    // });
-    // let imageView = self.ref.imageView;
-    // comment.on('chooseSubComment', function(rid, cid, name, n) {
-    //   subCmt.to = name;
-    //   self.rid = rid;
-    //   self.cid = cid;
-    //   if(!n || n === '0') {
-    //     location.href = '/subcomment.html?type=1&id=' + self.postID + '&cid=' + cid + '&rid=' + rid;
-    //   }
-    // });
-    // comment.on('closeSubComment', function() {
-    //   subCmt.to = '';
-    // });
 
     $root.on('click', '.imgs img', function() {
       migi.eventBus.emit('choosePic', self.postData.Image_Post, $(this).attr('rel'), self.isLike);
     });
-    // imageView.on('clickLike', function() {
-    //   self.clickLike();
-    // });
+
+    let imageView = self.ref.imageView;
+    imageView.on('clickLike', function() {
+      self.clickLike();
+    });
     jsBridge.on('back', function(e) {
       if(!imageView.isHide()) {
         e.preventDefault();

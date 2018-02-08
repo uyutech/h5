@@ -4,7 +4,6 @@
 
 'use strict';
 
-import util from '../../common/util';
 
 class InputCmt extends migi.Component {
   constructor(...data) {
@@ -33,6 +32,9 @@ class InputCmt extends migi.Component {
   hide() {
     this.hidden = true;
   }
+  focus() {
+    this.ref.input.element.focus();
+  }
   clickInput() {
     this.emit('click');
   }
@@ -42,7 +44,8 @@ class InputCmt extends migi.Component {
   render() {
     return <div class={ 'cp-inputcmt' + (this.hidden ? ' fn-hide' : '') }>
       <img src={ this.head || '/src/common/head.png' }/>
-      <input value={ this.value }
+      <input ref="input"
+             value={ this.value }
              placeholder={ this.placeholder }
              readOnly={ this.readOnly }
              onClick={ this.clickInput }/>
