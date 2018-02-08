@@ -47,6 +47,11 @@ let jsBridge = {
           jsBridge.ios = ZhuanQuanJSBridge.ios;
           cb();
         });
+        document.addEventListener('ZhuanQuanJsBridgeReady', function() {
+          jsBridge.android = ZhuanQuanJSBridge.android;
+          jsBridge.ios = ZhuanQuanJSBridge.ios;
+          cb();
+        });
       }
     }
     else {
@@ -63,18 +68,18 @@ let jsBridge = {
     }
   },
   setTitle: function(s) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('setTitle', s || '');
+    if(this.isInApp) {
+      this.call('setTitle', s || '');
     }
   },
   setSubTitle: function(s) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('setSubTitle', s || '');
+    if(this.isInApp) {
+      this.call('setSubTitle', s || '');
     }
   },
   setTitleBgColor: function(s) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('setTitleBgColor', s || '');
+    if(this.isInApp) {
+      this.call('setTitleBgColor', s || '');
     }
   },
   pushWindow: function(url, params) {
@@ -222,14 +227,14 @@ let jsBridge = {
     }
   },
   refreshState: function(state) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('refreshState', state);
+    if(this.isInApp) {
+      this.call('refreshState', !!state);
     }
   },
   refresh: function() {
     // 复用refresh event，模拟没有调用preventDefault()方法
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('refresh', { prevent: false });
+    if(this.isInApp) {
+      this.call('refresh', { prevent: false });
     }
     else {
       location.reload(true);
@@ -238,19 +243,6 @@ let jsBridge = {
   loginWeibo: function(cb) {
     if(this.isInApp) {
       this.call('loginWeibo', cb);
-    }
-    // if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-    //   ZhuanQuanJSBridge.call('loginWeibo', function(res) {
-    //     callback(res);
-    //   });
-    // }
-  },
-  weiboLogin: function(data, callback) {
-    callback = callback || function() {};
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('weiboLogin', data, function(res) {
-        callback(res);
-      });
     }
   },
   login: function(url, data, cb) {
@@ -378,24 +370,14 @@ let jsBridge = {
       }
     }
   },
-  showOptionMenu: function() {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('showOptionMenu');
-    }
-  },
-  hideOptionMenu: function() {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('hideOptionMenu');
-    }
-  },
   setOptionMenu: function(data) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+    if(this.isInApp) {
       if(isString(data)) {
         data = {
           text: data,
         };
       }
-      ZhuanQuanJSBridge.call('setOptionMenu', data);
+      this.call('setOptionMenu', data);
     }
   },
   moveTaskToBack: function() {
@@ -409,15 +391,6 @@ let jsBridge = {
     }
     else {
       window.open(uri);
-    }
-  },
-  setCookie: function(key, value, callback) {
-    callback = callback || function() {};
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('setCookie', { key, value }, callback);
-    }
-    else {
-      callback();
     }
   },
   notify: function(data, params) {
@@ -444,18 +417,15 @@ let jsBridge = {
       });
     }
   },
-  album: function(data, callback) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+  album: function(data, cb) {
+    if(this.isInApp) {
       if(isFunction(data)) {
-        callback = data;
+        cb = data;
         data = {
           num: 1
         };
       }
-      callback = callback || function() {};
-      ZhuanQuanJSBridge.call('album', data, function(res) {
-        callback(res);
-      });
+      this.call('album', data, cb);
     }
   },
   download: function(data) {
@@ -477,23 +447,20 @@ let jsBridge = {
       this.call('networkInfo', cb);
     }
   },
-  media: function(data, callback) {
+  media: function(data, cb) {
     data = data || {};
-    callback = callback || function() {};
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('media', data, function(res) {
-        callback(res);
-      });
+    if(this.isInApp) {
+      this.call('media', data, cb);
     }
   },
   setBack: function(data) {
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
+    if(this.isInApp) {
       if(isString(data)) {
         data = {
           img: data,
         };
       }
-      ZhuanQuanJSBridge.call('setBack', data);
+      this.call('setBack', data);
     }
   },
 };
