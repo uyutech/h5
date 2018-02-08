@@ -39,6 +39,9 @@ class Background extends migi.Component {
       jsBridge.on('mediaTimeupdate', function(e) {
         play();
       });
+      if(self.props.duplicate) {
+        return;
+      }
       jsBridge.on('mediaEnd', function(e) {
         let playlistCur;
         let playlist;

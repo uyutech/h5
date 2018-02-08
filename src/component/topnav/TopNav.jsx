@@ -4,6 +4,7 @@
 
 import net from '../../common/net';
 import util from '../../common/util';
+import Background from '../background/Background.jsx';
 
 let loading;
 
@@ -12,107 +13,30 @@ class TopNav extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      jsBridge.getPreference('loginInfo', function(loginInfo) {
-        if(!loginInfo) {
-          return;
-        }
-        let userInfo = loginInfo.userInfo;
-        if(userInfo) {
-          self.name = userInfo.NickName;
-          self.authorName = userInfo.AuthorName;
-          self.isAuthor = userInfo.ISAuthor;
-          self.head = userInfo.Head_Url;
-          self.isPublic = userInfo.ISOpen;
-          self.isLogin = true;
-          $.cookie('isLogin', true);
-          $.cookie('uid', userInfo.UID);
-        }
-      });
-      migi.eventBus.on('USER_INFO', function(userInfo) {
-        if(!userInfo) {
-          return;
-        }
-        self.name = userInfo.NickName;
-        self.authorName = userInfo.AuthorName;
-        self.isAuthor = userInfo.ISAuthor;
-        self.head = userInfo.Head_Url;
-        self.isPublic = userInfo.ISOpen;
-        self.isLogin = true;
-        $.cookie('isLogin', true);
-        $.cookie('uid', userInfo.UID);
-      });
-      migi.eventBus.on('LOGIN_OUT', function() {
-        self.isLogin = false;
-        self.messageNum = 0;
-        $.cookie('isLogin', false);
-        $.cookie('uid', null);
-      });
+
     });
   }
-  @bind isLogin
-  @bind isPublic
-  @bind name
-  @bind head
-  @bind isAuthor
-  @bind authorName
-  @bind messageNum
   show() {
     $(this.element).removeClass('fn-hide');
   }
   hide() {
     $(this.element).addClass('fn-hide');
   }
-  setNum(data) {
-    this.messageNum = data.Count;
-  }
   click() {
-    if(loading) {
-      return;
-    }
-    loading = true;
-    let self = this;
-    net.postJSON('/h5/my/altSettle', { public: !self.isPublic }, function(res) {
-      if(res.success) {
-        self.isPublic = !self.isPublic;
-        jsBridge.getPreference('loginInfo', function(loginInfo) {
-          if(!loginInfo || !loginInfo.userInfo) {
-            return;
-          }
-          loginInfo.userInfo.ISOpen = self.isPublic;
-          jsBridge.setPreference('loginInfo', loginInfo);
-        });
-      }
-      else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      }
-      loading = false;
-    }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      loading = false;
+    jsBridge.pushWindow('/search.html', {
+      hideBackButton: true,
+      transparentTitle: true,
     });
-  }
-  clickMessage() {
-    jsBridge.pushWindow('/message.html', {
-      title: '圈消息',
-    });
-  }
-  clickUser() {
-    migi.eventBus.emit('CLICK_MENU_USER');
   }
   render() {
     return <div class="top-nav fn-hide" id="topNav">
-      <b class="logo"/>
-      <div class={ 'message' + (this.isLogin ? '' : ' fn-hide') } onClick={ this.clickMessage }>
-        <span>{ this.messageNum || '' }</span>
-      </div>
-      <span class={ 'public' + (this.isLogin && this.isAuthor ? '' : ' fn-hide') }
-            onClick={ this.click }>[{ this.isPublic ? '切换到马甲' : '切换到作者身份' }]</span>
-      <div class="user" onClick={ this.clickUser }>
-        <span class={ 'name' + (this.isPublic ? ' public' : '') }>
-          { this.isLogin ? (this.isPublic ? this.authorName : this.name) : '' }
-          </span>
-        <img src={ this.isLogin ? util.autoSsl(util.img64_64_80(this.head)) || 'src/common/head.png' : 'src/common/head.png' }/>
-      </div>
+      <b class="search"
+         onClick={ this.click }/>
+      <input type="text"
+             placeholder="搜索音乐、图片、视频、帖子..."
+             readonly="true"
+             onClick={ this.click }/>
+      <Background duplicate={ true }/>
     </div>;
   }
 }
