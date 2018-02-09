@@ -168,7 +168,7 @@ class Works extends migi.Component {
     let res = [];
     list.forEach(function(item) {
       let hash = {
-        4140: '文案',
+        4110: '文案',
         4120: '随笔',
         4210: '诗词',
         4211: '歌词',

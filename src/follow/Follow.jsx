@@ -60,11 +60,15 @@ class Follow extends migi.Component {
       if(ajax) {
         ajax.abort();
       }
-      self.init();
+      loadEnd = loading = false;
+      skip = 0;
+      self.ref.hotPost.clearData();
+      self.load();
     }
   }
   init() {
     let self = this;
+    self.ref.hotPost.message = '正在加载...';
     net.postJSON('/h5/follow/index', { type: self.type }, function(res) {
       if(res.success) {
         self.setData(res.data);
@@ -90,7 +94,7 @@ class Follow extends migi.Component {
 
     let hotPost = self.ref.hotPost;
     if(data.postList && data.postList.Size > 0) {
-      hotPost.appendData(data.postList.data);
+      hotPost.setData(data.postList.data);
     }
 
     let $window = $(window);

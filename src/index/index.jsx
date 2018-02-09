@@ -32,7 +32,7 @@ jsBridge.ready(function() {
     }
     net.postJSON('/h5/my/message', function(res) {
       if(res.success) {
-        topNav.setNum(res.data);
+        // topNav.setNum(res.data);
       }
     });
   });
@@ -70,7 +70,7 @@ jsBridge.ready(function() {
     if(data && data.message) {
       net.postJSON('/h5/my/message', function(res) {
         if(res.success) {
-          topNav.setNum(res.data);
+          // topNav.setNum(res.data);
         }
       });
     }
