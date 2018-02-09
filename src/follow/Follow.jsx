@@ -7,8 +7,7 @@
 import net from '../common/net';
 import util from '../common/util';
 import HotPost from '../component/hotpost/HotPost.jsx';
-import HotAuthor from '../component/hotauthor/HotAuthor.jsx';
-import HotUser from '../component/hotuser/HotUser.jsx';
+import People from './People.jsx';
 import Circles from './Circles.jsx';
 
 let take = 10;
@@ -27,8 +26,8 @@ class Follow extends migi.Component {
       visible = true;
       self.init();
       migi.eventBus.on('LOGIN_OUT', function() {
-        let hotAuthor = self.ref.hotAuthor;
-        hotAuthor.dataList = [];
+        let people = self.ref.people;
+        people.list = [];
 
         let circles = self.ref.circles;
         circles.dataList = [];
@@ -83,8 +82,8 @@ class Follow extends migi.Component {
   setData(data) {
     let self = this;
 
-    let hotAuthor = self.ref.hotAuthor;
-    hotAuthor.dataList = data.follows || [];
+    let people = self.ref.people;
+    people.list = data.follows || [];
 
     let circles = self.ref.circles;
     circles.dataList = data.hotCircle || [];
@@ -167,8 +166,8 @@ class Follow extends migi.Component {
     return <div class="follow">
       <div class="author">
         <h4>关注作者</h4>
-        <HotAuthor ref="hotAuthor"
-                   more="/relation.html"/>
+        <People ref="people"
+                more="/relation.html"/>
       </div>
       <Circles ref="circles"
                empty={ '你还没有关注话题哦，快去发现页看看有没有喜欢的话题吧！' }/>

@@ -3,8 +3,6 @@
  */
 
 @import '../common/var';
-@import '../component/hotauthor/index';
-@import '../component/hotuser/index';
 @import '../component/hotpost/index';
 
 #page > .follow{
@@ -21,15 +19,53 @@
       font-weight:400;
       line-height:1.2;
     }
-    .cp-hotauthor{
-      flex:1;
-      overflow:hidden;
-      ul li{
+  }
+  .mod-people{
+    overflow:hidden;
+    ul{
+      display:flex;
+      align-items:start;
+      overflow-x:auto;
+      transform:translateZ(0);
+    }
+    li{
+      display:block;
+      margin-right:0.1rem;
+      width:0.64rem;
+      flex-shrink:0;
+      .pic{
+        position:relative;
+        display:block;
+        margin:0 auto;
+        padding:0.02rem;
         width:0.6rem;
+        height:0.6rem;
+        img{
+          display:block;
+          width:100%;
+          height:100%;
+          border-radius:100%;
+          box-shadow:0 0 0.02rem rgba(185, 217, 237, 0.7);
+          object-fit:contain;
+        }
       }
-      .txt{
-        display:none;
+      &.more{
+        a{
+          display:block;
+          margin:0 auto;
+          width:0.6rem;
+          height:0.6rem;
+          text-align:center;
+          line-height:0.6rem;
+          background:rgba(0,0,0,0.05);
+          border-radius:100%;
+        }
       }
+    }
+    .empty{
+      margin-left:0.1rem;
+      line-height:0.6rem;
+      color:#9C9C9C;
     }
   }
   .circles{
@@ -106,55 +142,6 @@
           content:' ';
           transform:translateX(-50%);
         }
-      }
-    }
-  }
-  > div{
-    .circles{
-      display:flex;
-      padding-left:0.1rem;
-      overflow-x:auto;
-      transform:translate3d(0,0,0);
-      li{
-        display:block;
-        margin-right:0.05rem;
-        padding:0 0.1rem;
-        line-height:0.22rem;
-        border:1px solid @mainColor;
-        color:@mainColor;
-        border-radius:0.22rem;
-        white-space:nowrap;
-        flex-shrink:0;
-        a{
-          color:@mainColor;
-          white-space:nowrap;
-        }
-        &:active{
-          a{
-            color:@secondColor;
-          }
-          border-color:@secondColor;
-        }
-      }
-      .empty{
-        line-height:2;
-        color:@fourthTextColor;
-      }
-    }
-    > p{
-      padding:0.1rem 0.1rem 0;
-      color:@secondTextColor;
-      font-size:0.11rem;
-      small{
-        font-size:0.11rem;
-      }
-    }
-    .cp-hotauthor{
-      .txt{
-        text-align:center;
-      }
-      .info,.comment{
-        display:none;
       }
     }
   }
