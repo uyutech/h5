@@ -427,6 +427,8 @@ let jsBridge = {
           text: data,
         };
       }
+      data.img1 = data.icon1;
+      data.img2 = data.icon2;
       ZhuanQuanJSBridge.call('setOptionMenu', data);
     }
   },

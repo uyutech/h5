@@ -134,7 +134,7 @@ class Background extends migi.Component {
     });
   }
   render() {
-    return <div class={ 'cp-background' + (this.props.topRight ? ' tr' : '') } onClick={ this.click }>
+    return <div class="cp-background" onClick={ this.click }>
       <b ref="l1"/>
       <b ref="l2"/>
       <b ref="l3"/>

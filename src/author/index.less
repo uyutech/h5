@@ -14,6 +14,14 @@
 @import '../component/botfn/index';
 
 #page > .author{
+  .cp-background{
+    position:fixed;
+    top:0.26rem;
+    right:0.32rem;
+    b{
+      box-shadow:0 0.01rem 0.02rem rgba(0, 0, 0, 0.3);
+    }
+  }
   > .nav{
     position:relative;
     padding:39% 0.15rem 0.15rem;
@@ -37,7 +45,7 @@
         flex-shrink:0;
         position:relative;
         top:-0.75rem;
-        margin-right:0.2rem;
+        margin-right:0.15rem;
         padding:0.21rem 0.1rem 0.13rem;
         width:1rem;
         height:1rem;
@@ -79,6 +87,14 @@
             font-size:0.19rem;
             color:#5D99C4;
           }
+          .sex{
+            width:0.18rem;
+            height:0.18rem;
+          }
+        }
+        .alias{
+          margin-top:0.02rem;
+          color:#B6B6B6;
         }
       }
       .follow, .un-follow{
@@ -135,6 +151,9 @@
           display:none;
           content:'';
         }
+      }
+      .fans{
+        min-width:1rem;
       }
       .outside{
         display:flex;
