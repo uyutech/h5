@@ -7,7 +7,9 @@
 import net from '../common/net';
 import util from '../common/util';
 import Nav from './Nav.jsx';
-import Home from './Home.jsx';
+import HotWork from '../component/hotwork/HotWork.jsx';
+import HotMusicAlbum from '../component/hotmusicalbum/HotMusicAlbum.jsx';
+import HotAuthor from '../component/hotauthor/HotAuthor.jsx';
 import MAList from './MAList.jsx';
 import PicList from './PicList.jsx';
 import Comments from './Comments.jsx';
@@ -19,6 +21,7 @@ class Author extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    self.type = 0;
     self.on(migi.Event.DOM, function() {
       let inputCmt = self.ref.inputCmt;
       inputCmt.on('share', function() {
@@ -50,11 +53,17 @@ class Author extends migi.Component {
   }
   setData(data) {
     let self = this;
+    console.log(data);
+    self.ref.nav.setData(data.authorDetail, 1);
+    self.ref.hotWork.dataList = data.homeDetail.Hot_Works_Items;
+    self.ref.hotMusicAlbum.dataList = data.album;
+    self.ref.hotAuthor.dataList = data.homeDetail.AuthorToAuthor;
+
+    return;
     self.hotPlayList = data.hotPlayList;
     self.album = data.album;
     self.hotPicList = data.hotPicList;
     self.commentData = data.commentData;
-    self.ref.nav.setData(data.authorDetail, 1);
 
     if(!data.authorDetail.ISSettled) {
       self.type = [
@@ -138,49 +147,54 @@ class Author extends migi.Component {
     });
   }
   clickType(e, vd ,tvd) {
-    let $li = $(tvd.element);
-    if($li.hasClass('cur')) {
+    let self = this;
+    if(tvd.props.rel === self.type) {
       return;
     }
-    $(vd.element).find('.cur').removeClass('cur');
-    $li.addClass('cur');
-    let self = this;
-    let home = self.ref.home;
-    let maList = self.ref.maList;
-    let picList = self.ref.picList;
-    let comments = self.ref.comments;
-    home && home.hide();
-    maList && maList.hide();
-    picList && picList.hide();
-    comments && comments.hide();
-    let rel = tvd.props.rel;
-    switch(rel) {
-      case 'home':
-        home.show();
-        break;
-      case 'ma':
-        if(!maList) {
-          self.ref.maList = maList = <MAList ref="maList"
-                                             authorId={ self.authorId }
-                                             dataList={ self.hotPlayList }/>;
-          maList.after(self.ref.type.element);
-        }
-        maList.show();
-        break;
-      case 'pic':
-        if(!picList) {
-          self.ref.picList = picList = <PicList ref="picList"
-                                                authorId={ self.authorId }
-                                                dataList={ self.hotPicList }/>;
-          picList.after(self.ref.type.element);
-        }
-        picList.show();
-        break;
-      case 'comments':
-        self.addComment();
-        comments && comments.show();
-        break;
-    }
+    self.type = tvd.props.rel;
+    // let $li = $(tvd.element);
+    // if($li.hasClass('cur')) {
+    //   return;
+    // }
+    // $(vd.element).find('.cur').removeClass('cur');
+    // $li.addClass('cur');
+    // let self = this;
+    // let home = self.ref.home;
+    // let maList = self.ref.maList;
+    // let picList = self.ref.picList;
+    // let comments = self.ref.comments;
+    // home && home.hide();
+    // maList && maList.hide();
+    // picList && picList.hide();
+    // comments && comments.hide();
+    // let rel = tvd.props.rel;
+    // switch(rel) {
+    //   case 'home':
+    //     home.show();
+    //     break;
+    //   case 'ma':
+    //     if(!maList) {
+    //       self.ref.maList = maList = <MAList ref="maList"
+    //                                          authorId={ self.authorId }
+    //                                          dataList={ self.hotPlayList }/>;
+    //       maList.after(self.ref.type.element);
+    //     }
+    //     maList.show();
+    //     break;
+    //   case 'pic':
+    //     if(!picList) {
+    //       self.ref.picList = picList = <PicList ref="picList"
+    //                                             authorId={ self.authorId }
+    //                                             dataList={ self.hotPicList }/>;
+    //       picList.after(self.ref.type.element);
+    //     }
+    //     picList.show();
+    //     break;
+    //   case 'comments':
+    //     self.addComment();
+    //     comments && comments.show();
+    //     break;
+    // }
   }
   addComment() {
     let self = this;
@@ -217,12 +231,18 @@ class Author extends migi.Component {
       <Background ref="background"/>
       <Nav ref="nav"/>
       <ul class="type" ref="type" onClick={ { li: this.clickType } }>
-        {
-          (this.type || []).map(function(item, i) {
-            return <li class={ item.cn + (i ? '' : ' cur') } rel={ item.cn }>{ item.name }</li>;
-          })
-        }
+        <li class={ (this.type === 0 ? 'cur' : '') } rel={ 0 }>主页</li>
+        <li class={ (this.type === 1 ? 'cur' : '') } rel={ 1 }>作品</li>
+        <li class={ (this.type === 2 ? 'cur' : '') } rel={ 2 }>留言</li>
       </ul>
+      <div class={ 'home' + (this.type === 0 ? '' : ' fn-hide') }>
+        <h4>主打作品</h4>
+        <HotWork ref="hotWork"/>
+        <h4>相关专辑</h4>
+        <HotMusicAlbum ref="hotMusicAlbum"/>
+        <h4>合作关系</h4>
+        <HotAuthor ref="hotAuthor"/>
+      </div>
       <InputCmt ref="inputCmt" placeholder={ '发表评论...' } readOnly={ true }/>
       <BotFn ref="botFn"/>
     </div>;
