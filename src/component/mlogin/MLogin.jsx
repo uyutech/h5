@@ -53,7 +53,7 @@ class NeedLogin extends migi.Component {
         jsBridge.showLoading('正在登录...');
         let openID = res.openID;
         let token = res.token;
-        jsBridge.weiboLogin({ openID, token }, function(res) {
+        jsBridge.login(window.ROOT_DOMAIN + '/h5/oauth/weibo', { openID, token }, function(res) {
           jsBridge.hideLoading();
           if(res.success) {
             let data = res.data;

@@ -108,7 +108,7 @@ let jsBridge = {
   },
   popWindow: function(data) {
     if(this.isInApp) {
-      this.call('popWindow', JSON.stringify(data));
+      this.call('popWindow', data);
     }
     else {
       history.go(-1);
