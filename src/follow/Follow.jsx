@@ -169,7 +169,7 @@ class Follow extends migi.Component {
   render() {
     return <div class="follow">
       <div class="author">
-        <h4>关注作者</h4>
+        <h4>关注的人</h4>
         <People ref="people"
                 more="/relation.html"/>
       </div>
