@@ -364,6 +364,9 @@ class Post extends migi.Component {
   }
   comment() {
     let self = this;
+    if(!self.postID) {
+      return;
+    }
     jsBridge.pushWindow('/subcomment.html?type=1&id=' + self.postID, {
       title: '评论',
     });

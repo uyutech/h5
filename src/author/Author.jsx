@@ -22,6 +22,9 @@ class Author extends migi.Component {
     self.on(migi.Event.DOM, function() {
       let inputCmt = self.ref.inputCmt;
       inputCmt.on('share', function() {
+        if(!self.authorId) {
+          return;
+        }
         migi.eventBus.emit('SHARE', '/author/' + self.authorId);
       });
       jsBridge.setOptionMenu({

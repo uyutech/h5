@@ -234,6 +234,9 @@ class Works extends migi.Component {
   }
   comment() {
     let self = this;
+    if(!self.worksId) {
+      return;
+    }
     jsBridge.pushWindow('/subcomment.html?type=3&id='
       + self.worksId, {
       title: '评论',
