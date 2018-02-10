@@ -388,7 +388,7 @@ let util = {
     else if([5, 6].indexOf(worksType) > -1) {
       return '/music.html?worksId=' + worksId;
     }
-    else if([1, 2, 3, 4, 7, 8].indexOf(worksType) > -1) {
+    else {
       return '/works.html?worksId=' + worksId + (workId ? '&workId=' + workId : '');
     }
   },

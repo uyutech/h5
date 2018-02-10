@@ -156,96 +156,110 @@ class SubPost extends migi.Component {
       jsBridge('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
       return;
     }
-    let num = MAX_IMG_NUM - self.imgNum;
-    num = Math.min(3, num);
-    self.disableUpload = true;
-    jsBridge.album({ num }, function(res) {
-      if(res.success) {
-        res = res.base64;
-        if(!Array.isArray(res)) {
-          res = [res];
-        }
-        let num = res.length;
-        let count = 0;
-        let hasUpload;
-        res.forEach(function(img, i) {
-          self.list.push({
-            state: STATE.SENDING,
-            url: /^data:image\/(\w+);base64,/.test(img) ? img : ('data:image/jpeg;base64,' + img),
-          });
-          let node = document.createElement('img');
-          node.style.position = 'absolute';
-          node.style.left = '-9999rem';
-          node.style.top = '-9999rem';
-          node.src = self.list[i + self.imgNum].url;
-          node.onload = function() {
-            self.list[i + self.imgNum].width = node.width;
-            self.list[i + self.imgNum].height = node.height;
-            document.body.removeChild(node);
-          };
-          document.body.appendChild(node);
-          net.postJSON('/h5/my/uploadPic', { img }, function(res) {
-            if(res.success) {
-              let url = res.data;
-              let has;
-              self.list.forEach(function(item, j) {
-                if(item && item.url === url) {
-                  hasUpload = has = true;
-                }
-              });
-              if(!has) {
-                self.list[i + self.imgNum].state = STATE.LOADED;
-                self.list[i + self.imgNum].url = url;
-                self.addCache(url);
-              }
-              else {
-                self.list[i + self.imgNum].state = STATE.ERROR;
-              }
-            }
-            else {
-              self.list[i + self.imgNum] = null;
-            }
-            self.list = self.list;
-            count++;
-            if(count === num) {
-              self.disableUpload = false;
-              for(let j = self.list.length - 1; j >= 0; j--) {
-                if(self.list[j] === null) {
-                  self.list.splice(j, 1);
-                }
-              }
-              self.imgNum = self.list.length;
-              if(hasUpload) {
-                jsBridge.toast('有图片已经重复上传过啦~');
-              }
-            }
-          }, function(res) {
-            self.list[i + self.imgNum].state = STATE.ERROR;
-            self.list = self.list;
-            count++;
-            if(count === num) {
-              self.disableUpload = false;
-              for(let j = self.list.length - 1; j >= 0; j--) {
-                if(self.list[j] === null) {
-                  self.list.splice(j, 1);
-                }
-              }
-              self.imgNum = self.list.length;
-              if(hasUpload) {
-                jsBridge.toast('有图片已经重复上传过啦~');
-              }
-            }
-          });
-        });
+    if(window.FileReader) {
+      let files = e.target.files;
+      for(let i = 0, len = files.length; i < len; i++) {
+        let file = files[i];
+        let fileReader = new FileReader();
+        fileReader.onload = function() {
+          let img = fileReader.result;
+        };
+        fileReader.readAsDataURL(file);
       }
-      else if(res.cancel) {
-        self.disableUpload = false;
-      }
-      else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        self.disableUpload = false;
-      }
-    });
+    }
+    else {
+      jsBridge.toast('您的系统暂不支持上传');
+    }
+    // jsBridge.album({ num }, function(res) {
+    //   // if(res.success) {
+    //   //   res = res.base64;
+    //   //   if(!Array.isArray(res)) {
+    //   //     res = [res];
+    //   //   }
+    //   //   let num = res.length;
+    //   //   let count = 0;
+    //   //   let hasUpload;
+    //   //   res.forEach(function(img, i) {
+    //   //     self.list.push({
+    //   //       state: STATE.SENDING,
+    //   //       url: /^data:image\/(\w+);base64,/.test(img) ? img : ('data:image/jpeg;base64,' + img),
+    //   //     });
+    //   //     let node = document.createElement('img');
+    //   //     node.style.position = 'absolute';
+    //   //     node.style.left = '-9999rem';
+    //   //     node.style.top = '-9999rem';
+    //   //     node.src = self.list[i + self.imgNum].url;
+    //   //     node.onload = function() {
+    //   //       self.list[i + self.imgNum].width = node.width;
+    //   //       self.list[i + self.imgNum].height = node.height;
+    //   //       document.body.removeChild(node);
+    //   //     };
+    //   //     document.body.appendChild(node);
+    //   //     net.postJSON('/h5/my/uploadPic', { img }, function(res) {
+    //   //       if(res.success) {
+    //   //         let url = res.data;
+    //   //         let has;
+    //   //         self.list.forEach(function(item, j) {
+    //   //           if(item && item.url === url) {
+    //   //             hasUpload = has = true;
+    //   //           }
+    //   //         });
+    //   //         if(!has) {
+    //   //           self.list[i + self.imgNum].state = STATE.LOADED;
+    //   //           self.list[i + self.imgNum].url = url;
+    //   //           self.addCache(url);
+    //   //         }
+    //   //         else {
+    //   //           self.list[i + self.imgNum].state = STATE.ERROR;
+    //   //         }
+    //   //       }
+    //   //       else {
+    //   //         self.list[i + self.imgNum] = null;
+    //   //       }
+    //   //       self.list = self.list;
+    //   //       count++;
+    //   //       if(count === num) {
+    //   //         self.disableUpload = false;
+    //   //         for(let j = self.list.length - 1; j >= 0; j--) {
+    //   //           if(self.list[j] === null) {
+    //   //             self.list.splice(j, 1);
+    //   //           }
+    //   //         }
+    //   //         self.imgNum = self.list.length;
+    //   //         if(hasUpload) {
+    //   //           jsBridge.toast('有图片已经重复上传过啦~');
+    //   //         }
+    //   //       }
+    //   //     }, function(res) {
+    //   //       self.list[i + self.imgNum].state = STATE.ERROR;
+    //   //       self.list = self.list;
+    //   //       count++;
+    //   //       if(count === num) {
+    //   //         self.disableUpload = false;
+    //   //         for(let j = self.list.length - 1; j >= 0; j--) {
+    //   //           if(self.list[j] === null) {
+    //   //             self.list.splice(j, 1);
+    //   //           }
+    //   //         }
+    //   //         self.imgNum = self.list.length;
+    //   //         if(hasUpload) {
+    //   //           jsBridge.toast('有图片已经重复上传过啦~');
+    //   //         }
+    //   //       }
+    //   //     });
+    //   //   });
+    //   // }
+    //   if(res.success) {
+    //     console.log(res.list);
+    //   }
+    //   else if(res.cancel) {
+    //     self.disableUpload = false;
+    //   }
+    //   else {
+    //     jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    //     self.disableUpload = false;
+    //   }
+    // });
   }
   getImgKey() {
     return '_circle_img';
@@ -396,7 +410,8 @@ class SubPost extends migi.Component {
         <ul onClick={ { li: this.clickCircle } }>
           {
             (this.to || []).map(function(item) {
-              return <li rel={ item.CirclingID } class={ item.CirclingID.toString() === (this.props.circleID || '').toString() ? 'on' : '' }>{ item.CirclingName }圈</li>;
+              return <li rel={ item.CirclingID }
+                         class={ item.CirclingID.toString() === (this.props.circleID || '').toString() ? 'on' : '' }>{ item.CirclingName }圈</li>;
             }.bind(this))
           }
         </ul>
@@ -415,9 +430,13 @@ class SubPost extends migi.Component {
         </ul>
       </div>
       <div class="c">
-        <textarea class="text" ref="input" placeholder={ this.placeholder || '夸夸这个圈子吧' }
+        <textarea class="text"
+                  ref="input"
+                  placeholder={ this.placeholder || '夸夸这个圈子吧' }
                   onInput={ this.input }>{ this.value }</textarea>
-        <div class={ 'limit' + (this.warnLength ? ' warn' : '') }><strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }</div>
+        <div class={ 'limit' + (this.warnLength ? ' warn' : '') }>
+        <strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }
+        </div>
       </div>
       <ul class="list" onClick={ { li: this.clickImg } }>
         {
@@ -433,7 +452,9 @@ class SubPost extends migi.Component {
         <li class="tip">
           <div ref="tip" class="fn-hide" onClick={ this.clickTip }/>
         </li>
-        <li class="pic" onClick={ this.change }/>
+        <li class="pic">
+          <input type="file" onChange={ this.change }/>
+        </li>
       </ul>
     </form>;
   }

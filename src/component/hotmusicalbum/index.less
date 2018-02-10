@@ -4,34 +4,22 @@
 
 
 .cp-hotmusicalbum{
-  min-height:0.85rem;
   ul{
-    position:relative;
     display:flex;
+    padding-left:0.1rem;
     align-items:start;
-    padding-bottom:0.08rem;
     overflow-x:auto;
-    transform:translateZ(0);
-    &:after{
-      position:absolute;
-      left:0.15rem;
-      right:0.15rem;
-      bottom:0;
-      height:1px;
-      background:#CCC;
-      transform:scaleY(0.5);
-      content:' ';
-    }
+    transform:translate3d(0,0,0);
     li{
       display:block;
       margin-right:0.1rem;
-      width:0.85rem;
+      width:1rem;
+      flex-basis:1rem;
       flex-shrink:0;
       .pic{
         position:relative;
         display:block;
-        width:100%;
-        height:0.85rem;
+        width:1rem;
         background:url(../hotwork/works_bg.png) no-repeat center;
         background-size:contain;
         border-radius:0.05rem;
@@ -53,53 +41,57 @@
           width:100%;
           height:100%;
         }
-        .type{
-          position:absolute;
-          top:0.04rem;
-          right:0.04rem;
-          display:flex;
-          align-items:center;
-          padding:0 0.03rem;
-          border-radius:0.02rem;
-          font-size:0.12rem;
-          color:#FFF;
-          background:rgba(0, 0, 0, 0.4);
-          transform:scale(0.833);
-          transform-origin:right top;
-        }
         .num{
           position:absolute;
-          right:0.05rem;
+          right:0.04rem;
           bottom:0;
-          display:block;
           padding-left:0.22rem;
           line-height:0.18rem;
           background:url(../../icon/popular-white.png) no-repeat 0.05rem center;
           background-size:0.16rem auto;
+          font-size:0.11rem;
           z-index:1;
-          transform:scale(0.912);
-          transform-origin:100% center;
+        }
+        .state{
+          position:absolute;
+          left:0.05rem;
+          top:0.02rem;
+          text-shadow:@picHoverShadow;
+          font-size:0.1rem;
+        }
+        .type{
+          position:absolute;
+          top:0.04rem;
+          right:0.04rem;
+          display:block;
+          padding:0 0.03rem;
+          line-height:0.14rem;
+          border:1px solid #FFF;
+          border-radius:0.14rem;
+          box-shadow:inset @picShadow, @picShadow;
+          font-size:0.12rem;
+          text-shadow:@picHoverShadow;
+          transform:scale(0.833);
+          transform-origin:right top;
         }
       }
       .txt{
         display:block;
-        white-space:nowrap;
+        margin-top:0.05rem;
+        font-size:0.12rem;
         overflow:hidden;
         text-overflow:ellipsis;
-        color:#636365;
+        white-space:nowrap;
+        line-height:1.3;
         span{
           display:block;
-          text-overflow:ellipsis;
+          white-space:nowrap;
           overflow:hidden;
-        }
-        .name{
-          margin-top:0.05rem;
-          font-size:0.14rem;
+          text-overflow:ellipsis;
         }
         .author{
-          color:#B6B6B6;
-          transform:scale(0.917);
-          transform-origin:0 top;
+          font-size:0.1rem;
+          color:@secondTextColor;
         }
       }
       &.more{
