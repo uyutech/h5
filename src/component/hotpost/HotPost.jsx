@@ -18,131 +18,131 @@ class HotPost extends migi.Component {
         html += self.genItem(item);
       });
       self.html = html;
-      self.on(migi.Event.DOM, function() {
-        let $list = $(this.ref.list.element);
-        $list.on('click', '.wrap .con .snap', function() {
-          $(this).closest('li').addClass('expand');
+    }
+    self.on(migi.Event.DOM, function() {
+      let $list = $(this.ref.list.element);
+      $list.on('click', '.wrap .con .snap', function() {
+        $(this).closest('li').addClass('expand');
+      });
+      $list.on('click', '.wrap .con .shrink', function() {
+        let $li = $(this).closest('li');
+        $li.removeClass('expand');
+        $li[0].scrollIntoView(true);
+      });
+      $list.on('click', '.imgs', function() {
+        $(this).closest('li').addClass('expand');
+      });
+      $list.on('click', '.imgs2 img', function() {
+        let $this = $(this);
+        let index = $this.attr('rel');
+        let urls = [];
+        $this.parent().find('img').each(function(i, img) {
+          urls.push({ FileUrl: $(img).attr('src') });
         });
-        $list.on('click', '.wrap .con .shrink', function() {
-          let $li = $(this).closest('li');
-          $li.removeClass('expand');
-          $li[0].scrollIntoView(true);
+        let $like = $this.closest('li').find('li.like');
+        let id = $this.closest('div').attr('rel');
+        migi.eventBus.emit('choosePic', urls, index, $like.hasClass('has'), id);
+      });
+      $list.on('click', '.favor', function() {
+        if(!util.isLogin()) {
+          migi.eventBus.emit('NEED_LOGIN');
+          return;
+        }
+        let $li = $(this);
+        if($li.hasClass('loading')) {
+          return;
+        }
+        $li.addClass('loading');
+        let postID = $li.attr('rel');
+        let url = '/h5/post/favor';
+        if($li.hasClass('has')) {
+          url = '/h5/post/unFavor';
+        }
+        net.postJSON(url, { postID }, function(res) {
+          if(res.success) {
+            let data = res.data;
+            if(data.State === 'favorWork') {
+              $li.addClass('has');
+            }
+            else {
+              $li.removeClass('has');
+            }
+            $li.find('span').text(data.FavorCount || '收藏');
+          }
+          else {
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          }
+          $li.removeClass('loading');
+        }, function(res) {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          $li.removeClass('loading');
         });
-        $list.on('click', '.imgs', function() {
-          $(this).closest('li').addClass('expand');
+      });
+      $list.on('click', '.share', function() {
+        let postID = $(this).attr('rel');
+        migi.eventBus.emit('SHARE', '/post/' + postID);
+      });
+      $list.on('click', '.like', function() {
+        let $li = $(this);
+        if($li.hasClass('loading')) {
+          return;
+        }
+        $li.addClass('loading');
+        let postID = $li.attr('rel');
+        self.like(postID);
+      });
+      $list.on('click', '.comment', function() {
+        let $this = $(this);
+        let id = $this.attr('rel');
+        let count = $this.attr('count');
+        let url = count === '0' ? `/subcomment.html?type=1&id=${id}` : `/post.html?postID=${id}`;
+        let title = count === '0' ? '回复画圈' : '画圈正文';
+        if(!url) {
+          throw new Error('hotpost url is null');
+        }
+        jsBridge.pushWindow(url, {
+          title,
         });
-        $list.on('click', '.imgs2 img', function() {
-          let $this = $(this);
-          let index = $this.attr('rel');
-          let urls = [];
-          $this.parent().find('img').each(function(i, img) {
-            urls.push({ FileUrl: $(img).attr('src') });
-          });
-          let $like = $this.closest('li').find('li.like');
-          let id = $this.closest('div').attr('rel');
-          migi.eventBus.emit('choosePic', urls, index, $like.hasClass('has'), id);
-        });
-        $list.on('click', '.favor', function() {
-          if(!util.isLogin()) {
-            migi.eventBus.emit('NEED_LOGIN');
+      });
+      $list.on('click', '.del', function() {
+        let postID = $(this).attr('rel');
+        let $li = $(this).closest('.btn').closest('li');
+        jsBridge.confirm('确认删除吗？', function(res) {
+          if(!res) {
             return;
           }
-          let $li = $(this);
-          if($li.hasClass('loading')) {
-            return;
-          }
-          $li.addClass('loading');
-          let postID = $li.attr('rel');
-          let url = '/h5/post/favor';
-          if($li.hasClass('has')) {
-            url = '/h5/post/unFavor';
-          }
-          net.postJSON(url, { postID }, function(res) {
+          net.postJSON('/h5/post/del', { postID }, function(res) {
             if(res.success) {
-              let data = res.data;
-              if(data.State === 'favorWork') {
-                $li.addClass('has');
-              }
-              else {
-                $li.removeClass('has');
-              }
-              $li.find('span').text(data.FavorCount || '收藏');
+              $li.remove();
             }
             else {
               jsBridge.toast(res.message || util.ERROR_MESSAGE);
             }
-            $li.removeClass('loading');
           }, function(res) {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
-            $li.removeClass('loading');
-          });
-        });
-        $list.on('click', '.share', function() {
-          let postID = $(this).attr('rel');
-          migi.eventBus.emit('SHARE', '/post/' + postID);
-        });
-        $list.on('click', '.like', function() {
-          let $li = $(this);
-          if($li.hasClass('loading')) {
-            return;
-          }
-          $li.addClass('loading');
-          let postID = $li.attr('rel');
-          self.like(postID);
-        });
-        $list.on('click', '.comment', function() {
-          let $this = $(this);
-          let id = $this.attr('rel');
-          let count = $this.attr('count');
-          let url = count === '0' ? `/subcomment.html?type=1&id=${id}` : `/post.html?postID=${id}`;
-          let title = count === '0' ? '回复画圈' : '画圈正文';
-          if(!url) {
-            throw new Error('hotpost url is null');
-          }
-          jsBridge.pushWindow(url, {
-            title,
-          });
-        });
-        $list.on('click', '.del', function() {
-          let postID = $(this).attr('rel');
-          let $li = $(this).closest('.btn').closest('li');
-          jsBridge.confirm('确认删除吗？', function(res) {
-            if(!res) {
-              return;
-            }
-            net.postJSON('/h5/post/del', { postID }, function(res) {
-              if(res.success) {
-                $li.remove();
-              }
-              else {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              }
-            }, function(res) {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
-            });
-          });
-        });
-        $list.on('click', '.author .pic, .author .name', function(e) {
-          e.preventDefault();
-          let $this = $(this);
-          let url = $this.attr('href');
-          let title = $this.attr('title');
-          util.openAuthor({
-            url,
-            title,
-          });
-        });
-        $list.on('click', '.time, .circle a, .wrap a, .user .pic, .user .name', function(e) {
-          e.preventDefault();
-          let $this = $(this);
-          let title = $this.attr('title');
-          let url = $this.attr('href');
-          jsBridge.pushWindow(url, {
-            title,
           });
         });
       });
-    }
+      $list.on('click', '.author .pic, .author .name', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        util.openAuthor({
+          url,
+          title,
+        });
+      });
+      $list.on('click', '.time, .circle a, .wrap a, .user .pic, .user .name', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let title = $this.attr('title');
+        let url = $this.attr('href');
+        jsBridge.pushWindow(url, {
+          title,
+        });
+      });
+    });
   }
   @bind message
   show() {

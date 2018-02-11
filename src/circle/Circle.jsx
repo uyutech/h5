@@ -110,6 +110,9 @@ class Circle extends migi.Component {
   }
   comment() {
     let self = this;
+    if(!self.circleID) {
+      return;
+    }
     jsBridge.pushWindow('/subpost.html?circleID=' + self.circleID, {
       title: '画个圈',
       optionMenu: '发布',

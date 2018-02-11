@@ -168,7 +168,7 @@ class Works extends migi.Component {
     let res = [];
     list.forEach(function(item) {
       let hash = {
-        4140: '文案',
+        4110: '文案',
         4120: '随笔',
         4210: '诗词',
         4211: '歌词',
@@ -234,6 +234,9 @@ class Works extends migi.Component {
   }
   comment() {
     let self = this;
+    if(!self.worksId) {
+      return;
+    }
     jsBridge.pushWindow('/subcomment.html?type=3&id='
       + self.worksId, {
       title: '评论',

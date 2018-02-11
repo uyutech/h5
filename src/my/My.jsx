@@ -356,6 +356,9 @@ class My extends migi.Component {
             : <div class="login">
                 <span class="passport" onClick={ this.clickLogin }>转圈账号</span>
                 <span class="weibo" onClick={ this.clickWeibo }>微博登录</span>
+                <p class="schema">注册即代表同意<span onClick={ function() {
+                  jsBridge.pushWindow('https://zhuanquan.xin/schema.html', { title: '用户协议' });
+                } }>《转圈用户协议》</span></p>
                 <p class="version">版本：{ jsBridge.appVersion + '~' + pack.version }</p>
               </div>
           : <div>

@@ -6,8 +6,6 @@
 
 import util from "../../common/util";
 
-let timeout;
-
 function setHeight($b, percent) {
   $b.css('height', Math.floor(percent) + '%');
 }
@@ -26,10 +24,10 @@ class Background extends migi.Component {
         setHeight($l2, Math.random() * 62);
         setHeight($l3, Math.random() * 62);
         setHeight($l4, Math.random() * 62);
-        if(timeout) {
-          clearTimeout(timeout);
+        if(self.timeout) {
+          clearTimeout(self.timeout);
         }
-        timeout = setTimeout(function() {
+        self.timeout = setTimeout(function() {
           setHeight($l1, 31);
           setHeight($l2, 62);
           setHeight($l3, 31);
@@ -134,7 +132,7 @@ class Background extends migi.Component {
     });
   }
   render() {
-    return <div class={ 'cp-background' + (this.props.topRight ? ' tr' : '') } onClick={ this.click }>
+    return <div class="cp-background" onClick={ this.click }>
       <b ref="l1"/>
       <b ref="l2"/>
       <b ref="l3"/>

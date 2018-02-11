@@ -17,7 +17,11 @@ class BotFn extends migi.Component {
     let self = this;
     self.on(migi.Event.DOM, function() {
       migi.eventBus.on('BOT_FN', function(data) {
+        self.favorText = data.favorText;
+        self.favoredText = data.favoredText;
         self.delText = data.delText;
+        self.blockText = data.blockText;
+        self.reportText = data.reportText;
         self.canLike = data.canLike;
         self.canFavor = data.canFavor;
         self.canDel = data.canDel;
@@ -46,7 +50,11 @@ class BotFn extends migi.Component {
       });
     });
   }
+  @bind favoredText
+  @bind favorText
   @bind delText
+  @bind blockText
+  @bind reportText
   @bind canLike
   @bind canFavor
   @bind canDel
@@ -96,6 +104,7 @@ class BotFn extends migi.Component {
   }
   cancel() {
     this.pop = false;
+    this.delText = this.blockText = this.reportText = null;
     clickDel = clickLike = clickFavor = clickCancel = clickReport = clickBlock = null;
   }
   render() {
@@ -105,13 +114,13 @@ class BotFn extends migi.Component {
           <li class={ 'like' + (this.isLike ? ' liked' : '') + (this.canLike ? '' : ' fn-hide') }
               onClick={ this.clickLike }><b/>{ this.isLike ? '已点赞' : '点赞' }</li>
           <li class={ 'favor' + (this.isFavor ? ' favored' : '') + (this.canFavor ? '' : ' fn-hide') }
-              onClick={ this.clickFavor }><b/>{ this.isFavor ? '已收藏' : '收藏' }</li>
+              onClick={ this.clickFavor }><b/>{ this.isFavor ? this.favoredText || '已收藏' : this.favorText || '收藏' }</li>
           <li class={ 'del' + (this.canDel ? '' : ' fn-hide') }
               onClick={ this.clickDel }><b/>{ this.delText || '删除' }</li>
           <li class={ 'block' + (this.canBlock ? '' : ' fn-hide') }
-              onClick={ this.clickBlock }><b/>{ '屏蔽' }</li>
+              onClick={ this.clickBlock }><b/>{ this.blockText || '屏蔽' }</li>
           <li class={ 'report' + (this.canReport ? '' : ' fn-hide') }
-              onClick={ this.clickReport }><b/>{ '举报' }</li>
+              onClick={ this.clickReport }><b/>{ this.reportText || '举报' }</li>
         </ul>
         <button class="cancel" onClick={ this.clickCancel }>取消</button>
       </div>

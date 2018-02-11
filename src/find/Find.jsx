@@ -59,7 +59,9 @@ class Find extends migi.Component {
     visible = false;
   }
   refresh() {
-    last.reload();
+    if(visible) {
+      last.reload();
+    }
   }
   setData(data) {
     let self = this;

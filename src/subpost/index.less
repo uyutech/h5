@@ -201,6 +201,7 @@
     border-top:1px solid rgba(182,182,182,0.5);
     li{
       flex:1;
+      overflow:hidden;
       &.tip{
         position:relative;
         background:url(tip.png) no-repeat center;
@@ -230,8 +231,17 @@
         }
       }
       &.pic{
+        position:relative;
         background:url(pic.png) no-repeat center;
         background-size:0.24rem auto;
+        input{
+          position:absolute;
+          left:0;
+          top:0;
+          width:100%;
+          height:100%;
+          opacity:0;
+        }
       }
     }
   }

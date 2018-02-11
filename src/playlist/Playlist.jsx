@@ -299,6 +299,7 @@ class Playlist extends migi.Component {
                 worksId: works.WorksID,
                 workId: item.ItemID,
                 workName: item.ItemName,
+                workType: item.ItemType,
                 isLike: item.ISLike,
                 isFavor: item.ISFavor,
                 likeNum: item.LikeHis,

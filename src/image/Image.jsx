@@ -225,6 +225,16 @@ class Image extends migi.Component {
     self.ref.waterFall.clearData();
     self.load();
   }
+  comment() {
+    let self = this;
+    if(!self.worksId) {
+      return;
+    }
+    jsBridge.pushWindow('/subcomment.html?type=3&id='
+      + self.worksId, {
+      title: '评论',
+    });
+  }
   share() {
     migi.eventBus.emit('SHARE', '/works/' + this.worksId);
   }
@@ -249,6 +259,7 @@ class Image extends migi.Component {
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }
+                on-click={ this.comment }
                 on-share={ this.share }/>
       <BotFn ref="botFn"/>
       <BotList ref="botList"

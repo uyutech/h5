@@ -22,7 +22,13 @@ class Author extends migi.Component {
     self.on(migi.Event.DOM, function() {
       let inputCmt = self.ref.inputCmt;
       inputCmt.on('share', function() {
+        if(!self.authorId) {
+          return;
+        }
         migi.eventBus.emit('SHARE', '/author/' + self.authorId);
+      });
+      jsBridge.setOptionMenu({
+        icon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAALVBMVEUAAAAAAAAAAAAAAAD+/v4AAAD5+fnk5OTq6uoAAAAwMDAAAAAAAACAgID///8waL84AAAADnRSTlMABxEL8BqUoZ0nIiITDIsBZnQAAABpSURBVEjHYxgFgxYICuKXl01xu4hPnlHs3btEAXwKTN69c8anQFDl3TsnfK4Q1nj3rskQnwlaJe6L8CpQ3Tk7CJ8VjDahoYfx+kJYSclQAG9AChsKEgxqCgHjaGyOxuZobA7K2BwFNAMAj1k2xo1Ti1oAAAAASUVORK5CYII=',
       });
     });
   }
@@ -211,7 +217,7 @@ class Author extends migi.Component {
   }
   render() {
     return <div class="author">
-      <Background ref="background" topRight={ true }/>
+      <Background ref="background"/>
       <Nav ref="nav"/>
       <ul class="type" ref="type" onClick={ { li: this.clickType } }>
         {
