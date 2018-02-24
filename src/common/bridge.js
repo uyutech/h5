@@ -36,20 +36,15 @@ let jsBridge = {
   ready: function(cb) {
     cb = cb || function() {};
     if(this.isInApp) {
-      if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-        jsBridge.android = ZhuanQuanJSBridge.android;
-        jsBridge.ios = ZhuanQuanJSBridge.ios;
+      if(window.ZhuanQuanJsBridge) {
+        jsBridge.android = ZhuanQuanJsBridge.android;
+        jsBridge.ios = ZhuanQuanJsBridge.ios;
         cb();
       }
       else {
-        document.addEventListener('ZhuanQuanJSBridgeReady', function() {
-          jsBridge.android = ZhuanQuanJSBridge.android;
-          jsBridge.ios = ZhuanQuanJSBridge.ios;
-          cb();
-        });
         document.addEventListener('ZhuanQuanJsBridgeReady', function() {
-          jsBridge.android = ZhuanQuanJSBridge.android;
-          jsBridge.ios = ZhuanQuanJSBridge.ios;
+          jsBridge.android = ZhuanQuanJsBridge.android;
+          jsBridge.ios = ZhuanQuanJsBridge.ios;
           cb();
         });
       }
@@ -59,8 +54,9 @@ let jsBridge = {
     }
   },
   on: function(name, cb) {
-    cb = cb || function() {};
-    document.addEventListener(name, cb);
+    if(cb) {
+      document.addEventListener(name, cb);
+    }
   },
   off: function(name, cb) {
     if(cb) {
