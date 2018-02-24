@@ -4,9 +4,6 @@
 
 'use strict';
 
-import net from './net';
-import util from './util';
-
 import MLogin from '../component/mlogin/MLogin.jsx';
 import Share from '../component/share/Share.jsx';
 import Message from '../component/message/Message.jsx';

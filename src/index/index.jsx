@@ -49,11 +49,7 @@ jsBridge.ready(function() {
           }
           else if(!loginInfo && loginInfo2) {
             loginInfo = loginInfo2;
-            let userInfo = loginInfo.userInfo;
             migi.eventBus.emit('LOGIN', loginInfo);
-            if(userInfo) {
-              migi.eventBus.emit('USER_INFO', userInfo);
-            }
           }
         });
       }, 1);
@@ -97,7 +93,6 @@ jsBridge.ready(function() {
     }
     loginInfo = res;
     migi.eventBus.emit('LOGIN', loginInfo);
-    migi.eventBus.emit('USER_INFO', loginInfo.userInfo);
   });
 
   let find = migi.preExist(<Find/>, '#page');
@@ -130,7 +125,7 @@ jsBridge.ready(function() {
       last = follow;
     }
     else if(i === 3) {
-      topNav.show();
+      topNav.hide();
       if(!my) {
         my = migi.render(<My loginInfo={ loginInfo }/>, '#page');
       }

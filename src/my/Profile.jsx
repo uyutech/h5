@@ -46,7 +46,6 @@ class Profile extends migi.Component {
               jsBridge.getPreference('loginInfo', function(loginInfo) {
                 loginInfo.userInfo.NickName = newName;
                 jsBridge.setPreference('loginInfo', loginInfo);
-                migi.eventBus.emit('USER_INFO', loginInfo.userInfo);
               });
             }
             else {
@@ -75,7 +74,6 @@ class Profile extends migi.Component {
             jsBridge.getPreference('loginInfo', function(loginInfo) {
               loginInfo.userInfo.Head_Url = res.url;
               jsBridge.setPreference('loginInfo', loginInfo);
-              migi.eventBus.emit('USER_INFO', loginInfo.userInfo);
             });
           }
           else {
@@ -120,6 +118,9 @@ class Profile extends migi.Component {
   }
   render() {
     return <div class="profile">
+      <div class="pic">
+        <img src={ util.autoSsl(util.img288_288_80(this.head || '/src/common/head.png')) }/>
+      </div>
       <h4>我的资料</h4>
       <div class="c">
         <div class="pic" onClick={ this.clickPic }>
