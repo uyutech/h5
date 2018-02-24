@@ -39,7 +39,7 @@ let jsBridge = {
       }
     }
     else {
-      cb();
+      setTimeout(cb, 1);
     }
   },
   on: function(name, cb) {

@@ -30,11 +30,11 @@ jsBridge.ready(function() {
     if(my) {
       my.refresh();
     }
-    net.postJSON('/h5/my/message', function(res) {
-      if(res.success) {
-        // topNav.setNum(res.data);
-      }
-    });
+    // net.postJSON('/h5/my/message', function(res) {
+    //   if(res.success) {
+    //     // topNav.setNum(res.data);
+    //   }
+    // });
   });
   jsBridge.getPreference('loginInfo', function(loginInfo) {
     jsBridge.on('resume', function() {
@@ -65,26 +65,26 @@ jsBridge.ready(function() {
       loginInfo = data;
     });
   });
-  jsBridge.on('resume', function(e) {
-    let data = e.data;
-    if(data && data.message) {
-      net.postJSON('/h5/my/message', function(res) {
-        if(res.success) {
-          // topNav.setNum(res.data);
-        }
-      });
-    }
-  });
+  // jsBridge.on('resume', function(e) {
+  //   let data = e.data;
+  //   if(data && data.message) {
+  //     net.postJSON('/h5/my/message', function(res) {
+  //       if(res.success) {
+  //         // topNav.setNum(res.data);
+  //       }
+  //     });
+  //   }
+  // });
 
   let topNav = migi.preExist(<TopNav/>, '#page');
 
-  if(util.isLogin()) {
-    net.postJSON('/h5/my/message', function(res) {
-      if(res.success) {
-        // topNav.setNum(res.data);
-      }
-    });
-  }
+  // if(util.isLogin()) {
+  //   net.postJSON('/h5/my/message', function(res) {
+  //     if(res.success) {
+  //       // topNav.setNum(res.data);
+  //     }
+  //   });
+  // }
 
   let botNav = migi.preExist(<BotNav/>, '#page');
 
@@ -146,7 +146,7 @@ jsBridge.ready(function() {
     let major = parseInt(version[0]) || 0;
     let minor = parseInt(version[1]) || 0;
     let patch = parseInt(version[2]) || 0;
-    if(minor < 5 || patch < 2) {
+    if(minor < 5 || patch < 3) {
       old = true;
     }
   }
