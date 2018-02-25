@@ -31,7 +31,9 @@
       .txt{
         flex:1;
         margin-right:0.1rem;
+        overflow:hidden;
         .name{
+          display:block;
           color:#717171;
           font-size:0.14rem;
           white-space:nowrap;
@@ -41,9 +43,10 @@
         .author{
           color:#B6B6B6;
           font-size:0.11rem;
-          overflow:hidden;
-          text-overflow:ellipsis;
+          //overflow:hidden;
+          //text-overflow:ellipsis;
           white-space:nowrap;
+          overflow-x:scroll;
         }
       }
       .video{

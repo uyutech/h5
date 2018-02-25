@@ -41,7 +41,7 @@ class SubComment extends migi.Component {
     return '_subcmt_content';
   }
   input(e, vd) {
-    let self = this;console.log(self.cid, self.rid)
+    let self = this;
     let $vd = $(vd.element);
     self.num = $vd.val().length;
     self.num = $vd.val().trim().length;

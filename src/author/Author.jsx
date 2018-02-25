@@ -2,6 +2,7 @@
  * Created by army8735 on 2017/12/3.
  */
 
+
 'use strict';
 
 import net from '../common/net';
@@ -14,6 +15,7 @@ import Comments from './Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import Background from '../component/background/Background.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
+import Dynamics from './Dynamics.jsx';
 
 class Author extends migi.Component {
   constructor(...data) {
@@ -56,6 +58,7 @@ class Author extends migi.Component {
     self.hotPlayList = data.hotPlayList;
     self.album = data.album;
     self.hotPicList = data.hotPicList;
+    self.dynamic = data.dynamic;
     self.commentData = data.commentData;
     self.ref.nav.setData(data.authorDetail, 1);
 
@@ -93,6 +96,10 @@ class Author extends migi.Component {
         });
       }
       type.push({
+        cn: 'dynamics',
+        name: '动态',
+      });
+      type.push({
         cn: 'comments',
         name: '留言',
       });
@@ -119,6 +126,13 @@ class Author extends migi.Component {
                                     dataList={ data.hotPicList }/>;
         self.ref.picList.show();
         self.ref.picList.after(self.ref.type.element);
+        break;
+      case 'dynamics':
+        self.ref.dynamics = <Dynamics ref="dynamics"
+                                      authorId={ self.authorId }
+                                      data={ data.dynamic }/>;
+        self.ref.dynamics.show();
+        self.ref.dynamics.after(self.ref.type.element);
         break;
       case 'comments':
         self.addComment(self.commentData);
@@ -151,10 +165,12 @@ class Author extends migi.Component {
     let home = self.ref.home;
     let maList = self.ref.maList;
     let picList = self.ref.picList;
+    let dynamics = self.ref.dynamics;
     let comments = self.ref.comments;
     home && home.hide();
     maList && maList.hide();
     picList && picList.hide();
+    dynamics && dynamics.hide();
     comments && comments.hide();
     let rel = tvd.props.rel;
     switch(rel) {
@@ -178,6 +194,15 @@ class Author extends migi.Component {
           picList.after(self.ref.type.element);
         }
         picList.show();
+        break;
+      case 'dynamics':
+        if(!dynamics) {
+          self.ref.dynamics = dynamics = <Dynamics ref="dynamics"
+                                                   authorId={ self.authorId }
+                                                   data={ self.dynamic }/>;
+          self.ref.dynamics.after(self.ref.type.element);
+        }
+        dynamics && dynamics.show();
         break;
       case 'comments':
         self.addComment();

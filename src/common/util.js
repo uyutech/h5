@@ -176,6 +176,12 @@ let util = {
     }
     return url ? util.img(url) + '-170_170_80' : url;
   },
+  img160_160_80: function(url) {
+    if(!/\/\/zhuanquan\./i.test(url)) {
+      return url;
+    }
+    return url ? util.img(url) + '-160_160_80' : url;
+  },
   img168__80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {
       return url;
