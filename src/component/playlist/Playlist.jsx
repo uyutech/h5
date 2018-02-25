@@ -130,9 +130,8 @@ class Playlist extends migi.Component {
            class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
         <p class="author">{ (author.AuthorInfo || []).map(function(item) {
           return item.AuthorName;
-        }).join(' ') }</p>
+        }).join(' ') }待揭秘待揭秘待揭秘待揭秘待揭秘待揭秘待揭秘待揭秘待揭秘待揭秘</p>
       </div>
-      {/*<b class="video"/>*/}
       <b class="fn" workID={ item.ItemID } isLike={ item.ISLike } isFavor={ item.ISFavor }/>
     </li>;
   }

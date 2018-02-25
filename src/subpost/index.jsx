@@ -16,6 +16,7 @@ import SubPost from './SubPost.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
 let circleID = search.circleID;
+let tag = search.tag;
 
 jsBridge.ready(function() {
   jsBridge.refreshState(false);
@@ -53,6 +54,11 @@ jsBridge.ready(function() {
       }
       subPost.to = to;
       let activityLabel = data.activityLabel || [];
+      if(tag) {
+        activityLabel.unshift({
+          TagName: tag,
+        });
+      }
       subPost.activityLabel = activityLabel;
       subPost.tagList = (data.tagList || []).concat(activityLabel);
       if(circleID && data.tagList) {

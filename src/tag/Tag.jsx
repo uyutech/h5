@@ -93,7 +93,7 @@ class Tag extends migi.Component {
     </div>;
   }
   comment() {
-    jsBridge.pushWindow('/subpost.html', {
+    jsBridge.pushWindow('/subpost.html?tag=' + encodeURIComponent(this.tag), {
       title: '画个圈',
       showOptionMenu: 'true',
       optionMenu: '发布',
@@ -111,7 +111,7 @@ class Tag extends migi.Component {
             </div>
       }
       <InputCmt ref="inputCmt"
-                placeholder={ '发表评论...' }
+                placeholder={ '画个圈吧！' }
                 readOnly={ true }
                 on-click={ this.comment }/>
     </div>;
