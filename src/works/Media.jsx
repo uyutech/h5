@@ -58,6 +58,7 @@ class Media extends migi.Component {
             }
           });
           jsBridge.on('mediaEnd', function() {
+            self.isPlaying = false;
             self.emit('end');
           });
         }
@@ -200,15 +201,9 @@ class Media extends migi.Component {
         value: {
           id: self.data.workId,
           url: location.protocol + util.autoSsl(self.data.url),
-          name: self.data.workId,
         },
       }, function(res) {
-        if(res.isCached) {
-          load.innerHTML = `<b style="width:100%"/>`;
-        }
-        else {
-          load.innerHTML = '';
-        }
+        load.innerHTML = '';
         if(res.same) {
           if(res.prepared) {
             self.canControl = true;
