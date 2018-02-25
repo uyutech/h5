@@ -30,11 +30,12 @@ jsBridge.ready(function() {
     if(my) {
       my.refresh();
     }
-    net.postJSON('/h5/my/message', function(res) {
-      if(res.success) {
-        // topNav.setNum(res.data);
-      }
-    });
+    migi.eventBus.emit('REFRESH_MESSAGE');
+    // net.postJSON('/h5/my/message', function(res) {
+    //   if(res.success) {
+    //     // topNav.setNum(res.data);
+    //   }
+    // });
   });
   jsBridge.getPreference('loginInfo', function(loginInfo) {
     jsBridge.on('resume', function() {
@@ -49,11 +50,7 @@ jsBridge.ready(function() {
           }
           else if(!loginInfo && loginInfo2) {
             loginInfo = loginInfo2;
-            let userInfo = loginInfo.userInfo;
             migi.eventBus.emit('LOGIN', loginInfo);
-            if(userInfo) {
-              migi.eventBus.emit('USER_INFO', userInfo);
-            }
           }
         });
       }, 1);
@@ -65,26 +62,26 @@ jsBridge.ready(function() {
       loginInfo = data;
     });
   });
-  jsBridge.on('resume', function(e) {
-    let data = e.data;
-    if(data && data.message) {
-      net.postJSON('/h5/my/message', function(res) {
-        if(res.success) {
-          // topNav.setNum(res.data);
-        }
-      });
-    }
-  });
+  // jsBridge.on('resume', function(e) {
+  //   let data = e.data;
+  //   if(data && data.message) {
+  //     net.postJSON('/h5/my/message', function(res) {
+  //       if(res.success) {
+  //         // topNav.setNum(res.data);
+  //       }
+  //     });
+  //   }
+  // });
 
   let topNav = migi.preExist(<TopNav/>, '#page');
 
-  if(util.isLogin()) {
-    net.postJSON('/h5/my/message', function(res) {
-      if(res.success) {
-        // topNav.setNum(res.data);
-      }
-    });
-  }
+  // if(util.isLogin()) {
+  //   net.postJSON('/h5/my/message', function(res) {
+  //     if(res.success) {
+  //       // topNav.setNum(res.data);
+  //     }
+  //   });
+  // }
 
   let botNav = migi.preExist(<BotNav/>, '#page');
 
@@ -97,7 +94,6 @@ jsBridge.ready(function() {
     }
     loginInfo = res;
     migi.eventBus.emit('LOGIN', loginInfo);
-    migi.eventBus.emit('USER_INFO', loginInfo.userInfo);
   });
 
   let find = migi.preExist(<Find/>, '#page');
@@ -130,13 +126,14 @@ jsBridge.ready(function() {
       last = follow;
     }
     else if(i === 3) {
-      topNav.show();
+      topNav.hide();
       if(!my) {
         my = migi.render(<My loginInfo={ loginInfo }/>, '#page');
       }
       last = my;
     }
     last.show();
+    migi.eventBus.emit('REFRESH_MESSAGE');
   });
   migi.render(<BotFn/>, '#page');
 
@@ -146,7 +143,7 @@ jsBridge.ready(function() {
     let major = parseInt(version[0]) || 0;
     let minor = parseInt(version[1]) || 0;
     let patch = parseInt(version[2]) || 0;
-    if(minor < 5 || patch < 2) {
+    if(minor < 5 || patch < 3) {
       old = true;
     }
   }

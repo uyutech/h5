@@ -6,6 +6,7 @@
 
 import MLogin from '../component/mlogin/MLogin.jsx';
 import Share from '../component/share/Share.jsx';
+import Message from '../component/message/Message.jsx';
 
 let mlogin;
 migi.eventBus.on('NEED_LOGIN', function() {
@@ -31,4 +32,16 @@ migi.eventBus.on('SHARE', function(url) {
   }
   share.url = url;
   share.show();
+});
+
+jsBridge.ready(function() {
+  if(location.pathname === '/message.html') {
+    return;
+  }
+  setTimeout(function() {
+    let message = migi.render(
+      <Message/>,
+      document.body
+    );
+  }, 1);
 });
