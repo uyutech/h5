@@ -30,6 +30,7 @@ jsBridge.ready(function() {
     if(my) {
       my.refresh();
     }
+    migi.eventBus.emit('REFRESH_MESSAGE');
     // net.postJSON('/h5/my/message', function(res) {
     //   if(res.success) {
     //     // topNav.setNum(res.data);
@@ -132,6 +133,7 @@ jsBridge.ready(function() {
       last = my;
     }
     last.show();
+    migi.eventBus.emit('REFRESH_MESSAGE');
   });
   migi.render(<BotFn/>, '#page');
 

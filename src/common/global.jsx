@@ -38,8 +38,10 @@ jsBridge.ready(function() {
   if(location.pathname === '/message.html') {
     return;
   }
-  let message = migi.render(
-    <Message/>,
-    document.body
-  );
+  setTimeout(function() {
+    let message = migi.render(
+      <Message/>,
+      document.body
+    );
+  }, 1);
 });

@@ -12,7 +12,7 @@ class Message extends migi.Component {
     super(...data);
     let self = this;
     self.num = self.props.num;
-    self.on(migi.Event.DOM, function() {
+    function reload() {
       jsBridge.getPreference('message-time', function(res) {
         res = res || 0;
         let now = Date.now();
@@ -27,6 +27,9 @@ class Message extends migi.Component {
           });
         }
       });
+    }
+    self.on(migi.Event.DOM, function() {
+      reload();
       jsBridge.on('resume', function(e) {
         jsBridge.getPreference('message-count', function(res) {
           res = res || 0;
@@ -44,6 +47,9 @@ class Message extends migi.Component {
           });
         }
       });
+      migi.eventBus.on('REFRESH_MESSAGE', function() {
+        reload();
+      });
     });
   }
   @bind num
@@ -53,8 +59,8 @@ class Message extends migi.Component {
     });
   }
   render() {
-    return <div class="g-message" onClick={ this.click }>
-      <b class={ this.num ? '' : 'fn-hide' }>{ this.num ? this.num > 99 ? '99+' : this.num : '' }</b>
+    return <div class={ 'g-message' + (this.num ? '' : ' fn-hide') } onClick={ this.click }>
+      <b>{ this.num ? this.num > 99 ? '99+' : this.num : '' }</b>
     </div>;
   }
 }
