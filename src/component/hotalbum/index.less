@@ -1,18 +1,38 @@
 /**
- * Created by army8735 on 2017/8/8.
+ * Created by army8735 on 2018/2/26.
  */
 
-.cp-hotwork{
+.cp-hotalbum{
   .list{
     display:flex;
     align-items:start;
-    padding-left:0.15rem;
+    padding:0.06rem 0 0 0.15rem;
     overflow-x:auto;
     transform:translateZ(0);
     li{
+      position:relative;
       margin-right:0.1rem;
       width:0.85rem;
       flex-shrink:0;
+    }
+    .bg{
+      position:absolute;
+      left:0.1rem;
+      top:-0.06rem;
+      width:0.65rem;
+      height:0.65rem;
+      background:#EDF3F7;
+      border-radius:0.05rem;
+      &:after{
+        position:absolute;
+        left:-0.05rem;
+        top:0.03rem;
+        width:0.75rem;
+        height:0.75rem;
+        background:#B1C0C9;
+        border-radius:0.05rem;
+        content:' ';
+      }
     }
     .pic{
       position:relative;
@@ -88,7 +108,7 @@
         overflow:hidden;
       }
       .author{
-        font-size:0.11rem;
+        font-size:0.1rem;
         color:#B6B6B6;
       }
     }

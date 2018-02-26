@@ -8,7 +8,6 @@ import net from '../common/net';
 import util from '../common/util';
 import Nav from './Nav.jsx';
 import Background from '../component/background/Background.jsx';
-import Profile from './Profile.jsx';
 import HotPost from '../component/hotpost/HotPost.jsx';
 import ImageView from '../post/ImageView.jsx';
 
@@ -21,7 +20,6 @@ class User extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  @bind hasData
   @bind userID
   load(userID) {
     let self = this;
@@ -110,15 +108,6 @@ class User extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
       loading = false;
     });
-  }
-  genDom() {
-    let self = this;
-    return <div>
-      <Profile userInfo={ self.userInfo } followState={ self.followState }/>
-      <h4>TA画的圈</h4>
-      <HotPost ref="hotPost" dataList={ self.userPost.data }/>
-      <ImageView ref="imageView"/>
-    </div>;
   }
   render() {
     return <div class="user">
