@@ -9,7 +9,7 @@ import net from "../common/net";
 import util from "../common/util";
 
 let take = 10;
-let skip = take;
+let skip = 0;
 let loading;
 let loadEnd;
 let ajax;
@@ -18,20 +18,7 @@ class Dynamics extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.on(migi.Event.DOM, function() {
-      if(self.props.data.Size > take) {
-        let $window = $(window);
-        $window.on('scroll', function() {
-          if(!self.visible) {
-            return;
-          }
-          self.checkMore($window);
-        });
-      }
-      else {
-        self.ref.hotPost.message = '已经到底了';
-      }
-    });
+    self.visible = self.props.visible;
   }
   @bind visible
   show() {
@@ -39,6 +26,23 @@ class Dynamics extends migi.Component {
   }
   hide() {
     this.visible = false;
+  }
+  setData(data) {
+    let self = this;
+    skip += take;
+    self.ref.hotPost.setData(data.data);
+    if(data.Size > take) {
+      let $window = $(window);
+      $window.on('scroll', function() {
+        if(!self.visible) {
+          return;
+        }
+        self.checkMore($window);
+      });
+    }
+    else {
+      self.ref.hotPost.message = '已经到底了';
+    }
   }
   checkMore($window) {
     if(loading || loadEnd) {
@@ -65,7 +69,7 @@ class Dynamics extends migi.Component {
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON('/h5/author/dynamic', { authorId: self.props.authorId, skip, take }, function(res) {
+    ajax = net.postJSON('/h5/author/dynamic', { authorId: self.authorId, skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
@@ -88,9 +92,8 @@ class Dynamics extends migi.Component {
     });
   }
   render() {
-    return <div class={ this.visible ? '' : 'fn-hide' }>
-      <HotPost ref="hotPost"
-               dataList={ this.props.data.data }/>
+    return <div class={ 'dynamic' + (this.visible ? '' : ' fn-hide') }>
+      <HotPost ref="hotPost"/>
     </div>;
   }
 }

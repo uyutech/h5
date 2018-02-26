@@ -193,6 +193,7 @@ class Comment extends migi.Component {
         let title = $this.attr('title');
         jsBridge.pushWindow(url, {
           title,
+          transparentTitle: true,
         });
       });
       // TODO: del

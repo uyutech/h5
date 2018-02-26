@@ -5,16 +5,13 @@
 'use strict';
 
 import util from '../../common/util';
-import authorTemplate from '../author/authorTemplate';
-
-let seq = ['ge', 'qu', 'ci', 'cv', 'hun'];
 
 class HotAuthor extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.dataList = this.props.dataList;
+    this.list = this.props.list;
   }
-  @bind dataList
+  @bind list
   click(e, vd, tvd) {
     e.preventDefault();
     let url = tvd.props.href;
@@ -34,44 +31,19 @@ class HotAuthor extends migi.Component {
   render() {
     return <div class="cp-hotauthor" onClick={ { a: this.click } }>
       {
-        this.dataList
-          ? this.dataList.length
-            ? <ul>
+        this.list
+          ? this.list.length
+            ? <ul class="list">
               {
-                this.dataList.map(function(item) {
-                  let type = [];
-                  if(item.Authortype) {
-                    for(let i = 0, len = item.Authortype.length; i < len; i++) {
-                      let code = authorTemplate.code2Data[item.Authortype[i].AuthorTypeID].css;
-                      if(code && type.indexOf(code) === -1) {
-                        type.push(code);
-                      }
-                    }
-                  }
-                  migi.sort(type, function(a, b) {
-                    if(seq.indexOf(a) === -1) {
-                      return true;
-                    }
-                    if(seq.indexOf(b) === -1) {
-                      return false;
-                    }
-                    return seq.indexOf(a) > seq.indexOf(b);
-                  });
+                this.list.map(function(item) {
                   let url = `/author.html?authorId=${item.AuthorID}`;
                   return <li>
                     <a href={ url } class="pic" title={ item.AuthorName }>
                       <img src={ util.autoSsl(util.img120_120_80(item.Head_url
                         || '/src/common/head.png')) }/>
-                      {
-                        type.slice(0, 2).map(function(item) {
-                          return <b class={ 'cp-author-type-' + item }/>;
-                        })
-                      }
                     </a>
                     <a href={ url } class="txt" title={ item.AuthorName }>
                       <span class="name">{ item.AuthorName }</span>
-                      <span class="fans">粉丝 { util.abbrNum(item.FansNumber) }</span>
-                      <span class="comment">留言 { util.abbrNum(item.Popular) }</span>
                     </a>
                     <div class="info">合作{ util.abbrNum(item.CooperationTimes) }次</div>
                   </li>;
@@ -83,8 +55,8 @@ class HotAuthor extends migi.Component {
                   : ''
               }
             </ul>
-            : <div class="empty">{ this.props.empty || '暂无数据' }</div>
-          : ''
+            : <div class="empty">暂无</div>
+          : <div class="placeholder"/>
       }
     </div>;
   }

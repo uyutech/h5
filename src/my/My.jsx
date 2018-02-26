@@ -11,9 +11,6 @@ import Background from '../component/background/Background.jsx';
 
 const pack = require('../../package.json');
 
-let bindUuid;
-let bindName;
-
 class My extends migi.Component {
   constructor(...data) {
     super(...data);

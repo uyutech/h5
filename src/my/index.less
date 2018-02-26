@@ -79,10 +79,42 @@
         }
       }
     }
+    > .num{
+      display:flex;
+      align-items:center;
+      li{
+        flex:1;
+        position:relative;
+        color:#B6B6B6;
+        font-size:0.13rem;
+        text-align:center;
+        strong{
+          margin-left:0.05rem;
+          font-weight:400;
+          color:#8BBDE1;
+          font-size:0.14rem;
+        }
+        &:after{
+          position:absolute;
+          top:50%;
+          right:0;
+          width:1px;
+          height:0.1rem;
+          background:#D8D8D8;
+          content:' ';
+          transform:scaleX(0.5) translateY(-50%);
+        }
+        &:last-child:after{
+          display:none;
+          content:'';
+        }
+      }
+    }
     > .sign{
       position:relative;
       display:flex;
       align-items:center;
+      margin-top:0.1rem;
       padding:0.1rem 0 0;
       line-height:0.18rem;
       &:before{

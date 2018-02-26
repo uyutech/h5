@@ -88,6 +88,13 @@ class Playlist extends migi.Component {
   hide() {
     $(this.element).addClass('fn-hide');
   }
+  setData(data) {
+    let s = '';
+    (data || []).forEach(function(item) {
+      s += this.genItem(item) || '';
+    }.bind(this));
+    $(this.ref.list.element).html(s);
+  }
   appendData(data) {
     let s = '';
     (data || []).forEach(function(item) {

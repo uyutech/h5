@@ -8,7 +8,7 @@ class Fn extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.dataList = self.props.dataList;
+    self.list = self.props.list;
     self.on(migi.Event.DOM, function() {
       let $body = $(document.body);
       $body.on('click', function() {
@@ -17,7 +17,7 @@ class Fn extends migi.Component {
       });
     });
   }
-  @bind dataList
+  @bind list
   @bind text
   @bind showSort
   @bind sortText
@@ -60,7 +60,7 @@ class Fn extends migi.Component {
   }
   render() {
     return <div class="mod-fn">
-      <label class={ this.dataList && this.dataList.length > 1 ? '' : ' fn-hide' }
+      <label class={ this.list && this.list.length > 1 ? '' : ' fn-hide' }
              onClick={ this.clickPop }>
         {
           this.text || '全部'
@@ -77,7 +77,7 @@ class Fn extends migi.Component {
           <ul class="fn-clear" onClick={ this.clickSelPop }>
             <li class="cur">全部</li>
             {
-              (this.dataList || []).map(function(item, i) {
+              (this.list || []).map(function(item) {
                 return <li rel={ item.ItemsTypeID }>{ item.ItemsTypeName }</li>;
               })
             }
