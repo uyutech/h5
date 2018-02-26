@@ -194,6 +194,9 @@ class Media extends migi.Component {
 
     if(self.isVideo) {
       self.ref.video.element.src = data.url;
+      jsBridge.media({
+        key: 'stop',
+      });
     }
     else if(mediaService) {
       jsBridge.media({
