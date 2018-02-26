@@ -6,6 +6,8 @@
 
 import net from '../common/net';
 import util from '../common/util';
+import Nav from './Nav.jsx';
+import Background from '../component/background/Background.jsx';
 import Profile from './Profile.jsx';
 import HotPost from '../component/hotpost/HotPost.jsx';
 import ImageView from '../post/ImageView.jsx';
@@ -21,18 +23,27 @@ class User extends migi.Component {
   }
   @bind hasData
   @bind userID
-  setData(userID, data) {
+  load(userID) {
     let self = this;
-
     self.userID = userID;
-    self.userInfo = data.userInfo;
-    self.followState = data.followState;
-    self.userPost = data.userPost;
-
-    self.hasData = true;
+    net.postJSON('/h5/user/index', { userID }, function(res) {
+      if(res.success) {
+        self.setData(res.data);
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
+  }
+  setData(data) {
+    let self = this;
+    self.ref.nav.userInfo = data.userInfo;
+    self.ref.nav.followState = data.followState;
 
     let $window = $(window);
-    loadEnd = self.userPost.Size <= take;
+    loadEnd = data.userPost.Size <= take;
     if(loadEnd) {
       self.ref.hotPost.message = '已经到底了';
     }
@@ -43,6 +54,7 @@ class User extends migi.Component {
     }
 
     let hotPost = self.ref.hotPost;
+    hotPost.appendData(data.userPost.data);
     let imageView = self.ref.imageView;
     imageView.on('clickLike', function(sid) {
       hotPost.like(sid, function(res) {
@@ -66,10 +78,10 @@ class User extends migi.Component {
     let bool;
     bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
     if(bool) {
-      self.load();
+      self.loadMore();
     }
   }
-  load() {
+  loadMore() {
     let self = this;
     if(loading) {
       return;
@@ -110,17 +122,10 @@ class User extends migi.Component {
   }
   render() {
     return <div class="user">
-      {
-        this.hasData
-          ? this.genDom()
-          : <div>
-              <div class="fn-placeholder-tag"/>
-              <div class="fn-placeholder-roundlet"/>
-              <div class="fn-placeholder-tag"/>
-              <div class="fn-placeholder"/>
-              <div class="fn-placeholder"/>
-            </div>
-      }
+      <Background/>
+      <Nav ref="nav"/>
+      <HotPost ref="hotPost"/>
+      <ImageView ref="imageView"/>
     </div>;
   }
 }

@@ -97,9 +97,6 @@ class HotPost extends migi.Component {
         let count = $this.attr('count');
         let url = count === '0' ? `/subcomment.html?type=1&id=${id}` : `/post.html?postID=${id}`;
         let title = count === '0' ? '回复画圈' : '画圈正文';
-        if(!url) {
-          throw new Error('hotpost url is null');
-        }
         jsBridge.pushWindow(url, {
           title,
         });
@@ -133,7 +130,17 @@ class HotPost extends migi.Component {
           title,
         });
       });
-      $list.on('click', '.time, .circle a, .wrap a, .user .pic, .user .name', function(e) {
+      $list.on('click', '.user .pic, .user .name', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let title = $this.attr('title');
+        let url = $this.attr('href');
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle: true,
+        });
+      });
+      $list.on('click', '.time, .circle a, .wrap a', function(e) {
         e.preventDefault();
         let $this = $(this);
         let title = $this.attr('title');
