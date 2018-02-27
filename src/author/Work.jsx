@@ -13,7 +13,6 @@ import Fn from '../find/Fn.jsx';
 
 const CACHE = {};
 let take = 10;
-let image;
 
 class Work extends migi.Component {
   constructor(...data) {
@@ -22,20 +21,20 @@ class Work extends migi.Component {
     self.visible = self.props.visible;
     self.on(migi.Event.DATA, function(k) {
       if(k === 'visible') {
-        self.ref.waterFall.pause = !self.visible || self.typeId !== 3;
+        self.ref.waterFall.pause = !self.visible || self.groupId !== 3;
         self.ref.waterFall.checkPool();
       }
     });
   }
   @bind visible
-  @bind type
-  @bind typeId
+  @bind group
+  @bind groupId
   @bind authorId
-  setData(type, itemList) {
+  setData(group, itemList) {
     let self = this;
-    self.type = type;
-    if(type.length) {
-      type.forEach(function(item) {
+    self.group = group;
+    if(group.length) {
+      group.forEach(function(item) {
         CACHE[item.GroupID] = {
           loading: false,
           loadEnd: false,
@@ -44,13 +43,13 @@ class Work extends migi.Component {
           type: item.itemsTypeList,
         };
       });
-      let first = type[0];
-      self.typeId = first.GroupID;
-      let cache = CACHE[self.typeId];
+      let first = group[0];
+      self.groupId = first.GroupID;
+      let cache = CACHE[self.groupId];
       cache.skip += take;
       cache.loadEnd = itemList.Size <= take;
       self.ref.fn.list = first.itemsTypeList;
-      switch(self.typeId) {
+      switch(self.groupId) {
         // 音频
         case 1:
           self.ref.playlist.setData(itemList.data);
@@ -81,24 +80,24 @@ class Work extends migi.Component {
         self.checkMore($window);
       });
       self.ref.fn.on('sort', function(sort) {
-        let cache = CACHE[self.typeId];
+        let cache = CACHE[self.groupId];
         cache.sort = sort;
       });
     }
   }
-  clickType(e, vd, tvd) {
+  clickGroup(e, vd, tvd) {
     let self = this;
-    if(tvd.props.rel === self.typeId) {
+    if(tvd.props.rel === self.groupId) {
       return;
     }
-    self.typeId = tvd.props.rel;
-    let cache = CACHE[self.typeId];
+    self.groupId = tvd.props.rel;
+    let cache = CACHE[self.groupId];
     if(cache.skip === 0) {
       self.load();
     }
     self.ref.fn.list = cache.type;
     self.ref.fn.sort = cache.sort;
-    self.ref.waterFall.pause = !self.visible || self.typeId !== 3;
+    self.ref.waterFall.pause = !self.visible || self.groupId !== 3;
     self.ref.waterFall.checkPool();
   }
   checkMore($window) {
@@ -113,13 +112,13 @@ class Work extends migi.Component {
   }
   load() {
     let self = this;
-    let typeId = self.typeId;
-    let cache = CACHE[typeId];
+    let groupId = self.groupId;
+    let cache = CACHE[groupId];
     if(cache.loading || cache.loadEnd) {
       return;
     }
     cache.loading = true;
-    switch(typeId) {
+    switch(groupId) {
       case 1:
         self.ref.playlist.message = '正在加载...';
         break;
@@ -130,12 +129,12 @@ class Work extends migi.Component {
         self.ref.waterFall.message = '正在加载...';
         break;
     }
-    net.postJSON('/h5/author/itemList', { authorId: self.authorId, groupId: typeId, sort: cache.sort, skip: cache.skip, take, }, function(res) {
+    cache.ajax = net.postJSON('/h5/author/itemList', { authorId: self.authorId, groupId, sort: cache.sort, skip: cache.skip, take, typeId: cache.typeId }, function(res) {
       if(res.success) {
         let data = res.data;
         cache.skip += take;
         cache.loadEnd = cache.skip >= data.Size;
-        switch(typeId) {
+        switch(groupId) {
           case 1:
             self.ref.playlist.appendData(data.data);
             self.ref.playlist.message = cache.loadEnd ? '已经到底了' : '';
@@ -159,25 +158,67 @@ class Work extends migi.Component {
       cache.loading = false;
     });
   }
+  fnSort(sort) {
+    let self = this;
+    let cache = CACHE[self.groupId];
+    cache.skip = 0;
+    cache.loading = false;
+    cache.loadEnd = false;
+    cache.sort = sort;
+    if(cache.ajax) {
+      cache.ajax.abort();
+    }
+    self.clear();
+    self.load();
+  }
+  fnType(typeId) {
+    let self = this;
+    let cache = CACHE[self.groupId];
+    cache.skip = 0;
+    cache.loading = false;
+    cache.loadEnd = false;
+    cache.typeId = typeId;
+    if(cache.ajax) {
+      cache.ajax.abort();
+    }
+    self.clear();
+    self.load();
+  }
+  clear() {
+    let self = this;
+    switch(self.groupId) {
+      case 1:
+        self.ref.playlist.clearData();
+        break;
+      case 2:
+        self.ref.videoList.clearData();
+        break;
+      case 3:
+        self.ref.waterFall.clearData();
+        break;
+    }
+  }
   render() {
     return <div class={ 'work' + (this.visible ? '' : ' fn-hide') }>
-      <ul class={ 'type' + (this.type && this.type.length > 1 ? '' : ' fn-hide') }
-          onClick={ { li: this.clickType } }>
+      <ul class={ 'group' + (this.group && this.group.length > 1 ? '' : ' fn-hide') }
+          onClick={ { li: this.clickGroup } }>
         {
-          (this.typeId, this.type || []).map(function(item) {
-            return <li class={ item.GroupID === this.typeId ? 'cur' : '' }
+          (this.groupId, this.group || []).map(function(item) {
+            return <li class={ item.GroupID === this.groupId ? 'cur' : '' }
                        rel={ item.GroupID }>{ item.GroupName }</li>;
           }.bind(this))
         }
       </ul>
-      <Fn ref="fn"/>
+      <Fn ref="fn"
+          on-sort={ this.fnSort }
+          on-type={ this.fnType }/>
       <Playlist ref="playlist"
-                @visible={ this.typeId === 1 }/>
+                @visible={ this.groupId === 1 }/>
       <VideoList ref="videoList"
-                 @visible={ this.typeId === 2 }/>
+                 @visible={ this.groupId === 2 }/>
       <WaterFall ref="waterFall"
                  pause={ !this.visible }
-                 @visible={ this.typeId === 3 }/>
+                 @visible={ this.groupId === 3 }/>
     </div>;
   }
 }
