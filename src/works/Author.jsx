@@ -35,7 +35,11 @@ class Author extends migi.Component {
                     (item.AuthorInfo || []).map(function(author) {
                       return <dd>
                         <a href={ '/author.html?authorId=' + author.AuthorID } title={ author.AuthorName }>
-                          <img src={ util.autoSsl(util.img48_48_80(author.Head_url)) || '/src/common/head.png' }/>
+                          {
+                            author.ISSettled
+                              ? <img src={ util.autoSsl(util.img48_48_80(author.Head_url)) || '/src/common/head.png' }/>
+                              : ''
+                          }
                           <span>{ author.AuthorName }</span>
                         </a>
                       </dd>;
