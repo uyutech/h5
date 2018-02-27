@@ -213,10 +213,13 @@ class Work extends migi.Component {
           on-sort={ this.fnSort }
           on-type={ this.fnType }/>
       <Playlist ref="playlist"
+                profession={ true }
                 @visible={ this.groupId === 1 }/>
       <VideoList ref="videoList"
+                 profession={ true }
                  @visible={ this.groupId === 2 }/>
       <WaterFall ref="waterFall"
+                 profession={ true }
                  pause={ !this.visible }
                  @visible={ this.groupId === 3 }/>
     </div>;

@@ -407,6 +407,19 @@ let util = {
       optionMenuIcon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAALVBMVEUAAAAAAAAAAAAAAAD+/v4AAAD5+fnk5OTq6uoAAAAwMDAAAAAAAACAgID///8waL84AAAADnRSTlMABxEL8BqUoZ0nIiITDIsBZnQAAABpSURBVEjHYxgFgxYICuKXl01xu4hPnlHs3btEAXwKTN69c8anQFDl3TsnfK4Q1nj3rskQnwlaJe6L8CpQ3Tk7CJ8VjDahoYfx+kJYSclQAG9AChsKEgxqCgHjaGyOxuZobA7K2BwFNAMAj1k2xo1Ti1oAAAAASUVORK5CYII=',
     };
   },
+  uniqueList: function(list) {
+    list = list || [];
+    let hash = {};
+    let res = [];
+    list.forEach(function(item) {
+      if(hash[item]) {
+        return;
+      }
+      hash[item] = true;
+      res.push(item);
+    });
+    return res;
+  },
 };
 
 export default util;
