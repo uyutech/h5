@@ -33,14 +33,15 @@ class Author extends migi.Component {
     });
   }
   @bind authorId
-  @bind showHome
   @bind index
+  @bind list
   @bind rid
   @bind cid
   load(authorId) {
     let self = this;
     self.authorId = authorId;
     self.ref.nav.authorId = authorId;
+    self.ref.work.authorId = authorId;
     net.postJSON('/h5/author/newIndex', { authorID: authorId }, function(res) {
       if(res.success) {
         self.setData(res.data);
@@ -53,18 +54,30 @@ class Author extends migi.Component {
     });
   }
   setData(data) {
-    console.log(data.type);
-    console.log(data.itemList);
     let self = this;
     self.ref.nav.setData(data.authorDetail, 1);
+    let temp = [{
+      id: 1,
+      name: '作品',
+    }, {
+      id: 2,
+      name: '动态',
+    }, {
+      id: 3,
+      name: '留言',
+    }];
     if(data.authorDetail.ISSettled && data.homeDetail.Hot_Works_Items && data.homeDetail.Hot_Works_Items.length) {
-      self.showHome = true;
       self.index = 0;
+      temp.unshift({
+        id: 0,
+        name: '主页',
+      });
       self.ref.hotWork.list = data.homeDetail.Hot_Works_Items;
     }
     else {
       self.index = 1;
     }
+    self.list = temp;
     self.ref.hotAlbum.list = data.album;
     self.ref.hotAuthor.list = data.homeDetail.AuthorToAuthor;
     self.ref.dynamics.authorId = self.authorId;
@@ -113,12 +126,14 @@ class Author extends migi.Component {
       <Background ref="background"/>
       <Nav ref="nav"/>
       <ul class="index" onClick={ { li: this.clickType } }>
-        <li class={ (this.showHome ? '' : 'fn-hide ') + (this.index === 0 ? 'cur' : '') } rel={ 0 }>主页</li>
-        <li class={ this.index === 1 ? 'cur' : '' } rel={ 1 }>作品</li>
-        <li class={ this.index === 2 ? 'cur' : '' } rel={ 2 }>动态</li>
-        <li class={ this.index === 3 ? 'cur' : '' } rel={ 3 }>留言</li>
+      {
+        (this.index, this.list || []).map(function(item) {
+          return <li class={ this.index === item.id ? 'cur' : '' }
+                     rel={ item.id }>{ item.name }</li>;
+        }.bind(this))
+      }
       </ul>
-      <div class={ 'home' + (this.showHome && this.index === 0 ? '' : ' fn-hide') }>
+      <div class={ 'home' + (this.index === 0 ? '' : ' fn-hide') }>
         <h4>主打作品</h4>
         <HotWork ref="hotWork"/>
         <h4>相关专辑</h4>

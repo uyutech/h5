@@ -97,7 +97,6 @@ class Nav extends migi.Component {
         <div class="txt">
           <div class="n">
             <h3>{ this.userName }</h3>
-            <b class={ 'sex' + this.sex }/>
           </div>
         </div>
         <button class={ 's' + this.followState }
@@ -109,7 +108,7 @@ class Nav extends migi.Component {
       </ul>
       <div class="sign">
         <label>签名</label>
-        <span>{ this.sign || "“”" }</span>
+        <span>{ this.sign || '""' }</span>
       </div>
     </div>;
   }
