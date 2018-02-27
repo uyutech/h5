@@ -195,6 +195,7 @@ class WaterFall extends migi.Component {
     li.appendTo($min[0]);
   }
   genItem(data) {
+    let self = this;
     let author = ((data.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     data.preview = util.autoSsl(util.img375__80(data.FileUrl));
     if(data.Width <= WIDTH * 2) {
@@ -207,7 +208,11 @@ class WaterFall extends migi.Component {
               (author.AuthorInfo || []).map(function(item) {
                 return <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
                   <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/head.png')) }/>
-                  <span>{ item.AuthorName }</span>
+                  {
+                    self.props.profession
+                      ? <span>{ item.AuthorTypeName }</span>
+                      : <span>{ item.AuthorName }</span>
+                  }
                 </a>
               })
             }
@@ -226,7 +231,11 @@ class WaterFall extends migi.Component {
             (author.AuthorInfo || []).map(function(item) {
               return <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
                 <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/head.png')) }/>
-                <span>{ item.AuthorName }</span>
+                {
+                  self.props.profession
+                    ? <span>{ item.AuthorTypeName }</span>
+                    : <span>{ item.AuthorName }</span>
+                }
               </a>
             })
           }

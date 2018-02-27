@@ -76,6 +76,7 @@ class VideoList extends migi.Component {
     $(this.ref.list.element).append(s);
   }
   genItem(item) {
+    let self = this;
     let works = item.Works_Items_Works[0];
     let author = item.GroupAuthorTypeHash.AuthorTypeHashlist[0] || {};
     let url = util.getWorksUrl(works.WorksID, works.WorksType, item.ItemID);
@@ -94,7 +95,11 @@ class VideoList extends migi.Component {
               (author.AuthorInfo || []).map(function(item) {
                 return <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
                   <img src={ util.autoSsl(util.img48_48_80(item.Head_url || '/src/common/blank.png')) }/>
-                  <span>{ item.AuthorName }</span>
+                  {
+                    self.props.profession
+                      ? <span>{ item.AuthorTypeName }</span>
+                      : <span>{ item.AuthorName }</span>
+                  }
                 </a>;
               })
             }

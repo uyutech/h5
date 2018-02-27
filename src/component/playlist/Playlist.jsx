@@ -104,6 +104,7 @@ class Playlist extends migi.Component {
     $(this.ref.list.element).append(s);
   }
   genItem(item) {
+    let self = this;
     if(item.WorksState === 3) {
       return <li class="private">
         <span class="name">待揭秘</span>
@@ -123,9 +124,15 @@ class Playlist extends migi.Component {
         <div class="txt">
           <a href={ url } title={ item.ItemName || '待揭秘' }
              class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
-          <p class="author">{ (author.AuthorInfo || []).map(function(item) {
-            return item.AuthorName;
-          }).join(' ') }</p>
+          {
+            self.props.profession
+              ? <p class="author">{ (author.AuthorInfo || []).map(function(item) {
+                return item.AuthorTypeName;
+              }).join(' ') }</p>
+              : <p class="author">{ (author.AuthorInfo || []).map(function(item) {
+                return item.AuthorName;
+              }).join(' ') }</p>
+          }
         </div>
       </li>;
     }
@@ -136,9 +143,15 @@ class Playlist extends migi.Component {
       <div class="txt">
         <a href={ url } title={ item.ItemName || '待揭秘' }
            class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
-        <p class="author">{ (author.AuthorInfo || []).map(function(item) {
-          return item.AuthorName;
-        }).join(' ') }待揭秘待揭秘待揭秘待揭秘待揭秘待揭秘待揭秘待揭秘待揭秘待揭秘</p>
+        {
+          self.props.profession
+            ? <p class="author">{ (author.AuthorInfo || []).map(function(item) {
+              return item.AuthorTypeName;
+            }).join(' ') }</p>
+            : <p class="author">{ (author.AuthorInfo || []).map(function(item) {
+              return item.AuthorName;
+            }).join(' ') }</p>
+        }
       </div>
       <b class="fn" workID={ item.ItemID } isLike={ item.ISLike } isFavor={ item.ISFavor }/>
     </li>;
