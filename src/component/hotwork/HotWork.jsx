@@ -40,7 +40,7 @@ class HotWork extends migi.Component {
                     </a>
                     <a href={ url } class="txt" title={ item.Title }>
                       <span>{ item.Title }</span>
-                      <span class="author">{ (item.SingerName || []).join(' ') }</span>
+                      <span class="author">{ util.uniqueList(item.SingerName || []).join(' ') }</span>
                     </a>
                   </li>;
                 })
