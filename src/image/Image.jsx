@@ -247,7 +247,8 @@ class Image extends migi.Component {
             type="全部"
             on-selectType={ this.selectType }
             on-sort={ this.sort }/>
-        <WaterFall ref="waterFall"/>
+        <WaterFall ref="waterFall"
+                   visible={ true }/>
       </div>
       <div class={ 'intro' + (this.curColumn === 1 ? '' : ' fn-hide') }>
         <Author ref="author"/>

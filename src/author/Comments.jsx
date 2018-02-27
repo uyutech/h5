@@ -14,7 +14,6 @@ let currentCount = 0;
 let ajax;
 let loading;
 let loadEnd;
-let hidden;
 
 class Comments extends migi.Component {
   constructor(...data) {

@@ -134,7 +134,6 @@ class Nav extends migi.Component {
         <div class="txt">
           <div class="n">
             <h3>{ this.userName }</h3>
-            <b class={ 'sex' + this.sex }/>
             <b class={ 'edit' + (this.userId ? '' : ' fn-hide') } onClick={ this.clickName }/>
           </div>
         </div>

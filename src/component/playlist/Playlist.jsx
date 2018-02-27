@@ -82,11 +82,12 @@ class Playlist extends migi.Component {
     });
   }
   @bind message
+  @bind visible = true
   show() {
-    $(this.element).removeClass('fn-hide');
+    this.visible = true;
   }
   hide() {
-    $(this.element).addClass('fn-hide');
+    this.visible = false;
   }
   setData(data) {
     let s = '';
@@ -155,7 +156,8 @@ class Playlist extends migi.Component {
     });
   }
   render() {
-    return <div class="cp-playlist" onClick={ { a: this.click } }>
+    return <div class={ 'cp-playlist' + (this.visible ? '' : ' fn-hide') }
+                onClick={ { a: this.click } }>
       <ol class="list" ref="list">
         {
           (this.dataList || []).map(function(item) {
