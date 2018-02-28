@@ -62,8 +62,8 @@ class Step1 extends migi.Component {
       <div class="con">
         <b class="icon"/>
         <h2>欢迎来到转圈</h2>
-        <h4>我是圈娘，请问该怎么称呼你呢？</h4>
-        <input type="text" class="name" placeholder="请超过4个字哦~" maxLength="8" onInput={ this.input } value={ this.nickName }/>
+        <h4>我是圈儿，请问该怎么称呼你呢？</h4>
+        <input type="text" class="name" placeholder="不得少于4个字哦~" maxLength="8" onInput={ this.input } value={ this.nickName }/>
         <p class="qsex">请问是汉子还是妹子呢？</p>
         <ul class="sex" onClick={ { li: this.click } }>
           <li class={ 'male' + (this.sex === 1 ? ' cur' : '') } rel={ 1 }><span>汉子</span></li>

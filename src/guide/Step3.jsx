@@ -25,7 +25,7 @@ class Step3 extends migi.Component {
         $this.toggleClass('on');
         let authorID = $this.attr('rel');
         if($this.hasClass('on')) {
-          $sel.append(self.genItem2({
+          $sel.prepend(self.genItem2({
             AuthorID: authorID,
             Head_url: $this.find('img').attr('src'),
           }).toString());
@@ -56,22 +56,6 @@ class Step3 extends migi.Component {
   }
   hide() {
     this.isShow = false;
-  }
-  click(e, vd, tvd) {
-    let $li = $(tvd.element);
-    let authorId = tvd.props.authorId;
-    if($li.hasClass('sel')) {
-      this.$list2.find(`[authorId="${authorId}"]`).remove();
-    }
-    else {
-      this.$c.css('width', '999rem');
-      let src = $li.find('img').attr('src');
-      let $new = $(`<li authorId="${authorId}"><img src="${src}"/><b></b></li>`);
-      this.$list2.append($new);
-      this.$c.css('width', this.$list2.width() + 1);
-    }
-    this.autoWidth();
-    $li.toggleClass('sel');
   }
   next(e, vd) {
     let self = this;
