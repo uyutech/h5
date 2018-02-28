@@ -368,7 +368,7 @@ class Comment extends migi.Component {
   }
   genComment(item) {
     if(item.IsAuthor) {
-      let authorID = item.IsAuthor;
+      let authorID = item.AuthorID;
       return <li class="author" id={ 'comment_' + item.Send_ID }>
         <div class="t">
           <div class="profile fn-clear">
