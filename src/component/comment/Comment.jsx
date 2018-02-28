@@ -177,6 +177,7 @@ class Comment extends migi.Component {
         });
       });
       $root.on('click', 'li.author a', function(e) {
+        e.stopPropagation();
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
@@ -187,6 +188,7 @@ class Comment extends migi.Component {
         });
       });
       $root.on('click', 'li.user a', function(e) {
+        e.stopPropagation();
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
