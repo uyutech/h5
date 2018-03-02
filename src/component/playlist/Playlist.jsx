@@ -18,6 +18,9 @@ class Playlist extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.dataList = self.props.dataList || [];
+    if(self.props.visible !== undefined) {
+      self.visible = self.props.visible;
+    }
     self.on(migi.Event.DOM, function() {
       let $root = $(this.element);
       $root.on('click', '.fn', function() {
@@ -110,11 +113,11 @@ class Playlist extends migi.Component {
         <span class="name">待揭秘</span>
       </li>;
     }
-    let works = item.Works_Items_Works[0];
+    let works = (item.Works_Items_Works || [])[0] || {};
     if(!works) {
       return;
     }
-    let author = item.GroupAuthorTypeHash.AuthorTypeHashlist[0] || {};
+    let author = ((item.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     let url = '/works.html?worksId=' + works.WorksID + '&workId=' + item.ItemID;
     if(item.WorksState === 2) {
       return <li>

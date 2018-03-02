@@ -23,7 +23,7 @@ class Nav extends migi.Component {
   @bind userName
   @bind sex
   @bind followNum
-  @bind fansNumber
+  @bind fansNum
   @bind sign
   @bind updateNickNameTimeDiff
   @bind updateHeadTimeDiff

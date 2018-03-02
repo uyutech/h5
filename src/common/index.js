@@ -20,6 +20,9 @@ if(/iP(hone|od|ad)/.test(navigator.userAgent)) {
     document.documentElement.classList.add('hairlines');
   }
 }
+else if(navigator.userAgent.indexOf('Safari') > -1) {
+  document.documentElement.classList.add('ios');
+}
 else {
   document.documentElement.classList.add('android');
 }

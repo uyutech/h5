@@ -12,6 +12,9 @@ class HotPost extends migi.Component {
     super(...data);
     let self = this;
     self.message = self.props.message;
+    if(self.props.visible !== undefined) {
+      self.visible = self.props.visible;
+    }
     if(self.props.dataList && self.props.dataList.length) {
       let html = '';
       self.props.dataList.forEach(function(item) {
@@ -152,11 +155,12 @@ class HotPost extends migi.Component {
     });
   }
   @bind message
+  @bind visible = true
   show() {
-    $(this.element).removeClass('fn-hide');
+    this.visible = true;
   }
   hide() {
-    $(this.element).addClass('fn-hide');
+    this.visible = false;
   }
   like(postID, cb) {
     let $li = $('#post_' + postID).find('.like');
@@ -438,7 +442,7 @@ class HotPost extends migi.Component {
     $(self.ref.list.element).prepend(html);
   }
   render() {
-    return <div class="cp-hotpost">
+    return <div class={ 'cp-hotpost' + (this.visible ? '' : ' fn-hide') }>
       <ol class="list" ref="list" dangerouslySetInnerHTML={ this.html }/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') } >{ this.message }</div>
     </div>;

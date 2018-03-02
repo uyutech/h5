@@ -19,6 +19,9 @@ class WaterFall extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.visible = self.props.visible;
+    if(self.props.visible !== undefined) {
+      self.visible = self.props.visible;
+    }
     self.pause = self.props.pause;
     self.on(migi.Event.DOM, function() {
       if(self.props.dataList) {

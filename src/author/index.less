@@ -118,6 +118,7 @@
         background-size:0.12rem auto;
         border:none;
         border-radius:0.24rem;
+        white-space:nowrap;
         &.loading{
           opacity:0.7;
         }
@@ -277,6 +278,9 @@
           background:linear-gradient(#5D99C4, #B9D9ED);
           -webkit-background-clip:text;
           -webkit-text-fill-color:transparent;
+        }
+        .ios &{
+          display:-webkit-box;
         }
       }
     }

@@ -14,8 +14,8 @@ let ajaxFavor;
 let isStart;
 let WIDTH;
 let mediaService;
-let info;
 let first = true;
+let dragPlaying;
 
 class Media extends migi.Component {
   constructor(...data) {
@@ -370,9 +370,11 @@ class Media extends migi.Component {
   }
   touchStart(e) {
     e.preventDefault();
-    if(this.canControl && e.touches.length === 1) {
+    let self = this;
+    if(self.canControl && e.touches.length === 1) {
+      dragPlaying = self.isPlaying;
       isStart = true;
-      this.pause();
+      self.pause();
     }
   }
   touchMove(e) {
@@ -403,8 +405,13 @@ class Media extends migi.Component {
       }
     }
   }
-  touchEnd(e) {
-    isStart = false;
+  touchEnd() {
+    if(isStart) {
+      if(dragPlaying) {
+        this.play();
+      }
+      isStart = false;
+    }
   }
   setBarPercent(percent) {
     if(isNaN(percent) || percent < 0) {
