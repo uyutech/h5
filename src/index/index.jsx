@@ -5,8 +5,6 @@
 import './index.html';
 import './index.less';
 
-import net from '../common/net';
-import util from '../common/util';
 import BotNav from '../component/botnav/BotNav.jsx';
 import TopNav from '../component/topnav/TopNav.jsx';
 import Find from '../find/Find.jsx';
@@ -18,24 +16,17 @@ import BotFn from '../component/botfn/BotFn.jsx';
 jsBridge.ready(function() {
   jsBridge.on('refresh', function(e) {
     e.preventDefault();
-    if(find) {
-      find.refresh();
-    }
-    if(circling) {
-      circling.refresh();
-    }
-    if(follow) {
-      follow.refresh();
-    }
-    if(my) {
-      my.refresh();
+    if(last) {
+      last.refresh();
     }
     migi.eventBus.emit('REFRESH_MESSAGE');
-    // net.postJSON('/h5/my/message', function(res) {
-    //   if(res.success) {
-    //     // topNav.setNum(res.data);
-    //   }
-    // });
+  });
+  jsBridge.on('networkChange', function(e) {
+    if(e.data && e.data.available) {
+      if(find) {
+        find.refresh();
+      }
+    }
   });
   jsBridge.getPreference('loginInfo', function(loginInfo) {
     jsBridge.on('resume', function() {
@@ -62,27 +53,8 @@ jsBridge.ready(function() {
       loginInfo = data;
     });
   });
-  // jsBridge.on('resume', function(e) {
-  //   let data = e.data;
-  //   if(data && data.message) {
-  //     net.postJSON('/h5/my/message', function(res) {
-  //       if(res.success) {
-  //         // topNav.setNum(res.data);
-  //       }
-  //     });
-  //   }
-  // });
 
   let topNav = migi.preExist(<TopNav/>, '#page');
-
-  // if(util.isLogin()) {
-  //   net.postJSON('/h5/my/message', function(res) {
-  //     if(res.success) {
-  //       // topNav.setNum(res.data);
-  //     }
-  //   });
-  // }
-
   let botNav = migi.preExist(<BotNav/>, '#page');
 
   let loginInfo;
