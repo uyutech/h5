@@ -169,7 +169,7 @@ class Circling extends migi.Component {
       <ul class="circles" ref="circles" onClick={ { li: self.clickTag.bind(self) } }>
         <li class="cur">全部</li>
         {
-          (self.hotCircle.data || []).map(function(item) {
+          (self.hotCircleList.data || []).map(function(item) {
             return <li rel={ item.TagID }>{ item.TagName }</li>;
           })
         }

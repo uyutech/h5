@@ -144,7 +144,7 @@ class Nav extends migi.Component {
       </ul>
       <div class="sign">
         <label>签名</label>
-        <span>{ this.sign || "" }</span>
+        <span>{ this.sign || '暂时还没有签名哦~' }</span>
         <b class={ 'edit' + (this.userId ? '' : ' fn-hide') } onClick={ this.clickSign }/>
       </div>
     </div>;
