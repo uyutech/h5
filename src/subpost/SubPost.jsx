@@ -152,14 +152,12 @@ class SubPost extends migi.Component {
     if(self.disableUpload) {
       return;
     }
-    if(self.imgNum > MAX_IMG_NUM) {
+    if(self.imgNum >= MAX_IMG_NUM) {
       jsBridge('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
       return;
     }
-    let num = MAX_IMG_NUM - self.imgNum;
-    num = Math.min(3, num);
     self.disableUpload = true;
-    jsBridge.album({ num }, function(res) {
+    jsBridge.album(function(res) {
       if(res.success) {
         res = res.base64;
         if(!Array.isArray(res)) {
