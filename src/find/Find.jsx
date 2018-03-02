@@ -14,6 +14,8 @@ import ItemList from './ItemList.jsx';
 let visible;
 let scrollY = 0;
 let last;
+let hasLoad;
+let ajax;
 
 class Find extends migi.Component {
   constructor(...data) {
@@ -21,31 +23,7 @@ class Find extends migi.Component {
     let self = this;
     self.on(migi.Event.DOM, function() {
       visible = true;
-      net.postJSON('/h5/find/newIndex', { skip: 0, take: 10 }, function(res) {
-        if(res.success) {
-          self.setData(res.data);
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
-
-      last = self.ref.recommend;
-      self.ref.nav.on('change', function(id) {
-        id = parseInt(id);
-        last && last.hide();
-        if(id === 1) {
-          last = self.ref.recommend.show();
-        }
-        else if(Array.isArray(self.ref.itemList)) {
-          last = self.ref.itemList[id - 2].show();
-        }
-        else {
-          last = self.ref.itemList.show();
-        }
-      });
+      self.init();
     });
   }
   @bind tagList
@@ -58,9 +36,31 @@ class Find extends migi.Component {
     $(this.element).addClass('fn-hide');
     visible = false;
   }
+  init() {
+    let self = this;
+    if(ajax) {
+      ajax.abort();
+    }
+    ajax = net.postJSON('/h5/find/newIndex', { skip: 0, take: 10 }, function(res) {
+      if(res.success) {
+        hasLoad = true;
+        self.setData(res.data);
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
+  }
   refresh() {
     if(visible) {
-      last.reload();
+      if(hasLoad) {
+        last.reload();
+      }
+      else {
+        this.init();
+      }
     }
   }
   setData(data) {
@@ -71,6 +71,21 @@ class Find extends migi.Component {
     self.ref.recommend.setData(data);
     self.ref.recommend.rid = (data.tagList[0] || {}).ID;
     self.ref.recommend.show();
+
+    last = self.ref.recommend;
+    self.ref.nav.on('change', function(id) {
+      id = parseInt(id);
+      last && last.hide();
+      if(id === 1) {
+        last = self.ref.recommend.show();
+      }
+      else if(Array.isArray(self.ref.itemList)) {
+        last = self.ref.itemList[id - 2].show();
+      }
+      else {
+        last = self.ref.itemList.show();
+      }
+    });
   }
   render() {
     return <div class="find">

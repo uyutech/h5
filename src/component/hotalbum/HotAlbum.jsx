@@ -1,10 +1,12 @@
 /**
- * Created by army8735 on 2017/8/8.
+ * Created by army8735 on 2018/2/26.
  */
+
+'use strict';
 
 import util from '../../common/util';
 
-class HotWork extends migi.Component {
+class HotAlbum extends migi.Component {
   constructor(...data) {
     super(...data);
     this.list = this.props.list;
@@ -20,18 +22,18 @@ class HotWork extends migi.Component {
     });
   }
   render() {
-    return <div class="cp-hotwork" onClick={ { a: this.click } }>
+    return <div class="cp-hotalbum" onClick={ { a: this.click } }>
       {
         this.list
           ? this.list.length
             ? <ul class="list">
               {
                 this.list.map(function(item) {
-                  let url = `/works.html?worksId=${item.WorksID}`;
+                  let url = `/music.html?worksId=${item.WorksID}`;
                   return <li>
+                    <b class="bg"/>
                     <a href={ url } class="pic" title={ item.Title }>
                       <img src={ util.autoSsl(util.img170_170_80(item.cover_Pic)) || '/src/common/blank.png' }/>
-                      <span class="type">原创音乐</span>
                       <span class="num">{ util.abbrNum(item.Popular) }</span>
                       {
                         item.WorkState === 2 || item.WorkState === 3
@@ -41,7 +43,7 @@ class HotWork extends migi.Component {
                     </a>
                     <a href={ url } class="txt" title={ item.Title }>
                       <span>{ item.Title }</span>
-                      <span class="author">{ util.uniqueList(item.SingerName || []).join(' ') }</span>
+                      <span class="author">{ (item.SingerName || []).join(' ') }</span>
                     </a>
                   </li>;
                 })
@@ -59,4 +61,4 @@ class HotWork extends migi.Component {
   }
 }
 
-export default HotWork;
+export default HotAlbum;

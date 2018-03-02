@@ -62,15 +62,13 @@ class Relation extends migi.Component {
     else if(self.follows.Size <= take && self.follows.Size > 12) {
       self.message4 = '已经到底了';
     }
-    self.on(migi.Event.DOM, function() {
-      let $window = $(window);
-      if(!loadEnd || !loadEnd2 || !loadEnd3 || !loadEnd4) {
-        $window.on('scroll', function() {
-          self.checkMore($window);
-        });
+    let $window = $(window);
+    if(!loadEnd || !loadEnd2 || !loadEnd3 || !loadEnd4) {
+      $window.on('scroll', function() {
         self.checkMore($window);
-      }
-    });
+      });
+      self.checkMore($window);
+    }
 
     self.hasData = true;
 

@@ -4,15 +4,18 @@
 
 @import '../common/var';
 @import '../component/hotwork/index';
-@import '../component/hotmusicalbum/index';
+@import '../component/hotalbum/index';
 @import '../component/hotauthor/index';
-@import '../component/hotplaylist/index';
+@import '../component/playlist/index';
 @import '../component/hotpic/index';
 @import '../component/comment/index';
 @import '../component/inputcmt/index';
 @import '../component/background/index';
 @import '../component/botfn/index';
 @import '../component/hotpost/index';
+@import '../find/fn';
+@import '../find/videolist';
+@import '../component/waterfall/index';
 
 #page > .author{
   .cp-background{
@@ -217,7 +220,7 @@
       }
     }
   }
-  > .type{
+  > .index{
     display:flex;
     justify-content:space-around;
     height:0.4rem;
@@ -249,23 +252,33 @@
   }
   > .home{
     h4{
-      position:relative;
-      margin:0.1rem 0.1rem 0.05rem;
-      padding-left:0.05rem;
-      font-size:0.12rem;
-      &:before{
-        position:absolute;
-        left:0;
-        top:0.02rem;
-        bottom:0.02rem;
-        width:0.02rem;
-        background:@secondColor;
-        content:' ';
-        border-radius:0.05rem;
-      }
+      padding:0.1rem 0 0.03rem 0.15rem;
+      font-size:0.14rem;
+      line-height:0.18rem;
+      color:#636365;
     }
-    > .cp-dynamic{
-      margin-top:0.1rem;
+  }
+  > .work{
+    .group{
+      display:flex;
+      justify-content:center;
+      height:0.3rem;
+      background:#EDF3F7;
+      li{
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        margin:0 0.1rem;
+        height:0.3rem;
+        color:#B6B6B6;
+        font-size:0.13rem;
+        text-align:center;
+        &.cur{
+          background:linear-gradient(#5D99C4, #B9D9ED);
+          -webkit-background-clip:text;
+          -webkit-text-fill-color:transparent;
+        }
+      }
     }
   }
   > .comments{
@@ -357,19 +370,8 @@
         }
       }
     }
-    > .cp-page{
-      margin:0.1rem 0.1rem 0 0.1rem;
-      text-align:right;
-    }
     > .cp-comment{
       margin:0.1rem 0.1rem 0 0.1rem;
-    }
-  }
-  .cp-hotauthor{
-    .list .c ul li .txt{
-      .fans,.comment{
-        display:none;
-      }
     }
   }
 }

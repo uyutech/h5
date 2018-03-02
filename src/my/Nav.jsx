@@ -22,6 +22,8 @@ class Nav extends migi.Component {
   @bind head
   @bind userName
   @bind sex
+  @bind followNum
+  @bind fansNumber
   @bind sign
   @bind updateNickNameTimeDiff
   @bind updateHeadTimeDiff
@@ -32,6 +34,8 @@ class Nav extends migi.Component {
     self.head = userInfo.Head_Url;
     self.userName = userInfo.NickName;
     self.sex = userInfo.Sex;
+    self.followNum = userInfo.FollowNumber;
+    self.fansNum = userInfo.FansNumber;
     self.sign = userInfo.User_Sign;
   }
   clickPic() {
@@ -124,20 +128,23 @@ class Nav extends migi.Component {
     return <div class="nav">
       <div class="profile">
         <div class="pic">
-          <img src={ util.autoSsl(util.img288_288_80(this.head || '/src/common/head.png')) }
+          <img src={ util.autoSsl(util.img200_200_80(this.head || '/src/common/head.png')) }
                onClick={ this.clickPic }/>
         </div>
         <div class="txt">
           <div class="n">
             <h3>{ this.userName }</h3>
-            <b class={ 'sex' + this.sex }/>
             <b class={ 'edit' + (this.userId ? '' : ' fn-hide') } onClick={ this.clickName }/>
           </div>
         </div>
       </div>
+      <ul class="num">
+        <li>关注<strong>{ this.followNum || 0 }</strong></li>
+        <li>粉丝<strong>{ this.fansNum || 0 }</strong></li>
+      </ul>
       <div class="sign">
         <label>签名</label>
-        <span>{ this.sign || "“”" }</span>
+        <span>{ this.sign || '暂时还没有签名哦~' }</span>
         <b class={ 'edit' + (this.userId ? '' : ' fn-hide') } onClick={ this.clickSign }/>
       </div>
     </div>;

@@ -419,7 +419,7 @@ let util = {
       res.push(item);
     });
     return res;
-  }
+  },
 };
 
 export default util;

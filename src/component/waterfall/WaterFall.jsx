@@ -18,6 +18,8 @@ class WaterFall extends migi.Component {
     super(...data);
     let self = this;
     self.message = self.props.message;
+    self.visible = self.props.visible;
+    self.pause = self.props.pause;
     self.on(migi.Event.DOM, function() {
       if(self.props.dataList) {
         self.appendData(self.props.dataList);
@@ -122,11 +124,12 @@ class WaterFall extends migi.Component {
     });
   }
   @bind message
+  @bind visible
   show() {
-    $(this.element).removeClass('fn-hide');
+    this.visible = true;
   }
   hide() {
-    $(this.element).addClass('fn-hide');
+    this.visible = false;
   }
   clearData() {
     let self = this;
@@ -137,6 +140,10 @@ class WaterFall extends migi.Component {
     pool = [];
     list = [];
     index = 0;
+  }
+  setData(data) {
+    this.clearData();
+    this.appendData(data);
   }
   appendData(data) {
     let self = this;
@@ -152,11 +159,19 @@ class WaterFall extends migi.Component {
       });
       pool = pool.concat(data);
       list = list.concat(data);
-      self.checkPool();
+      if(self.visible && !self.pause) {
+        self.checkPool();
+      }
     }
   }
   checkPool() {
     let self = this;
+    if(!self.visible || self.pause) {
+      return;
+    }
+    if(WIDTH === 0) {
+      WIDTH = $(self.element).find('ul:first-child').width();
+    }
     while(pool.length) {
       let item = pool[0];
       if(item.Width && item.Height) {
@@ -180,6 +195,7 @@ class WaterFall extends migi.Component {
     li.appendTo($min[0]);
   }
   genItem(data) {
+    let self = this;
     let author = ((data.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     data.preview = util.autoSsl(util.img375__80(data.FileUrl));
     if(data.Width <= WIDTH * 2) {
@@ -192,7 +208,11 @@ class WaterFall extends migi.Component {
               (author.AuthorInfo || []).map(function(item) {
                 return <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
                   <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/head.png')) }/>
-                  <span>{ item.AuthorName }</span>
+                  {
+                    self.props.profession
+                      ? <span>{ item.AuthorTypeName }</span>
+                      : <span>{ item.AuthorName }</span>
+                  }
                 </a>
               })
             }
@@ -211,7 +231,11 @@ class WaterFall extends migi.Component {
             (author.AuthorInfo || []).map(function(item) {
               return <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
                 <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/head.png')) }/>
-                <span>{ item.AuthorName }</span>
+                {
+                  self.props.profession
+                    ? <span>{ item.AuthorTypeName }</span>
+                    : <span>{ item.AuthorName }</span>
+                }
               </a>
             })
           }
@@ -243,7 +267,7 @@ class WaterFall extends migi.Component {
     document.body.appendChild(img);
   }
   render() {
-    return <div class="cp-waterfall">
+    return <div class={ 'cp-waterfall' + (this.visible ? '' : ' fn-hide') }>
       <div class="c">
         <div>
           <ul ref="l1"/>

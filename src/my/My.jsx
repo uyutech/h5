@@ -11,8 +11,7 @@ import Background from '../component/background/Background.jsx';
 
 const pack = require('../../package.json');
 
-let bindUuid;
-let bindName;
+let ajax;
 
 class My extends migi.Component {
   constructor(...data) {
@@ -31,6 +30,9 @@ class My extends migi.Component {
       });
       self.init();
     });
+    jsBridge.on('guide', function() {
+      self.init();
+    });
   }
   @bind isLogin
   @bind message
@@ -44,7 +46,10 @@ class My extends migi.Component {
   }
   init() {
     let self = this;
-    net.postJSON('/h5/my/index', function(res) {
+    if(ajax) {
+      ajax.abort();
+    }
+    ajax = net.postJSON('/h5/my/index', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data);

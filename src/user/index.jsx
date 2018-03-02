@@ -9,8 +9,6 @@ import './index.less';
 
 import qs from 'anima-querystring';
 
-import net from '../common/net';
-import util from '../common/util';
 import User from './User.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
@@ -21,14 +19,15 @@ jsBridge.ready(function() {
     <User/>,
     '#page'
   );
-  net.postJSON('/h5/user/index', { userID }, function(res) {
-    if(res.success) {
-      user.setData(userID, res.data);
-    }
-    else {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-    }
-  }, function(res) {
-    jsBridge.toast(res.message || util.ERROR_MESSAGE);
-  });
+  user.load(userID);
+  // net.postJSON('/h5/user/index', { userID }, function(res) {
+  //   if(res.success) {
+  //     user.setData(userID, res.data);
+  //   }
+  //   else {
+  //     jsBridge.toast(res.message || util.ERROR_MESSAGE);
+  //   }
+  // }, function(res) {
+  //   jsBridge.toast(res.message || util.ERROR_MESSAGE);
+  // });
 });

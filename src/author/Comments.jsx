@@ -7,56 +7,57 @@ import net from '../common/net';
 import Comment from '../component/comment/Comment.jsx';
 
 let take = 30;
-let skip = take;
+let skip = 0;
 let sortType = 0;
 let myComment = 0;
 let currentCount = 0;
 let ajax;
 let loading;
 let loadEnd;
-let hidden;
 
 class Comments extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    hidden = this.props.hidden;
-    self.authorId = self.props.authorId;
-    self.on(migi.Event.DOM, function() {
-      let $window = $(window);
-      $window.on('scroll', function() {
-        self.checkMore($window);
-      });
-      if(self.props.commentData.Size <= take) {
-        loadEnd = true;
-        self.ref.comment.message = '已经到底了';
-      }
-      jsBridge.on('resume', function(e) {
-        let data = e.data;
-        if(data) {
-          if(data.RootID > 0) {
-            self.ref.comment.prependChild(data);
-          }
-          else {
-            self.ref.comment.prependData(data);
-          }
-        }
-      });
-    });
+    self.visible = self.props.visible;
   }
-  @bind authorId
+  @bind visible
   show() {
-    let self = this;
-    $(self.element).removeClass('fn-hide');
-    hidden = false;
+    this.visible = true;
   }
   hide() {
+    this.visible = false;
+  }
+  setData(data) {
     let self = this;
-    $(self.element).addClass('fn-hide');
-    hidden = true;
+    self.ref.comment.setData(data.data);
+    skip += take;
+    if(data.Size > take) {
+      let $window = $(window);
+      $window.on('scroll', function() {
+        if(!self.visible) {
+          return;
+        }
+        self.checkMore($window);
+      });
+    }
+    else {
+      self.ref.comment.message = '已经到底了';
+    }
+    jsBridge.on('resume', function(e) {
+      let data = e.data;
+      if(data) {
+        if(data.RootID > 0) {
+          self.ref.comment.prependChild(data);
+        }
+        else {
+          self.ref.comment.prependData(data);
+        }
+      }
+    });
   }
   checkMore($window) {
-    if(hidden || loading || loadEnd) {
+    if(loading || loadEnd) {
       return;
     }
     let self = this;
@@ -140,12 +141,12 @@ class Comments extends migi.Component {
     this.load();
   }
   render() {
-    return <div class={ 'comments' + (this.props.hidden ? ' fn-hide' : '') }>
+    return <div class={ 'comments' + (this.visible ? '' : ' fn-hide') }>
       <div class="fn">
         <ul class="type fn-clear" onClick={ { li: this.switchType2 } }>
-          <li class="cur" rel="0">全部评论<small>{ this.props.commentData.Count }</small></li>
+          <li class="cur" rel="0">全部评论<small>{ this.count }</small></li>
           {
-            this.props.isLogin
+            this.isLogin
               ? <li rel="1">我的</li>
               : ''
           }
@@ -158,9 +159,7 @@ class Comments extends migi.Component {
       <Comment ref="comment"
                zanUrl="/h5/author/likeComment"
                subUrl="/h5/author/subCommentList"
-               delUrl="/h5/author/delComment"
-               data={ this.props.commentData.data }
-               message={ (!this.props.commentData.Size || this.props.commentData.Size > take) ? '' : '已经到底了' }/>
+               delUrl="/h5/author/delComment"/>
     </div>;
   }
 }

@@ -8,7 +8,7 @@ class Fn extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.dataList = self.props.dataList;
+    self.list = self.props.list;
     self.on(migi.Event.DOM, function() {
       let $body = $(document.body);
       $body.on('click', function() {
@@ -17,10 +17,10 @@ class Fn extends migi.Component {
       });
     });
   }
-  @bind dataList
+  @bind list
   @bind text
   @bind showSort
-  @bind sortText
+  @bind sort = 0
   @bind showPop
   clickSort(e) {
     e.stopPropagation();
@@ -30,14 +30,11 @@ class Fn extends migi.Component {
     e.stopPropagation();
     let self = this;
     self.showSort = false;
-    let $li = $(tvd.element);
-    if($li.hasClass('cur')) {
+    if(tvd.props.rel === self.sort) {
       return;
     }
-    $(vd.element).find('.cur').removeClass('cur');
-    $li.addClass('cur');
-    self.sortText = tvd.children[0];
-    self.emit('sort', tvd.props.rel);
+    self.sort = tvd.props.rel;
+    self.emit('sort', self.sort);
   }
   clickPop(e, vd, tvd) {
     e.stopPropagation();
@@ -60,16 +57,16 @@ class Fn extends migi.Component {
   }
   render() {
     return <div class="mod-fn">
-      <label class={ this.dataList && this.dataList.length > 1 ? '' : ' fn-hide' }
+      <label class={ this.list && this.list.length > 1 ? '' : ' fn-hide' }
              onClick={ this.clickPop }>
         {
           this.text || '全部'
         }
       </label>
-      <span onClick={ this.clickSort }>{ this.sortText || '按时间' }</span>
+      <span onClick={ this.clickSort }>{ this.sort === 0 ? '按时间' : '按热度' }</span>
       <ul class={ this.showSort ? '' : 'fn-hide' } onClick={ { li: this.clickSelSort } }>
-        <li class="cur" rel="">按时间</li>
-        <li rel="1">按热度</li>
+        <li class={ this.sort === 0 ? 'cur' : '' } rel={ 0 }>按时间</li>
+        <li class={ this.sort === 1 ? 'cur' : '' } rel={ 1 }>按热度</li>
       </ul>
       <div class={ 'pop' + (this.showPop ? ' on' : '') }>
         <div class={ 'c' + (this.showPop ? ' on' : '') }>
@@ -77,7 +74,7 @@ class Fn extends migi.Component {
           <ul class="fn-clear" onClick={ this.clickSelPop }>
             <li class="cur">全部</li>
             {
-              (this.dataList || []).map(function(item, i) {
+              (this.list || []).map(function(item) {
                 return <li rel={ item.ItemsTypeID }>{ item.ItemsTypeName }</li>;
               })
             }

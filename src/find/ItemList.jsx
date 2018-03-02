@@ -171,7 +171,7 @@ class ItemList extends migi.Component {
       tagList.on('change', function(v) {
         self.typeID = null;
         self.groupID = v.GroupID;
-        fn.dataList = v.itemsTypeList;
+        fn.list = v.itemsTypeList;
         self.reset();
         self.loadMore();
       });
@@ -251,7 +251,7 @@ class ItemList extends migi.Component {
       }
       {
         self.typeList.length || (self.typeList[0] || {}).itemsTypeList
-          ? <Fn ref="fn" dataList={ (self.typeList[0] || {}).itemsTypeList }/>
+          ? <Fn ref="fn" list={ (self.typeList[0] || {}).itemsTypeList }/>
           : ''
       }
       {
@@ -259,7 +259,9 @@ class ItemList extends migi.Component {
           ? {
               2: <VideoList ref="videoList" dataList={ self.itemList.data }/>,
               3: <Playlist ref="playlist" dataList={ self.itemList.data }/>,
-              4: <WaterFall ref="waterFall" dataList={ self.itemList.data }/>
+              4: <WaterFall ref="waterFall"
+                            dataList={ self.itemList.data }
+                            visible={ true }/>
             }[tag.ID]
           : ''
       }

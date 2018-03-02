@@ -8,13 +8,14 @@
 import net from '../common/net';
 import util from '../common/util';
 import Nav from './Nav.jsx';
-import Home from './Home.jsx';
-import MAList from './MAList.jsx';
-import PicList from './PicList.jsx';
+import HotWork from '../component/hotwork/HotWork.jsx';
+import HotAlbum from '../component/hotalbum/HotAlbum.jsx';
+import HotAuthor from '../component/hotauthor/HotAuthor.jsx';
 import Comments from './Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import Background from '../component/background/Background.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
+import Work from './Work.jsx';
 import Dynamics from './Dynamics.jsx';
 
 class Author extends migi.Component {
@@ -29,20 +30,19 @@ class Author extends migi.Component {
         }
         migi.eventBus.emit('SHARE', '/author/' + self.authorId);
       });
-      jsBridge.setOptionMenu({
-        icon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAALVBMVEUAAAAAAAAAAAAAAAD+/v4AAAD5+fnk5OTq6uoAAAAwMDAAAAAAAACAgID///8waL84AAAADnRSTlMABxEL8BqUoZ0nIiITDIsBZnQAAABpSURBVEjHYxgFgxYICuKXl01xu4hPnlHs3btEAXwKTN69c8anQFDl3TsnfK4Q1nj3rskQnwlaJe6L8CpQ3Tk7CJ8VjDahoYfx+kJYSclQAG9AChsKEgxqCgHjaGyOxuZobA7K2BwFNAMAj1k2xo1Ti1oAAAAASUVORK5CYII=',
-      });
     });
   }
   @bind authorId
-  @bind type
+  @bind index
+  @bind list
   @bind rid
   @bind cid
   load(authorId) {
     let self = this;
     self.authorId = authorId;
     self.ref.nav.authorId = authorId;
-    net.postJSON('/h5/author/index', { authorID: authorId }, function(res) {
+    self.ref.work.authorId = authorId;
+    net.postJSON('/h5/author/newIndex', { authorID: authorId }, function(res) {
       if(res.success) {
         self.setData(res.data);
       }
@@ -55,203 +55,104 @@ class Author extends migi.Component {
   }
   setData(data) {
     let self = this;
-    self.hotPlayList = data.hotPlayList;
-    self.album = data.album;
-    self.hotPicList = data.hotPicList;
-    self.dynamic = data.dynamic;
-    self.commentData = data.commentData;
     self.ref.nav.setData(data.authorDetail, 1);
-
-    if(!data.authorDetail.ISSettled) {
-      self.type = [
-        {
-          cn: 'comments',
-          name: '留言',
-        }
-      ];
+    let temp = [{
+      id: 1,
+      name: '作品',
+    }, {
+      id: 2,
+      name: '动态',
+    }, {
+      id: 3,
+      name: '留言',
+    }];
+    if(data.authorDetail.ISSettled && data.homeDetail.Hot_Works_Items && data.homeDetail.Hot_Works_Items.length) {
+      self.index = 0;
+      temp.unshift({
+        id: 0,
+        name: '主页',
+      });
+      self.ref.hotWork.list = data.homeDetail.Hot_Works_Items;
     }
     else {
-      let emptyHome = !data.album.length
-        && !data.homeDetail.Hot_Works_Items.length
-        && !data.homeDetail.AuthorToAuthor.length;
-      let emptyAudio = !data.hotPlayList.Size;
-      let emptyPic = !data.hotPicList.Size;
-      let type = [];
-      if(!emptyHome) {
-        type.push({
-          cn: 'home',
-          name: '主页',
-        });
-      }
-      if(!emptyAudio) {
-        type.push({
-          cn: 'ma',
-          name: '音乐',
-        });
-      }
-      if(!emptyPic) {
-        type.push({
-          cn: 'pic',
-          name: '图片',
-        });
-      }
-      type.push({
-        cn: 'dynamics',
-        name: '动态',
-      });
-      type.push({
-        cn: 'comments',
-        name: '留言',
-      });
-      self.type = type;
+      self.index = 1;
     }
-    switch(self.type[0].cn) {
-      case 'home':
-        self.ref.home = <Home ref="home"
-                              homeDetail={ data.homeDetail }
-                              album={ data.album }/>;
-        self.ref.home.show();
-        self.ref.home.after(self.ref.type.element);
-        break;
-      case 'ma':
-        self.ref.maList = <MAList ref="maList"
-                                  authorId={ self.authorId }
-                                  dataList={ data.hotPlayList }/>;
-        self.ref.maList.show();
-        self.ref.maList.after(self.ref.type.element);
-        break;
-      case 'pic':
-        self.ref.picList = <PicList ref="picList"
-                                    authorId={ self.authorId }
-                                    dataList={ data.hotPicList }/>;
-        self.ref.picList.show();
-        self.ref.picList.after(self.ref.type.element);
-        break;
-      case 'dynamics':
-        self.ref.dynamics = <Dynamics ref="dynamics"
-                                      authorId={ self.authorId }
-                                      data={ data.dynamic }/>;
-        self.ref.dynamics.show();
-        self.ref.dynamics.after(self.ref.type.element);
-        break;
-      case 'comments':
-        self.addComment(self.commentData);
-        break;
-    }
-
-    let inputCmt = self.ref.inputCmt;
-    inputCmt.on('click', function() {
-      if(self.cid) {
-        jsBridge.pushWindow('/subcomment.html?type=2&id='
-          + self.authorId + '&cid=' + self.cid + '&rid=' + self.rid, {
-          title: '评论',
-        });
-      }
-      else {
-        jsBridge.pushWindow('/subcomment.html?type=2&id=' + self.authorId, {
-          title: '评论',
-        });
-      }
-    });
+    self.list = temp;
+    self.ref.hotAlbum.list = data.album;
+    self.ref.hotAuthor.list = data.homeDetail.AuthorToAuthor;
+    self.ref.dynamics.authorId = self.authorId;
+    self.ref.dynamics.setData(data.dynamic);
+    self.ref.comments.authorId = self.authorId;
+    self.ref.comments.setData(data.commentData);
+    self.ref.work.setData(data.type, data.itemList);
   }
   clickType(e, vd ,tvd) {
-    let $li = $(tvd.element);
-    if($li.hasClass('cur')) {
-      return;
-    }
-    $(vd.element).find('.cur').removeClass('cur');
-    $li.addClass('cur');
-    let self = this;
-    let home = self.ref.home;
-    let maList = self.ref.maList;
-    let picList = self.ref.picList;
-    let dynamics = self.ref.dynamics;
-    let comments = self.ref.comments;
-    home && home.hide();
-    maList && maList.hide();
-    picList && picList.hide();
-    dynamics && dynamics.hide();
-    comments && comments.hide();
     let rel = tvd.props.rel;
-    switch(rel) {
-      case 'home':
-        home.show();
-        break;
-      case 'ma':
-        if(!maList) {
-          self.ref.maList = maList = <MAList ref="maList"
-                                             authorId={ self.authorId }
-                                             dataList={ self.hotPlayList }/>;
-          maList.after(self.ref.type.element);
-        }
-        maList.show();
-        break;
-      case 'pic':
-        if(!picList) {
-          self.ref.picList = picList = <PicList ref="picList"
-                                                authorId={ self.authorId }
-                                                dataList={ self.hotPicList }/>;
-          picList.after(self.ref.type.element);
-        }
-        picList.show();
-        break;
-      case 'dynamics':
-        if(!dynamics) {
-          self.ref.dynamics = dynamics = <Dynamics ref="dynamics"
-                                                   authorId={ self.authorId }
-                                                   data={ self.dynamic }/>;
-          self.ref.dynamics.after(self.ref.type.element);
-        }
-        dynamics && dynamics.show();
-        break;
-      case 'comments':
-        self.addComment();
-        comments && comments.show();
-        break;
+    if(rel !== this.index) {
+      this.index = rel;
     }
   }
-  addComment() {
+  chooseSubComment(rid, cid, name, n) {
     let self = this;
-    if(self.ref.comments) {
-      return;
+    self.rid = rid;
+    self.cid = cid;
+    if(!n || n === '0') {
+      jsBridge.pushWindow('/subcomment.html?type=2&id='
+        + self.authorId + '&cid=' + cid + '&rid=' + rid, {
+        title: '评论',
+      });
     }
-    let comments = self.ref.comments = migi.render(
-      <Comments ref="comments"
-                isLogin={ util.isLogin() }
-                authorId={ self.authorId }
-                commentData={ self.commentData }/>
-    );
-    self.ref.comments.after(self.ref.type.element);
-
-    let comment = comments.ref.comment;
-    let subCmt = self.ref.subCmt;
-    comment.on('chooseSubComment', function(rid, cid, name, n) {
-      self.rid = rid;
-      self.cid = cid;
-      if(!n || n === '0') {
-        jsBridge.pushWindow('/subcomment.html?type=2&id='
-          + self.authorId + '&cid=' + cid + '&rid=' + rid, {
-          title: '评论',
-        });
-      }
-    });
-    comment.on('closeSubComment', function() {
-      subCmt.to = '';
-      self.rid = self.cid = null;
-    });
+  }
+  closeSubComment() {
+    let self = this;
+    self.rid = self.cid = null;
+  }
+  clickInput() {
+    let self = this;
+    if(self.cid) {
+      jsBridge.pushWindow('/subcomment.html?type=2&id='
+        + self.authorId + '&cid=' + self.cid + '&rid=' + self.rid, {
+        title: '评论',
+      });
+    }
+    else {
+      jsBridge.pushWindow('/subcomment.html?type=2&id=' + self.authorId, {
+        title: '评论',
+      });
+    }
   }
   render() {
     return <div class="author">
       <Background ref="background"/>
       <Nav ref="nav"/>
-      <ul class="type" ref="type" onClick={ { li: this.clickType } }>
-        {
-          (this.type || []).map(function(item, i) {
-            return <li class={ item.cn + (i ? '' : ' cur') } rel={ item.cn }>{ item.name }</li>;
-          })
-        }
+      <ul class="index" onClick={ { li: this.clickType } }>
+      {
+        (this.index, this.list || []).map(function(item) {
+          return <li class={ this.index === item.id ? 'cur' : '' }
+                     rel={ item.id }>{ item.name }</li>;
+        }.bind(this))
+      }
       </ul>
-      <InputCmt ref="inputCmt" placeholder={ '发表评论...' } readOnly={ true }/>
+      <div class={ 'home' + (this.index === 0 ? '' : ' fn-hide') }>
+        <h4>主打作品</h4>
+        <HotWork ref="hotWork"/>
+        <h4>相关专辑</h4>
+        <HotAlbum ref="hotAlbum"/>
+        <h4>合作关系</h4>
+        <HotAuthor ref="hotAuthor"/>
+      </div>
+      <Work ref="work"
+            @visible={ this.index === 1 }/>
+      <Dynamics ref="dynamics"
+                @visible={ this.index === 2 }/>
+      <Comments ref="comments"
+                on-chooseSubComment={ this.chooseSubComment }
+                on-closeSubComment={ this.closeSubComment }
+                @visible={ this.index === 3 }/>
+      <InputCmt ref="inputCmt"
+                placeholder={ '发表评论...' }
+                readOnly={ true }
+                on-click={ this.clickInput }/>
       <BotFn ref="botFn"/>
     </div>;
   }
