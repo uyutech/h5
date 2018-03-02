@@ -13,6 +13,9 @@ class VideoList extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.dataList = self.props.dataList;
+    if(self.props.visible !== undefined) {
+      self.visible = self.props.visible;
+    }
     self.on(migi.Event.DOM, function() {
       let $root = $(self.element);
       $root.on('click', 'a', function(e) {
@@ -77,8 +80,8 @@ class VideoList extends migi.Component {
   }
   genItem(item) {
     let self = this;
-    let works = item.Works_Items_Works[0];
-    let author = item.GroupAuthorTypeHash.AuthorTypeHashlist[0] || {};
+    let works = (item.Works_Items_Works || [])[0] || {};
+    let author = ((item.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     let url = util.getWorksUrl(works.WorksID, works.WorksType, item.ItemID);
     return <li>
       <a href={ url } title={ item.ItemName } class="pic">
