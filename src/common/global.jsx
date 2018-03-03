@@ -43,5 +43,5 @@ jsBridge.ready(function() {
       <Message/>,
       document.body
     );
-  }, 1);
+  }, 100);
 });
