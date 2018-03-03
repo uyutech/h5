@@ -43,5 +43,21 @@ jsBridge.ready(function() {
       <Message/>,
       document.body
     );
+    let top = migi.render(
+      <div class="g-top" onClick={ function() { document.body.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      }) } }/>,
+      document.body
+    );
+    window.onscroll = function() {
+      let y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      if(y > screen.availHeight) {
+        top.element.classList.add('show');
+      }
+      else {
+        top.element.classList.remove('show');
+      }
+    };
   }, 100);
 });
