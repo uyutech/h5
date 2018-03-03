@@ -145,7 +145,7 @@ class HotPost extends migi.Component {
           transparentTitle: true,
         });
       });
-      $list.on('click', '.time, .circle a, .wrap a', function(e) {
+      $list.on('click', '.time, .profile .circle a, .wrap a', function(e) {
         e.preventDefault();
         let $this = $(this);
         let title = $this.attr('title');
