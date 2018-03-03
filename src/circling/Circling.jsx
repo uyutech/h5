@@ -73,7 +73,8 @@ class Circling extends migi.Component {
   }
   refresh() {
     let self = this;
-    if(self.hasData && visible) {
+    if(self.hasData && visible && !self.loading) {
+      loadEnd = false;
       self.ref.hotPost.setData();
       skip = 0;
       self.load();
