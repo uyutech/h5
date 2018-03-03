@@ -24,6 +24,7 @@ const MAX_TEXT_LENGTH = 4096;
 
 let tagHash = {};
 let timeout;
+let ajax;
 
 class SubPost extends migi.Component {
   constructor(...data) {
@@ -85,6 +86,84 @@ class SubPost extends migi.Component {
   @bind warnLength
   @bind sending
   @bind tagList = []
+  @bind isAuthor
+  @bind userName
+  @bind userHead
+  @bind authorName
+  @bind authorHead
+  @bind isPublic
+  init(circleID, tag) {
+    let self = this;
+    net.postJSON('/h5/subpost/index', { circleID }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        self.userName = data.uname;
+        self.userHead = data.head;
+        self.isPublic = data.isPublic;
+        self.authorName = data.authorName;
+        self.authorHead = data.authorHead;
+        self.isAuthor = !!data.authorId;
+        let to = data.myCircleList;
+        if(to && to.length && circleID !== undefined) {
+          let has = false;
+          to.forEach(function(item) {
+            if(item.CirclingID.toString() === (circleID || '').toString()) {
+              has = true;
+            }
+          });
+          if(has) {
+            migi.sort(to, function(a, b) {
+              if(a.CirclingID.toString() === (circleID || '').toString()) {
+                return false;
+              }
+              else if(b.CirclingID.toString() === (circleID || '').toString()) {
+                return true;
+              }
+            });
+          }
+          else {
+            to.unshift({
+              CirclingID: circleID,
+              CirclingName: data.circleDetail.TagName,
+            });
+          }
+        }
+        self.to = to;
+        let activityLabel = data.activityLabel || [];
+        if(tag) {
+          activityLabel.unshift({
+            TagName: tag,
+          });
+        }
+        self.activityLabel = activityLabel;
+        self.tagList = (data.tagList || []).concat(activityLabel);
+        if(circleID && data.tagList) {
+          self.setCache(circleID, data.tagList);
+        }
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
+  }
+  clickAlt() {
+    let self = this;
+    let old = self.isPublic;
+    self.isPublic = !old;
+    if(ajax) {
+      ajax.abort();
+    }
+    ajax = net.postJSON('/h5/my/altSettle', { isPublic: self.isPublic }, function(res) {
+      if(!res.success) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        self.isPublic = old;
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
+  }
   input(e, vd) {
     let self = this;
     let $vd = $(vd.element);
@@ -394,40 +473,48 @@ class SubPost extends migi.Component {
       <div class="circle" ref="circle">
         <label>圈子</label>
         <ul onClick={ { li: this.clickCircle } }>
-          {
-            (this.to || []).map(function(item) {
-              return <li rel={ item.CirclingID } class={ item.CirclingID.toString() === (this.props.circleID || '').toString() ? 'on' : '' }>{ item.CirclingName }圈</li>;
-            }.bind(this))
-          }
+        {
+          (this.to || []).map(function(item) {
+            return <li rel={ item.CirclingID } class={ item.CirclingID.toString() === (this.props.circleID || '').toString() ? 'on' : '' }>{ item.CirclingName }圈</li>;
+          }.bind(this))
+        }
         </ul>
       </div>
       <div class="tag">
         <label>话题</label>
         <ul onClick={ { li: this.clickTag } }>
-          {
-            this.tagList.map(function(item, i) {
-              return <li class={ item.more ? 'more' : '' }
-                         i={ i }
-                         rel={ item.value || ('#' + item.TagName + '#') }
-                         desc={ item.Describe || '' }>{ item.TagName }</li>;
-            }.bind(this))
-          }
+        {
+          this.tagList.map(function(item, i) {
+            return <li class={ item.more ? 'more' : '' }
+                       i={ i }
+                       rel={ item.value || ('#' + item.TagName + '#') }
+                       desc={ item.Describe || '' }>{ item.TagName }</li>;
+          }.bind(this))
+        }
         </ul>
       </div>
       <div class="c">
         <textarea class="text" ref="input" placeholder={ this.placeholder || '夸夸这个圈子吧' }
                   onInput={ this.input }>{ this.value }</textarea>
-        <div class={ 'limit' + (this.warnLength ? ' warn' : '') }><strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }</div>
+        <div class={ 'limit' + (this.warnLength ? ' warn' : '') }>
+          <strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }
+          <div class={ 'alt' + (this.isAuthor ? '' : ' fn-hide') }
+               onClick={ this.clickAlt }>
+            <b/>
+            <img src={ util.img48_48_80((this.isPublic ? this.authorHead : this.userHead) || '/src/common/head.png') }/>
+            <span>{ this.isPublic ? this.authorName : this.userName }</span>
+          </div>
+        </div>
       </div>
       <ul class="list" onClick={ { li: this.clickImg } }>
-        {
-          (this.list || []).map(function(item, i) {
-            return <li class={ 's' + item.state } idx={ i } rel={ item.url }
-                       style={ 'background-image:url(' + util.autoSsl(util.img120_120_80(item.url)) + ')' }>
-              <span>{ TEXT[item.state] }</span>
-            </li>;
-          })
-        }
+      {
+        (this.list || []).map(function(item, i) {
+          return <li class={ 's' + item.state } idx={ i } rel={ item.url }
+                     style={ 'background-image:url(' + util.autoSsl(util.img120_120_80(item.url)) + ')' }>
+            <span>{ TEXT[item.state] }</span>
+          </li>;
+        })
+      }
       </ul>
       <ul class="btn">
         <li class="tip">
