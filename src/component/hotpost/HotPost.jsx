@@ -7,6 +7,8 @@
 import net from '../../common/net';
 import util from '../../common/util';
 
+let exist = {};
+
 class HotPost extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -198,8 +200,12 @@ class HotPost extends migi.Component {
       .replace(/(http(?:s)?:\/\/[\w-]+\.[\w]+\S*)/gi, '<a href="$1" target="_blank">$1</a>');
   }
   genItem(item) {
-    let len = item.Content.length;
     let id = item.ID;
+    if(exist[id]) {
+      return;
+    }
+    exist[id] = true;
+    let len = item.Content.length;
     let maxLen = 144;
     let imgLen = item.Image_Post.length;
     let html = len > maxLen ? (item.Content.slice(0, maxLen) + '...') : item.Content;
@@ -412,8 +418,9 @@ class HotPost extends migi.Component {
   setData(data) {
     let self = this;
     let html = '';
+    exist = {};
     (data || []).forEach(function(item) {
-      html += self.genItem(item);
+      html += self.genItem(item) || '';
     });
     $(self.ref.list.element).html(html);
   }
@@ -421,12 +428,13 @@ class HotPost extends migi.Component {
     let self = this;
     let html = '';
     (data || []).forEach(function(item) {
-      html += self.genItem(item);
+      html += self.genItem(item) || '';
     });
     $(self.ref.list.element).append(html);
   }
   clearData() {
     let self = this;
+    exist = {};
     $(self.ref.list.element).html('');
   }
   prependData(data) {
@@ -437,7 +445,7 @@ class HotPost extends migi.Component {
       data = [data];
     }
     (data || []).forEach(function(item) {
-      html += self.genItem(item);
+      html += self.genItem(item) || '';
     });
     $(self.ref.list.element).prepend(html);
   }

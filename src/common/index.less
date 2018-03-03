@@ -291,6 +291,21 @@ a{
   border-radius:0.3rem;
 }
 
+.g-top{
+  position:fixed;
+  right:0.1rem;
+  bottom:0.1rem;
+  display:none;
+  width:0.48rem;
+  height:0.48rem;
+  background:url(top.png) no-repeat center;
+  background-size:contain;
+  z-index:2000;
+  &.show{
+    display:block;
+  }
+}
+
 #page{
   flex:1;
 }

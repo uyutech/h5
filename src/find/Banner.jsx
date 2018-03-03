@@ -8,6 +8,13 @@ import net from "../common/net";
 import util from "../common/util";
 
 let interval;
+let WIDTH;
+let isStart;
+let isMove;
+let sx;
+let sy;
+let dx;
+let pos;
 
 class Banner extends migi.Component {
   constructor(...data) {
@@ -16,6 +23,7 @@ class Banner extends migi.Component {
     self.dataList = self.props.dataList || [];
     self.on(migi.Event.DOM, function() {
       self.addInterval();
+      WIDTH = $(window).width();
     });
   }
   @bind dataList;
@@ -84,8 +92,104 @@ class Banner extends migi.Component {
         break;
     }
   }
+  start(e) {
+    if(e.touches.length === 1) {
+      isStart = true;
+      sx = e.touches[0].pageX;
+      sy = e.touches[0].pageY;
+      pos = [];
+    }
+  }
+  move(e) {
+    if(isMove) {
+      e.preventDefault();
+      let x = e.touches[0].pageX;
+      dx = x - sx;
+      pos.push({
+        t: Date.now(),
+        x,
+      });
+      if(pos.length > 5) {
+        pos.shift();
+      }
+    }
+    else if(isStart && e.touches.length === 1) {
+      let x = e.touches[0].pageX;
+      let y = e.touches[0].pageY;
+      dx = x - sx;
+      if(Math.abs(dx) > Math.abs(y - sy)) {
+        e.preventDefault();
+        isMove = true;
+        pos.push({
+          t: Date.now(),
+          x,
+        });
+        if(pos.length > 5) {
+          pos.shift();
+        }
+      }
+      else {
+        isStart = false;
+      }
+    }
+  }
+  end() {
+    let self = this;
+    if(!isStart || !isMove) {
+      isStart = isMove = false;
+      return;
+    }
+    isStart = isMove = false;
+    let left;
+    let right;
+    if(dx < -WIDTH >> 1) {
+      right = true;
+    }
+    else if(dx > WIDTH >> 1) {
+      left = true;
+    }
+    else if(pos.length > 1 && Math.abs(dx) > 10) {
+      for(let i = pos.length - 1; i > 0; i--) {
+        let a = pos[i];
+        let b = pos[i - 1];
+        if(a.t - b.t > 30) {
+          pos = pos.slice(i);
+          break;
+        }
+      }
+      if(pos.length > 1) {
+        let now = Date.now();
+        pos.push({
+          t: now,
+          x: pos[pos.length - 1].x,
+        });
+        let dt = Math.max(1, pos[pos.length - 1].t - pos[0].t);
+        let dx2 = pos[pos.length - 1].x - pos[0].x;
+        let rate = Math.abs(dx2) / dt;
+        if(rate > 0.1) {
+          if(dx2 > 0) {
+            left = true;
+          }
+          else if(dx2 < 0) {
+            right = true;
+          }
+        }
+      }
+    }
+    if(left) {
+      self.right();
+    }
+    else if(right) {
+      self.left();
+    }
+  }
   render() {
-    return <div class="mod-banner" onSwipeLeft={ this.left } onSwipeRight={ this.right } onClick={ { a: this.click } }>
+    return <div class="mod-banner"
+                onTouchStart={ this.start }
+                onTouchMove={ this.move }
+                onTouchEnd={ this.end }
+                onTouchCancel={ this.end }
+                onClick={ { a: this.click } }>
       <ul class="list fn-clear" ref="list" style={ 'width:' + Math.max(1, this.dataList.length) * 100 + '%' }>
         {
           this.dataList.map(function(item) {

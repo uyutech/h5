@@ -15,6 +15,7 @@ let subSkipHash = {};
 let $last;
 let take = 10;
 let ajax;
+let exist = {};
 
 class Comment extends migi.Component {
   constructor(...data) {
@@ -22,7 +23,7 @@ class Comment extends migi.Component {
     let self = this;
     let html = '';
     (self.props.data || []).forEach(function(item) {
-      html += self.genComment(item);
+      html += self.genComment(item) || '';
     });
     self.html = html;
     self.message = self.props.message;
@@ -283,6 +284,7 @@ class Comment extends migi.Component {
     if(ajax) {
       ajax.abort();
     }
+    exist = {};
     this.message = '';
     this.setData(null, noEmpty);
     subLoadHash = {};
@@ -291,9 +293,10 @@ class Comment extends migi.Component {
   }
   setData(data, noEmpty) {
     let self = this;
+    exist = {};
     let s = '';
     (data || []).forEach(function(item) {
-      s += self.genComment(item);
+      s += self.genComment(item) || '';
     });
     $(self.ref.list.element).html(s);
     self.empty = !noEmpty && !s;
@@ -302,7 +305,7 @@ class Comment extends migi.Component {
     let self = this;
     let s = '';
     (data || []).forEach(function(item) {
-      s += self.genComment(item);
+      s += self.genComment(item) || '';
     });
     $(self.ref.list.element).append(s);
     if(self.empty) {
@@ -312,8 +315,11 @@ class Comment extends migi.Component {
     }
   }
   prependData(item) {
-    this.genComment(item).prependTo(this.ref.list.element);
-    this.empty = false;
+    let vd = this.genComment(item);
+    if(vd) {
+      vd.prependTo(this.ref.list.element);
+      this.empty = false;
+    }
   }
   prependChild(item) {
     let $comment = $('#comment_' + item.RootID);
@@ -369,9 +375,14 @@ class Comment extends migi.Component {
     });
   }
   genComment(item) {
+    let id = item.Send_ID;
+    if(exist[id]) {
+      return;
+    }
+    exist[id] = true;
     if(item.IsAuthor) {
       let authorID = item.AuthorID;
-      return <li class="author" id={ 'comment_' + item.Send_ID }>
+      return <li class="author" id={ 'comment_' + id }>
         <div class="t">
           <div class="profile fn-clear">
             <a class="pic"
@@ -405,7 +416,7 @@ class Comment extends migi.Component {
         </div>
       </li>;
     }
-    return <li class="user" id={ 'comment_' + item.Send_ID }>
+    return <li class="user" id={ 'comment_' + id }>
       <div class="t">
         <div class="profile fn-clear">
           <a class="pic" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>
