@@ -29,6 +29,10 @@ class Message extends migi.Component {
       });
     }
     self.on(migi.Event.DOM, function() {
+      jsBridge.getPreference('message-count', function(res) {
+        res = res || 0;
+        self.num = res;
+      });
       reload();
       jsBridge.on('resume', function(e) {
         jsBridge.getPreference('message-count', function(res) {
@@ -60,7 +64,7 @@ class Message extends migi.Component {
   }
   render() {
     return <div class={ 'g-message' + (this.num ? '' : ' fn-hide') } onClick={ this.click }>
-      <b>{ this.num ? this.num > 99 ? '99+' : this.num : '' }</b>
+      <b>{ this.num ? (this.num > 99 ? '99+' : this.num) : '' }</b>
     </div>;
   }
 }
