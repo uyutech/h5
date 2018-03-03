@@ -99,7 +99,7 @@ class SubPost extends migi.Component {
         let data = res.data;
         self.userName = data.uname;
         self.userHead = data.head;
-        self.isPublic = data.isPublic;
+        self.isPublic = !!data.isPublic;
         self.authorName = data.authorName;
         self.authorHead = data.authorHead;
         self.isAuthor = !!data.authorId;
@@ -155,7 +155,7 @@ class SubPost extends migi.Component {
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON('/h5/my/altSettle', { isPublic: self.isPublic }, function(res) {
+    ajax = net.postJSON('/h5/my/altSettle', { public: self.isPublic }, function(res) {
       if(!res.success) {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
         self.isPublic = old;
