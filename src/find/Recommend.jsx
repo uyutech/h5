@@ -102,29 +102,11 @@ class Recommend extends migi.Component {
     self.hasData = true;
 
     let list = self.ref.list.element;
-    let arr = (data.dataList.data || []);
+    list.innerHTML = '';
     (data.dataList.data || []).forEach(function(item) {
       let cp = self.genItem(item);
       if(cp) {
         cp.appendTo(list);
-      }
-    });
-
-    let $window = $(window);
-    let WIN_HEIGHT = $window.height();
-    $window.on('scroll', function() {
-      if(!visible) {
-        return;
-      }
-      scrollY = $window.scrollTop();
-      if(self.dataList.Size <= take) {
-        return;
-      }
-      let HEIGHT = $(document.body).height();
-      let bool;
-      bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-      if(bool) {
-        self.loadMore();
       }
     });
   }

@@ -16,6 +16,7 @@ let scrollY = 0;
 let last;
 let hasLoad;
 let ajax;
+let priorityNow = 0;
 
 class Find extends migi.Component {
   constructor(...data) {
@@ -24,6 +25,25 @@ class Find extends migi.Component {
     self.on(migi.Event.DOM, function() {
       visible = true;
       self.init();
+      last = self.ref.recommend;
+      self.ref.nav.on('change', function(id) {
+        id = parseInt(id);
+        last && last.hide();
+        if(id === 1) {
+          last = self.ref.recommend.show();
+        }
+        else if(Array.isArray(self.ref.itemList)) {
+          last = self.ref.itemList[id - 2].show();
+        }
+        else {
+          last = self.ref.itemList.show();
+        }
+      });
+      jsBridge.getPreference('findCache', function(res) {
+        if(res) {
+          self.setData(res);
+        }
+      });
     });
   }
   @bind tagList
@@ -44,7 +64,9 @@ class Find extends migi.Component {
     ajax = net.postJSON('/h5/find/newIndex', { skip: 0, take: 10 }, function(res) {
       if(res.success) {
         hasLoad = true;
-        self.setData(res.data);
+        let data = res.data;
+        jsBridge.setPreference('findCache', data);
+        self.setData(data, 1);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -63,7 +85,12 @@ class Find extends migi.Component {
       }
     }
   }
-  setData(data) {
+  setData(data, priority) {
+    priority = priority || 0;
+    if(priority < priorityNow) {
+      return;
+    }
+    priorityNow = priority;
     let self = this;
 
     self.tagList = data.tagList;
@@ -71,21 +98,6 @@ class Find extends migi.Component {
     self.ref.recommend.setData(data);
     self.ref.recommend.rid = (data.tagList[0] || {}).ID;
     self.ref.recommend.show();
-
-    last = self.ref.recommend;
-    self.ref.nav.on('change', function(id) {
-      id = parseInt(id);
-      last && last.hide();
-      if(id === 1) {
-        last = self.ref.recommend.show();
-      }
-      else if(Array.isArray(self.ref.itemList)) {
-        last = self.ref.itemList[id - 2].show();
-      }
-      else {
-        last = self.ref.itemList.show();
-      }
-    });
   }
   render() {
     return <div class="find">
