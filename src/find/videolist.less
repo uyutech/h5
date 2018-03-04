@@ -72,6 +72,21 @@
         height:100%;
         background:#000;
       }
+      &:after{
+        position:absolute;
+        left:50%;
+        top:50%;
+        display:none;
+        width:0.62rem;
+        height:0.62rem;
+        background:url(play.png) no-repeat center;
+        background-size:contain;
+        content:' ';
+        transform:translate(-50%, -50%);
+      }
+      &.pause:after{
+        display:block;
+      }
     }
     .txt{
       padding:0.05rem 0.1rem;
