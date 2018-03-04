@@ -11,6 +11,10 @@ let loadingFavor;
 let loadingLike;
 let ajaxFavor;
 let ajaxLike;
+let last;
+let lastId;
+let isPlaying;
+let mediaService;
 
 class Playlist extends migi.Component {
   constructor(...data) {
@@ -22,6 +26,15 @@ class Playlist extends migi.Component {
       self.visible = self.props.visible;
     }
     self.on(migi.Event.DOM, function() {
+      if(jsBridge.appVersion && jsBridge.android) {
+        let version = jsBridge.appVersion.split('.');
+        let major = parseInt(version[0]) || 0;
+        let minor = parseInt(version[1]) || 0;
+        let patch = parseInt(version[2]) || 0;
+        if(major > 0 || minor > 4) {
+          mediaService = true;
+        }
+      }
       let $root = $(this.element);
       $root.on('click', '.fn', function() {
         let $fn = $(this);
@@ -91,6 +104,9 @@ class Playlist extends migi.Component {
   }
   hide() {
     this.visible = false;
+    this.clearLast();
+    last = lastId = null;
+    isPlaying = false;
   }
   setData(data) {
     let s = '';
@@ -120,10 +136,14 @@ class Playlist extends migi.Component {
     let author = ((item.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     let url = '/works.html?worksId=' + works.WorksID + '&workId=' + item.ItemID;
     if(item.WorksState === 2) {
-      return <li>
+      let temp = <li class={ item.ItemID === lastId ? 'cur' : '' }>
         <a href={ url } title={ item.ItemName || '待揭秘' } class="pic">
           <img class="pic" src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
         </a>
+        <audio ref="audio"
+               preload="meta"
+               playsinline="true"
+               webkit-playsinline="true"/>
         <div class="txt">
           <a href={ url } title={ item.ItemName || '待揭秘' }
              class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
@@ -138,13 +158,23 @@ class Playlist extends migi.Component {
           }
         </div>
       </li>;
+      if(item.ItemID === lastId) {
+        last = item;
+      }
+      return temp;
     }
-    return <li>
-      <a href={ url } title={ item.ItemName || '待揭秘' } class="pic">
+    let temp = <li class={ item.ItemID === lastId ? 'cur' : '' }>
+      <a href={ url } title={ item.ItemName || '待揭秘' } class="pic" item={ item }>
         <img class="pic" src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
       </a>
+      <audio ref="audio"
+             preload="meta"
+             playsinline="true"
+             webkit-playsinline="true"/>
       <div class="txt">
-        <a href={ url } title={ item.ItemName || '待揭秘' }
+        <a href={ url }
+           title={ item.ItemName || '待揭秘' }
+           item={ item }
            class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
         {
           self.props.profession
@@ -158,12 +188,74 @@ class Playlist extends migi.Component {
       </div>
       <b class="fn" workID={ item.ItemID } isLike={ item.ISLike } isFavor={ item.ISFavor }/>
     </li>;
+    if(item.ItemID === lastId) {
+      last = item;
+    }
+    return temp;
   }
   clearData() {
     $(this.ref.list.element).html('');
+    last = lastId = null;
   }
   click(e, vd, tvd) {
     e.preventDefault();
+    let self = this;
+    if(self.props.playInline) {
+      let li = tvd.closest('li');
+      let audio = li.find('audio');
+      if(li.element.classList.contains('cur')) {
+        if(mediaService) {
+          jsBridge.media({
+            key: isPlaying ? 'pause' : 'play',
+          });
+        }
+        else {
+          isPlaying ? audio.element.pause() : audio.element.play();
+        }
+        isPlaying = !isPlaying;
+        return;
+      }
+      self.clearLast();
+      li.element.classList.add('cur');
+      last = li;
+      let item = tvd.props.item;
+      lastId = item.ItemID;
+      if(mediaService) {
+        jsBridge.media({
+          key: 'info',
+          value: {
+            id: item.ItemID,
+            url: location.protocol + util.autoSsl(item.FileUrl),
+            name: item.workId,
+          },
+        });
+        jsBridge.media({
+          key: 'play',
+        });
+        jsBridge.getPreference('playlist', function(res) {
+          res = res || [];
+          for (let i = 0, len = res.length; i < len; i++) {
+            if(res[i].workId === item.ItemID) {
+              res.splice(i, 1);
+              break;
+            }
+          }
+          res.unshift({
+            workId: item.ItemID,
+          });
+          jsBridge.setPreference('playlist', res);
+        });
+        jsBridge.setPreference('playlistCur', {
+          workId: item.ItemID,
+        });
+      }
+      else {
+        audio.element.src = item.FileUrl;
+        audio.element.play();
+        isPlaying = true;
+      }
+      return;
+    }
     let url = tvd.props.href;
     let title = tvd.props.title;
     jsBridge.pushWindow(url, {
@@ -171,15 +263,22 @@ class Playlist extends migi.Component {
       transparentTitle: true,
     });
   }
+  clearLast() {
+    if(last) {
+      let audio = last.find('audio');
+      audio.element.pause();
+      last.element.classList.remove('cur');
+    }
+  }
   render() {
     return <div class={ 'cp-playlist' + (this.visible ? '' : ' fn-hide') }
                 onClick={ { a: this.click } }>
       <ol class="list" ref="list">
-        {
-          (this.dataList || []).map(function(item) {
-            return this.genItem(item);
-          }.bind(this))
-        }
+      {
+        (this.dataList || []).map(function(item) {
+          return this.genItem(item);
+        }.bind(this))
+      }
       </ol>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;

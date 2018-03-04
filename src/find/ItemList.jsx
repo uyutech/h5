@@ -26,10 +26,11 @@ class ItemList extends migi.Component {
     self.first = true;
     self.take = 20;
     self.skip = 0;
+    self.visible = self.props.visible;
   }
   @bind hasData
+  @bind visible
   show() {
-    $(this.element).removeClass('fn-hide');
     $(window).scrollTop(this.scrollY);
     this.visible = true;
     if(this.first) {
@@ -39,8 +40,9 @@ class ItemList extends migi.Component {
     return this;
   }
   hide() {
-    $(this.element).addClass('fn-hide');
     this.visible = false;
+    this.ref.videoList && this.ref.videoList.clearLast();
+    this.ref.playlist && this.ref.playlist.clearLast();
     return this;
   }
   load() {
@@ -257,8 +259,12 @@ class ItemList extends migi.Component {
       {
         self.itemList.data && self.itemList.data.length
           ? {
-              2: <VideoList ref="videoList" dataList={ self.itemList.data }/>,
-              3: <Playlist ref="playlist" dataList={ self.itemList.data }/>,
+              2: <VideoList ref="videoList"
+                            playInline={ true }
+                            dataList={ self.itemList.data }/>,
+              3: <Playlist ref="playlist"
+                           playInline={ true }
+                           dataList={ self.itemList.data }/>,
               4: <WaterFall ref="waterFall"
                             dataList={ self.itemList.data }
                             visible={ true }/>
@@ -268,7 +274,7 @@ class ItemList extends migi.Component {
     </div>;
   }
   render() {
-    return <div class="fn-hide">
+    return <div class={ this.visible ? '' : 'fn-hide' }>
       {
         this.hasData
           ? this.genDom()

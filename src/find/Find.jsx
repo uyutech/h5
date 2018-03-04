@@ -17,6 +17,7 @@ let last;
 let hasLoad;
 let ajax;
 let priorityNow = 0;
+let lastId;
 
 class Find extends migi.Component {
   constructor(...data) {
@@ -28,6 +29,7 @@ class Find extends migi.Component {
       last = self.ref.recommend;
       self.ref.nav.on('change', function(id) {
         id = parseInt(id);
+        lastId = id;
         last && last.hide();
         if(id === 1) {
           last = self.ref.recommend.show();
@@ -67,6 +69,14 @@ class Find extends migi.Component {
         let data = res.data;
         jsBridge.setPreference('findCache', data);
         self.setData(data, 1);
+        if(lastId && lastId > 1) {
+          if(Array.isArray(self.ref.itemList)) {
+            last = self.ref.itemList[lastId - 2].show();
+          }
+          else {
+            last = self.ref.itemList.show();
+          }
+        }
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -97,7 +107,6 @@ class Find extends migi.Component {
     self.ref.nav.dataList = data.tagList;
     self.ref.recommend.setData(data);
     self.ref.recommend.rid = (data.tagList[0] || {}).ID;
-    self.ref.recommend.show();
   }
   render() {
     return <div class="find">
@@ -106,7 +115,9 @@ class Find extends migi.Component {
       {
         (this.tagList || []).map(function(item, i) {
           if(i) {
-            return <ItemList ref="itemList" tag={ item }/>;
+            return <ItemList ref="itemList"
+                             visible={ lastId === i }
+                             tag={ item }/>;
           }
         })
       }
