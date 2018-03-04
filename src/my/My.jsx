@@ -30,8 +30,10 @@ class My extends migi.Component {
       });
       self.init();
     });
-    jsBridge.on('guide', function() {
-      self.init();
+    jsBridge.on('resume', function(e) {
+      if(e.data && e.data.guide) {
+        self.init();
+      }
     });
   }
   @bind isLogin
