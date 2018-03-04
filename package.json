@@ -1,11 +1,11 @@
 {
   "name": "zhuanquan-h5",
-  "version": "0.5.14",
+  "version": "0.5.15",
   "dependencies": {
     "anima-querystring": "~2.0.0",
     "anima-yocto-ajax": "~2.0.4",
     "bignumber.js": "~4.1.0",
-    "migi": "~4.2.4",
+    "migi": "~4.3.0",
     "migi-es6-shim": "~0.34.1",
     "mysql2": "^1.5.1"
   },
