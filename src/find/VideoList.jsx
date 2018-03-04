@@ -105,18 +105,12 @@ class VideoList extends migi.Component {
     if(self.props.playInline) {
       let dvd = tvd.next();
       let video = dvd.children[0];
-      if(last === dvd) {
-        isPlaying ? video.element.pause() : video.element.play();
-        isPlaying = !isPlaying;
-      }
-      else {
-        self.clearLast();
-        last = dvd;
-        dvd.element.classList.remove('fn-hide');
-        video.element.src = dvd.props.src;
-        video.element.play();
-        isPlaying = true;
-      }
+      self.clearLast();
+      last = dvd;
+      dvd.element.classList.remove('fn-hide');
+      video.element.src = dvd.props.src;
+      video.element.play();
+      isPlaying = true;
       return;
     }
     let url = tvd.props.href;
@@ -125,6 +119,11 @@ class VideoList extends migi.Component {
       title,
       transparentTitle: true,
     });
+  }
+  clickVideo(e, vd, tvd) {
+    let video = tvd.find('video');
+    isPlaying ? video.element.pause() : video.element.play();
+    isPlaying = !isPlaying;
   }
   clickName(e, vd, tvd) {
     e.preventDefault();
@@ -170,7 +169,8 @@ class VideoList extends migi.Component {
   }
   render() {
     return <div class={ 'mod-videolist' + (this.visible ? '' : ' fn-hide') }>
-      <ul ref="list" onClick={ { '.pic': this.clickPic, '.name': this.clickName, '.like': this.clickLike } }>
+      <ul ref="list"
+          onClick={ { '.pic': this.clickPic, '.video': this.clickVideo, '.name': this.clickName, '.like': this.clickLike } }>
       {
         (this.dataList || []).map(function(item) {
           return this.genItem(item);
