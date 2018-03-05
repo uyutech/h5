@@ -12,12 +12,14 @@ class Step1 extends migi.Component {
     self.isShow = self.props.isShow;
     self.nickName = self.props.nickName;
     self.dis = !self.nickName || self.nickName.length < 4;
+    self.authorState = self.props.authorState;
   }
   @bind isShow
   @bind sex = 0
   @bind nickName
   @bind dis
   @bind sending
+  @bind authorState
   click(e, vd, tvd) {
     var $o = $(tvd.element);
     if(!$o.hasClass('cur')) {
@@ -62,7 +64,7 @@ class Step1 extends migi.Component {
       <div class="con">
         <b class="icon"/>
         <h2>欢迎来到转圈</h2>
-        <h4>我是圈儿，请问该怎么称呼你呢？</h4>
+        <h4>{ this.authorState === 2 ? '给马甲想个名字吧！' : '我是圈儿，请问该怎么称呼你呢？' }</h4>
         <input type="text" class="name" placeholder="不得少于4个字哦~" maxLength="8" onInput={ this.input } value={ this.nickName }/>
         <p class="qsex">请问是汉子还是妹子呢？</p>
         <ul class="sex" onClick={ { li: this.click } }>
