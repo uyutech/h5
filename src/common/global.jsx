@@ -50,7 +50,7 @@ jsBridge.ready(function() {
       }) } }/>,
       document.body
     );
-    window.onscroll = function() {
+    window.addEventListener('scroll', function() {
       let y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
       if(y > screen.availHeight) {
         top.element.classList.add('show');
@@ -58,6 +58,6 @@ jsBridge.ready(function() {
       else {
         top.element.classList.remove('show');
       }
-    };
+    });
   }, 100);
 });

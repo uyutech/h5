@@ -21,6 +21,8 @@ let util = {
     return (url || '').replace(/^https?:\/\//i, '//');
   },
   img: function(url) {
+    url = url || '';
+    url = url.trim();
     if(!/\/\/zhuanquan\./i.test(url)) {
       return url;
     }
