@@ -155,7 +155,7 @@ class SubPost extends migi.Component {
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON('/h5/my/altSettle', { public: self.isPublic }, function(res) {
+    ajax = net.postJSON('/h5/my/altIdentity', { public: self.isPublic }, function(res) {
       if(!res.success) {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
         self.isPublic = old;

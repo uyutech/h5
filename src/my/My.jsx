@@ -30,8 +30,10 @@ class My extends migi.Component {
       });
       self.init();
     });
-    jsBridge.on('guide', function() {
-      self.init();
+    jsBridge.on('resume', function(e) {
+      if(e.data && e.data.guide) {
+        self.init();
+      }
     });
   }
   @bind isLogin
@@ -105,8 +107,21 @@ class My extends migi.Component {
     nav.updateHeadTimeDiff = updateHeadTimeDiff;
 
     let step = self.userInfo.User_Reg_Stat || 0;
-    if(!step || step < 99) {
-      jsBridge.pushWindow('/guide.html?step=' + step + '&nickName=' + encodeURIComponent(self.userInfo.NickName || ''), {
+    let basicAuthor = null;
+    let userToAuthorList = self.userInfo.userToAuthorList || [];
+    for(let i = 0, len = userToAuthorList.length; i < len; i++) {
+      if(userToAuthorList[i].Type === 0) {
+        basicAuthor = userToAuthorList[i];
+        break;
+      }
+    }
+    if(basicAuthor.State === 0 || step < 99) {
+      jsBridge.pushWindow('/guide.html?step=' + step + '&nickName='
+        + encodeURIComponent(self.userInfo.NickName || '')
+        + '&isAuthor=' + !!basicAuthor
+        + '&authorId=' + (basicAuthor ? basicAuthor.AuthorID : '')
+        + '&authorName=' + (basicAuthor ? basicAuthor.AuthorName : '')
+        + '&authorState=' + (basicAuthor ? basicAuthor.State : ''), {
         title: '用户引导',
       });
     }
@@ -177,7 +192,7 @@ class My extends migi.Component {
     }
     jsBridge.pushWindow('/passport.html', {
       title: '登录注册',
-      backgroundColor: '#b6d1e8'
+      backgroundColor: '#b6d1e8',
     });
   }
   render() {

@@ -122,7 +122,14 @@ class VideoList extends migi.Component {
   }
   clickVideo(e, vd, tvd) {
     let video = tvd.find('video');
-    isPlaying ? video.element.pause() : video.element.play();
+    if(isPlaying) {
+      video.element.pause();
+      tvd.element.classList.add('pause');
+    }
+    else {
+      video.element.play();
+      tvd.element.classList.remove('pause');
+    }
     isPlaying = !isPlaying;
   }
   clickName(e, vd, tvd) {
@@ -165,6 +172,7 @@ class VideoList extends migi.Component {
       let video = last.children[0];
       video.element.pause();
       last.element.classList.add('fn-hide');
+      last.element.classList.remove('pause');
     }
   }
   render() {

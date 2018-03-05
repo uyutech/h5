@@ -5,9 +5,10 @@ import net from "../common/net";
  * Created by army on 2017/4/22.
  */
 
-let loading = false;
-let fromIndex = 0;
-let limit = 20;
+let loading;
+let loadEnd;
+let skip = 0;
+let take = 32;
 
 class Step3 extends migi.Component {
   constructor(...data) {
@@ -83,9 +84,17 @@ class Step3 extends migi.Component {
   }
   loadMore() {
     let self = this;
-    net.postJSON('/h5/passport/guideAuthorList', { skip: 0, take: 32 }, function(res) {
+    if(loading || loadEnd || !self.isShow) {
+      return;
+    }
+    loading = true;
+    net.postJSON('/h5/passport/guideAuthorList', { skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
+        skip += take;
+        if(skip >= data.Size) {
+          loadEnd = true;
+        }
         let s = '';
         (data.data || []).forEach(function(item) {
           s += self.genItem(item);
@@ -102,8 +111,10 @@ class Step3 extends migi.Component {
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
+      loading = false;
     }, function(res) {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      loading = false;
     });
   }
   genItem(item) {

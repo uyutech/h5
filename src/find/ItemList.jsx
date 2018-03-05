@@ -159,7 +159,7 @@ class ItemList extends migi.Component {
     let arr = (data.dataList.data || []);
     arr.forEach(function(item) {
       let cp = self.genItem(item);
-      if(cp) {
+      if(cp && list && list.element) {
         cp.appendTo(list.element);
       }
     });
