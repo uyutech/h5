@@ -3,6 +3,8 @@
  */
 
 @import '../imageview/index';
+@import '../quickVideo/index';
+@import '../quickaudio/index';
 
 .cp-hotpost{
   .list{
@@ -196,14 +198,6 @@
             }
           }
         }
-        .imgs2{
-          display:none;
-          img{
-            display:block;
-            margin:0.1rem 0;
-            max-width:100%;
-          }
-        }
       }
       .btn{
         display:flex;
@@ -311,6 +305,9 @@
   .empty,.message{
     text-align:center;
     color:@fourthTextColor;
+  }
+  .cp-quick-video,.cp-quick-audio{
+    margin-top:0.1rem;
   }
 }
 

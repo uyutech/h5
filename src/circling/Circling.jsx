@@ -11,7 +11,7 @@ import HotPost from '../component/hotpost/HotPost.jsx';
 import HotCircle from '../component/hotcircle/HotCircle.jsx';
 
 let take = 10;
-let skip = take;
+let skip = 0;
 let ajax;
 let loading;
 let loadEnd;
@@ -39,7 +39,7 @@ class Circling extends migi.Component {
     net.postJSON('/h5/circling/index', function(res) {
       if(res.success) {
         let data = res.data;
-        self.setData(res.data);
+        self.setData(data);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -54,8 +54,10 @@ class Circling extends migi.Component {
     visible = true;
   }
   hide() {
-    $(this.element).addClass('fn-hide');
+    let self = this;
+    $(self.element).addClass('fn-hide');
     visible = false;
+    self.ref.hotPost.pauseLast();
   }
   refresh() {
     let self = this;
@@ -80,6 +82,7 @@ class Circling extends migi.Component {
 
     let hotPost = self.ref.hotPost;
     hotPost.setData(data.postList.data);
+    hotPost.message = '';
 
     let $window = $(window);
     $window.on('scroll', function() {

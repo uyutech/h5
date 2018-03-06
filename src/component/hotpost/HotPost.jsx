@@ -7,9 +7,13 @@
 import net from '../../common/net';
 import util from '../../common/util';
 import ImageView from '../imageview/ImageView.jsx';
+import QuickVideo from '../quickVideo/QuickVideo.jsx';
+import QuickAudio from '../quickaudio/QuickAudio.jsx';
 
 let exist = {};
 let itemImg = {};
+let last;
+let quickTempList = [];
 
 class HotPost extends migi.Component {
   constructor(...data) {
@@ -25,6 +29,10 @@ class HotPost extends migi.Component {
         html += self.genItem(item);
       });
       self.html = html;
+      quickTempList.forEach(function(cp) {
+        cp.emit(migi.Event.DOM);
+      });
+      quickTempList = [];
     }
     self.on(migi.Event.DOM, function() {
       let $list = $(this.ref.list.element);
@@ -124,17 +132,7 @@ class HotPost extends migi.Component {
           });
         });
       });
-      $list.on('click', '.author .pic, .author .name', function(e) {
-        e.preventDefault();
-        let $this = $(this);
-        let url = $this.attr('href');
-        let title = $this.attr('title');
-        util.openAuthor({
-          url,
-          title,
-        });
-      });
-      $list.on('click', '.user .pic, .user .name', function(e) {
+      $list.on('click', '.profile .pic, .profile .name', function(e) {
         e.preventDefault();
         let $this = $(this);
         let title = $this.attr('title');
@@ -231,6 +229,42 @@ class HotPost extends migi.Component {
     });
     itemImg[id] = imgList;
     let imgGt9 = imgList.length > 9;
+    let audioList = mediaList.filter(function(item) {
+      return item.MediaType === 2;
+    });
+    let videoList = mediaList.filter(function(item) {
+      return item.MediaType === 1;
+    });
+    let video = videoList.length
+      ? <QuickVideo name={ videoList[0].ItemsName }
+                    cover={ videoList[0].ItemsCoverPic }
+                    playCount={ videoList[0].PlayCount }
+                    url={ videoList[0].FileUrl }/>
+      : '';
+    let audio = audioList.length && !videoList.length
+      ? <QuickAudio name={ audioList[0].ItemsName }
+                    cover={ audioList[0].ItemsCoverPic }
+                    author={ ((audioList[0].GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] }
+                    url={ audioList[0].FileUrl }/>
+      : '';
+    if(video) {
+      quickTempList.push(video);
+      video.on('play', function() {
+        if(last && last !== video) {
+          last.pause();
+        }
+        last = video;
+      });
+    }
+    if(audio) {
+      quickTempList.push(audio);
+      audio.on('play', function() {
+        if(last && last !== audio) {
+          last.pause();
+        }
+        last = audio;
+      });
+    }
     return <li class={ item.IsAuthor ? 'author' : 'user' } id={ 'post_' + id }>
       <div class="profile fn-clear">
         <a class="pic" href={ peopleUrl } title={ item.SendUserNickName }>
@@ -284,6 +318,8 @@ class HotPost extends migi.Component {
               </ul>
             : ''
         }
+        { video }
+        { audio }
         <b class="arrow"/>
       </div>
       <ul class="btn">
@@ -307,6 +343,10 @@ class HotPost extends migi.Component {
       html += self.genItem(item) || '';
     });
     $(self.ref.list.element).html(html);
+    quickTempList.forEach(function(cp) {
+      cp.emit(migi.Event.DOM);
+    });
+    quickTempList = [];
   }
   appendData(data) {
     let self = this;
@@ -315,6 +355,10 @@ class HotPost extends migi.Component {
       html += self.genItem(item) || '';
     });
     $(self.ref.list.element).append(html);
+    quickTempList.forEach(function(cp) {
+      cp.emit(migi.Event.DOM);
+    });
+    quickTempList = [];
   }
   clearData() {
     let self = this;
@@ -332,6 +376,15 @@ class HotPost extends migi.Component {
       html += self.genItem(item) || '';
     });
     $(self.ref.list.element).prepend(html);
+    quickTempList.forEach(function(cp) {
+      cp.emit(migi.Event.DOM);
+    });
+    quickTempList = [];
+  }
+  pauseLast() {
+    if(last) {
+      last.pause();
+    }
   }
   render() {
     return <div class={ 'cp-hotpost' + (this.visible ? '' : ' fn-hide') }>

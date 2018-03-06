@@ -1,0 +1,58 @@
+/**
+ * Created by army8735 on 2018/3/6.
+ */
+
+.cp-quick-audio{
+  display:flex;
+  padding:0.1rem;
+  background:#EDF3F7;
+  .pic{
+    position:relative;
+    width:0.4rem;
+    height:0.4rem;
+    border-radius:0.05rem;
+    overflow:hidden;
+    background:rgba(0, 0, 0, 0.1);
+    img{
+      display:block;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+    &.pause:after{
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:0.21rem;
+      height:0.21rem;
+      background:url(play.png) no-repeat center;
+      background-size:contain;
+      content:' ';
+      transform:translate(-50%, -50%);
+    }
+    &.play:after{
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:0.21rem;
+      height:0.21rem;
+      background:url(pause.png) no-repeat center;
+      background-size:contain;
+      content:' ';
+      transform:translate(-50%, -50%);
+    }
+  }
+  .txt{
+    flex:1;
+    margin-left:0.15rem;
+    h4{
+      color:#717171;
+      font-size:0.14rem;
+      font-weight:400;
+    }
+    p{
+      color:#B6B6B6;
+      font-size:0.11rem;
+    }
+  }
+}
