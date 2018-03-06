@@ -15,7 +15,7 @@ import Step3 from './Step3.jsx';
 let search = qs.parse(location.search.replace(/^\?/, ''));
 let step = parseInt(search.step) || 0;
 let nickName = search.nickName;
-let isAuthor = !!search.isAuthor;
+let isAuthor = search.isAuthor === 'true';
 let authorId = search.authorId;
 let authorName = search.authorName;
 let authorState = parseInt(search.authorState) || 0; // 0初始状态，1为公开入驻，2为马甲入驻，3为放弃入住

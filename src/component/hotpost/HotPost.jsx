@@ -6,8 +6,10 @@
 
 import net from '../../common/net';
 import util from '../../common/util';
+import ImageView from '../imageview/ImageView.jsx';
 
 let exist = {};
+let itemImg = {};
 
 class HotPost extends migi.Component {
   constructor(...data) {
@@ -33,9 +35,6 @@ class HotPost extends migi.Component {
         let $li = $(this).closest('li');
         $li.removeClass('expand');
         $li[0].scrollIntoView(true);
-      });
-      $list.on('click', '.imgs', function() {
-        $(this).closest('li').addClass('expand');
       });
       $list.on('click', '.imgs2 img', function() {
         let $this = $(this);
@@ -154,6 +153,14 @@ class HotPost extends migi.Component {
           title,
         });
       });
+
+      let imageView = self.ref.imageView;
+      $list.on('click', '.imgs li', function() {
+        let $li = $(this);
+        let id = $li.attr('rel');
+        let idx = $li.attr('idx');
+        imageView.setData(itemImg[id], idx);
+      });
     });
   }
   @bind message
@@ -207,196 +214,74 @@ class HotPost extends migi.Component {
     exist[id] = true;
     let len = item.Content.length;
     let maxLen = 144;
-    let imgLen = item.Image_Post.length;
     let html = len > maxLen ? (item.Content.slice(0, maxLen) + '...') : item.Content;
     html = this.encode(html);
     if(len > maxLen) {
       html += '<span class="placeholder"></span><span class="more">查看全文</span>';
       let full = this.encode(item.Content) + '<span class="placeholder"></span><span class="shrink">收起全文</span>';
-      html = '<p class="snap">' + html + '</p><p class="full">' + full + '</p>';
+      html = `<p class="snap">${html}</p><p class="full">${full}</p>`;
     }
     let url = '/post.html?postID=' + id;
-    if(item.IsAuthor) {
-      let authorUrl = '/author.html?authorId=' + item.AuthorID;
-      return <li class="author" id={ 'post_' + id}>
-        <div class="profile fn-clear">
-          <a class="pic" href={ authorUrl } title={ item.SendUserNickName }>
-            <img src={ util.autoSsl(util.img208_208_80(item.SendUserHead_Url
-              || '/src/common/blank.png')) }/>
-          </a>
-          <div class="txt">
-            <a href={ authorUrl } class="name" title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
-            <a class="time" href={ url } title="画圈正文">{ util.formatDate(item.Createtime) }</a>
-          </div>
-          <div class="circle">
-            <ul>
-              {
-                (item.Taglist || []).map(function(item) {
-                  if(item.CirclingList) {
-                    if(item.CirclingList.length) {
-                      return <li>
-                        <a href={ '/circle.html?circleID=' + item.CirclingList[0].CirclingID }
-                           title={ item.CirclingList[0].CirclingName + '圈' }>{ item.CirclingList[0].CirclingName }圈</a></li>;
-                    }
-                    return <li><span>{ item.TagName }</span></li>;
-                  }
-                  return <li><a href={ '/circle.html?circleID=' + item.TagID }
-                                title={ item.TagName + '圈' }>{ item.TagName }圈</a></li>;
-                })
-              }
-            </ul>
-          </div>
-        </div>
-        <div class="wrap">
-          {
-            item.Title
-              ? <a href={ url } class="t" title="画圈正文">{ item.Title }</a>
-              : ''
-          }
-          <div class="con" dangerouslySetInnerHTML={ html }/>
-          {
-            item.Image_Post && imgLen
-              ? <ul class={ 'imgs fn-clear' + (item.Image_Post.length > 4 ? '' : (' n' + item.Image_Post.length)) }>
-                {
-                  item.Image_Post.length > 9
-                    ? item.Image_Post.slice(0, 9).map(function(item, i) {
-                      let cn = '';
-                      if(item.Width !== 0 && item.Height !== 0 && item.Width < 86 && item.Height < 86) {
-                        cn = 'no-scale';
-                      }
-                      if(i === 8) {
-                        return <li class={ 'all ' + cn }
-                                   style={ 'background-image:url(' + util.autoSsl(util.img208_208_80(item.FileUrl)) + ')' }>
-                          <img src={ util.autoSsl(util.img208_208_80(item.FileUrl)) }/>
-                          <a href={ url } title="画圈正文">查看全部</a>
-                        </li>;
-                      }
-                      return <li class={ cn }
-                                 style={ 'background-image:url(' + util.autoSsl(util.img208_208_80(item.FileUrl)) + ')' }>
-                        <img src={ util.autoSsl(util.img208_208_80(item.FileUrl)) }/>
-                      </li>;
-                    })
-                    : item.Image_Post.map(function(item) {
-                      let cn = '';
-                      if(item.Width !== 0 && item.Height !== 0 && item.Width < 86 && item.Height < 86) {
-                        cn = 'no-scale';
-                      }
-                      return <li class={ cn }
-                                 style={ 'background-image:url(' + util.autoSsl(util.img208_208_80(item.FileUrl)) + ')' }>
-                        <img src={ util.autoSsl(util.img208_208_80(item.FileUrl)) }/>
-                      </li>;
-                    })
-                }
-              </ul>
-              : ''
-          }
-          {
-            item.Image_Post && imgLen
-              ? <div class="imgs2" rel={ id }>
-                {
-                  item.Image_Post.map(function(item, i) {
-                    return <img src={ util.autoSsl(util.img720__80(item.FileUrl)) } rel={ i }/>;
-                  })
-                }
-              </div>
-              : ''
-          }
-          <b class="arrow"/>
-        </div>
-        <ul class="btn">
-          <li class="share" rel={ id }><b/><span>分享</span></li>
-          <li class={ 'favor' + (item.ISFavor ? ' has' : '') } rel={ id }>
-            <b/><span>{ item.FavorCount || '收藏' }</span>
-          </li>
-          <li class={ 'like' + (item.ISLike ? ' has' : '') } rel={ id }>
-            <b/><span>{ item.LikeCount || '点赞' }</span>
-          </li>
-          <li class="comment" rel={ id } count={ item.CommentCount }>
-            <b/><span>{ item.CommentCount || '评论' }</span>
-          </li>
-          { item.IsOwn ? <li class="del" rel={ id }><b/></li> : '' }
-        </ul>
-      </li>;
-    }
-    let userUrl = '/user.html?userID=' + item.SendUserID;
-    return <li class="user" id={ 'post_' + id}>
+    let peopleUrl = item.IsAuthor
+      ? ('/author.html?authorId=' + item.AuthorID)
+      : ('/user.html?userID=' + item.SendUserID);
+    let mediaList = item.CommentMedia || [];
+    let imgList = mediaList.filter(function(item) {
+      return item.MediaType === 0 || item.MediaType === 3; // 0为老数据图片，1视频，2音频，3图片
+    });
+    itemImg[id] = imgList;
+    let imgGt9 = imgList.length > 9;
+    return <li class={ item.IsAuthor ? 'author' : 'user' } id={ 'post_' + id }>
       <div class="profile fn-clear">
-        <a class="pic" href={ userUrl } title={ item.SendUserNickName }>
+        <a class="pic" href={ peopleUrl } title={ item.SendUserNickName }>
           <img src={ util.autoSsl(util.img208_208_80(item.SendUserHead_Url
             || '/src/common/head.png')) }/>
         </a>
         <div class="txt">
-          <a class="name" href={ userUrl } title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
+          <a class="name" href={ peopleUrl } title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
           <a class="time" href={ url } title="画圈正文">{ util.formatDate(item.Createtime) }</a>
         </div>
-        <div class="circle">
-          <ul>
-            {
-              (item.Taglist || []).map(function(item) {
-                if(item.CirclingList && item.CirclingList.length) {
-                  return <li>
-                    <a href={ '/circle.html?circleID=' + item.CirclingList[0].CirclingID }
-                       title={ item.CirclingList[0].CirclingName + '圈' }>{ item.CirclingList[0].CirclingName }圈</a>
-                  </li>;
-                }
-                return <li><span>{ item.TagName }</span></li>;
-              })
-            }
-          </ul>
-        </div>
+        <ul class="circle">
+        {
+          (item.Taglist || []).map(function(item) {
+            return <li>
+              <a href={ '/circle.html?circleID=' + item.TagID }
+                 title={ item.TagName }>{ item.TagName }</a></li>;
+          })
+        }
+        </ul>
       </div>
       <div class="wrap">
-        {
-          item.Title
-            ? <a href={ url } class="t" title="画圈正文">{ item.Title }</a>
-            : ''
-        }
         <div class="con" dangerouslySetInnerHTML={ html }/>
         {
-          item.Image_Post && imgLen
-            ? <ul class={ 'imgs fn-clear' + (item.Image_Post.length > 4 ? '' : (' n' + item.Image_Post.length)) }>
+          imgList.length
+            ? <ul class="imgs fn-clear">
               {
-                item.Image_Post.length > 9
-                  ? item.Image_Post.slice(0, 9).map(function(item, i) {
-                    let cn = '';
-                    if(item.Width !== 0 && item.Height !== 0 && item.Width < 86 && item.Height < 86) {
-                      cn = 'no-scale';
-                    }
-                    if(i === 8) {
-                      return <li class={ 'all ' + cn }
-                                 style={ 'background-image:url(' + util.autoSsl(util.img208_208_80(item.FileUrl)) + ')' }>
-                        <img src={ util.autoSsl(util.img208_208_80(item.FileUrl)) }/>
-                        <a href={ url } title="画圈正文">查看全部</a>
-                      </li>;
-                    }
-                    return <li class={ cn }
-                               style={ 'background-image:url(' + util.autoSsl(util.img208_208_80(item.FileUrl)) + ')' }>
-                      <img src={ util.autoSsl(util.img208_208_80(item.FileUrl)) }/>
+                imgList.slice(0, 9).map(function(item, i) {
+                  let cn = '';
+                  if(item.Width !== 0 && item.Height !== 0 && item.Width < 86 && item.Height < 86) {
+                    cn = 'no-scale';
+                  }
+                  if(i === 8 && imgGt9) {
+                    return <li class={ 'all ' + cn }
+                               rel={ id }
+                               idx={ i }
+                               style={ 'background-image:url('
+                               + util.autoSsl(util.img208_208_80(item.FileUrl || '/src/common/blank.png')) + ')' }>
+                      <img src={ util.autoSsl(util.img208_208_80(item.FileUrl || '/src/common/blank.png')) }/>
+                      <a href={ url } title="画圈正文">查看全部</a>
                     </li>;
-                  })
-                  : item.Image_Post.map(function(item) {
-                    let cn = '';
-                    if(item.Width !== 0 && item.Height !== 0 && item.Width < 86 && item.Height < 86) {
-                      cn = 'no-scale';
-                    }
-                    return <li class={ cn }
-                               style={ 'background-image:url(' + util.autoSsl(util.img208_208_80(item.FileUrl)) + ')' }>
-                      <img src={ util.autoSsl(util.img208_208_80(item.FileUrl)) }/>
-                    </li>;
-                  })
-              }
-            </ul>
-            : ''
-        }
-        {
-          item.Image_Post && imgLen
-            ? <div class="imgs2" rel={ id }>
-              {
-                item.Image_Post.map(function(item, i) {
-                  return <img src={ util.autoSsl(util.img720__80(item.FileUrl)) } rel={ i }/>;
+                  }
+                  return <li class={ cn }
+                             rel={ id }
+                             idx={ i }
+                             style={ 'background-image:url('
+                             + util.autoSsl(util.img208_208_80(item.FileUrl || '/src/common/blank.png')) + ')' }>
+                    <img src={ util.autoSsl(util.img208_208_80(item.FileUrl || '/src/common/blank.png')) }/>
+                  </li>;
                 })
               }
-            </div>
+              </ul>
             : ''
         }
         <b class="arrow"/>
@@ -411,7 +296,6 @@ class HotPost extends migi.Component {
         <li class="comment" rel={ id } count={ item.CommentCount }>
           <b/><span>{ item.CommentCount || '评论' }</span>
         </li>
-        { item.IsOwn ? <li class="del" rel={ id }><b/></li> : '' }
       </ul>
     </li>;
   }
@@ -453,6 +337,7 @@ class HotPost extends migi.Component {
     return <div class={ 'cp-hotpost' + (this.visible ? '' : ' fn-hide') }>
       <ol class="list" ref="list" dangerouslySetInnerHTML={ this.html }/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') } >{ this.message }</div>
+      <ImageView ref="imageView"/>
     </div>;
   }
 }
