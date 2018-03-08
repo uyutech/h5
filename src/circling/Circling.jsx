@@ -11,15 +11,18 @@ import HotPost from '../component/hotpost/HotPost.jsx';
 import HotCircle from '../component/hotcircle/HotCircle.jsx';
 
 let take = 10;
-let skip = take;
+let skip = 0;
 let ajax;
 let loading;
 let loadEnd;
-let circleID;
 let visible;
 let scrollY = 0;
-let y;
-let $circles;
+let circleSkip = 0;
+let circleTake = 10;
+let loadingCircle;
+let loadCircleEnd;
+let elStack = [];
+let idStack = [];
 
 class Circling extends migi.Component {
   constructor(...data) {
@@ -27,53 +30,38 @@ class Circling extends migi.Component {
     let self = this;
     self.on(migi.Event.DOM, function() {
       visible = true;
-      net.postJSON('/h5/circling/index', function(res) {
-        if(res.success) {
-          self.setData(res.data);
-          y = $(self.ref.hotCircle.element).height();
-          $circles = $(self.ref.circles.element);
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
-      let $window = $(window);
-      $window.on('scroll', function() {
-        if(visible) {
-          self.checkFix($window.scrollTop());
-        }
-      });
+      self.init();
     });
   }
-  @bind hasData
+  @bind circles
+  init() {
+    let self = this;
+    net.postJSON('/h5/circling/index', function(res) {
+      if(res.success) {
+        let data = res.data;
+        self.setData(data);
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
+  }
   show() {
     $(this.element).removeClass('fn-hide');
     $(window).scrollTop(scrollY);
     visible = true;
-    y = $('#topNav').height();
-    if(this.ref.circles) {
-      this.checkFix(y, $(this.ref.circles.element));
-    }
   }
   hide() {
-    $(this.element).addClass('fn-hide');
+    let self = this;
+    $(self.element).addClass('fn-hide');
     visible = false;
-  }
-  checkFix(top) {
-    if($circles) {
-      if(top > y) {
-        $circles.addClass('fix');
-      }
-      else {
-        $circles.removeClass('fix');
-      }
-    }
+    self.ref.hotPost.pauseLast();
   }
   refresh() {
     let self = this;
-    if(self.hasData && visible && !self.loading) {
+    if(visible && !loading) {
       loadEnd = false;
       self.ref.hotPost.setData();
       skip = 0;
@@ -83,12 +71,18 @@ class Circling extends migi.Component {
   setData(data) {
     let self = this;
 
-    self.hotCircleList = data.hotCircleList;
-    self.hotCircle = data.hotCircle;
-    self.postList = data.postList;
-    loadEnd = self.postList.Size <= take;
+    circleTake = data.circleTake || circleTake;
+    circleSkip += circleTake;
+    loadCircleEnd = circleSkip >= data.hotCircleList.Size;
+    self.circles = data.hotCircleList.data;
 
-    self.hasData = true;
+    take = data.take || take;
+    skip += take;
+    loadEnd = skip >= data.postList.Size;
+
+    let hotPost = self.ref.hotPost;
+    hotPost.setData(data.postList.data);
+    hotPost.message = '';
 
     let $window = $(window);
     $window.on('scroll', function() {
@@ -98,7 +92,7 @@ class Circling extends migi.Component {
       self.checkMore($window);
     });
     if(loadEnd) {
-      self.ref.hotPost.message = '已经到底了';
+      hotPost.message = '已经到底了';
     }
   }
   checkMore($window) {
@@ -126,7 +120,7 @@ class Circling extends migi.Component {
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON(circleID ? '/h5/circle/postList' : '/h5/circling/postList', { skip, take, circleID }, function(res) {
+    ajax = net.postJSON('/h5/circling/postList', { skip, take, circleId: idStack.join(',') }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
@@ -148,48 +142,78 @@ class Circling extends migi.Component {
       loading = false;
     });
   }
-  clickTag(e, vd, tvd) {
-    let $li = $(tvd.element);
-    if(!$li.hasClass('cur')) {
-      $(vd.element).find('.cur').removeClass('cur');
-      $li.addClass('cur');
-      circleID = tvd.props.rel;
-      this.ref.hotPost.setData();
-      skip = 0;
-      loadEnd = false;
-      loading = false;
-      this.load();
+  scroll(e, vd) {
+    let self = this;
+    let el = vd.element;
+    if(loadingCircle || loadCircleEnd) {
+      return;
+    }
+    if(el.scrollLeft + el.offsetWidth + 30 > el.scrollWidth) {
+      loadingCircle = true;
+      net.postJSON('/h5/circling/circleList', { skip: circleSkip, take: circleTake }, function(res) {
+        if(res.success) {
+          let data = res.data;
+          self.circles = self.circles.concat(data.data);
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+        loadingCircle = false;
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        loadingCircle = false;
+      });
     }
   }
-  genDom() {
-    let self = this;
-    return <div>
-      <HotCircle ref="hotCircle"
-                 dataList={ self.hotCircleList.data }
-                 more={ '/allcircles.html' }/>
-      <ul class="circles" ref="circles" onClick={ { li: self.clickTag.bind(self) } }>
-        <li class="cur">全部</li>
-        {
-          (self.hotCircleList.data || []).map(function(item) {
-            return <li rel={ item.TagID }>{ item.TagName }</li>;
-          })
+  clickTag(e, vd, tvd) {
+    let el = tvd.element;
+    let id = tvd.props.rel;
+    let add = false;
+    if(el.classList.contains('on')) {
+      el.classList.remove('on');
+    }
+    else {
+      el.classList.add('on');
+      add = true;
+    }
+    if(add) {
+      elStack.push(el);
+      idStack.push(id);
+    }
+    else {
+      for(let i = 0; i < idStack.length; i++) {
+        if(idStack[i] === id) {
+          idStack.splice(i, 1);
+          break;
         }
-      </ul>
-      <p class="cinfo">↑未来，这里将可以复选多个圈子一起逛哦↑</p>
-      <HotPost ref="hotPost" dataList={ self.postList.data }/>
-    </div>;
+      }
+    }
+    if(elStack.length > 3) {
+      let el = elStack.shift();
+      el.classList.remove('on');
+    }
+    if(idStack.length > 3) {
+      idStack.shift();
+    }
+    this.ref.hotPost.setData();
+    skip = 0;
+    loadEnd = false;
+    loading = false;
+    this.load();
   }
   render() {
     return <div class="circling">
-      {
-        this.hasData
-          ? this.genDom()
-          : <div>
-              <div class="fn-placeholder-tags"/>
-              <div class="fn-placeholder"/>
-              <div class="fn-placeholder"/>
-            </div>
-      }
+      <div class="circle">
+        <label>圈子</label>
+        <ul onScroll={ this.scroll } onClick={ this.clickTag }>
+        {
+          (this.circles || []).map(function(item) {
+            return <li rel={ item.TagID }>{ item.TagName }</li>;
+          })
+        }
+        </ul>
+      </div>
+      <HotPost ref="hotPost" message="正在加载..."/>
     </div>;
   }
 }

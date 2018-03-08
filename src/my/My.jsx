@@ -115,7 +115,7 @@ class My extends migi.Component {
         break;
       }
     }
-    if(basicAuthor.State === 0 || step < 99) {
+    if((basicAuthor && basicAuthor.State === 0) || step < 99) {
       jsBridge.pushWindow('/guide.html?step=' + step + '&nickName='
         + encodeURIComponent(self.userInfo.NickName || '')
         + '&isAuthor=' + !!basicAuthor

@@ -473,7 +473,9 @@ class SubPost extends migi.Component {
         <ul onClick={ { li: this.clickCircle } }>
         {
           (this.to || []).map(function(item) {
-            return <li rel={ item.CirclingID } class={ item.CirclingID.toString() === (this.props.circleID || '').toString() ? 'on' : '' }>{ item.CirclingName }圈</li>;
+            return <li rel={ item.CirclingID }
+                       class={ item.CirclingID.toString() === (this.props.circleID || '').toString()
+                         ? 'on' : '' }>{ item.CirclingName }圈</li>;
           }.bind(this))
         }
         </ul>

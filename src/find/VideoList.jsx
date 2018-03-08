@@ -60,14 +60,6 @@ class VideoList extends migi.Component {
       <div class="video fn-hide" src={ item.FileUrl }>
         <video ref="video"
                poster="/src/common/blank.png"
-               onTimeupdate={ this.onTimeupdate }
-               onLoadedmetadata={ this.onLoadedmetadata }
-               onCanplaythrough={ this.onCanplaythrough }
-               onProgress={ this.onProgress }
-               onPause={ this.onPause }
-               onEnded={ this.onEnded }
-               onPlaying={ this.onPlaying }
-               onClick={ this.toggle }
                preload="meta"
                playsinline="true"
                webkit-playsinline="true"/>

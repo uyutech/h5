@@ -167,6 +167,7 @@ class ImageView extends migi.Component {
       let x = e.touches[0].pageX;
       let y = e.touches[0].pageY;
       dx = x - sx;
+      let self = this;
       if(Math.abs(dx) > Math.abs(y - sy)) {
         e.preventDefault();
         isMove = true;
@@ -178,9 +179,11 @@ class ImageView extends migi.Component {
         if(pos.length > 5) {
           pos.shift();
         }
+        self.ref.c.element.classList.add('move');
       }
       else {
         isStart = false;
+        self.ref.c.element.classList.remove('move');
       }
     }
   }
