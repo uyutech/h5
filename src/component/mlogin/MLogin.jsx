@@ -1,8 +1,8 @@
-import util from "../../common/util";
-
 /**
  * Created by army8735 on 2017/9/14.
  */
+
+import util from '../../common/util';
 
 class NeedLogin extends migi.Component {
   constructor(...data) {

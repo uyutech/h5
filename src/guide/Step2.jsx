@@ -27,6 +27,7 @@ class Step2 extends migi.Component {
   }
   @bind isShow
   @bind sending
+  @bind message
   get list() {
     return this._list || [];
   }
@@ -82,12 +83,14 @@ class Step2 extends migi.Component {
       return;
     }
     loading = true;
+    self.message = '正在加载...';
     net.postJSON('/h5/passport/guideCircleList', { skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
         if(skip >= data.Size) {
           loadEnd = true;
+          self.message = '已经到底了';
         }
         let s = '';
         (data.data || []).forEach(function(item) {
@@ -114,6 +117,7 @@ class Step2 extends migi.Component {
         <h2>请选择你感兴趣的圈子</h2>
         <h4>以便我们呈现更适合你的内容</h4>
         <ul class="list fn-clear" ref="list"/>
+        <p class="cp-message">{ this.message }</p>
       </div>
       <button class={ 'sub' + (this.sending ? ' dis' : '') } onClick={ this.next }>我选好啦！</button>
     </div>;
