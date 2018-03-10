@@ -19,7 +19,7 @@
     > .profile{
       position:relative;
       display:flex;
-      margin-bottom:0.2rem;
+      margin-bottom:0.1rem;
       font-weight:400;
       &:after{
         position:absolute;
@@ -88,12 +88,19 @@
     }
     > .wrap{
       position:relative;
-      margin-bottom:0.1rem;
+      margin:0.1rem 0;
       padding:0.1rem;
-      border:1px solid #D9D9D9;
+      border:1px solid #D5E0E6;
       border-radius:0.1rem;
-      font-size:0.14rem;
-      line-height:1.8;
+      .arrow{
+        position:absolute;
+        left:0.17rem;
+        top:-0.05rem;
+        width:0.13rem;
+        height:0.06rem;
+        background:url(../component/hotpost/arrow.png) no-repeat center;
+        background-size:contain;
+      }
       .con{
         display:block;
         white-space:pre-wrap;
@@ -112,28 +119,6 @@
           color:@mainHoverColor;
         }
       }
-      .arrow{
-        position:absolute;
-        left:0.2rem;
-        top:-1px;
-        display:block;
-        width:0.1rem;
-        height:0.1rem;
-        border-top:1px solid #FFF;
-        &:after{
-          position:absolute;
-          left:0;
-          top:-0.06rem;
-          display:block;
-          width:0.1rem;
-          height:0.1rem;
-          border:1px solid #D9D9D9;
-          border-left:none;
-          border-bottom:none;
-          transform:scaleX(0.7) rotateZ(-45deg);
-          content:' ';
-        }
-      }
       .imgs{
         img{
           display:block;
@@ -146,19 +131,24 @@
         margin-top:0.1rem;
         padding-top:0.05rem;
         border-top:1px solid @borderColor;
-        font-size:0.12rem;
         li{
-          position:relative;
           flex:1;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          position:relative;
           height:0.24rem;
           text-align:center;
+          color:#B6B6B6;
+          font-size:0.13rem;
           &:after{
             position:absolute;
+            left:0;
             top:0.05rem;
             bottom:0.05rem;
             display:block;
             width:0;
-            border-left:1px solid @borderColor;
+            border-left:1px solid #D5E0E6;
             content:' ';
           }
           &:first-child:after{
@@ -166,57 +156,48 @@
             display:none;
           }
           b{
-            display:inline-block;
+            display:block;
             margin-right:0.05rem;
-            width:0.24rem;
-            height:0.24rem;
+            width:0.16rem;
+            height:0.16rem;
             background-repeat:no-repeat;
             background-position:center;
             background-size:contain;
-            vertical-align:middle;
-          }
-          span{
-            display:inline-block;
-            line-height:0.24rem;
-            transform:translateY(0.01rem);
           }
           &.favor{
             b{
-              background-image:url(../icon/favor.png);
+              background-image:url(../icon/favor-s.png);
             }
             &:active b{
-              background-image:url(../icon/favor-hover.png);
+              background-image:url(../icon/favor-s-hover.png);
             }
             &.has{
               b{
-                background-image:url(../icon/favored.png);
-              }
-              &:active b{
-                background-image:url(../icon/favored-hover.png);
+                background-image:url(../icon/favored-s.png);
               }
             }
           }
           &.share{
             b{
-              background-image:url(../icon/share.png);
+              background-image:url(../icon/share-s.png);
             }
             &:active b{
-              background-image:url(../icon/share-hover.png);
+              background-image:url(../icon/share-s-hover.png);
             }
           }
           &.like{
             b{
-              background-image:url(../icon/like.png);
+              background-image:url(../icon/like-s.png);
             }
             &:active b{
-              background-image:url(../icon/like-hover.png);
+              background-image:url(../icon/like-s-hover.png);
             }
             &.has{
               b{
-                background-image:url(../icon/liked.png);
+                background-image:url(../icon/liked-s.png);
               }
               &:active b{
-                background-image:url(../icon/liked-hover.png);
+                background-image:url(../icon/liked-s-hover.png);
               }
             }
           }
@@ -226,22 +207,10 @@
               height:100%;
             }
             b{
-              background-image:url(../icon/comment.png);
+              background-image:url(../icon/comment-s.png);
             }
             &:active b{
-              background-image:url(../icon/comment-hover.png);
-            }
-          }
-          &.del{
-            flex:none;
-            width:0.4rem;
-            opacity:0.5;
-            b{
-              margin:0;
-              background-image:url(../icon/bold-del.png);
-            }
-            &:active b{
-              background-image:url(../icon/bold-del-hover.png);
+              background-image:url(../icon/comment-s-hover.png);
             }
           }
         }

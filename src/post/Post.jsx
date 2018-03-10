@@ -21,6 +21,8 @@ let loadEnd;
 let ajax;
 let loadingLike;
 let loadingFavor;
+let cId;
+let rId;
 
 class Post extends migi.Component {
   constructor(...data) {
@@ -126,6 +128,11 @@ class Post extends migi.Component {
           });
         },
       });
+    });
+
+    let $window = $(window);
+    $window.on('scroll', function() {
+      self.checkMore($window);
     });
   }
   checkMore($window) {
@@ -367,7 +374,8 @@ class Post extends migi.Component {
     if(!self.postID) {
       return;
     }
-    jsBridge.pushWindow('/subcomment.html?type=1&id=' + self.postID, {
+    jsBridge.pushWindow('/subcomment.html?type=1&id='
+      + self.postID + '&cid=' + (cId || '') + '&rid=' + (rId || ''), {
       title: '评论',
     });
   }
@@ -379,6 +387,11 @@ class Post extends migi.Component {
         title: '评论',
       });
     }
+    cId = cid;
+    rId = rid;
+  }
+  closeSubComment() {
+    cId = rId = null;
   }
   genDom() {
     let self = this;
@@ -486,7 +499,8 @@ class Post extends migi.Component {
                  delUrl="/h5/post/delComment"
                  data={ replyData.data }
                  message={ (replyData.Size && replyData.Size > 3) ? '已经到底了' : '' }
-                 on-chooseSubComment={ self.chooseSubComment.bind(self) }/>
+                 on-chooseSubComment={ this.chooseSubComment }
+                 on-closeSubComment={ this.closeSubComment }/>
       </div>
     </div>;
   }
