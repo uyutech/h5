@@ -25,10 +25,12 @@ class Nav extends migi.Component {
   @bind followNum
   @bind fansNum
   @bind sign
+  @bind isAuthor
   @bind updateNickNameTimeDiff
   @bind updateHeadTimeDiff
   set userInfo(userInfo) {
     userInfo = userInfo || {};
+    this._userInfo = userInfo;
     let self = this;
     self.userId = userInfo.UID;
     self.head = userInfo.Head_Url;
@@ -37,6 +39,10 @@ class Nav extends migi.Component {
     self.followNum = userInfo.FollowNumber;
     self.fansNum = userInfo.FansNumber;
     self.sign = userInfo.User_Sign;
+    self.isAuthor = userInfo.ISAuthor;
+  }
+  get userInfo() {
+    return this._userInfo;
   }
   clickPic() {
     let self = this;
@@ -124,6 +130,16 @@ class Nav extends migi.Component {
       }
     });
   }
+  clickPersonal() {
+    jsBridge.pushWindow('/user.html?userID=' + this.userId, {
+      transparentTitle: true,
+    });
+  }
+  clickAuthor() {
+    jsBridge.pushWindow('/author.html?authorId=' + this.userInfo.AuthorID, {
+      transparentTitle: true,
+    });
+  }
   render() {
     return <div class="nav">
       <div class="profile">
@@ -137,6 +153,13 @@ class Nav extends migi.Component {
             <b class={ 'edit' + (this.userId ? '' : ' fn-hide') } onClick={ this.clickName }/>
           </div>
         </div>
+        <button onClick={ this.clickPersonal }>个人主页</button>
+        {
+          this.isAuthor
+            ? <button class="author"
+                      onClick={ this.clickAuthor }>作者主页</button>
+            : ''
+        }
       </div>
       <ul class="num">
         <li>关注<strong>{ this.followNum || 0 }</strong></li>

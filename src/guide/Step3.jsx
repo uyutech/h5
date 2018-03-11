@@ -8,7 +8,7 @@ import net from "../common/net";
 let loading;
 let loadEnd;
 let skip = 0;
-let take = 32;
+let take = 20;
 
 class Step3 extends migi.Component {
   constructor(...data) {
@@ -45,6 +45,7 @@ class Step3 extends migi.Component {
   }
   @bind isShow
   @bind sending
+  @bind message
   get list() {
     return this._list || [];
   }
@@ -88,12 +89,14 @@ class Step3 extends migi.Component {
       return;
     }
     loading = true;
+    self.message = '正在加载...';
     net.postJSON('/h5/passport/guideAuthorList', { skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
         if(skip >= data.Size) {
           loadEnd = true;
+          self.message = '已经到底了';
         }
         let s = '';
         (data.data || []).forEach(function(item) {
@@ -119,13 +122,13 @@ class Step3 extends migi.Component {
   }
   genItem(item) {
     return <li rel={ item.AuthorID } class={ item.ISlike ? 'on' : '' }>
-      <img src={ util.img120_120_80(item.Head_url) || '/src/common/blank.png' }/>
+      <img src={ util.img120_120_80(item.Head_url) || '/src/common/head.png' }/>
       <span>{ item.AuthorName }</span>
     </li>;
   }
   genItem2(item) {
     return <li rel={ item.AuthorID }>
-      <img src={ util.img120_120_80(item.Head_url) || '/src/common/blank.png' }/>
+      <img src={ util.img120_120_80(item.Head_url) || '/src/common/head.png' }/>
     </li>;
   }
   render() {
@@ -135,6 +138,7 @@ class Step3 extends migi.Component {
         <h2>这里有你喜欢的作者吗？</h2>
         <h4>没有也没关系，之后随时可以添加</h4>
         <ul class="list" ref="list"/>
+        <p class="cp-message">{ this.message }</p>
       </div>
       <ul class="sel" ref="sel"/>
       <button class={ 'sub' + (this.sending ? ' dis' : '') } onClick={ this.next }>我选好啦!</button>

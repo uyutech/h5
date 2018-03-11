@@ -7,6 +7,34 @@
 @import '../component/hotcircle/index';
 
 #page > .circling{
+  .mod-banner{
+    padding-top:43.06%;
+    background:#EDF3F7;
+    .list{
+      left:18%;
+      top:16%;
+      height:67.1%;
+      li{
+        border-radius:0.05rem;
+        overflow:hidden;
+        transition:transform 0.2s;
+        &.cur{
+          transform:scale(1.2);
+        }
+      }
+    }
+    .tags{
+      bottom:0.05rem;
+      li{
+        width:0.13rem;
+        height:0.02rem;
+        border:none;
+        &.cur{
+          background:#8BBDE1;
+        }
+      }
+    }
+  }
   > .circle{
     display:flex;
     padding-left:0.15rem;

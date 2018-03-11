@@ -57,6 +57,8 @@ class ImageView extends migi.Component {
     jsBridge.refreshState(false);
   }
   hide() {
+    document.body.classList.remove('pop');
+    window.scrollTo(0, this.bodyTop);
     $(this.element).addClass('fn-hide');
     jsBridge.refreshState(true);
   }
@@ -69,7 +71,9 @@ class ImageView extends migi.Component {
     index = parseInt(index) || 0;
     self.list = list;
     self.index = index;
-    $c.css('top', $(window).scrollTop() + 'px');
+    let y = self.bodyTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    document.body.style.top = -y + 'px';
+    document.body.classList.add('pop');
     self.show();
     // 优先预览图
     self.setImg(index);

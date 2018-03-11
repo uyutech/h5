@@ -34,6 +34,7 @@ module.exports = {
     search: './src/search/index.jsx',
     music: './src/music/index.jsx',
     image: './src/image/index.jsx',
+    config: './src/config/index.jsx',
   },
   output: {
     path: __dirname + '/www',
@@ -71,7 +72,7 @@ module.exports = {
       },
       {
         test: /(\.jpg)|(\.jpeg)|(\.gif)|(\.png)|(\.ico)|(\.webp)$/,
-        use: 'url-loader?limit=10240&name=[path][name].[ext]'
+        use: 'url-loader?limit=1&name=[path][name].[ext]'
       },
       {
         test: /\.(html?)|(\.mp4)$/,

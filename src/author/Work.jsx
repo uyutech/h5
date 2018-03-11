@@ -70,6 +70,10 @@ class Work extends migi.Component {
           if(cache.loadEnd) {
             self.ref.waterFall.message = '已经到底了';
           }
+          if(self.visible && self.groupId === 3) {
+            self.ref.waterFall.pause = false;
+            self.ref.waterFall.checkPool();
+          }
           break;
       }
       let $window = $(window);

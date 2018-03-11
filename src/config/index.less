@@ -1,0 +1,81 @@
+/**
+ * Created by army8735 on 2018/3/11.
+ */
+
+body{
+  background:#EDF3F7;
+}
+
+#page{
+  display:flex;
+  flex-direction:column;
+}
+#page > .config{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  .c{
+    flex:1;
+    .list{
+      margin-bottom:0.1rem;
+      li{
+        position:relative;
+        a{
+          position:relative;
+          display:block;
+          padding-left:0.1rem;
+          color:#717171;
+          height:0.45rem;
+          line-height:0.45rem;
+          font-size:0.15rem;
+          background:#FFF;
+          &:active{
+            background-color:#F3F8FB;
+          }
+          &:after{
+            position:absolute;
+            top:50%;
+            right:0.2rem;
+            width:0.1rem;
+            height:0.1rem;
+            border-top:0.015rem solid #B6B6B6;
+            border-right:0.015rem solid #B6B6B6;
+            border-radius:0.015rem;
+            transform:translateY(-50%) rotateZ(45deg);
+            content:' ';
+          }
+          &.has:after{
+            display:none;
+            content:'';
+          }
+        }
+        &:after{
+          position:absolute;
+          left:0;
+          right:0;
+          bottom:0;
+          height:1px;
+          background:#ECECEC;
+          transform:scaleY(0.5);
+          content:' ';
+        }
+        &:last-child:after{
+          display:none;
+          content:'';
+        }
+      }
+    }
+  }
+  .bot{
+    height:0.45rem;
+    line-height:0.45rem;
+    text-align:center;
+    background:#FFF;
+    .out{
+      background:linear-gradient(#5D99C4, #B9D9ED);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      font-size:0.16rem;
+    }
+  }
+}

@@ -1,12 +1,11 @@
 /**
- * Created by army8735 on 2017/11/30.
+ * Created by army8735 on 2018/3/11.
  */
 
 'use strict';
 
-import util from '../common/util';
+import util from "../common/util";
 
-let interval;
 let WIDTH;
 let isStart;
 let isMove;
@@ -21,35 +20,16 @@ class Banner extends migi.Component {
     let self = this;
     self.dataList = self.props.dataList || [];
     self.on(migi.Event.DOM, function() {
-      self.addInterval();
-      WIDTH = screen.availWidth;
+      WIDTH = self.ref.list.element.querySelector('li').clientWidth;
     });
   }
   @bind dataList;
   @bind index = 0;
-  clickTag(e, vd, tvd) {
-    this.index = tvd.props.rel;
-    this.setOffset(Math.floor(this.index * WIDTH));
-    this.addInterval();
-  }
   setOffset(x) {
     let $list = $(this.ref.list.element);
     $list.css('-moz-transform', 'translateX(-' + x + 'px)');
     $list.css('-webkit-transform', 'translateX(-' + x + 'px)');
     $list.css('transform', 'translateX(-' + x + 'px)');
-  }
-  addInterval() {
-    if(interval) {
-      clearInterval(interval);
-    }
-    let self = this;
-    interval = setInterval(function() {
-      self.index++;
-      if(self.index >= self.dataList.length) {
-        self.index = 0;
-      }
-      self.setOffset(self.index * WIDTH);
-    }, 5000);
   }
   left() {
     this.index++;
@@ -57,7 +37,6 @@ class Banner extends migi.Component {
       this.index = this.dataList.length - 1;
     }
     this.setOffset(Math.floor(this.index * WIDTH));
-    this.addInterval();
   }
   right() {
     this.index--;
@@ -65,31 +44,6 @@ class Banner extends migi.Component {
       this.index = 0;
     }
     this.setOffset(Math.floor(this.index * WIDTH));
-    this.addInterval();
-  }
-  click(e, vd, tvd) {
-    e.preventDefault();
-    let url = tvd.props.href;
-    let title = tvd.props.title;
-    switch(tvd.props.class) {
-      case 'works':
-        jsBridge.pushWindow(url, {
-          title,
-          transparentTitle: true,
-        });
-        break;
-      case 'author':
-        util.openAuthor({
-          url,
-          title,
-        });
-        break;
-      default:
-        jsBridge.pushWindow(url, {
-          title,
-        });
-        break;
-    }
   }
   start(e) {
     if(e.touches.length === 1) {
@@ -189,9 +143,9 @@ class Banner extends migi.Component {
                 onTouchEnd={ this.end }
                 onTouchCancel={ this.end }
                 onClick={ { a: this.click } }>
-      <ul class="list fn-clear" ref="list" style={ 'width:' + Math.max(1, this.dataList.length) * 100 + '%' }>
+      <ul class="list fn-clear" ref="list" style={ 'width:' + Math.max(1, this.dataList.length) * 64 + '%' }>
         {
-          this.dataList.map(function(item) {
+          (this.index, this.dataList).map(function(item, index) {
             let url = '';
             let cn = 'item';
             switch(item.urltype) {
@@ -210,12 +164,12 @@ class Banner extends migi.Component {
                 url = '/user.html?userID=' + item.urlid;
                 break;
             }
-            return <li>
+            return <li class={ index === this.index ? 'cur' : '' }>
               <a href={ url } target="_blank" title={ item.Describe } class={ cn }>
                 <img src={ util.autoSsl(util.img750__80(item.coverpic)) || '/src/common/blank.png' }/>
               </a>
             </li>;
-          })
+          }.bind(this))
         }
       </ul>
       <ul class="tags" ref="tags" onClick={ { li: this.clickTag } }>

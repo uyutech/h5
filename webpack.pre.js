@@ -30,6 +30,7 @@ module.exports = {
     search: './src/search/pre.jsx',
     music: './src/music/pre.jsx',
     image: './src/image/pre.jsx',
+    config: './src/config/pre.jsx',
   },
   output: {
     path: __dirname + '/www',
