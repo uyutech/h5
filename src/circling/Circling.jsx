@@ -8,7 +8,7 @@
 import net from '../common/net';
 import util from '../common/util';
 import HotPost from '../component/hotpost/HotPost.jsx';
-import HotCircle from '../component/hotcircle/HotCircle.jsx';
+import Banner from './Banner.jsx';
 
 let take = 10;
 let skip = 0;
@@ -203,6 +203,7 @@ class Circling extends migi.Component {
   }
   render() {
     return <div class="circling">
+      <Banner ref="banner" dataList={ [{"coverpic":"//zhuanquan.xyz/temp/4eb77cede2af7a1aba96ea0f382c63d8.jpg","urltype":1,"urlid":"2015000000001598","Intro":null,"Describe":"遇梦记——「弥弥灼雪」篇目之四"},{"coverpic":"//zhuanquan.xyz/temp/c5f76e44bea57ecf0bb4d3d75f4eb3d4.jpg","urltype":1,"urlid":"2015000000002480","Intro":null,"Describe":"2018转圈新年祝福"},{"coverpic":"//zhuanquan.xyz/temp/3d5324c20a65632437911aba50b71985.jpg","urltype":1,"urlid":"2015000000002473","Intro":null,"Describe":"心不择言——李泽言角色同人曲"},{"coverpic":"//zhuanquan.xyz/temp/77aadbab00f13ee1124fdac63741c407.jpg","urltype":2,"urlid":"171285","Intro":null,"Describe":"转圈新年季"},{"coverpic":"//zhuanquan.xyz/pic/975b02f6c1c1d0fd6015ca560c7015f8.jpg","urltype":1,"urlid":"2015000000002200","Intro":null,"Describe":"述岚记——《画江湖之侠岚》片尾曲"},{"coverpic":"//zhuanquan.xyz/pic/0d5b2a466e0bee90047123d926d829b5.jpg","urltype":1,"urlid":"2015000000001591","Intro":null,"Describe":"唯我自在——「弥弥灼雪」篇目之三"}] }/>
       <div class="circle">
         <label>圈子</label>
         <ul onScroll={ this.scroll } onClick={ this.clickTag }>

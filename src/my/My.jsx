@@ -34,6 +34,10 @@ class My extends migi.Component {
       if(e.data && e.data.guide) {
         self.init();
       }
+      if(e.data && e.data.loginOut) {
+        self.isLogin = false;
+        self.ref.nav.userInfo = null;
+      }
     });
   }
   @bind isLogin
@@ -152,20 +156,6 @@ class My extends migi.Component {
       }
     });
   }
-  clickOut() {
-    let self = this;
-    net.postJSON('/h5/login/loginOut', function() {
-      self.isLogin = false;
-      self.ref.nav.userInfo = null;
-      migi.eventBus.emit('LOGIN_OUT');
-      $.cookie('isLogin', null);
-      $.cookie('uid', null);
-      jsBridge.delPreference('loginInfo');
-      jsBridge.loginOut();
-    }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-    });
-  }
   clickLink(e, vd, tvd) {
     e.preventDefault();
     let url = tvd.props.href;
@@ -216,9 +206,8 @@ class My extends migi.Component {
       <ul class={ 'list' + (this.isLogin ? '' : ' fn-hide') }
           onClick={ { a: this.clickLink } }>
         <li><a href="/post.html?postID=91255" class="help">帮助中心</a></li>
+        <li><a href="/config.html" class="config">系统设置</a></li>
       </ul>
-      <span class={ 'loginout' + (this.isLogin ? '' : ' fn-hide') }
-            onClick={ this.clickOut }>退出登录</span>
       <div class={ 'login' + (this.isLogin ? ' fn-hide' : '') }>
         <span class="passport" onClick={ this.clickLogin }>转圈账号</span>
         <span class="weibo" onClick={ this.clickWeibo }>微博登录</span>
