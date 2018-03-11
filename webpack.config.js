@@ -35,6 +35,7 @@ module.exports = {
     music: './src/music/index.jsx',
     image: './src/image/index.jsx',
     config: './src/config/index.jsx',
+    shield: './src/shield/index.jsx',
   },
   output: {
     path: __dirname + '/www',

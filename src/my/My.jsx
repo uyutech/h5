@@ -41,8 +41,6 @@ class My extends migi.Component {
     });
   }
   @bind isLogin
-  @bind message
-  @bind confirm
   @bind coins
   show() {
     $(this.element).removeClass('fn-hide');

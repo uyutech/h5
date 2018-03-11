@@ -12,11 +12,25 @@ const FOLLOW_STATE = {
   2: '未关注',
   3: '互相关注',
 };
-let loading;
 
 class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      jsBridge.on('optionMenu1', function() {
+        migi.eventBus.emit('BOT_FN', {
+          canBlock: true,
+          blockText: '加入黑名单',
+          clickBlock: function(botFn) {
+            self.block(self.userId, function() {
+              jsBridge.toast('屏蔽成功');
+              botFn.cancel();
+            });
+          },
+        });
+      });
+    });
   }
   @bind userId
   @bind head
@@ -26,6 +40,7 @@ class Nav extends migi.Component {
   @bind fansNum
   @bind sign
   @bind followState
+  @bind loading
   set userInfo(userInfo) {
     userInfo = userInfo || {};
     let self = this;
@@ -37,17 +52,39 @@ class Nav extends migi.Component {
     self.fansNum = userInfo.FansNumber;
     self.sign = userInfo.User_Sign;
   }
+  block(id, cb) {
+    let self = this;
+    if(!util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
+    jsBridge.confirm('确认屏蔽吗？', function(res) {
+      if(!res) {
+        return;
+      }
+      net.postJSON('/h5/user/shield', { userId: id }, function(res) {
+        if(res.success) {
+          cb && cb();
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      });
+    });
+  }
   clickFollow() {
     let self = this;
     if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
-    if(loading) {
+    if(self.loading) {
       return;
     }
     if(self.followState === 2) {
-      loading = true;
+      self.loading = true;
       net.postJSON('/h5/user/follow', { userID: self.userId }, function(res) {
         if(res.success) {
           self.followState = res.data.FollowState;
@@ -58,16 +95,16 @@ class Nav extends migi.Component {
         else {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
         }
-        loading = false;
+        self.loading = false;
       }, function(res) {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        loading = false;
+        self.loading = false;
       });
     }
     else if(self.followState) {
       jsBridge.confirm('取消关注吗？', function(res) {
         if(res) {
-          loading = true;
+          self.loading = true;
           net.postJSON('/h5/user/unFollow', { userID: self.userId }, function(res) {
             if(res.success) {
               self.followState = res.data.FollowState ;
@@ -78,10 +115,10 @@ class Nav extends migi.Component {
             else {
               jsBridge.toast(res.message || util.ERROR_MESSAGE);
             }
-            loading = false;
+            self.loading = false;
           }, function(res) {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
-            loading = false;
+            self.loading = false;
           });
         }
       });
@@ -99,7 +136,7 @@ class Nav extends migi.Component {
             <h3>{ this.userName }</h3>
           </div>
         </div>
-        <button class={ 's' + this.followState }
+        <button class={ 's' + this.followState + (this.loading ? ' loading' : '') }
                 onClick={ this.clickFollow }>{ FOLLOW_STATE[this.followState] }</button>
       </div>
       <ul class="num">
