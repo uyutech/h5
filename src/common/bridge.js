@@ -249,14 +249,6 @@ let jsBridge = {
       });
     }
   },
-  weiboLogin: function(data, callback) {
-    callback = callback || function() {};
-    if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {
-      ZhuanQuanJSBridge.call('weiboLogin', data, function(res) {
-        callback(res);
-      });
-    }
-  },
   login: function(url, data, callback) {
     callback = callback || function() {};
     if(window.ZhuanQuanJSBridge && window.ZhuanQuanJSBridge.call) {

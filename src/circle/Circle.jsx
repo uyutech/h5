@@ -10,6 +10,7 @@ import Title from './Title.jsx';
 import HotPost from '../component/hotpost/HotPost.jsx';
 import ImageView from '../post/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
+import BotFn from '../component/botfn/BotFn.jsx';
 
 let take = 10;
 let skip = take;
@@ -19,6 +20,23 @@ let loadEnd;
 class Circle extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      jsBridge.setOptionMenu({
+        icon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAHlBMVEUAAACMvuGMvuGMvuGNveGMvuGNweOPwuuMvuKLveG52ByYAAAACXRSTlMA7+bFiGY1GfMKDs4PAAAASklEQVRIx2MYBSMZlIbjl2eTnJiAVwHzzJkGeBVwzJzZQK4JCDcQ9MUoAAInFfzyLDNnOuBVwDRzpgK5ChBWEHTkKBjNeqNgWAAAQowW2TR/xN0AAAAASUVORK5CYII=',
+      });
+      jsBridge.on('optionMenu1', function() {console.log(1)
+        migi.eventBus.emit('BOT_FN', {
+          canBlock: true,
+          clickBlock: function(botFn) {
+            self.block(self.circleID, function() {
+              jsBridge.toast('屏蔽成功');
+              botFn.cancel();
+            });
+          },
+        });
+      });
+    });
   }
   @bind hasData
   @bind circleID
@@ -118,6 +136,28 @@ class Circle extends migi.Component {
       optionMenu: '发布',
     });
   }
+  block(id, cb) {
+    let self = this;
+    if(!util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
+    jsBridge.confirm('确认屏蔽吗？', function(res) {
+      if(!res) {
+        return;
+      }
+      net.postJSON('/h5/circle/shield', { circleID: id }, function(res) {
+        if(res.success) {
+          cb && cb();
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      });
+    });
+  }
   genDom() {
     let self = this;
     return <div>
@@ -150,6 +190,7 @@ class Circle extends migi.Component {
                 on-click={ this.comment }
                 on-share={ this.share }/>
       <ImageView ref="imageView"/>
+      <BotFn ref="botFn"/>
     </div>;
   }
 }

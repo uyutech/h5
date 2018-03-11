@@ -7,9 +7,11 @@
 import net from '../common/net';
 import util from '../common/util';
 import Comment from '../component/comment/Comment.jsx';
-import ImageView from './ImageView.jsx';
+import ImageView from '../component/imageview/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
+import QuickVideo from '../component/quickVideo/QuickVideo.jsx';
+import QuickAudio from '../component/quickaudio/QuickAudio.jsx';
 
 let take = 30;
 let skip = take;
@@ -23,6 +25,9 @@ let loadingLike;
 let loadingFavor;
 let cId;
 let rId;
+let last;
+let quickTempList = [];
+let itemImg;
 
 class Post extends migi.Component {
   constructor(...data) {
@@ -67,7 +72,10 @@ class Post extends migi.Component {
     });
 
     $root.on('click', '.imgs img', function() {
-      migi.eventBus.emit('choosePic', self.postData.Image_Post, $(this).attr('rel'), self.isLike);
+      let $li = $(this);
+      let id = $li.attr('rel');
+      let idx = $li.attr('idx');
+      imageView.setData(itemImg, idx);
     });
 
     let imageView = self.ref.imageView;
@@ -184,6 +192,7 @@ class Post extends migi.Component {
           }
         }
         skip += take;
+        loadEnd = skip >= data.Size;
       }
       else {
         if(res.code === 1000) {
@@ -396,12 +405,53 @@ class Post extends migi.Component {
   genDom() {
     let self = this;
     let postData = self.postData;
+    let id = postData.ID;
     let html = (postData.Content || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
         return `<a href="tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
       })
       .replace(/(http(?:s)?:\/\/[\w-]+\.[\w]+\S*)/gi, '<a href="$1" target="_blank">$1</a>');
     let replyData = self.replyData;
+    let mediaList = postData.CommentMedia || [];
+    let imgList = itemImg = mediaList.filter(function(item) {
+      return item.MediaType === 0 || item.MediaType === 3; // 0为老数据图片，1视频，2音频，3图片
+    });
+    let audioList = mediaList.filter(function(item) {
+      return item.MediaType === 2;
+    });
+    let videoList = mediaList.filter(function(item) {
+      return item.MediaType === 1;
+    });
+    let video = videoList.length
+      ? <QuickVideo name={ videoList[0].ItemsName }
+                    cover={ videoList[0].ItemsCoverPic }
+                    playCount={ videoList[0].PlayCount }
+                    url={ videoList[0].FileUrl }/>
+      : '';
+    let audio = audioList.length && !videoList.length
+      ? <QuickAudio name={ audioList[0].ItemsName }
+                    cover={ audioList[0].ItemsCoverPic }
+                    author={ ((audioList[0].GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] }
+                    url={ audioList[0].FileUrl }/>
+      : '';
+    if(video) {
+      quickTempList.push(video);
+      video.on('play', function() {
+        if(last && last !== video) {
+          last.pause();
+        }
+        last = video;
+      });
+    }
+    if(audio) {
+      quickTempList.push(audio);
+      audio.on('play', function() {
+        if(last && last !== audio) {
+          last.pause();
+        }
+        last = audio;
+      });
+    }
     return <div>
       <h2>{ postData.Title }</h2>
       <div class={ 'profile fn-clear' + (postData.IsAuthor ? ' author' : '') }>
@@ -452,19 +502,21 @@ class Post extends migi.Component {
         </div>
       </div>
       <div class="wrap">
-        <p class="con" dangerouslySetInnerHTML={ html }/>
+        <div class="con" dangerouslySetInnerHTML={ html }/>
         {
-          postData.Image_Post
+          imgList.length
             ?
             <div class="imgs">
               {
-                postData.Image_Post.map(function(item, i) {
-                  return <img src={ util.autoSsl(util.img720__80(item.FileUrl)) } rel={ i }/>;
+                imgList.map(function(item, i) {
+                  return <img src={ util.autoSsl(util.img720__80(item.FileUrl || '/src/common/blank.png')) } rel={ i }/>;
                 })
               }
             </div>
             : ''
         }
+        { video }
+        { audio }
         <b class="arrow"/>
         <ul class="btn">
           <li class="share" onClick={ self.share.bind(self) }><b/><span>分享</span></li>

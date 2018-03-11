@@ -10,6 +10,7 @@ import Nav from './Nav.jsx';
 import Background from '../component/background/Background.jsx';
 import HotPost from '../component/hotpost/HotPost.jsx';
 import ImageView from '../post/ImageView.jsx';
+import BotFn from '../component/botfn/BotFn.jsx';
 
 let take = 10;
 let skip = take;
@@ -115,6 +116,7 @@ class User extends migi.Component {
       <Nav ref="nav"/>
       <HotPost ref="hotPost"/>
       <ImageView ref="imageView"/>
+      <BotFn ref="botFn"/>
     </div>;
   }
 }
