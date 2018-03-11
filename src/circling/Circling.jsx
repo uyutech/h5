@@ -31,6 +31,11 @@ class Circling extends migi.Component {
     self.on(migi.Event.DOM, function() {
       visible = true;
       self.init();
+      jsBridge.on('resume', function(e) {
+        if(e.data && e.data.type === 'subPost') {
+          self.ref.hotPost.prependData(e.data.data);
+        }
+      });
     });
   }
   @bind circles

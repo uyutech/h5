@@ -71,8 +71,8 @@ class Circle extends migi.Component {
       }
     });
     jsBridge.on('resume', function(e) {
-      if(e.data) {
-        self.ref.hotPost.prependData(e.data);
+      if(e.data && e.data.type === 'subPost') {
+        self.ref.hotPost.prependData(e.data.data);
       }
     });
   }
