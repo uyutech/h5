@@ -551,8 +551,8 @@ class Post extends migi.Component {
                  delUrl="/h5/post/delComment"
                  data={ replyData.data }
                  message={ (replyData.Size && replyData.Size > 3) ? '已经到底了' : '' }
-                 on-chooseSubComment={ this.chooseSubComment }
-                 on-closeSubComment={ this.closeSubComment }/>
+                 on-chooseSubComment={ self.chooseSubComment.bind(self) }
+                 on-closeSubComment={ self.closeSubComment.bind(self) }/>
       </div>
     </div>;
   }
