@@ -8,6 +8,15 @@ import MLogin from '../component/mlogin/MLogin.jsx';
 import Share from '../component/share/Share.jsx';
 import Message from '../component/message/Message.jsx';
 
+let toString = {}.toString;
+function isType(type) {
+  return function(obj) {
+    return toString.call(obj) === '[object ' + type + ']';
+  }
+}
+
+let isString = isType('String');
+
 let mlogin;
 migi.eventBus.on('NEED_LOGIN', function() {
   if(!mlogin) {
@@ -20,7 +29,14 @@ migi.eventBus.on('NEED_LOGIN', function() {
 });
 
 let share;
-migi.eventBus.on('SHARE', function(url) {
+migi.eventBus.on('SHARE', function(data) {
+  let url;
+  if(isString(data)) {
+    url = data;
+  }
+  else {
+    url = data.url;
+  }
   if(url.charAt(0) === '/') {
     url = window.ROOT_DOMAIN + url;
   }

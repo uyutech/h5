@@ -219,7 +219,7 @@ class Comment extends migi.Component {
     let $list2 = $li.find('.list2');
     let $ul = $list2.find('ul');
     let $message = $list2.find('.message');
-    let rid = $slide.attr('rid');
+    let cid = $slide.attr('cid');
     if($last && $last[0] !== $li[0] && $last.hasClass('on')) {
       self.hideLast();
     }
@@ -229,24 +229,24 @@ class Comment extends migi.Component {
       $list2.css('height', 0);
       self.emit('closeSubComment');
       $last = null;
-      if(subLoadHash[rid] === IS_LOADING) {
-        subLoadHash[rid] = NOT_LOADED;
+      if(subLoadHash[cid] === IS_LOADING) {
+        subLoadHash[cid] = NOT_LOADED;
       }
     }
     else {
       $last = $li;
       $li.addClass('on');
       self.emit('chooseSubComment', $slide.attr('rid'), $slide.attr('cid'), $slide.attr('name'), $slide.find('.sub').text());
-      let state = subLoadHash[rid];
+      let state = subLoadHash[cid];
       if(state === HAS_LOADED || state === IS_LOADING) {
         $list2.css('height', 'auto');
       }
       else {
         $list2.css('height', 'auto');
-        subLoadHash[rid] = IS_LOADING;
-        ajax = net.postJSON(self.props.subUrl, { rootID: rid, skip: 0, take }, function(res) {
+        subLoadHash[cid] = IS_LOADING;
+        ajax = net.postJSON(self.props.subUrl, { rootID: cid, skip: 0, take }, function(res) {
           if(res.success) {
-            subLoadHash[rid] = HAS_LOADED;
+            subLoadHash[cid] = HAS_LOADED;
             let s = '';
             let data = res.data;
             data.data.forEach(function(item) {
@@ -258,17 +258,17 @@ class Comment extends migi.Component {
             }
             else {
               $message.addClass('more').text('点击加载更多');
-              subSkipHash[rid] = data.data.length;
+              subSkipHash[cid] = data.data.length;
             }
             $ul.removeClass('fn-hide');
             $list2.css('height', 'auto');
           }
           else {
-            subLoadHash[rid] = NOT_LOADED;
+            subLoadHash[cid] = NOT_LOADED;
             $message.text(res.message || util.ERROR_MESSAGE);
           }
         }, function(res) {
-          subLoadHash[rid] = NOT_LOADED;
+          subLoadHash[cid] = NOT_LOADED;
           $message.text(res.message || util.ERROR_MESSAGE);
         });
       }
@@ -375,72 +375,45 @@ class Comment extends migi.Component {
     });
   }
   genComment(item) {
-    let id = item.Send_ID;
+    let id = item.ID;
     if(exist[id]) {
       return;
     }
     exist[id] = true;
-    if(item.IsAuthor) {
-      let authorID = item.AuthorID;
-      return <li class="author" id={ 'comment_' + id }>
-        <div class="t">
-          <div class="profile fn-clear">
-            <a class="pic"
-               href={ '/author.html?authorId=' + authorID }
-               title={ item.Send_AuthorName }
-               transparentTitle={ true }>
-              <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '/src/common/head.png')) }/>
-            </a>
-            <div class="txt">
-              <a class="name"
-                 href={ '/author.html?authorId=' + authorID }
-                 title={ item.Send_AuthorName }
-                 transparentTitle={ true }>{ item.Send_AuthorName }</a>
-              <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
-            </div>
-          </div>
-          <b class="fn" own={ item.ISOwn } isAuthor={ true } authorId={ authorID }/>
-        </div>
-        <div class="c">
-          <pre>{ item.Send_Content }<span class="placeholder"/></pre>
-          <div class="slide" cid={ item.Send_ID } rid={ item.Send_ID } name={ item.Send_AuthorName }>
-            <small cid={ item.Send_ID } class={ 'like' + (item.IsLike ? ' liked' : '') }>{ item.LikeCount }</small>
-            <small class="sub">{ item.sub_Count }</small>
-            <span>收起</span>
-          </div>
-          <b class="arrow"/>
-        </div>
-        <div class="list2">
-          <ul class="fn-hide"/>
-          <p class="message" cid={ item.Send_ID } rid={ item.Send_ID }>读取中...</p>
-        </div>
-      </li>;
-    }
+    let url = item.IsAuthor ? '/author.html?authorId=' + item.SendUserID : '/user.html?userID=' + item.SendUserID;
     return <li class="user" id={ 'comment_' + id }>
       <div class="t">
         <div class="profile fn-clear">
-          <a class="pic" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>
-            <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_UserHeadUrl || '/src/common/head.png')) }/>
+          <a class="pic" href={ url } title={ item.SendUserNickName }>
+            <img class="pic" src={ util.autoSsl(util.img60_60_80(item.SendUserHead_Url || '/src/common/head.png')) }/>
           </a>
           <div class="txt">
-            <a class="name" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>{ item.Send_UserName }</a>
-            <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
+            <a class="name" href={ url } title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
+            <small class="time" rel={ item.CreateTime }>{ util.formatDate(item.CreateTime) }</small>
           </div>
         </div>
-        <b class="fn" own={ item.ISOwn } userId={ item.Send_UserID }/>
+        <b class="fn" own={ item.IsOwn } userId={ item.SendUserID }/>
       </div>
       <div class="c">
-        <pre>{ item.Send_Content }<span class="placeholder"/></pre>
-        <div class="slide" cid={ item.Send_ID } rid={ item.Send_ID } name={ item.Send_UserName }>
-          <small cid={ item.Send_ID } class={ 'like' + (item.IsLike ? ' liked' : '') }>{ item.LikeCount }</small>
-          <small class="sub">{ item.sub_Count }</small>
+        {
+          item.ParentContent
+            ? <p class="quote">
+              <label>回复@{ item.ParentSendUserNickName }：</label>
+              <span>{ item.ParentContent }</span>
+            </p>
+            : ''
+        }
+        <pre>{ item.LContent }<span class="placeholder"/></pre>
+        <div class="slide" cid={ id } rid={ item.RootID } name={ item.SendUserNickName }>
+          <small cid={ id } class={ 'like' + (item.ISLike ? ' liked' : '') }>{ item.ZanCount }</small>
+          <small class="sub">{ item.CommentCountRaw }</small>
           <span>收起</span>
         </div>
         <b class="arrow"/>
       </div>
       <div class="list2">
         <ul class="fn-hide"/>
-        <p class="message" cid={ item.Send_ID } rid={ item.Send_ID }>读取中...</p>
+        <p class="message" cid={ id } rid={ item.RootID }>读取中...</p>
       </div>
     </li>;
   }

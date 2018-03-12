@@ -94,6 +94,9 @@ class Author extends migi.Component {
   }
   chooseSubComment(rid, cid, name, n) {
     let self = this;
+    if(rid === '-1') {
+      rid = cid;
+    }
     self.rid = rid;
     self.cid = cid;
     if(!n || n === '0') {
