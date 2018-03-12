@@ -370,6 +370,24 @@ class Media extends migi.Component {
   clickLrcMode() {
     this.lrcMode = !this.lrcMode;
   }
+  clickFullScreen() {
+    let video = this.ref.video.element;
+    if(video.requestFullscreen) {
+      video.requestFullscreen();
+    }
+    else if(video.mozRequestFullscreen) {
+      video.mozRequestFullscreen();
+    }
+    else if(video.webkitRequestFullscreen) {
+      video.webkitRequestFullscreen();
+    }
+    else if(video.msRequestFullscreen) {
+      video.msRequestFullscreen();
+    }
+    else if(video.webkitEnterFullScreen) {
+      video.webkitEnterFullScreen();
+    }
+  }
   touchStart(e) {
     e.preventDefault();
     let self = this;
@@ -631,6 +649,8 @@ class Media extends migi.Component {
              onClick={ this.clickPlay }/>
           <b class={ 'lrc' + (this.lrc.is ? '' : ' fn-hide') + (this.lrcMode ? ' roll' : '') }
              onClick={ this.clickLrcMode }/>
+          <b class="full-screen"
+             onClick={ this.clickFullScreen }/>
         </div>
         <b class={ 'start' + (this.isPlaying ? ' fn-hide' : '') } onClick={ this.play }/>
         <div class="time">
