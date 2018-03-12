@@ -11,6 +11,23 @@
           color:@authorNameColor;
         }
       }
+      .quote{
+        display:inline-block;
+        box-sizing:border-box;
+        padding:0.05rem 0.1rem;
+        max-width:100%;
+        background:#F0F0F0;
+        border-radius:0.05rem;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        label{
+          vertical-align:middle;
+        }
+        span{
+          vertical-align:middle;
+        }
+      }
       > .t{
         position:relative;
         padding-right:1rem;
@@ -227,23 +244,6 @@
             background:#FFF;
             border:1px solid #D9D9D9;
             border-radius:0.1rem;
-            .quote{
-              display:inline-block;
-              box-sizing:border-box;
-              padding:0.05rem 0.1rem;
-              max-width:100%;
-              background:#F0F0F0;
-              border-radius:0.05rem;
-              white-space:nowrap;
-              overflow:hidden;
-              text-overflow:ellipsis;
-              label{
-                vertical-align:middle;
-              }
-              span{
-                vertical-align:middle;
-              }
-            }
             .arrow{
               position:absolute;
               right:0.1rem;

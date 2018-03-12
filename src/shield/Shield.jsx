@@ -7,6 +7,11 @@
 import net from '../common/net';
 import util from '../common/util';
 
+let loadingUser;
+let loadEndUser;
+let loadingCircle;
+let loadEndCircle;
+
 class Shield extends migi.Component {
   constructor(...data) {
     super(...data);

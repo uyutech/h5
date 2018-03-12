@@ -159,7 +159,9 @@ class Comments extends migi.Component {
       <Comment ref="comment"
                zanUrl="/h5/author/likeComment"
                subUrl="/h5/author/subCommentList"
-               delUrl="/h5/author/delComment"/>
+               delUrl="/h5/author/delComment"
+               on-chooseSubComment={ function(rid, cid, name, n) { this.emit('chooseSubComment', rid, cid, name, n) } }
+               on-closeSubComment={ function() { this.emit('closeSubComment') } }/>
     </div>;
   }
 }

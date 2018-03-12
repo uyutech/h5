@@ -214,7 +214,7 @@ class SubPost extends migi.Component {
           }, {
             title: '画圈正文'
           });
-          jsBridge.popWindow(res.data);
+          jsBridge.popWindow({ data: res.data, type: 'subPost' });
         }
         else {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
