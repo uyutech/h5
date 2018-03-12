@@ -115,7 +115,10 @@ jsBridge.ready(function() {
     let major = parseInt(version[0]) || 0;
     let minor = parseInt(version[1]) || 0;
     let patch = parseInt(version[2]) || 0;
-    if(minor < 6) {
+    if(minor < 5) {
+      old = true;
+    }
+    else if(patch < 3) {
       old = true;
     }
   }
