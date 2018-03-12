@@ -39,6 +39,10 @@ let jsBridge = {
       old = true;
     }
     if(old) {
+      if(key === 'setOptionMenu') {
+        value.img1 = value.icon1;
+        value.img2 = value.icon2;
+      }
       ZhuanQuanJsBridge.call(key, value, cb);
     }
     else {
