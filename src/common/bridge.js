@@ -16,6 +16,10 @@ if(/ app\/ZhuanQuan\/([\d.]+)/.test(ua)) {
   appVersion = / app\/ZhuanQuan\/([\d.]+)/.exec(ua)[1];
 }
 let ios = /iP(hone|od|ad)/.test(ua);
+let version = appVersion.split('.');
+let major = parseInt(version[0]) || 0;
+let minor = parseInt(version[1]) || 0;
+let patch = parseInt(version[2]) || 0;
 
 let jsBridge = {
   isInApp: / app\/ZhuanQuan/.test(ua),
@@ -27,22 +31,34 @@ let jsBridge = {
       cb = value;
       value = null;
     }
-    let clientId = new Date().getTime() + '' + Math.random();
-    if(cb && window.ZhuanQuanJsBridge) {
-      ZhuanQuanJsBridge.record(clientId, cb);
+    let old;
+    if(ios) {
+      old = true;
     }
-    ZhuanQuanJsBridgeNative.call(clientId, key, JSON.stringify(value));
+    else if(minor < 6) {
+      old = true;
+    }
+    if(old) {
+      ZhuanQuanJsBridge.call(key, value, cb);
+    }
+    else {
+      let clientId = new Date().getTime() + '' + Math.random();
+      if(cb && window.ZhuanQuanJsBridge) {
+        ZhuanQuanJsBridge.record(clientId, cb);
+      }
+      ZhuanQuanJsBridgeNative.call(clientId, key, JSON.stringify(value));
+    }
   },
   ready: function(cb) {
     cb = cb || function() {};
     if(this.isInApp) {
-      if(window.ZhuanQuanJsBridge) {
+      if(window.ZhuanQuanJSBridge) {
         jsBridge.android = ZhuanQuanJsBridge.android;
         jsBridge.ios = ZhuanQuanJsBridge.ios;
         cb();
       }
       else {
-        document.addEventListener('ZhuanQuanJsBridgeReady', function() {
+        document.addEventListener('ZhuanQuanJSBridgeReady', function() {
           jsBridge.android = ZhuanQuanJsBridge.android;
           jsBridge.ios = ZhuanQuanJsBridge.ios;
           cb();
