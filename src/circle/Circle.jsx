@@ -25,7 +25,7 @@ class Circle extends migi.Component {
       jsBridge.setOptionMenu({
         icon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAHlBMVEUAAACMvuGMvuGMvuGNveGMvuGNweOPwuuMvuKLveG52ByYAAAACXRSTlMA7+bFiGY1GfMKDs4PAAAASklEQVRIx2MYBSMZlIbjl2eTnJiAVwHzzJkGeBVwzJzZQK4JCDcQ9MUoAAInFfzyLDNnOuBVwDRzpgK5ChBWEHTkKBjNeqNgWAAAQowW2TR/xN0AAAAASUVORK5CYII=',
       });
-      jsBridge.on('optionMenu1', function() {console.log(1)
+      jsBridge.on('optionMenu1', function() {
         migi.eventBus.emit('BOT_FN', {
           canBlock: true,
           clickBlock: function(botFn) {

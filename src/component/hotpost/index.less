@@ -247,11 +247,14 @@
             }
             &.has{
               b{
-                background-image:url(../../icon/liked-s.png);
-              }
-              &:active b{
                 background-image:url(../../icon/liked-s-hover.png);
               }
+              &:active b{
+                background-image:url(../../icon/liked-s.png);
+              }
+            }
+            &.has{
+              color:#8BBDE1;
             }
           }
           &.comment{
@@ -296,6 +299,11 @@
   }
   .cp-quick-video,.cp-quick-audio{
     margin-top:0.1rem;
+  }
+  .cp-imageview{
+    .like{
+      display:none;
+    }
   }
 }
 

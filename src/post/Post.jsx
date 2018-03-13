@@ -46,6 +46,8 @@ class Post extends migi.Component {
     self.postData = data.postData;
     self.replyData = data.replyData;
 
+    loadEnd = self.replyData.Size < take;
+
     self.isLike = self.postData.ISLike;
     self.likeCount = self.postData.LikeCount;
     self.isFavor = self.postData.ISFavor;
@@ -492,7 +494,7 @@ class Post extends migi.Component {
                 if(item.CirclingList && item.CirclingList.length) {
                   return <li>
                     <a href={ '/circle.html?circleID=' + item.CirclingList[0].CirclingID }
-                       title={ item.CirclingList[0].CirclingName + '圈' }>{ item.CirclingList[0].CirclingName }圈</a>
+                       title={ item.CirclingList[0].CirclingName }>{ item.CirclingList[0].CirclingName }</a>
                   </li>;
                 }
                 return <li><span>{ item.TagName }</span></li>;

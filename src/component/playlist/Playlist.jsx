@@ -165,7 +165,7 @@ class Playlist extends migi.Component {
     }
     let temp = <li class={ item.ItemID === lastId ? 'cur' : '' }>
       <a href={ url } title={ item.ItemName || '待揭秘' } class="pic" item={ item }>
-        <img class="pic" src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
+        <img src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
       </a>
       <audio ref="audio"
              preload="meta"
@@ -196,6 +196,15 @@ class Playlist extends migi.Component {
   clearData() {
     $(this.ref.list.element).html('');
     last = lastId = null;
+  }
+  clickPic(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+      transparentTitle: true,
+    });
   }
   click(e, vd, tvd) {
     e.preventDefault();
@@ -272,7 +281,7 @@ class Playlist extends migi.Component {
   }
   render() {
     return <div class={ 'cp-playlist' + (this.visible ? '' : ' fn-hide') }
-                onClick={ { a: this.click } }>
+                onClick={ { '.pic': this.clickPic, '.name': this.click } }>
       <ol class="list" ref="list">
       {
         (this.dataList || []).map(function(item) {
