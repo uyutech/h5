@@ -30,11 +30,9 @@ class CommentWrap extends migi.Component {
       jsBridge.on('resume', function(e) {
         let data = e.data;
         if(data) {
+          self.ref.comment.prependData(data);
           if(data.rid) {
             self.ref.comment.prependChild(data);
-          }
-          else {
-            self.ref.comment.prependData(data);
           }
         }
       });
