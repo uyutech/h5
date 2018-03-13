@@ -64,10 +64,7 @@ class SubComment extends migi.Component {
       }, function(res) {
         if(res.success) {
           jsBridge.setPreference(self.getContentKey(), null);
-          // TODO: 无法区分留言为一级还是二级，特殊字段告知入口
-          res.data.cid = self.cid;
-          res.data.rid = self.rid;
-          jsBridge.popWindow(res.data);
+          jsBridge.popWindow({ type: 'subComment', data: res.data });
         }
         else {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);

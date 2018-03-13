@@ -92,11 +92,8 @@ class Post extends migi.Component {
     });
     jsBridge.on('resume', function(e) {
       let data = e.data;
-      if(data) {
-        self.ref.comment.prependData(data);
-        // if(data.rid) {
-        //   self.ref.comment.prependChild(data);
-        // }
+      if(data && data.type && data.type === 'subComment') {
+        self.ref.comment.prependData(data.data);
       }
     });
 
