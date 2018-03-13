@@ -43,12 +43,12 @@ let jsBridge = {
       old = true;
     }
     if(old) {
-      ZhuanQuanJsBridge.call(key, value, cb);
+      ZhuanQuanJSBridge.call(key, value, cb);
     }
     else {
       let clientId = new Date().getTime() + '' + Math.random();
-      if(cb && window.ZhuanQuanJsBridge) {
-        ZhuanQuanJsBridge.record(clientId, cb);
+      if(cb && window.ZhuanQuanJSBridge) {
+        ZhuanQuanJSBridge.record(clientId, cb);
       }
       ZhuanQuanJsBridgeNative.call(clientId, key, JSON.stringify(value));
     }
@@ -57,14 +57,14 @@ let jsBridge = {
     cb = cb || function() {};
     if(this.isInApp) {
       if(window.ZhuanQuanJSBridge) {
-        jsBridge.android = ZhuanQuanJsBridge.android;
-        jsBridge.ios = ZhuanQuanJsBridge.ios;
+        jsBridge.android = ZhuanQuanJSBridge.android;
+        jsBridge.ios = ZhuanQuanJSBridge.ios;
         cb();
       }
       else {
         document.addEventListener('ZhuanQuanJSBridgeReady', function() {
-          jsBridge.android = ZhuanQuanJsBridge.android;
-          jsBridge.ios = ZhuanQuanJsBridge.ios;
+          jsBridge.android = ZhuanQuanJSBridge.android;
+          jsBridge.ios = ZhuanQuanJSBridge.ios;
           cb();
         });
       }
