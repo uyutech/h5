@@ -171,6 +171,18 @@ class SubPost extends migi.Component {
     self.num = $vd.val().trim().length;
     let content = $vd.val().trim();
     self.invalid = content.length < 3 || content.length > MAX_TEXT_LENGTH;
+    if(self.invalid) {
+      jsBridge.setOptionMenu({
+        text: '发布',
+        textColor: '#000000',
+      });
+    }
+    else {
+      jsBridge.setOptionMenu({
+        text: '发布',
+        textColor: '#8BBDE1',
+      });
+    }
     self.warnLength = content.length > MAX_TEXT_LENGTH;
     jsBridge.setPreference(self.getContentKey(), content);
   }
@@ -194,6 +206,7 @@ class SubPost extends migi.Component {
         }
       }
       self.sending = true;
+      jsBridge.showLoading();
       let circleID = [];
       $(self.ref.circle.element).find('.on').each(function(i, li) {
         circleID.push($(li).attr('rel'));
@@ -202,6 +215,7 @@ class SubPost extends migi.Component {
         circleID.push(self.props.circleID);
       }
       net.postJSON('/h5/circle/post', { content: self.value, imgs, widths, heights, circleID: circleID.join(',') }, function(res) {
+        jsBridge.hideLoading();
         if(res.success) {
           self.value = '';
           self.invalid = true;
@@ -221,6 +235,7 @@ class SubPost extends migi.Component {
         }
         self.sending = false;
       }, function(res) {
+        jsBridge.hideLoading();
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
         self.sending = false;
       });
@@ -236,6 +251,9 @@ class SubPost extends migi.Component {
       return;
     }
     self.disableUpload = true;
+    let file = e.target.files[0];
+    console.log(file);
+    return;
     jsBridge.album(function(res) {
       if(res.success) {
         res = res.base64;
@@ -520,7 +538,9 @@ class SubPost extends migi.Component {
         <li class="tip">
           <div ref="tip" class="fn-hide" onClick={ this.clickTip }/>
         </li>
-        <li class="pic" onClick={ this.change }/>
+        <li class="pic">
+          <input type="file" onChange={ this.change }/>
+        </li>
       </ul>
     </form>;
   }

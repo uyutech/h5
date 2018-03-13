@@ -118,7 +118,7 @@ jsBridge.ready(function() {
     if(minor < 5) {
       old = true;
     }
-    else if(patch < 4) {
+    else if(minor === 5 && patch < 4) {
       old = true;
     }
   }
