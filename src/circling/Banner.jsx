@@ -18,13 +18,27 @@ class Banner extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    self.visible = self.props.visible;
     self.dataList = self.props.dataList || [];
     self.on(migi.Event.DOM, function() {
-      WIDTH = self.ref.list.element.querySelector('li').clientWidth;
+      let li = self.ref.list.element.querySelector('li');
+      if(li) {
+        WIDTH = li.clientWidth;
+      }
+      self.on(migi.Event.DATA, function() {
+        if(WIDTH) {
+          return;
+        }
+        let li = self.ref.list.element.querySelector('li');
+        if(li) {
+          WIDTH = li.clientWidth;
+        }
+      });
     });
   }
   @bind dataList;
   @bind index = 0;
+  @bind visible
   setOffset(x) {
     let $list = $(this.ref.list.element);
     $list.css('-moz-transform', 'translateX(-' + x + 'px)');
@@ -136,37 +150,34 @@ class Banner extends migi.Component {
       self.left();
     }
   }
+  click(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    let transparentTitle = tvd.props.transparentTitle;
+    jsBridge.pushWindow(url, {
+      title,
+      transparentTitle: transparentTitle,
+    });
+  }
   render() {
-    return <div class="mod-banner"
+    return <div class={ 'mod-banner' + (this.visible ? '' : ' fn-hide') }
                 onTouchStart={ this.start }
                 onTouchMove={ this.move }
                 onTouchEnd={ this.end }
-                onTouchCancel={ this.end }
-                onClick={ { a: this.click } }>
-      <ul class="list fn-clear" ref="list" style={ 'width:' + Math.max(1, this.dataList.length) * 64 + '%' }>
+                onTouchCancel={ this.end }>
+      <ul class="list fn-clear"
+          ref="list"
+          style={ 'width:' + Math.max(1, this.dataList.length) * 64 + '%' }
+          onClick={ { a: this.click } }>
         {
           (this.index, this.dataList).map(function(item, index) {
-            let url = '';
-            let cn = 'item';
-            switch(item.urltype) {
-              case 1:
-                url = '/works.html?worksId=' + item.urlid;
-                cn = 'works';
-                break;
-              case 2:
-                url = '/post.html?postID=' + item.urlid;
-                break;
-              case 3:
-                url = '/author.html?authorId=' + item.urlid;
-                cn = 'author';
-                break;
-              case 4:
-                url = '/user.html?userID=' + item.urlid;
-                break;
-            }
             return <li class={ index === this.index ? 'cur' : '' }>
-              <a href={ url } target="_blank" title={ item.Describe } class={ cn }>
-                <img src={ util.autoSsl(util.img750__80(item.coverpic)) || '/src/common/blank.png' }/>
+              <a href={ item.url }
+                 target="_blank"
+                 title={ item.title }
+                 transparentTitle={ item.transparentTitle }>
+                <img src={ util.autoSsl(util.img750__80(item.cover)) || '/src/common/blank.png' }/>
               </a>
             </li>;
           }.bind(this))
@@ -175,7 +186,8 @@ class Banner extends migi.Component {
       <ul class="tags" ref="tags" onClick={ { li: this.clickTag } }>
         {
           (this.index, this.dataList).map(function(item, index) {
-            return <li class={ index === this.index ? 'cur' : '' } rel={ index }>{ index + 1 }</li>;
+            return <li class={ index === this.index ? 'cur' : '' }
+                       rel={ index }>{ index + 1 }</li>;
           }.bind(this))
         }
       </ul>
