@@ -127,7 +127,7 @@ class MyFavor extends migi.Component {
     }
     loading = true;
     cp.message = '正在加载...';
-    net.postJSON('/h5/my/favorMV', { skip: s, take: t, type }, function(res) {
+    net.postJSON('/h5/my/favorType', { skip: s, take: t, type }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;

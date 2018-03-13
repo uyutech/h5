@@ -168,7 +168,7 @@ class Banner extends migi.Component {
                 onTouchCancel={ this.end }>
       <ul class="list fn-clear"
           ref="list"
-          style={ 'width:' + Math.max(1, this.dataList.length) * 64 + '%' }
+          style={ 'width:' + Math.max(1, this.dataList.length) * 100 + '%' }
           onClick={ { a: this.click } }>
         {
           (this.index, this.dataList).map(function(item, index) {
