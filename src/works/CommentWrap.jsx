@@ -31,9 +31,9 @@ class CommentWrap extends migi.Component {
         let data = e.data;
         if(data) {
           self.ref.comment.prependData(data);
-          if(data.rid) {
-            self.ref.comment.prependChild(data);
-          }
+          // if(data.rid) {
+          //   self.ref.comment.prependChild(data);
+          // }
         }
       });
     });

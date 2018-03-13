@@ -47,12 +47,10 @@ class Comments extends migi.Component {
     jsBridge.on('resume', function(e) {
       let data = e.data;
       if(data) {
-        if(data.RootID > 0) {
-          self.ref.comment.prependChild(data);
-        }
-        else {
-          self.ref.comment.prependData(data);
-        }
+        self.ref.comment.prependData(data);
+        // if(data.rid) {
+        //   self.ref.comment.prependChild(data);
+        // }
       }
     });
   }
