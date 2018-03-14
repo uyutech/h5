@@ -278,16 +278,38 @@ let jsBridge = {
     }
   },
   getPreference: function(key, cb) {
-    this.call('getPreference', key, cb);
+    if(this.isInApp) {
+      this.call('getPreference', key, cb);
+    }
+    else {
+      cb(JSON.parse(localStorage[key] || 'null'));
+    }
   },
   setPreference: function(key, value, cb) {
-    if(value === undefined) {
-      value = null;
+    if(this.isInApp) {
+      if(value === undefined) {
+        value = null;
+      }
+      if(isString(value)) {
+        value = JSON.stringify(value);
+      }
+      this.call('setPreference', { key, value }, cb);
     }
-    if(isString(value)) {
-      value = JSON.stringify(value);
+    else {
+      if(value === undefined) {
+        value = null;
+      }
+      if(isString(value)) {
+        value = JSON.stringify(value);
+      }
+      if(value === null) {
+        delete localStorage[key];
+      }
+      else {
+        location[key] = value;
+      }
+      cb();
     }
-    this.call('setPreference', { key, value }, cb);
   },
   delPreference: function(key, cb) {
     this.call('delPreference', { key, value: null }, cb);
