@@ -43,6 +43,9 @@ let jsBridge = {
       old = true;
     }
     if(old) {
+      if(key === 'popWindow') {
+        value = JSON.stringify(value);
+      }
       ZhuanQuanJSBridge.call(key, value, cb);
     }
     else {
