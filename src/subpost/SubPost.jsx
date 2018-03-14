@@ -174,7 +174,7 @@ class SubPost extends migi.Component {
     if(self.invalid) {
       jsBridge.setOptionMenu({
         text: '发布',
-        textColor: '#000000',
+        textColor: '#333333',
       });
     }
     else {
@@ -251,9 +251,6 @@ class SubPost extends migi.Component {
       return;
     }
     self.disableUpload = true;
-    let file = e.target.files[0];
-    console.log(file);
-    return;
     jsBridge.album(function(res) {
       if(res.success) {
         res = res.base64;
@@ -538,9 +535,7 @@ class SubPost extends migi.Component {
         <li class="tip">
           <div ref="tip" class="fn-hide" onClick={ this.clickTip }/>
         </li>
-        <li class="pic">
-          <input type="file" onChange={ this.change }/>
-        </li>
+        <li class="pic" onClick={ this.change }/>
       </ul>
     </form>;
   }

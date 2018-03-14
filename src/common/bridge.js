@@ -278,13 +278,19 @@ let jsBridge = {
     }
   },
   getPreference: function(key, cb) {
-    this.getCache(key, cb);
+    this.call('getPreference', key, cb);
   },
   setPreference: function(key, value, cb) {
-    this.setCache(key, value, cb);
+    if(value === undefined) {
+      value = null;
+    }
+    if(isString(value)) {
+      value = JSON.stringify(value);
+    }
+    this.call('setPreference', { key, value }, cb);
   },
   delPreference: function(key, cb) {
-    this.delCache(key, cb);
+    this.call('delPreference', { key, value: null }, cb);
   },
   setCache: function(key, value, cb) {
     cb = cb || function() {};
