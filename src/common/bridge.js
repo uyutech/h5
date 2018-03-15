@@ -46,7 +46,9 @@ let jsBridge = {
       if(key === 'popWindow') {
         value = JSON.stringify(value);
       }
-      ZhuanQuanJSBridge.call(key, value, cb);
+      if(window.ZhuanQuanJSBridge) {
+        ZhuanQuanJSBridge.call(key, value, cb);
+      }
     }
     else {
       let clientId = new Date().getTime() + '' + Math.random();
