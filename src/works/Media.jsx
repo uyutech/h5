@@ -25,12 +25,12 @@ class Media extends migi.Component {
     self.lrcIndex = 0;
     self.on(migi.Event.DOM, function() {
       WIDTH = $(window).width();
-      if(jsBridge.appVersion && jsBridge.android) {
+      if(jsBridge.appVersion) {
         let version = jsBridge.appVersion.split('.');
         let major = parseInt(version[0]) || 0;
         let minor = parseInt(version[1]) || 0;
         let patch = parseInt(version[2]) || 0;
-        if(major > 0 || minor > 4) {
+        if(jsBridge.android && (major > 0 || minor > 4) || jsBridge.ios && (major > 0 || minor > 5)) {
           mediaService = true;
           jsBridge.on('mediaPrepared', function(e) {
             if(self.data && e.data && e.data.id === self.data.workId.toString()) {
