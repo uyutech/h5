@@ -407,7 +407,7 @@ class Post extends migi.Component {
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
         return `<a href="tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
       })
-      .replace(/@\/(\w+)\/(\d+)\/?(\d+)?/g, function($0, $1, $2, $3) {
+      .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(\s|$)/g, function($0, $1, $2, $3) {
         switch($1) {
           case 'works':
             if($3) {
@@ -466,7 +466,6 @@ class Post extends migi.Component {
       });
     }
     return <div>
-      <h2>{ postData.Title }</h2>
       <div class={ 'profile fn-clear' + (postData.IsAuthor ? ' author' : '') }>
         {
           postData.IsAuthor

@@ -515,6 +515,11 @@ let jsBridge = {
       this.call('setBack', data);
     }
   },
+  shareWb: function(data, cb) {
+    if(this.isInApp) {
+      this.call('shareWb', data, cb);
+    }
+  },
 };
 
 window.jsBridge = jsBridge;

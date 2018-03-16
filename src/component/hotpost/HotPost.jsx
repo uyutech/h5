@@ -214,7 +214,7 @@ class HotPost extends migi.Component {
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
         return `<a href="tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
       })
-      .replace(/@\/(\w+)\/(\d+)\/?(\d+)?/g, function($0, $1, $2, $3) {
+      .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(\s|$)/g, function($0, $1, $2, $3) {
         switch($1) {
           case 'works':
             if($3) {
