@@ -52,7 +52,9 @@ let jsBridge = {
     }
     else {
       if(key === 'getPreference') {
-        key = { key };
+        value = {
+          key: value,
+        };
       }
       let clientId = new Date().getTime() + '' + Math.random();
       if(cb && window.ZhuanQuanJSBridge) {
