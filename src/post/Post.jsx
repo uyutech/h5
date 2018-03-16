@@ -407,6 +407,22 @@ class Post extends migi.Component {
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
         return `<a href="tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
       })
+      .replace(/@\/(\w+)\/(\d+)\/?(\d+)?/g, function($0, $1, $2, $3) {
+        switch($1) {
+          case 'works':
+            if($3) {
+              return `<a href="${$1}.html?worksId=${$2}&workId=${$3}" transparentTitle="true">${$0}</a>`;
+            }
+            return `<a href="${$1}.html?worksId=${$2}" transparentTitle="true">${$0}</a>`;
+          case 'post':
+            return `<a href="${$1}.html?postID=${$2}" title="画圈正文">${$0}</a>`;
+          case 'author':
+            return `<a href="${$1}.html?authorId=${$2}" transparentTitle="true">${$0}</a>`;
+          case 'user':
+            return `<a href="${$1}.html?userID=${$2}" transparentTitle="true">${$0}</a>`;
+        }
+        return $0;
+      })
       .replace(/(http(?:s)?:\/\/[\w-]+\.[\w]+\S*)/gi, '<a href="$1" target="_blank">$1</a>');
     let replyData = self.replyData;
     let mediaList = postData.CommentMedia || [];

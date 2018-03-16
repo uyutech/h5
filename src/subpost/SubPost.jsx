@@ -170,18 +170,21 @@ class SubPost extends migi.Component {
     self.num = $vd.val().length;
     self.num = $vd.val().trim().length;
     let content = $vd.val().trim();
+    let oldInvalid = self.invalid;
     self.invalid = content.length < 3 || content.length > MAX_TEXT_LENGTH;
-    if(self.invalid) {
-      jsBridge.setOptionMenu({
-        text: '发布',
-        textColor: '#333333',
-      });
-    }
-    else {
-      jsBridge.setOptionMenu({
-        text: '发布',
-        textColor: '#8BBDE1',
-      });
+    if(oldInvalid !== self.invalid) {
+      if(self.invalid) {
+        jsBridge.setOptionMenu({
+          text: '发布',
+          textColor: '#333333',
+        });
+      }
+      else {
+        jsBridge.setOptionMenu({
+          text: '发布',
+          textColor: '#8BBDE1',
+        });
+      }
     }
     self.warnLength = content.length > MAX_TEXT_LENGTH;
     jsBridge.setPreference(self.getContentKey(), content);

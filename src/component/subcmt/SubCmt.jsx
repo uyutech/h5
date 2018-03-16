@@ -61,12 +61,20 @@ class SubCmt extends migi.Component {
   }
   render() {
     return <div class={ 'cp-subcmt' + (!this.hidden ? '' : ' fn-hide') }>
-      <form class={ 'fn-clear' + (this.to || this.originTo ? ' to' : '') } ref="form" onSubmit={ this.submit } onClick={ this.click }>
+      <form class={ this.to || this.originTo ? ' to' : '' }
+            ref="form"
+            onSubmit={ this.submit }
+            onClick={ this.click }>
         <label>TO: { this.to || this.originTo }</label>
-        <b class={ 'del' + (this.to ? '' : ' fn-hide') } onClick={ this.clickDel }/>
-        <input type="text" class="text" ref="input" placeholder={ this.to ? ('回复' + this.to + (this.toPlaceholder || '的评论')) : this.placeholder }
+        <b class={ 'del' + (this.to ? '' : ' fn-hide') }
+           onClick={ this.clickDel }/>
+        <input type="text"
+               class="text"
+               ref="input"
+               placeholder={ this.to ? ('回复' + this.to + (this.toPlaceholder || '的评论')) : this.placeholder }
                onInput={ this.input } onFocus={ this.onFocus } maxlength={ this.maxlength || 2048 }
-               value={ this.value } readonly={ this.readOnly}/>
+               value={ this.value }
+               readonly={ this.readOnly}/>
         <input type="submit"
                class={ 'submit' + (this.invalid ? ' dis' : '') }
                value={ this.value.trim().length

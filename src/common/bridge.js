@@ -51,6 +51,9 @@ let jsBridge = {
       }
     }
     else {
+      if(key === 'getPreference') {
+        key = { key };
+      }
       let clientId = new Date().getTime() + '' + Math.random();
       if(cb && window.ZhuanQuanJSBridge) {
         ZhuanQuanJSBridge.record(clientId, cb);
@@ -310,7 +313,7 @@ let jsBridge = {
       else {
         location[key] = value;
       }
-      cb();
+      cb && cb();
     }
   },
   delPreference: function(key, cb) {

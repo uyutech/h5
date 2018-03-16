@@ -86,7 +86,15 @@ class Circling extends migi.Component {
     loadEnd = skip >= data.postList.Size;
 
     let hotPost = self.ref.hotPost;
-    hotPost.setData(data.postList.data);
+    let postList = [];
+    if(data.top1 && data.top1.data) {
+      postList = data.top1.data || [];
+    }
+    if(data.top2 && data.top2.data) {
+      postList = postList.concat(data.top2.data || []);
+    }
+    postList = postList.concat(data.postList.data || []);
+    hotPost.setData(postList);
     hotPost.message = '';
 
     let banner = self.ref.banner;
@@ -133,7 +141,15 @@ class Circling extends migi.Component {
       if(res.success) {
         let data = res.data;
         skip += take;
-        hotPost.appendData(data.data);
+        let postList = [];
+        if(data.top1 && data.top1.data) {
+          postList = data.top1.data || [];
+        }
+        if(data.top2 && data.top2.data) {
+          postList = postList.concat(data.top2.data || []);
+        }
+        postList = postList.concat(data.postList.data || []);
+        hotPost.appendData(postList);
         if(skip >= data.Size) {
           loadEnd = true;
           hotPost.message = '已经到底了';
