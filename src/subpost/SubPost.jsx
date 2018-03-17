@@ -40,6 +40,7 @@ class SubPost extends migi.Component {
       };
     }
     self.on(migi.Event.DOM, function() {
+      jsBridge.setOptionMenu('发布');
       jsBridge.getPreference(self.getImgKey(), function(cache) {
         if(cache) {
           let temp = [];
@@ -107,7 +108,7 @@ class SubPost extends migi.Component {
         let data = res.data;
         self.userName = data.uname;
         self.userHead = data.head;
-        self.isPublic = !!data.isPublic;
+        self.isPublic = data.isPublic;
         self.authorName = data.authorName;
         self.authorHead = data.authorHead;
         self.isAuthor = !!data.authorId;
@@ -229,7 +230,7 @@ class SubPost extends migi.Component {
       if(self.props.circleID && circleID.indexOf(self.props.circleID) === -1) {
         circleID.push(self.props.circleID);
       }
-      net.postJSON('/h5/circle/post', { content: self.value, imgs, widths, heights, circleID: circleID.join(','), workId: self.workData.workId, }, function(res) {
+      net.postJSON('/h5/circle/post', { content: self.value, imgs, widths, heights, circleID: circleID.join(','), workId: self.workData && self.workData.workId, }, function(res) {
         jsBridge.hideLoading();
         if(res.success) {
           self.value = '';
@@ -265,10 +266,8 @@ class SubPost extends migi.Component {
       jsBridge('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
       return;
     }
-    let num = MAX_IMG_NUM - self.imgNum;
-    num = Math.min(3, num);
     self.disableUpload = true;
-    jsBridge.album({ num }, function(res) {
+    jsBridge.album(function(res) {
       if(res.success) {
         res = res.base64;
         if(!Array.isArray(res)) {

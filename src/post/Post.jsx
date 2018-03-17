@@ -70,6 +70,7 @@ class Post extends migi.Component {
     $root.on('click', '.comment', function() {
       jsBridge.pushWindow('/subcomment.html?type=1&id=' + self.postID, {
         title: '评论',
+        optionMenu: '发布',
       });
     });
 
@@ -383,6 +384,7 @@ class Post extends migi.Component {
     jsBridge.pushWindow('/subcomment.html?type=1&id='
       + self.postID + '&cid=' + (cId || '') + '&rid=' + (rId || ''), {
       title: '评论',
+      optionMenu: '发布',
     });
   }
   chooseSubComment(rid, cid, name, n) {
@@ -391,6 +393,7 @@ class Post extends migi.Component {
       jsBridge.pushWindow('/subcomment.html?type=1&id='
         + self.postID + '&cid=' + cid + '&rid=' + rid, {
         title: '评论',
+        optionMenu: '发布',
       });
     }
     cId = cid;

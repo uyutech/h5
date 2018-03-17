@@ -14,7 +14,6 @@
   flex:1;
   display:flex;
   flex-direction:column;
-  padding:0.1rem;
   min-height:100%;
   > .ti{
     position:relative;
@@ -56,12 +55,12 @@
     flex:1;
     display:flex;
     flex-direction:column;
-    margin-top:0.1rem;
-    padding:0.1rem;
+    margin:0.05rem 0.1rem;
+    padding: 0.05rem 0.08rem;
     min-height:0.84rem;
-    background:#f7f9fb;
-    border-radius:0.1rem;
-    border:1px solid @secondTextColor;
+    background:#F7F7F7;
+    border-radius:0.05rem;
+    border:1px solid @mainColor;
     .text{
       display:block;
       flex:1;
@@ -76,6 +75,45 @@
       }
       &.dis{
         opacity:0.7;
+      }
+    }
+    .limit{
+      position:relative;
+      font-size:0.11rem;
+      color:#B9B9B9;
+      strong{
+        font-weight:400;
+      }
+      &.warn{
+        color:@mainColor;
+        strong{
+          color:#F00;
+        }
+      }
+      .alt{
+        position:absolute;
+        right:0;
+        bottom:0;
+        display:flex;
+        align-items:center;
+        b{
+          width:0.18rem;
+          height:0.18rem;
+          background:url(../subpost/alt.png) no-repeat center;
+          background-size:contain;
+        }
+        img{
+          margin-left:0.05rem;
+          width:0.24rem;
+          height:0.24rem;
+          border-radius:100%;
+        }
+        span{
+          flex:1;
+          margin-left:0.05rem;
+          color:#636365;
+          transform:scale(0.917);
+        }
       }
     }
   }

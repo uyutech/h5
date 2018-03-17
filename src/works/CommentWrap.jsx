@@ -158,6 +158,7 @@ class CommentWrap extends migi.Component {
       jsBridge.pushWindow('/subcomment.html?type=3&id='
         + self.worksId + '&cid=' + cid + '&rid=' + rid, {
         title: '评论',
+        optionMenu: '发布',
       });
     }
   }

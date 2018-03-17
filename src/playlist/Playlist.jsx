@@ -202,6 +202,7 @@ class Playlist extends migi.Component {
           jsBridge.pushWindow('/subcomment.html?type=3&id='
             + media.data.worksId + '&sid=' + media.data.workId, {
             title: '评论',
+            optionMenu: '发布',
           });
         }
       });

@@ -385,6 +385,7 @@ class Music extends migi.Component {
     jsBridge.pushWindow('/subcomment.html?type=3&id='
       + self.worksId + '&sid=' + self.workId, {
       title: '评论',
+      optionMenu: '发布',
     });
   }
   render() {

@@ -103,6 +103,7 @@ class Author extends migi.Component {
       jsBridge.pushWindow('/subcomment.html?type=2&id='
         + self.authorId + '&cid=' + cid + '&rid=' + rid, {
         title: '评论',
+        optionMenu: '发布',
       });
     }
   }
@@ -116,11 +117,13 @@ class Author extends migi.Component {
       jsBridge.pushWindow('/subcomment.html?type=2&id='
         + self.authorId + '&cid=' + self.cid + '&rid=' + self.rid, {
         title: '评论',
+        optionMenu: '发布',
       });
     }
     else {
       jsBridge.pushWindow('/subcomment.html?type=2&id=' + self.authorId, {
         title: '评论',
+        optionMenu: '发布',
       });
     }
   }

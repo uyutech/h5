@@ -29,4 +29,5 @@ jsBridge.ready(function() {
   subComment.type = type;
   subComment.rid = rid;
   subComment.cid = cid;
+  subComment.init();
 });

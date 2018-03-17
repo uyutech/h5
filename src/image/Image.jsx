@@ -233,6 +233,7 @@ class Image extends migi.Component {
     jsBridge.pushWindow('/subcomment.html?type=3&id='
       + self.worksId, {
       title: '评论',
+      optionMenu: '发布',
     });
   }
   share() {
