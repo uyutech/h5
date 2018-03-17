@@ -319,7 +319,7 @@ let jsBridge = {
     }
   },
   delPreference: function(key, cb) {
-    this.call('delPreference', { key, value: null }, cb);
+    this.call('setPreference', { key, value: null }, cb);
   },
   setCache: function(key, value, cb) {
     cb = cb || function() {};

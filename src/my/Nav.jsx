@@ -111,8 +111,8 @@ class Nav extends migi.Component {
       if(res.success) {
         let newSign = res.value;
         let length = newSign.length;
-        if(length > 16) {
-          jsBridge.toast('签名长度不能超过16个字哦~');
+        if(length > 45) {
+          jsBridge.toast('签名长度不能超过45个字哦~');
           return;
         }
         if(newSign !== self.sign) {
