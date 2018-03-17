@@ -27,7 +27,7 @@ class Step1 extends migi.Component {
     }
   }
   input(e, vd) {
-    this.dis = $(vd.element).val().length < 4;
+    this.dis = $(vd.element).val().length < 2;
   }
   next() {
     let self = this;
@@ -65,7 +65,7 @@ class Step1 extends migi.Component {
         <b class="icon"/>
         <h2>欢迎来到转圈</h2>
         <h4>{ this.authorState === 2 ? '给马甲想个名字吧！' : '我是圈儿，请问该怎么称呼你呢？' }</h4>
-        <input type="text" class="name" placeholder="不得少于4个字哦~" maxLength="8" onInput={ this.input } value={ this.nickName }/>
+        <input type="text" class="name" placeholder="不得少于2个字哦~" maxLength="8" onInput={ this.input } value={ this.nickName }/>
         <p class="qsex">请问是汉子还是妹子呢？</p>
         <ul class="sex" onClick={ { li: this.click } }>
           <li class={ 'male' + (this.sex === 1 ? ' cur' : '') } rel={ 1 }><span>汉子</span></li>

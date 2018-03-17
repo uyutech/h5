@@ -81,8 +81,8 @@ class Nav extends migi.Component {
       if(res.success) {
         let newName = res.value;
         let length = newName.length;
-        if(length < 4 || length > 8) {
-          jsBridge.toast('昵称长度需要在4~8个字之间哦~');
+        if(length < 2 || length > 8) {
+          jsBridge.toast('昵称长度需要在2~8个字之间哦~');
           return;
         }
         if(newName !== self.userName) {
