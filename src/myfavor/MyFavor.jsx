@@ -32,7 +32,7 @@ class MyFavor extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  @bind type = 1
+  @bind type = 4
   init() {
     let self = this;
     net.postJSON('/h5/my/favor', function(res) {
@@ -194,28 +194,28 @@ class MyFavor extends migi.Component {
       return;
     }
     self.type = tvd.props.rel;
-    self.ref.waterFall.pause = self.type !== 3;
-    if(self.type === 3) {
+    self.ref.waterFall.pause = self.type !== 2;
+    if(self.type === 2) {
       self.ref.waterFall.checkPool();
     }
   }
   render() {
     return <div class="myfavor">
       <ul class="type" ref="type" onClick={ { span: this.click } }>
-        <li><span class={ this.type === 1 ? 'cur' : '' } rel={ 1 }>视频</span></li>
-        <li><span class={ this.type === 2 ? 'cur' : '' } rel={ 2 }>音乐</span></li>
-        <li><span class={ this.type === 3 ? 'cur' : '' } rel={ 3 }>图片</span></li>
-        <li><span class={ this.type === 4 ? 'cur' : '' } rel={ 4 }>画圈</span></li>
+        <li><span class={ this.type === 4 ? 'cur' : '' } rel={ 4 }>视频</span></li>
+        <li><span class={ this.type === 1 ? 'cur' : '' } rel={ 1 }>音乐</span></li>
+        <li><span class={ this.type === 2 ? 'cur' : '' } rel={ 2 }>图片</span></li>
+        <li><span class={ this.type === 3 ? 'cur' : '' } rel={ 3 }>画圈</span></li>
       </ul>
       <VideoList ref="videoList"
-                 @visible={ this.type === 1 }/>
+                 @visible={ this.type === 4 }/>
       <Playlist ref="playlist"
-                @visible={ this.type === 2 }/>
+                @visible={ this.type === 1 }/>
       <WaterFall ref="waterFall"
                  pause={ true }
-                 @visible={ this.type === 3 }/>
+                 @visible={ this.type === 2 }/>
       <HotPost ref="hotPost"
-               @visible={ this.type === 4 }/>
+               @visible={ this.type === 3 }/>
     </div>;
   }
 }
