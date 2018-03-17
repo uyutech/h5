@@ -46,10 +46,10 @@ class Nav extends migi.Component {
   }
   clickPic() {
     let self = this;
-    if(self.updateHeadTimeDiff < 24 * 60 * 60 * 1000) {
-      jsBridge.toast('头像一天只能修改一次哦~');
-      return;
-    }
+    // if(self.updateHeadTimeDiff < 24 * 60 * 60 * 1000) {
+    //   jsBridge.toast('头像一天只能修改一次哦~');
+    //   return;
+    // }
     jsBridge.album(function(res) {
       if(res.success) {
         let img = Array.isArray(res.base64) ? res.base64[0] : res.base64;
