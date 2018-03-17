@@ -9,6 +9,7 @@ import util from '../common/util';
 
 let last;
 let isPlaying;
+let mediaService;
 
 class VideoList extends migi.Component {
   constructor(...data) {
@@ -19,6 +20,17 @@ class VideoList extends migi.Component {
     if(self.props.visible !== undefined) {
       self.visible = self.props.visible;
     }
+    self.on(migi.Event.DOM, function() {
+      if(jsBridge.appVersion) {
+        let version = jsBridge.appVersion.split('.');
+        let major = parseInt(version[0]) || 0;
+        let minor = parseInt(version[1]) || 0;
+        let patch = parseInt(version[2]) || 0;
+        if(jsBridge.android && (major > 0 || minor > 4) || jsBridge.ios && (major > 0 || minor > 5)) {
+          mediaService = true;
+        }
+      }
+    });
   }
   @bind message
   @bind visible = true
@@ -103,6 +115,11 @@ class VideoList extends migi.Component {
       video.element.src = dvd.props.src;
       video.element.play();
       isPlaying = true;
+      if(mediaService) {
+        jsBridge.media({
+          key: 'stop',
+        });
+      }
       return;
     }
     let url = tvd.props.href;

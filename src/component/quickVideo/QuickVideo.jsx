@@ -6,6 +6,8 @@
 
 import util from '../../common/util';
 
+let mediaService;
+
 class QuickVideo extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -14,6 +16,17 @@ class QuickVideo extends migi.Component {
     self.sName = self.props.name;
     self.playCount = self.props.playCount;
     self.url = self.props.url;
+    self.on(migi.Event.DOM, function() {
+      if(jsBridge.appVersion) {
+        let version = jsBridge.appVersion.split('.');
+        let major = parseInt(version[0]) || 0;
+        let minor = parseInt(version[1]) || 0;
+        let patch = parseInt(version[2]) || 0;
+        if(jsBridge.android && (major > 0 || minor > 4) || jsBridge.ios && (major > 0 || minor > 5)) {
+          mediaService = true;
+        }
+      }
+    });
   }
   @bind cover
   @bind sName
@@ -41,6 +54,11 @@ class QuickVideo extends migi.Component {
     let video = self.ref.video;
     video.element.play();
     self.emit('play');
+    if(mediaService) {
+      jsBridge.media({
+        key: 'stop',
+      });
+    }
   }
   pause() {
     let self = this;
