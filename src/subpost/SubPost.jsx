@@ -6,6 +6,7 @@
 
 import net from '../common/net';
 import util from '../common/util';
+import Spark from 'spark-md5';
 
 const STATE = {
   LOADING: 0,
@@ -38,6 +39,23 @@ class SubPost extends migi.Component {
         cover: self.props.cover,
         workId: self.props.workId,
       };
+    }
+    if(jsBridge.appVersion) {
+      let version = jsBridge.appVersion.split('.');
+      let major = parseInt(version[0]) || 0;
+      let minor = parseInt(version[1]) || 0;
+      let patch = parseInt(version[2]) || 0;
+      if(jsBridge.android) {
+        if(major > 1 || minor > 5) {
+          self.orginImage = true;
+        }
+      }
+      else {
+        self.orginImage = true;
+      }
+    }
+    else {
+      self.orginImage = true;
     }
     self.on(migi.Event.DOM, function() {
       jsBridge.setOptionMenu('发布');
@@ -101,6 +119,7 @@ class SubPost extends migi.Component {
   @bind authorName
   @bind authorHead
   @bind isPublic
+  @bind orginImage
   init(circleID, tag) {
     let self = this;
     net.postJSON('/h5/subpost/index', { circleID }, function(res) {
@@ -257,8 +276,11 @@ class SubPost extends migi.Component {
       });
     }
   }
-  change(e, vd) {
+  album(e, vd) {
     let self = this;
+    if(self.orginImage) {
+      return;
+    }
     if(self.disableUpload) {
       return;
     }
@@ -354,6 +376,26 @@ class SubPost extends migi.Component {
         self.disableUpload = false;
       }
     });
+  }
+  change(e) {
+    let files = e.target.files;
+    for(let i = 0, len = files.length; i < len; i++) {
+      let file = files[i];
+      let size = file.size;
+      if(size && size !== 0 && size <= 1024 * 1024 * 10) {
+        let fileReader = new FileReader();
+        fileReader.onload = function() {
+          let spark = new Spark();
+          spark.append(fileReader.result);
+          let md5 = spark.end();
+          console.log(md5);
+        };
+        fileReader.readAsArrayBuffer(file);
+      }
+      else {
+        jsBridge.toast('图片体积太大了，不能超过10m！');
+      }
+    }
   }
   getImgKey() {
     return '_circle_img';
@@ -560,7 +602,9 @@ class SubPost extends migi.Component {
         <li class="tip">
           <div ref="tip" class="fn-hide" onClick={ this.clickTip }/>
         </li>
-        <li class="pic" onClick={ this.change }/>
+        <li class="pic" onClick={ this.album }>
+          <input type="file" class={ this.orginImage ? '' : ' fn-hide' } onChange={ this.change }/>
+        </li>
       </ul>
     </form>;
   }
