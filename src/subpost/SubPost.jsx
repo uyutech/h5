@@ -40,24 +40,24 @@ class SubPost extends migi.Component {
         workId: self.props.workId,
       };
     }
-    if(jsBridge.appVersion) {
-      let version = jsBridge.appVersion.split('.');
-      let major = parseInt(version[0]) || 0;
-      let minor = parseInt(version[1]) || 0;
-      let patch = parseInt(version[2]) || 0;
-      if(jsBridge.android) {
-        if(major > 1 || minor > 5) {
+    self.on(migi.Event.DOM, function() {
+      if(jsBridge.appVersion) {
+        let version = jsBridge.appVersion.split('.');
+        let major = parseInt(version[0]) || 0;
+        let minor = parseInt(version[1]) || 0;
+        let patch = parseInt(version[2]) || 0;
+        if(jsBridge.android) {
+          if(major > 1 || minor > 5) {
+            self.orginImage = true;
+          }
+        }
+        else {
           self.orginImage = true;
         }
       }
       else {
         self.orginImage = true;
       }
-    }
-    else {
-      self.orginImage = true;
-    }
-    self.on(migi.Event.DOM, function() {
       jsBridge.setOptionMenu('发布');
       jsBridge.getPreference(self.getImgKey(), function(cache) {
         if(cache) {
@@ -378,19 +378,116 @@ class SubPost extends migi.Component {
     });
   }
   change(e) {
+    let self = this;
+    if(self.disableUpload) {
+      return;
+    }
+    if(self.imgNum >= MAX_IMG_NUM) {
+      jsBridge('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
+      return;
+    }
+    self.disableUpload = true;
     let files = e.target.files;
+    let count = 0;
     for(let i = 0, len = files.length; i < len; i++) {
       let file = files[i];
       let size = file.size;
-      if(size && size !== 0 && size <= 1024 * 1024 * 10) {
+      let suffix;
+      switch(file.type) {
+        case 'image/png':
+          suffix = '.png';
+          break;
+        case 'image/gif':
+          suffix = '.gif';
+          break;
+        case 'image/jpeg':
+          suffix = '.jpg';
+          break;
+      }
+      if(size && size !== 0 && size <= 10485760) {
         let fileReader = new FileReader();
         fileReader.onload = function() {
           let spark = new Spark();
           spark.append(fileReader.result);
           let md5 = spark.end();
-          console.log(md5);
+          let has;
+          for(let i = 0, len = self.list.length; i < len; i++) {
+            if(self.list[i].md5 === md5) {
+              has = true;
+              break;
+            }
+          }
+          if(has) {
+            jsBridge.toast('选择的图片已存在');
+            return;
+          }
+          let index = self.list.length;
+          self.list.push({
+            url: fileReader.result,
+            state: STATE.LOADING,
+          });
+          let node = document.createElement('img');
+          node.style.position = 'absolute';
+          node.style.left = '-9999rem';
+          node.style.top = '-9999rem';
+          node.src = self.list[index].url;
+          node.onload = function() {
+            self.list[index].width = node.width;
+            self.list[index].height = node.height;
+            document.body.removeChild(node);
+          };
+          document.body.appendChild(node);
+          net.postJSON('/h5/my/sts', { name: md5 + suffix }, function(res) {
+            if(res.success) {
+              let data = res.data;
+              if(data.exist) {
+                self.list[index].url = '//zhuanquan.xyz/pic/' + md5 + suffix;
+                self.list[index].state = STATE.LOADED;
+                self.list = self.list;
+                count++;
+                if(count === len) {
+                  self.disableUpload = false;
+                  self.imgNum = self.list.length;
+                }
+                return;
+              }
+              let name = md5 + suffix;
+              let key = data.prefix + name;
+              let policy = data.policy;
+              let signature = data.signature;
+              let host = data.host;
+              let accessKeyId = data.accessKeyId;
+              let form = new FormData();
+              form.append('key', key);
+              form.append('OSSAccessKeyId', accessKeyId);
+              form.append('success_action_status', 200);
+              form.append('policy', policy);
+              form.append('signature', signature);
+              form.append('file', file);
+              let xhr = new XMLHttpRequest();
+              xhr.open('post', host, true);
+              xhr.onload = function() {
+                if(xhr.status === 200) {
+                  self.list[index].url = '//zhuanquan.xyz/pic/' + md5 + suffix;
+                  self.list[index].state = STATE.LOADED;
+                  self.list = self.list;
+                  count++;
+                  if(count === len) {
+                    self.disableUpload = false;
+                    self.imgNum = self.list.length;
+                  }
+                }
+              };
+              xhr.send(form);
+            }
+            else {
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            }
+          }, function(res) {
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          });
         };
-        fileReader.readAsArrayBuffer(file);
+        fileReader.readAsDataURL(file);
       }
       else {
         jsBridge.toast('图片体积太大了，不能超过10m！');
