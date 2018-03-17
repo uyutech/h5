@@ -191,6 +191,10 @@ class SubPost extends migi.Component {
   }
   submit(e) {
     e && e.preventDefault();
+    if(!util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
     let self = this;
     if(!self.sending && !self.invalid && !self.disableUpload) {
       let imgs = [];
