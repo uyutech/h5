@@ -62,8 +62,12 @@ class VideoList extends migi.Component {
     let works = (item.Works_Items_Works || [])[0] || {};
     let author = ((item.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     let url = util.getWorksUrl(works.WorksID, works.WorksType, item.ItemID);
+    let option = util.getWorksUrlOption(works.WorkType);
     return <li>
-      <a href={ url } title={ item.ItemName } class="pic">
+      <a href={ url }
+         title={ item.ItemName }
+         option={ option }
+         class="pic">
         <img src={ util.autoSsl(util.img750__80(item.ItemCoverPic || works.WorksCoverPic || '/src/common/blank.png')) }/>
         <div class="num">
           <span class="play-times">{ util.abbrNum(item.PlayHis) }次播放</span>
@@ -77,7 +81,10 @@ class VideoList extends migi.Component {
                webkit-playsinline="true"/>
       </div>
       <div class="txt">
-        <a href={ url } title={ item.ItemName } class="name">{ item.ItemName }</a>
+        <a href={ url }
+           title={ item.ItemName }
+           option={ option }
+           class="name">{ item.ItemName }</a>
         <div class="info">
           <div class="author">
           {
@@ -124,10 +131,8 @@ class VideoList extends migi.Component {
     }
     let url = tvd.props.href;
     let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-      transparentTitle: true,
-    });
+    let option = tvd.props.option;
+    jsBridge.pushWindow(url, option);
   }
   clickVideo(e, vd, tvd) {
     let video = tvd.find('video');
@@ -145,10 +150,8 @@ class VideoList extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-      transparentTitle: true,
-    });
+    let option = tvd.props.option;
+    jsBridge.pushWindow(url, option);
   }
   clickLike(e, vd, tvd) {
     let b = tvd.element;

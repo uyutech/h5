@@ -70,6 +70,9 @@ class Media extends migi.Component {
             canFavor: true,
             isLike: self.isLike,
             isFavor: self.isFavor,
+            canBlock: true,
+            canReport: true,
+            canShare: true,
             clickLike: function(botFn) {
               self.like(function() {
                 botFn.isLike = self.isLike;
@@ -89,6 +92,26 @@ class Media extends migi.Component {
                 ajaxFavor.abort();
               }
             },
+            clickBlock: function(botFn) {
+              jsBridge.toast('屏蔽成功');
+              botFn.cancel();
+            },
+            clickReport: function(botFn) {
+              jsBridge.toast('举报成功');
+              botFn.cancel();
+            },
+            clickShare: function(botFn) {console.log(self.data);
+              if(!self.data) {
+                return;
+              }
+              jsBridge.pushWindow('/subpost.html?worksId=' + self.data.worksId
+                + '&workId=' + self.data.workId
+                + '&workType=' + self.data.workType
+                + '&cover=' + encodeURIComponent(self.data.workCover || self.data.worksCover || ''), {
+                title: '画个圈',
+                optionMenu: '发布',
+              });
+            }
           });
         }
       });

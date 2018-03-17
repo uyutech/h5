@@ -18,14 +18,11 @@ class MyPost extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  @bind hasData
   setData(data) {
     let self = this;
 
-    self.postList = data;
-    loadEnd = self.postList.Size <= take;
-
-    self.hasData = true;
+    self.ref.hotPost.setData(data.data);
+    loadEnd = data.Size <= take;
 
     let $window = $(window);
     if(!loadEnd) {
@@ -91,29 +88,12 @@ class MyPost extends migi.Component {
       loading = false;
     });
   }
-  genDom() {
-    let self = this;
-    return <div>
-      <h4>我画的圈</h4>
-      <HotPost ref="hotPost"
-               message={ self.postList.Size <= take && self.postList.Size > 3 ? '已经到底了' : '' }
-               dataList={ self.postList.data }/>
-      <ImageView ref="imageView"/>
-    </div>;
-  }
   render() {
     return <div class="mypost">
-      {
-        this.hasData
-          ? this.genDom()
-          : <div>
-              <div class="fn-placeholder-tag"/>
-              <div class="fn-placeholder-roundlet"/>
-              <div class="fn-placeholder"/>
-              <div class="fn-placeholder-roundlet"/>
-              <div class="fn-placeholder"/>
-            </div>
-      }
+      <h4>我画的圈</h4>
+      <HotPost ref="hotPost"
+               message={ '正在加载...' }/>
+      <ImageView ref="imageView"/>
     </div>;
   }
 }

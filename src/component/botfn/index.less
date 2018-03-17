@@ -86,19 +86,44 @@
             background-image:url(report.png);
           }
         }
+        &.share{
+          b{
+            background-image:url(share.png);
+          }
+        }
+      }
+    }
+    .share-list{
+      position:relative;
+      &:after{
+        position:absolute;
+        left:0;
+        bottom:0;
+        width:100%;
+        height:1px;
+        background:rgba(182, 182, 182, 0.5);
+        transform:scaleY(0.5);
+        content:' ';
       }
     }
     .cancel{
+      position:relative;
       display:block;
       width:100%;
       height:0.44rem;
       border:none;
       background:none;
-      border-top:1px solid rgba(182, 182, 182, 0.5);
       color:#636365;
       font-size:0.17rem;
-      .hairlines &{
-        border-width:0.5px;
+      &:after{
+        position:absolute;
+        left:0;
+        top:0;
+        width:100%;
+        height:1px;
+        background:rgba(182, 182, 182, 0.5);
+        transform:scaleY(0.5);
+        content:' ';
       }
     }
   }

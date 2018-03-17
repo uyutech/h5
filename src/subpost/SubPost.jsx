@@ -32,6 +32,13 @@ class SubPost extends migi.Component {
     let self = this;
     self.to = self.props.to ? self.props.to.slice(0) : undefined;
     self.placeholder = self.props.placeholder;
+    if(self.props.workId) {
+      self.workData = {
+        type: self.props.workType.charAt(0),
+        cover: self.props.cover,
+        workId: self.props.workId,
+      };
+    }
     self.on(migi.Event.DOM, function() {
       jsBridge.getPreference(self.getImgKey(), function(cache) {
         if(cache) {
@@ -75,6 +82,7 @@ class SubPost extends migi.Component {
       });
     });
   }
+  @bind workData
   @bind placeholder
   @bind value = ''
   @bind to
@@ -221,7 +229,7 @@ class SubPost extends migi.Component {
       if(self.props.circleID && circleID.indexOf(self.props.circleID) === -1) {
         circleID.push(self.props.circleID);
       }
-      net.postJSON('/h5/circle/post', { content: self.value, imgs, widths, heights, circleID: circleID.join(',') }, function(res) {
+      net.postJSON('/h5/circle/post', { content: self.value, imgs, widths, heights, circleID: circleID.join(','), workId: self.workData.workId, }, function(res) {
         jsBridge.hideLoading();
         if(res.success) {
           self.value = '';
@@ -388,7 +396,10 @@ class SubPost extends migi.Component {
   clickImg(e, vd, tvd) {
     let self = this;
     let i = tvd.props.idx;
-    if(self.list[i].state === STATE.LOADED || self.list[i].state === STATE.ERROR) {
+    if(tvd.props.class === 'share') {
+      self.workData = null;
+    }
+    else if(self.list[i].state === STATE.LOADED || self.list[i].state === STATE.ERROR) {
       self.delCache(tvd.props.rel);
       self.list.splice(i, 1);
       self.imgNum = self.list.length;
@@ -531,6 +542,12 @@ class SubPost extends migi.Component {
         </div>
       </div>
       <ul class="list" onClick={ { li: this.clickImg } }>
+      {
+        this.workData
+          ? <li class="share"
+                style={ 'background-image:url(' + this.workData.cover || '/src/common/blank.png' + ')' }></li>
+          : ''
+      }
       {
         (this.list || []).map(function(item, i) {
           return <li class={ 's' + item.state } idx={ i } rel={ item.url }

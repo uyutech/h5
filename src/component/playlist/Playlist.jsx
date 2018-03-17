@@ -134,7 +134,7 @@ class Playlist extends migi.Component {
       return;
     }
     let author = ((item.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
-    let url = '/works.html?worksId=' + works.WorksID + '&workId=' + item.ItemID;
+    let url = util.getWorksUrl(works.WorksID, works.WorksType, item.ItemID);
     if(item.WorksState === 2) {
       let temp = <li class={ item.ItemID === lastId ? 'cur' : '' }>
         <a href={ url } title={ item.ItemName || '待揭秘' } class="pic">

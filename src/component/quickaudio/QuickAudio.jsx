@@ -75,7 +75,7 @@ class QuickAudio extends migi.Component {
         <h4>{ this.sName }</h4>
         <p>
         {
-          (this.author.AuthorInfo || []).map(function(item) {
+          util.uniqueList(this.author.AuthorInfo || []).map(function(item) {
             return item.AuthorName;
           }).join(' ')
         }

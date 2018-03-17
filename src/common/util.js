@@ -394,7 +394,7 @@ let util = {
     if([11, 12].indexOf(worksType) > -1) {
       return '/image.html?worksId=' + worksId;
     }
-    else if([5, 6].indexOf(worksType) > -1) {
+    else if([5, 6, 18].indexOf(worksType) > -1) {
       return '/music.html?worksId=' + worksId;
     }
     else {

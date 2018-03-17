@@ -15,7 +15,6 @@ let myComment = 0;
 let ajax;
 let loading;
 let loadEnd;
-let visible;
 
 class CommentWrap extends migi.Component {
   constructor(...data) {
@@ -39,6 +38,7 @@ class CommentWrap extends migi.Component {
   @bind showSort
   @bind sortText
   @bind isLogin
+  @bind visible
   setData(data) {
     let self = this;
     if(data.Size) {
@@ -52,10 +52,10 @@ class CommentWrap extends migi.Component {
     }
   }
   checkMore($window) {
-    if(loading || loadEnd || !visible) {
+    let self = this;
+    if(loading || loadEnd || !self.visible) {
       return;
     }
-    let self = this;
     let WIN_HEIGHT = $window.height();
     let HEIGHT = $(document.body).height();
     let bool;
@@ -102,10 +102,10 @@ class CommentWrap extends migi.Component {
     });
   }
   show() {
-    visible = true;
+    this.visible = true;
   }
   hide() {
-    visible = false;
+    this.visible = false;
   }
   clickType(e, vd, tvd) {
     let self = this;
@@ -162,7 +162,7 @@ class CommentWrap extends migi.Component {
     }
   }
   render() {
-    return <div class="mod-comment">
+    return <div class={ 'mod-comment' + (this.visible ? '' : ' fn-hide') }>
       <div class="fn">
         <ul class="type fn-clear" onClick={ { li: this.clickType } }>
           <li class="cur" rel="0">全部评论</li>

@@ -301,7 +301,16 @@ class HotPost extends migi.Component {
         </a>
         <div class="txt">
           <a class="name" href={ peopleUrl } title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
-          <a class="time" href={ url } title="画圈正文">{  item.choice ? '精选' : util.formatDate(item.Createtime) }</a>
+          <a class="time" href={ url } title="画圈正文">{  {
+            1: '作者动态',
+            2: '作品发布',
+            3: '精选',
+            4: '精选',
+            5: '公告',
+            6: '活动',
+            7: '专题',
+            8: '长评',
+          }[item.Recommend] || util.formatDate(item.Createtime) }</a>
         </div>
         <ul class="circle">
         {

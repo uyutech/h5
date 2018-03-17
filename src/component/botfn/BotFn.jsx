@@ -10,6 +10,7 @@ let clickLike;
 let clickCancel;
 let clickBlock;
 let clickReport;
+let clickShare;
 
 class BotFn extends migi.Component {
   constructor(...data) {
@@ -27,6 +28,7 @@ class BotFn extends migi.Component {
         self.canDel = data.canDel;
         self.canBlock = data.canBlock;
         self.canReport = data.canReport;
+        self.canShare = data.canShare;
         self.isFavor = data.isFavor;
         self.isLike = data.isLike;
         clickDel = data.clickDel;
@@ -35,6 +37,7 @@ class BotFn extends migi.Component {
         clickCancel = data.clickCancel;
         clickBlock = data.clickBlock;
         clickReport = data.clickReport;
+        clickShare = data.clickShare;
         self.pop = true;
       });
       $(self.element).on('click', function(e) {
@@ -60,6 +63,7 @@ class BotFn extends migi.Component {
   @bind canDel
   @bind canReport
   @bind canBlock
+  @bind canShare
   @bind isFavor
   @bind isLike
   @bind pop
@@ -102,6 +106,12 @@ class BotFn extends migi.Component {
     }
     this.cancel();
   }
+  clickShare() {
+    if(clickShare) {
+      clickShare(this);
+    }
+    this.cancel();
+  }
   cancel() {
     this.pop = false;
     this.delText = this.blockText = this.reportText = null;
@@ -109,7 +119,10 @@ class BotFn extends migi.Component {
   }
   render() {
     return <div class={ 'cp-botfn' + (this.pop ? ' on' : '') }>
-      <div class={ 'c' + (this.pop ? ' on' : '') }>
+      <div class="c">
+        <ul class={ 'list share-list' + (this.canShare ? '' : ' fn-hide') }>
+          <li class="share" onClick={ this.clickShare }><b/>分享</li>
+        </ul>
         <ul class="list">
           <li class={ 'like' + (this.isLike ? ' liked' : '') + (this.canLike ? '' : ' fn-hide') }
               onClick={ this.clickLike }><b/>{ this.isLike ? '已点赞' : '点赞' }</li>

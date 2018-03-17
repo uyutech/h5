@@ -47,7 +47,7 @@ class Works extends migi.Component {
   setData(data) {
     let self = this;
     worksDetail = data.worksDetail;
-    if([5, 6].indexOf(worksDetail.WorkType) > -1) {
+    if([5, 6, 18].indexOf(worksDetail.WorkType) > -1) {
       location.replace('/music.html?worksId=' + self.worksId + '&workId=' + (self.workId || ''));
       return;
     }
@@ -262,9 +262,8 @@ class Works extends migi.Component {
           <Poster ref="poster"/>
         }
       </div>
-      <div class={ 'comment' + (this.curColumn === 2 ? '' : ' fn-hide') }>
-        <CommentWrap ref="comment"/>
-      </div>
+      <CommentWrap ref="comment"
+                   @visible={ this.curColumn === 2 }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }
