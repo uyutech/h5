@@ -173,11 +173,11 @@ class CommentWrap extends migi.Component {
               : ''
           }
         </ul>
-        <span class="sort" onClick={ this.clickSort }>{ this.sortText || '按时间' }</span>
-        <ul class={ 'sel' + (this.showSort ? '' : ' fn-hide') } onClick={ { li: this.clickSelSort } }>
-          <li class="cur" rel="0">按时间</li>
-          <li rel="1">按热度</li>
-        </ul>
+        {/*<span class="sort" onClick={ this.clickSort }>{ this.sortText || '按时间' }</span>*/}
+        {/*<ul class={ 'sel' + (this.showSort ? '' : ' fn-hide') } onClick={ { li: this.clickSelSort } }>*/}
+          {/*<li class="cur" rel="0">按时间</li>*/}
+          {/*<li rel="1">按热度</li>*/}
+        {/*</ul>*/}
       </div>
       <Comment ref="comment"
                zanUrl="/h5/works/likeComment"
