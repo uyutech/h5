@@ -31,15 +31,7 @@ class SubPost extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.to = self.props.to ? self.props.to.slice(0) : undefined;
     self.placeholder = self.props.placeholder;
-    if(self.props.workId) {
-      self.workData = {
-        type: self.props.workType.charAt(0),
-        cover: self.props.cover,
-        workId: self.props.workId,
-      };
-    }
     self.on(migi.Event.DOM, function() {
       if(jsBridge.appVersion) {
         let version = jsBridge.appVersion.split('.');
@@ -51,7 +43,7 @@ class SubPost extends migi.Component {
             self.orginImage = true;
           }
         }
-        else {
+        else if(major > 1 || minor > 5) {
           self.orginImage = true;
         }
       }
@@ -120,8 +112,17 @@ class SubPost extends migi.Component {
   @bind authorHead
   @bind isPublic
   @bind orginImage
-  init(circleID, tag) {
+  init(data) {
     let self = this;
+    let circleID = data.circleID;
+    let tag = data.tag;
+    if(data.workId) {
+      self.workData = {
+        type: data.workType.charAt(0),
+        cover: data.cover,
+        workId: data.workId,
+      };
+    }
     net.postJSON('/h5/subpost/index', { circleID }, function(res) {
       if(res.success) {
         let data = res.data;
@@ -648,7 +649,7 @@ class SubPost extends migi.Component {
           (this.to || []).map(function(item) {
             return <li rel={ item.CirclingID }
                        class={ item.CirclingID.toString() === (this.props.circleID || '').toString()
-                         ? 'on' : '' }>{ item.CirclingName }圈</li>;
+                         ? 'on' : '' }>{ item.CirclingName }</li>;
           }.bind(this))
         }
         </ul>

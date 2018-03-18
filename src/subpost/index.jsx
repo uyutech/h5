@@ -22,13 +22,15 @@ let workType = search.workType;
 jsBridge.ready(function() {
   jsBridge.refreshState(false);
   let subPost = migi.preExist(
-    <SubPost circleID={ circleID }
-             placeholder="在转圈圈画个圈吧"
-             worksId={ worksId }
-             workId={ workId }
-             cover={ cover }
-             workType={ workType }/>,
+    <SubPost placeholder="在转圈圈画个圈吧"/>,
     '#page'
   );
-  subPost.init(circleID, tag);
+  subPost.init({
+    circleID,
+    tag,
+    worksId,
+    workId,
+    cover,
+    workType,
+  });
 });
