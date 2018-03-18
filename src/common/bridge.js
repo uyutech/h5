@@ -306,14 +306,11 @@ let jsBridge = {
       if(value === undefined) {
         value = null;
       }
-      if(isString(value)) {
-        value = JSON.stringify(value);
-      }
       if(value === null) {
         delete localStorage[key];
       }
       else {
-        location[key] = value;
+        localStorage[key] = JSON.stringify(value);
       }
       cb && cb();
     }

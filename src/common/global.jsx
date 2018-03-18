@@ -7,6 +7,7 @@
 import MLogin from '../component/mlogin/MLogin.jsx';
 import Share from '../component/share/Share.jsx';
 import Message from '../component/message/Message.jsx';
+import uuidv4 from 'uuid/v4';
 
 let toString = {}.toString;
 function isType(type) {
@@ -76,4 +77,23 @@ jsBridge.ready(function() {
       }
     });
   }, 100);
+  jsBridge.getPreference('UUID', function(res) {
+    if(!res) {
+      res = uuidv4().replace(/-/g, '');
+      jsBridge.setPreference('UUID', res);
+    }
+    let img = new Image();
+    img.style.position = 'absolute';
+    img.style.display = 'none';
+    img.src = window.ROOT_DOMAIN + '/h5/stats/visit?platform='
+      + (jsBridge.android ? 3 : 4)
+      + '&url=' + encodeURIComponent(location.pathname.replace(/^\//, ''))
+      + '&search=' + encodeURIComponent(location.search.replace(/^\?/, ''))
+      + '&uuid=' + res
+      + '&_=' + Date.now() + Math.random();
+    img.onload = function() {
+      document.removeChild(img);
+    };
+    document.body.appendChild(img);
+  });
 });

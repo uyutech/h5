@@ -35,6 +35,7 @@ export default {
     }
     url += '&version=' + pa.version;
     url += '&app=' + jsBridge.appVersion;
+    url += '&platform=' + (jsBridge.android ? 3 : 4);
     function load() {
       return $.ajax({
         url: url,
