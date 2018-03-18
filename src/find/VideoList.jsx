@@ -179,6 +179,12 @@ class VideoList extends migi.Component {
       b.classList.remove('loading');
     });
   }
+  clickAuthor(e, vd, tvd) {
+    e.preventDefault();
+    jsBridge.pushWindow(tvd.props.href, {
+      transparentTitle: true,
+    });
+  }
   clearLast() {
     if(last) {
       let video = last.children[0];
@@ -190,7 +196,11 @@ class VideoList extends migi.Component {
   render() {
     return <div class={ 'mod-videolist' + (this.visible ? '' : ' fn-hide') }>
       <ul ref="list"
-          onClick={ { '.pic': this.clickPic, '.video': this.clickVideo, '.name': this.clickName, '.like': this.clickLike } }>
+          onClick={ { '.pic': this.clickPic,
+            '.video': this.clickVideo,
+            '.name': this.clickName,
+            '.like': this.clickLike,
+            '.author a': this.clickAuthor } }>
       {
         (this.dataList || []).map(function(item) {
           return this.genItem(item);

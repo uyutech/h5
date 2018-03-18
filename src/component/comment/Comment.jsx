@@ -41,11 +41,11 @@ class Comment extends migi.Component {
             let data = res.data;
             if(data.State === 'likeWordsUser') {
               $elem.addClass('liked');
-              $elem.text('已赞');
+              // $elem.text('已赞');
             }
             else {
               $elem.removeClass('liked');
-              $elem.text('点赞');
+              // $elem.text('点赞');
             }
             // $elem.text(data.LikeCount);
           }
@@ -407,7 +407,7 @@ class Comment extends migi.Component {
         }
         <pre>{ item.LContent }<span class="placeholder"/></pre>
         <div class="slide" cid={ id } rid={ item.RootID } name={ item.SendUserNickName }>
-          <small cid={ id } class={ 'like' + (item.ISLike ? ' liked' : '') }>{ item.ISLike ? '已赞' : '点赞' }</small>
+          <small cid={ id } class={ 'like' + (item.ISLike ? ' liked' : '') }></small>
           <small class="sub">{ item.CommentCountRaw || '' }</small>
           <span>收起</span>
         </div>
