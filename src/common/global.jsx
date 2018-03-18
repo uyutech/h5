@@ -90,6 +90,7 @@ jsBridge.ready(function() {
       + '&url=' + encodeURIComponent(location.pathname.replace(/^\//, ''))
       + '&search=' + encodeURIComponent(location.search.replace(/^\?/, ''))
       + '&uuid=' + res
+      + '&appversion=' + jsBridge.appVersion
       + '&_=' + Date.now() + Math.random();
     img.onload = function() {
       document.removeChild(img);

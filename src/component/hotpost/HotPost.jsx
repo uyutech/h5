@@ -255,6 +255,9 @@ class HotPost extends migi.Component {
     let imgList = mediaList.filter(function(item) {
       return item.MediaType === 0 || item.MediaType === 3; // 0为老数据图片，1视频，2音频，3图片
     });
+    imgList.forEach(function(item) {
+      item.preview = util.autoSsl(util.img208_208_80(item.FileUrl || '/src/common/blank.png'));
+    });
     itemImg[id] = imgList;
     let imgGt9 = imgList.length > 9;
     let audioList = mediaList.filter(function(item) {
