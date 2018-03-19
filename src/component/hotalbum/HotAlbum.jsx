@@ -16,10 +16,9 @@ class HotAlbum extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-      transparentTitle: true,
-    });
+    let option = tvd.props.option;
+    option.title = title;
+    jsBridge.pushWindow(url, option);
   }
   render() {
     return <div class="cp-hotalbum" onClick={ { a: this.click } }>
@@ -29,10 +28,11 @@ class HotAlbum extends migi.Component {
             ? <ul class="list">
               {
                 this.list.map(function(item) {
-                  let url = `/music.html?worksId=${item.WorksID}`;
+                  let url = util.getWorksUrl(item.WorksID, item.WorkType);
+                  let option = util.getWorksUrlOption(item.WorkType);
                   return <li>
                     <b class="bg"/>
-                    <a href={ url } class="pic" title={ item.Title }>
+                    <a href={ url } class="pic" title={ item.Title } option={ option }>
                       <img src={ util.autoSsl(util.img170_170_80(item.cover_Pic)) || '/src/common/blank.png' }/>
                       <span class="num">{ util.abbrNum(item.Popular) }</span>
                       {
@@ -41,7 +41,7 @@ class HotAlbum extends migi.Component {
                           : ''
                       }
                     </a>
-                    <a href={ url } class="txt" title={ item.Title }>
+                    <a href={ url } class="txt" title={ item.Title } option={ option }>
                       <span>{ item.Title }</span>
                       <span class="author">{ (item.SingerName || []).join(' ') }</span>
                     </a>

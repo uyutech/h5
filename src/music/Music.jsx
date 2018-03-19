@@ -411,9 +411,8 @@ class Music extends migi.Component {
           <Poster ref="poster"/>
         }
       </div>
-      <div class={ 'comment' + (this.curColumn === 3 ? '' : ' fn-hide') }>
-        <CommentWrap ref="comment"/>
-      </div>
+      <CommentWrap ref="comment"
+                   @visible={ this.curColumn === 3 }/>
       <BotPlayBar ref="botPlayBar"
                   on-play={ this.play }
                   on-pause={ this.pause }

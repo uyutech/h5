@@ -255,9 +255,8 @@ class Image extends migi.Component {
         <Author ref="author"/>
         <Text ref="text"/>
       </div>
-      <div class={ 'comment' + (this.curColumn === 2 ? '' : ' fn-hide') }>
-        <CommentWrap ref="comment"/>
-      </div>
+      <CommentWrap ref="comment"
+                   @visible={ this.curColumn === 2 }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }

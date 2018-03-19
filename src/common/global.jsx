@@ -78,9 +78,20 @@ jsBridge.ready(function() {
     });
   }, 100);
   jsBridge.getPreference('UUID', function(res) {
-    if(!res) {
+    let first = !res;
+    if(first) {
       res = uuidv4().replace(/-/g, '');
       jsBridge.setPreference('UUID', res);
+      jsBridge.getPreference('loginInfo', function(loginInfo) {
+        loginInfo = loginInfo || {};
+        let userInfo = loginInfo.userInfo || {};
+        let regStat = userInfo.User_Reg_Stat || 0;
+        if(!regStat) {
+          setTimeout(function() {
+            migi.eventBus.emit('FIRST');
+          }, 1000);
+        }
+      });
     }
     let img = new Image();
     img.style.position = 'absolute';
@@ -91,6 +102,7 @@ jsBridge.ready(function() {
       + '&search=' + encodeURIComponent(location.search.replace(/^\?/, ''))
       + '&uuid=' + res
       + '&appversion=' + jsBridge.appVersion
+      + '&first=' + first
       + '&_=' + Date.now() + Math.random();
     img.onload = function() {
       document.removeChild(img);

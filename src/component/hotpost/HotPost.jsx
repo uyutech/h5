@@ -156,7 +156,7 @@ class HotPost extends migi.Component {
         let $this = $(this);
         let title = $this.attr('title');
         let url = $this.attr('href');
-        let transparentTitle = $this.attr('transparentTitle');
+        let transparentTitle = $this.attr('transparentTitle') || 'false';
         jsBridge.pushWindow(url, {
           title,
           transparentTitle,

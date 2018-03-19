@@ -285,6 +285,10 @@ class SubPost extends migi.Component {
     if(self.disableUpload) {
       return;
     }
+    if(!util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
     if(self.imgNum >= MAX_IMG_NUM) {
       jsBridge('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
       return;
@@ -378,9 +382,19 @@ class SubPost extends migi.Component {
       }
     });
   }
+  clickFile(e) {
+    if(!util.isLogin()) {
+      e.preventDefault();
+      migi.eventBus.emit('NEED_LOGIN');
+    }
+  }
   change(e) {
     let self = this;
     if(self.disableUpload) {
+      return;
+    }
+    if(!util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
       return;
     }
     if(self.imgNum >= MAX_IMG_NUM) {
@@ -701,7 +715,10 @@ class SubPost extends migi.Component {
           <div ref="tip" class="fn-hide" onClick={ this.clickTip }/>
         </li>
         <li class="pic" onClick={ this.album }>
-          <input type="file" class={ this.orginImage ? '' : ' fn-hide' } onChange={ this.change }/>
+          <input type="file"
+                 class={ this.orginImage ? '' : ' fn-hide' }
+                 onClick={ this.clickFile }
+                 onChange={ this.change }/>
         </li>
       </ul>
     </form>;

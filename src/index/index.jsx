@@ -133,6 +133,9 @@ jsBridge.ready(function() {
     notice.prependTo('#page');
     setTimeout(function() {
       $(notice.element).addClass('show');
-    }, 2000);
+    }, 1000);
   }
+  migi.eventBus.on('FIRST', function() {
+
+  });
 });

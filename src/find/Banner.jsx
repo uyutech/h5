@@ -219,11 +219,11 @@ class Banner extends migi.Component {
         }
       </ul>
       <ul class="tags" ref="tags" onClick={ { li: this.clickTag } }>
-        {
-          (this.index, this.dataList).map(function(item, index) {
-            return <li class={ index === this.index ? 'cur' : '' } rel={ index }>{ index + 1 }</li>;
-          }.bind(this))
-        }
+      {
+        (this.index, this.dataList).map(function(item, index) {
+          return <li class={ index === this.index ? 'cur' : '' } rel={ index }>{ index + 1 }</li>;
+        }.bind(this))
+      }
       </ul>
     </div>;
   }
