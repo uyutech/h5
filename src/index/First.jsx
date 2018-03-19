@@ -37,6 +37,9 @@ class First extends migi.Component {
       }, 300);
     }, 2000);
   }
+  click() {
+    this.clickBtn();
+  }
   render() {
     return <div class="first"
                 ref="first">
@@ -44,7 +47,9 @@ class First extends migi.Component {
            ref="c"
            onSwipeLeft={ this.left }
            onSwipeRight={ this.right }>
-        <ul class="list" ref="list">
+        <ul class="list"
+            ref="list"
+            onClick={ this.click }>
           <li>
             <h3>发现</h3>
             <p>精准推送，你最喜欢的内容</p>
@@ -62,10 +67,12 @@ class First extends migi.Component {
           </li>
           <li>
             <b class="i4"/>
-            <span class="btn" onClick={ this.clickBtn }>开启转圈之旅</span>
+            <span class="btn"
+                  onClick={ this.clickBtn }>开启转圈之旅</span>
           </li>
         </ul>
-        <ul class="tag" onClick={ { li: this.clickTag } }>
+        <ul class="tag"
+            onClick={ { li: this.clickTag } }>
           <li class={ this.index === 0 ? 'cur' : '' }/>
           <li class={ this.index === 1 ? 'cur' : '' }/>
           <li class={ this.index === 2 ? 'cur' : '' }/>
@@ -79,7 +86,8 @@ class First extends migi.Component {
         <li class="follow"/>
         <li class="my"/>
       </ul>
-      <div class="arrow" ref="arrow">戳这里画下你的第一个圈吧~</div>
+      <div class="arrow"
+           ref="arrow">戳这里画下你的第一个圈吧~</div>
     </div>;
   }
 }
