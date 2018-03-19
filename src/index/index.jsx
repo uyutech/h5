@@ -143,10 +143,10 @@ jsBridge.ready(function() {
       $(notice.element).addClass('show');
     }, 1000);
   }
-  migi.eventBus.on('FIRST', function() {
+  // migi.eventBus.on('FIRST', function() {
     migi.render(
       <First/>,
       document.body
     );
-  });
+  // });
 });

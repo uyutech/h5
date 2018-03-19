@@ -28,6 +28,7 @@ class First extends migi.Component {
   clickBtn() {
     let self = this;
     self.ref.c.element.classList.add('fn-hide');
+    self.ref.icon.element.classList.add('fn-hide');
     self.ref.first.element.classList.add('hide');
     self.ref.arrow.element.classList.add('show');
     setTimeout(function() {
@@ -79,7 +80,8 @@ class First extends migi.Component {
           <li class={ this.index === 3 ? 'cur' : '' }/>
         </ul>
       </div>
-      <ul class={ 'icon i' + this.index }>
+      <ul class={ 'icon i' + this.index }
+          ref="icon">
         <li class="find"/>
         <li class="circling"/>
         <li class="new"/>
