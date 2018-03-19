@@ -82,16 +82,9 @@ jsBridge.ready(function() {
     if(first) {
       res = uuidv4().replace(/-/g, '');
       jsBridge.setPreference('UUID', res);
-      jsBridge.getPreference('loginInfo', function(loginInfo) {
-        loginInfo = loginInfo || {};
-        let userInfo = loginInfo.userInfo || {};
-        let regStat = userInfo.User_Reg_Stat || 0;
-        if(!regStat) {
-          setTimeout(function() {
-            migi.eventBus.emit('FIRST');
-          }, 1000);
-        }
-      });
+      setTimeout(function() {
+        migi.eventBus.emit('FIRST');
+      }, 1000);
     }
     let img = new Image();
     img.style.position = 'absolute';

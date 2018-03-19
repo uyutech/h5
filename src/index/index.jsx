@@ -12,6 +12,7 @@ import Circling from '../circling/Circling.jsx';
 import Follow from '../follow/Follow.jsx';
 import My from '../my/My.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
+import First from './First.jsx';
 
 jsBridge.ready(function() {
   jsBridge.on('refresh', function(e) {
@@ -115,11 +116,18 @@ jsBridge.ready(function() {
     let major = parseInt(version[0]) || 0;
     let minor = parseInt(version[1]) || 0;
     let patch = parseInt(version[2]) || 0;
-    if(minor < 5) {
-      old = true;
+    if(jsBridge.android) {
+      if(minor < 6) {
+        old = true;
+      }
     }
-    else if(minor === 5 && patch < 4) {
-      old = true;
+    else {
+      if(minor < 5) {
+        old = true;
+      }
+      else if(minor === 5 && patch < 4) {
+        old = true;
+      }
     }
   }
   if(old) {
@@ -136,6 +144,9 @@ jsBridge.ready(function() {
     }, 1000);
   }
   migi.eventBus.on('FIRST', function() {
-
+    migi.render(
+      <First/>,
+      document.body
+    );
   });
 });
