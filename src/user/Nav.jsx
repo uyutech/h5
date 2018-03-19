@@ -135,6 +135,7 @@ class Nav extends migi.Component {
           <div class="n">
             <h3>{ this.userName }</h3>
           </div>
+          <p>uid: { (this.userId ? this.userId.toString() : '').replace(/^20180*/, '') }</p>
         </div>
         <button class={ 's' + this.followState + (this.loading ? ' loading' : '') }
                 onClick={ this.clickFollow }>{ FOLLOW_STATE[this.followState] }</button>

@@ -171,7 +171,7 @@ class Message extends migi.Component {
   render() {
     return <div class="message">
       <h4>圈消息</h4>
-      <Messages ref="messages"/>
+      <Messages ref="messages" ellipsis={ true }/>
       <SubCmt ref="subCmt"
               readOnly={ true }
               placeholder="请选择留言回复"

@@ -45,6 +45,7 @@ class Post extends migi.Component {
     self.postID = postID;
     self.postData = data.postData;
     self.replyData = data.replyData;
+    self.reference = data.reference;
 
     loadEnd = self.replyData.Size < take;
 
@@ -406,23 +407,58 @@ class Post extends migi.Component {
     let self = this;
     let postData = self.postData;
     let id = postData.ID;
+    let reference = self.reference || [];
+    let index = 0;
     let html = (postData.Content || '').replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
         return `<a href="tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
       })
-      .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(\s|$)/g, function($0, $1, $2, $3) {
+      .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(\s|$)/g, function($0, $1, $2, $3, $4) {
+        let data = reference[index];
+        index++;
         switch($1) {
           case 'works':
-            if($3) {
-              return `<a href="${$1}.html?worksId=${$2}&workId=${$3}" transparentTitle="true">${$0}</a>`;
+            let worksName = $0.trim();
+            if(data) {
+              worksName += '(' + data.Title;
             }
-            return `<a href="${$1}.html?worksId=${$2}" transparentTitle="true">${$0}</a>`;
+            if($3) {
+              if(data) {
+                let sub = ((data.Works_Items || [])[0] || {}).ItemName || '';
+                if(sub) {
+                  worksName += ' ' + sub;
+                }
+                worksName += ')'
+              }
+              worksName += $4;
+              return `<a href="/${$1}.html?worksId=${$2}&workId=${$3}" class="link" transparentTitle="true">${worksName}</a>`;
+            }
+            if(data) {
+              worksName += ')';
+            }
+            worksName += $4;
+            return `<a href="/${$1}.html?worksId=${$2}" class="link" transparentTitle="true">${worksName}</a>`;
           case 'post':
-            return `<a href="${$1}.html?postID=${$2}" title="画圈正文">${$0}</a>`;
+            let postName = $0.trim();
+            if(data) {
+              postName += '(' + (data.Content.length > 10 ? (data.Content.slice(0, 10) + '...') : data.Content) + ')';
+            }
+            postName += $4;
+            return `<a href="/${$1}.html?postID=${$2}" class="link" title="画圈正文">${postName}</a>`;
           case 'author':
-            return `<a href="${$1}.html?authorId=${$2}" transparentTitle="true">${$0}</a>`;
+            let authorName = $0.trim();
+            if(data) {
+              authorName += '(' + data.AuthorName + ')';
+            }
+            authorName += $4;
+            return `<a href="/${$1}.html?authorId=${$2}" class="link" transparentTitle="true">${authorName}</a>`;
           case 'user':
-            return `<a href="${$1}.html?userID=${$2}" transparentTitle="true">${$0}</a>`;
+            let userName = $0.trim();
+            if(data) {
+              userName += '(' + data.NickName + ')';
+            }
+            userName += $4;
+            return `<a href="/${$1}.html?userID=${$2}" class="link" transparentTitle="true">${userName}</a>`;
         }
         return $0;
       })
