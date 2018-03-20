@@ -130,9 +130,23 @@ class MyFavor extends migi.Component {
     net.postJSON('/h5/my/favorType', { skip: s, take: t, type }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
+        s += t;
+        switch(type) {
+          case 1:
+            skip += take;
+            break;
+          case 2:
+            skip2 += take2;
+            break;
+          case 3:
+            skip3 += take3;
+            break;
+          case 4:
+            skip4 += take4;
+            break;
+        }
         cp.appendData(data.data);
-        if(skip >= data.Size) {
+        if(s >= data.Size) {
           switch(type) {
             case 1:
               loadEnd = true;

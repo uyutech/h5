@@ -152,6 +152,7 @@ class Nav extends migi.Component {
             <h3>{ this.userName }</h3>
             <b class={ 'edit' + (this.userId ? '' : ' fn-hide') } onClick={ this.clickName }/>
           </div>
+          <p>uid: { (this.userId ? this.userId.toString() : '').replace(/^20180*/, '') }</p>
         </div>
         <button onClick={ this.clickPersonal }>个人主页</button>
         {
