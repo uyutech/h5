@@ -27,11 +27,22 @@
     z-index:104;
     transition:transform 0.2s;
     .list{
+      position:relative;
       display:flex;
       padding:0.1rem 0.15rem 0.05rem;
       flex-basis:0;
       overflow-x:scroll;
       transform:translateZ(0);
+      &:after{
+        position:absolute;
+        left:0;
+        bottom:0;
+        width:100%;
+        height:1px;
+        background:rgba(182, 182, 182, 0.5);
+        transform:scaleY(0.5);
+        content:' ';
+      }
       li{
         margin-right:0.1rem;
         width:0.6rem;
@@ -86,28 +97,24 @@
             background-image:url(report.png);
           }
         }
-        &.share{
+        &.in{
           b{
             background-image:url(share.png);
           }
         }
-      }
-    }
-    .share-list{
-      position:relative;
-      &:after{
-        position:absolute;
-        left:0;
-        bottom:0;
-        width:100%;
-        height:1px;
-        background:rgba(182, 182, 182, 0.5);
-        transform:scaleY(0.5);
-        content:' ';
+        &.wb{
+          b{
+            background-image:url(wb.png);
+          }
+        }
+        &.link{
+          b{
+            background-image:url(link.png);
+          }
+        }
       }
     }
     .cancel{
-      position:relative;
       display:block;
       width:100%;
       height:0.44rem;
@@ -115,16 +122,6 @@
       background:none;
       color:#636365;
       font-size:0.17rem;
-      &:after{
-        position:absolute;
-        left:0;
-        top:0;
-        width:100%;
-        height:1px;
-        background:rgba(182, 182, 182, 0.5);
-        transform:scaleY(0.5);
-        content:' ';
-      }
     }
   }
   &.on .c{

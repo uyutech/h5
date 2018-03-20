@@ -11,6 +11,8 @@ let clickCancel;
 let clickBlock;
 let clickReport;
 let clickShare;
+let clickShareWb;
+let clickShareLink;
 
 class BotFn extends migi.Component {
   constructor(...data) {
@@ -23,12 +25,16 @@ class BotFn extends migi.Component {
         self.delText = data.delText;
         self.blockText = data.blockText;
         self.reportText = data.reportText;
+        self.canFn = data.canFn;
         self.canLike = data.canLike;
         self.canFavor = data.canFavor;
         self.canDel = data.canDel;
         self.canBlock = data.canBlock;
         self.canReport = data.canReport;
         self.canShare = data.canShare;
+        self.canShareIn = data.canShareIn;
+        self.canShareWb = data.canShareWb;
+        self.canShareLink = data.canShareLink;
         self.isFavor = data.isFavor;
         self.isLike = data.isLike;
         clickDel = data.clickDel;
@@ -38,6 +44,8 @@ class BotFn extends migi.Component {
         clickBlock = data.clickBlock;
         clickReport = data.clickReport;
         clickShare = data.clickShare;
+        clickShareWb = data.clickShareWb;
+        clickShareLink = data.clickShareLink;
         self.pop = true;
       });
       $(self.element).on('click', function(e) {
@@ -58,12 +66,16 @@ class BotFn extends migi.Component {
   @bind delText
   @bind blockText
   @bind reportText
+  @bind canFn
   @bind canLike
   @bind canFavor
   @bind canDel
   @bind canReport
   @bind canBlock
   @bind canShare
+  @bind canShareIn
+  @bind canShareWb
+  @bind canShareLink
   @bind isFavor
   @bind isLike
   @bind pop
@@ -112,6 +124,18 @@ class BotFn extends migi.Component {
     }
     this.cancel();
   }
+  clickShareWb() {
+    if(clickShareWb) {
+      clickShareWb(this);
+    }
+    this.cancel();
+  }
+  clickShareLink() {
+    if(clickShareLink) {
+      clickShareLink(this);
+    }
+    this.cancel();
+  }
   cancel() {
     this.pop = false;
     this.delText = this.blockText = this.reportText = null;
@@ -120,10 +144,12 @@ class BotFn extends migi.Component {
   render() {
     return <div class={ 'cp-botfn' + (this.pop ? ' on' : '') }>
       <div class="c">
-        <ul class={ 'list share-list' + (this.canShare ? '' : ' fn-hide') }>
-          <li class="share" onClick={ this.clickShare }><b/>分享</li>
+        <ul class={ 'list share' + (this.canShare ? '' : ' fn-hide') }>
+          <li class={ 'in' + (this.canShareIn ? '' : ' fn-hide') } onClick={ this.clickShare }><b/>分享</li>
+          <li class={ 'wb' + (this.canShareWb ? '' : ' fn-hide') } onClick={ this.clickShareWb }><b/>微博</li>
+          <li class={ 'link' + (this.canShareLink ? '' : ' fn-hide') } onClick={ this.clickShareLink }><b/>复制链接</li>
         </ul>
-        <ul class="list">
+        <ul class={ 'list' + (this.canFn ? '' : ' fn-hide') }>
           <li class={ 'like' + (this.isLike ? ' liked' : '') + (this.canLike ? '' : ' fn-hide') }
               onClick={ this.clickLike }><b/>{ this.isLike ? '已点赞' : '点赞' }</li>
           <li class={ 'favor' + (this.isFavor ? ' favored' : '') + (this.canFavor ? '' : ' fn-hide') }

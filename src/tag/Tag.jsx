@@ -9,6 +9,7 @@ import util from '../common/util';
 import HotPost from '../component/hotpost/HotPost.jsx';
 import ImageView from '../post/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
+import BotFn from '../component/botfn/BotFn.jsx';
 
 let take = 10;
 let skip = take;
@@ -18,15 +19,49 @@ let loadEnd;
 class Tag extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      jsBridge.setOptionMenu({
+        icon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAHlBMVEUAAACMvuGMvuGMvuGNveGMvuGNweOPwuuMvuKLveG52ByYAAAACXRSTlMA7+bFiGY1GfMKDs4PAAAASklEQVRIx2MYBSMZlIbjl2eTnJiAVwHzzJkGeBVwzJzZQK4JCDcQ9MUoAAInFfzyLDNnOuBVwDRzpgK5ChBWEHTkKBjNeqNgWAAAQowW2TR/xN0AAAAASUVORK5CYII=',
+      });
+      jsBridge.on('optionMenu1', function() {
+        migi.eventBus.emit('BOT_FN', {
+          canShare: true,
+          canShareWb: true,
+          canShareLink: true,
+          clickShareWb: function() {
+            let url = window.ROOT_DOMAIN + '/tag/' + encodeURIComponent(self.tag);
+            let text = '聊一聊【' + self.tag + '】吧~ 每天转转圈，玩转每个圈~';
+            text += ' #转圈circling# ';
+            text += url;
+            jsBridge.shareWb({
+              text,
+            }, function(res) {
+              if(res.success) {
+                jsBridge.toast("分享成功");
+              }
+              else if(res.cancel) {
+                jsBridge.toast("取消分享");
+              }
+              else {
+                jsBridge.toast("分享失败");
+              }
+            });
+          },
+          clickShareLink: function() {
+            util.setClipboard(window.ROOT_DOMAIN + '/tag/' + encodeURIComponent(self.tag));
+          },
+        });
+      });
+    });
   }
-  @bind hasData
+  @bind tag
   setData(tag, data) {
     let self = this;
     self.tag = tag;
-    self.data = data;
-    self.hasData = true;
 
     let hotPost = self.ref.hotPost;
+    hotPost.setData(data.data || []);
     let imageView = self.ref.imageView;
     imageView.on('clickLike', function(sid) {
       hotPost.like(sid, function(res) {
@@ -84,14 +119,6 @@ class Tag extends migi.Component {
       loading = false;
     });
   }
-  genDom() {
-    let self = this;
-    return <div>
-      <h3>#{ self.tag }#</h3>
-      <HotPost ref="hotPost" dataList={ self.data.data }/>
-      <ImageView ref="imageView"/>
-    </div>;
-  }
   comment() {
     jsBridge.pushWindow('/subpost.html?tag=' + encodeURIComponent(this.tag), {
       title: '画个圈',
@@ -101,19 +128,14 @@ class Tag extends migi.Component {
   }
   render() {
     return <div class="tag">
-      {
-        this.hasData
-          ? this.genDom()
-          : <div>
-              <div class="fn-placeholder-tag"/>
-              <div class="fn-placeholder"/>
-              <div class="fn-placeholder"/>
-            </div>
-      }
+      <h3>#{ this.tag }#</h3>
+      <HotPost ref="hotPost" message="正在加载..."/>
+      <ImageView ref="imageView"/>
       <InputCmt ref="inputCmt"
                 placeholder={ '画个圈吧！' }
                 readOnly={ true }
                 on-click={ this.comment }/>
+      <BotFn ref="botFn"/>
     </div>;
   }
 }

@@ -66,6 +66,7 @@ class Media extends migi.Component {
       jsBridge.on('optionMenu1', function() {
         if(self.data) {
           migi.eventBus.emit('BOT_FN', {
+            canFn: true,
             canLike: true,
             canFavor: true,
             isLike: self.isLike,
@@ -100,7 +101,7 @@ class Media extends migi.Component {
               jsBridge.toast('举报成功');
               botFn.cancel();
             },
-            clickShare: function(botFn) {console.log(self.data);
+            clickShareIn: function(botFn) {
               if(!self.data) {
                 return;
               }
@@ -111,7 +112,59 @@ class Media extends migi.Component {
                 title: '画个圈',
                 optionMenu: '发布',
               });
-            }
+            },
+            clickShareWb: function(botFn) {
+              if(!self.data) {
+                return;
+              }
+              let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
+              if(self.data.workId) {
+                url += '/' + self.data.workId;
+              }
+              let text = '【';
+              if(self.data.worksTitle) {
+                text += self.data.worksTitle;
+              }
+              if(self.data.worksSubTitle) {
+                if(self.data.worksTitle) {
+                  text += ' ';
+                }
+                text += self.data.worksSubTitle;
+              }
+              text += '】';
+              if(self.data.author
+                && self.data.author[0]
+                && self.data.author[0].AuthorTypeHashlist
+                && self.data.author[0].AuthorTypeHashlist[0].AuthorInfo
+                && self.data.author[0].AuthorTypeHashlist[0].AuthorInfo[0]) {
+                text += self.data.author[0].AuthorTypeHashlist[0].AuthorInfo[0].AuthorName;
+              }
+              text += ' #转圈circling# ';
+              text += url;
+              jsBridge.shareWb({
+                text,
+              }, function(res) {
+                if(res.success) {
+                  jsBridge.toast("分享成功");
+                }
+                else if(res.cancel) {
+                  jsBridge.toast("取消分享");
+                }
+                else {
+                  jsBridge.toast("分享失败");
+                }
+              });
+            },
+            clickShareLink: function(botFn) {
+              if(!self.data) {
+                return;
+              }
+              let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
+              if(self.data.workId) {
+                url += '/' + self.data.workId;
+              }
+              util.setClipboard(url);
+            },
           });
         }
       });
@@ -618,7 +671,100 @@ class Media extends migi.Component {
     if(!self.data) {
       return;
     }
-    migi.eventBus.emit('SHARE', '/works/' + self.data.worksId + '/' + self.data.workId);
+    migi.eventBus.emit('BOT_FN', {
+      canShare: true,
+      clickLike: function(botFn) {
+        self.like(function() {
+          botFn.isLike = self.isLike;
+        });
+      },
+      clickFavor: function(botFn) {
+        self.favor(function() {
+          botFn.isFavor = self.isFavor;
+        });
+      },
+      clickCancel: function() {
+        loadingLike = loadingFavor = false;
+        if(ajaxLike) {
+          ajaxLike.abort();
+        }
+        if(ajaxFavor) {
+          ajaxFavor.abort();
+        }
+      },
+      clickBlock: function(botFn) {
+        jsBridge.toast('屏蔽成功');
+        botFn.cancel();
+      },
+      clickReport: function(botFn) {
+        jsBridge.toast('举报成功');
+        botFn.cancel();
+      },
+      clickShareIn: function(botFn) {
+        if(!self.data) {
+          return;
+        }
+        jsBridge.pushWindow('/subpost.html?worksId=' + self.data.worksId
+          + '&workId=' + self.data.workId
+          + '&workType=' + self.data.workType
+          + '&cover=' + encodeURIComponent(self.data.workCover || self.data.worksCover || ''), {
+          title: '画个圈',
+          optionMenu: '发布',
+        });
+      },
+      clickShareWb: function(botFn) {
+        if(!self.data) {
+          return;
+        }
+        let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
+        if(self.data.workId) {
+          url += '/' + self.data.workId;
+        }
+        let text = '【';
+        if(self.data.worksTitle) {
+          text += self.data.worksTitle;
+        }
+        if(self.data.worksSubTitle) {
+          if(self.data.worksTitle) {
+            text += ' ';
+          }
+          text += self.data.worksSubTitle;
+        }
+        text += '】';
+        if(self.data.author
+          && self.data.author[0]
+          && self.data.author[0].AuthorTypeHashlist
+          && self.data.author[0].AuthorTypeHashlist[0].AuthorInfo
+          && self.data.author[0].AuthorTypeHashlist[0].AuthorInfo[0]) {
+          text += self.data.author[0].AuthorTypeHashlist[0].AuthorInfo[0].AuthorName;
+        }
+        text += ' #转圈circling# ';
+        text += url;
+        jsBridge.shareWb({
+          text,
+        }, function(res) {
+          if(res.success) {
+            jsBridge.toast("分享成功");
+          }
+          else if(res.cancel) {
+            jsBridge.toast("取消分享");
+          }
+          else {
+            jsBridge.toast("分享失败");
+          }
+        });
+      },
+      clickShareLink: function(botFn) {
+        if(!self.data) {
+          return;
+        }
+        let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
+        if(self.data.workId) {
+          url += '/' + self.data.workId;
+        }
+        util.setClipboard(url);
+      },
+    });
   }
   render() {
     return <div class="mod-media">

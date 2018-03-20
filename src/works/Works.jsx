@@ -46,7 +46,7 @@ class Works extends migi.Component {
   }
   setData(data) {
     let self = this;
-    worksDetail = data.worksDetail;
+    self.worksDetail = worksDetail = data.worksDetail;
     if([5, 6, 18].indexOf(worksDetail.WorkType) > -1) {
       location.replace('/music.html?worksId=' + self.worksId + '&workId=' + (self.workId || ''));
       return;
@@ -127,6 +127,8 @@ class Works extends migi.Component {
         workId: item.ItemID,
         workType: item.ItemType,
         worksTitle: worksDetail.Title,
+        worksSubTitle: worksDetail.sub_Title,
+        author: worksDetail.GroupAuthorTypeHash,
         workTitle: item.ItemName,
         url: item.FileUrl,
         isFavor: item.ISFavor,
@@ -244,7 +246,65 @@ class Works extends migi.Component {
     });
   }
   share() {
-    migi.eventBus.emit('SHARE', '/works/' + this.worksId + (this.workId ? ('/' + this.workId) : ''));
+    let self = this;
+    // migi.eventBus.emit('SHARE', '/works/' + this.worksId + (this.workId ? ('/' + this.workId) : ''));
+    migi.eventBus.emit('BOT_FN', {
+      canShare: true,
+      clickShareIn: function(botFn) {
+        jsBridge.pushWindow('/subpost.html?worksId=' + self.worksId
+          + '&workType=' + self.worksDetail.workType
+          + '&cover=' + encodeURIComponent(self.worksDetail.worksCover || ''), {
+          title: '画个圈',
+          optionMenu: '发布',
+        });
+      },
+      clickShareWb: function(botFn) {
+        let url = window.ROOT_DOMAIN + '/works/' + self.worksId;
+        let text = '【';
+        if(self.worksDetail.Title) {
+          text += self.worksDetail.Title;
+        }
+        if(self.worksDetail.sub_Title) {
+          if(self.worksDetail.Title) {
+            text += ' ';
+          }
+          text += self.worksDetail.sub_Title;
+        }
+        text += '】';
+        if(self.worksDetail.GroupAuthorTypeHash
+          && self.worksDetail.GroupAuthorTypeHash[0]
+          && self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist
+          && self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist[0].AuthorInfo
+          && self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist[0].AuthorInfo[0]) {
+          text += self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist[0].AuthorInfo[0].AuthorName;
+        }
+        text += ' #转圈circling# ';
+        text += url;
+        jsBridge.shareWb({
+          text,
+        }, function(res) {
+          if(res.success) {
+            jsBridge.toast("分享成功");
+          }
+          else if(res.cancel) {
+            jsBridge.toast("取消分享");
+          }
+          else {
+            jsBridge.toast("分享失败");
+          }
+        });
+      },
+      clickShareLink: function(botFn) {
+        if(!self.data) {
+          return;
+        }
+        let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
+        if(self.data.workId) {
+          url += '/' + self.data.workId;
+        }
+        util.setClipboard(url);
+      },
+    });
   }
   render() {
     return <div class="works">
@@ -259,9 +319,9 @@ class Works extends migi.Component {
         <Text ref="text"/>
       </div>
       <div class={ 'poster' + (this.curColumn === 1 ? '' : ' fn-hide') }>
-        {
-          <Poster ref="poster"/>
-        }
+      {
+        <Poster ref="poster"/>
+      }
       </div>
       <CommentWrap ref="comment"
                    @visible={ this.curColumn === 2 }/>

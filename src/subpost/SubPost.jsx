@@ -260,7 +260,7 @@ class SubPost extends migi.Component {
           self.clearCache();
           jsBridge.notify({
             title: '画圈成功',
-            url: '/post.html?postID=' + res.data.ID,
+            url: '/post.html?postId=' + res.data.ID,
           }, {
             title: '画圈正文'
           });

@@ -115,6 +115,7 @@ class Comment extends migi.Component {
         let $like = $fn.closest('li').find('.like');
         let commentID = $like.attr('cid');
         migi.eventBus.emit('BOT_FN', {
+          canFn: true,
           canLike: true,
           isLike: $like.hasClass('liked'),
           canDel: $fn.attr('own') === 'true',

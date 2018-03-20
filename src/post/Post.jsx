@@ -34,15 +34,15 @@ class Post extends migi.Component {
     super(...data);
   }
   @bind hasData
-  @bind postID
+  @bind postId
   @bind isLike
   @bind likeCount
   @bind isFavor
   @bind favorCount
-  setData(postID, data) {
+  setData(postId, data) {
     let self = this;
 
-    self.postID = postID;
+    self.postId = postId;
     self.postData = data.postData;
     self.replyData = data.replyData;
     self.reference = data.reference;
@@ -69,7 +69,7 @@ class Post extends migi.Component {
       });
     });
     $root.on('click', '.comment', function() {
-      jsBridge.pushWindow('/subcomment.html?type=1&id=' + self.postID, {
+      jsBridge.pushWindow('/subcomment.html?type=1&id=' + self.postId, {
         title: '评论',
         optionMenu: '发布',
       });
@@ -104,12 +104,16 @@ class Post extends migi.Component {
     });
     jsBridge.on('optionMenu1', function() {
       migi.eventBus.emit('BOT_FN', {
+        canFn: true,
         canLike: true,
         canFavor: true,
         isLike: self.isLike,
         isFavor: self.isFavor,
         canBlock: true,
         canReport: true,
+        canShare: true,
+        canShareWb: true,
+        canShareLink: true,
         clickLike: function(botFn) {
           self.like(function() {
             botFn.isLike = self.isLike;
@@ -129,10 +133,35 @@ class Post extends migi.Component {
           });
         },
         clickReport: function(botFn) {
-          self.report(self.postID, function() {
+          self.report(self.postId, function() {
             jsBridge.toast('举报成功');
             botFn.cancel();
           });
+        },
+        clickShareWb: function() {
+          let url = window.ROOT_DOMAIN + '/post/' + self.postId;console.log(self.postData)
+          let text = '';
+          if(self.postData.Content) {
+            text += self.postData.Content.length > 30 ? (self.postData.Content.slice(0, 30) + '...') : self.postData.Content;
+          }
+          text += ' #转圈circling# ';
+          text += url;
+          jsBridge.shareWb({
+            text,
+          }, function(res) {
+            if(res.success) {
+              jsBridge.toast("分享成功");
+            }
+            else if(res.cancel) {
+              jsBridge.toast("取消分享");
+            }
+            else {
+              jsBridge.toast("分享失败");
+            }
+          });
+        },
+        clickShareLink: function() {
+          util.setClipboard(window.ROOT_DOMAIN + '/post/' + self.postId);
         },
       });
     });
@@ -161,7 +190,7 @@ class Post extends migi.Component {
     loading = true;
     comment.message = '正在加载...';
     ajax = net.postJSON('/h5/post/commentList', {
-      postID: self.postID,
+      postID: self.postId,
       skip,
       take,
       sortType,
@@ -251,12 +280,12 @@ class Post extends migi.Component {
       return;
     }
     loadingFavor = true;
-    let postID = self.postID;
+    let postId = self.postId;
     let url = '/h5/post/favor';
     if(self.isFavor) {
       url = '/h5/post/unFavor';
     }
-    net.postJSON(url, { postID }, function(res) {
+    net.postJSON(url, { postID: postId }, function(res) {
       if(res.success) {
         let data = res.data;
         self.isFavor = data.State === 'favorWork';
@@ -293,8 +322,8 @@ class Post extends migi.Component {
       return;
     }
     loadingLike = true;
-    let postID = self.postID;
-    net.postJSON('/h5/post/like', { postID }, function(res) {
+    let postId = self.postId;
+    net.postJSON('/h5/post/like', { postID: postId }, function(res) {
       if(res.success) {
         let data = res.data;
         self.isLike = data.State === 'likeWordsUser';
@@ -319,12 +348,12 @@ class Post extends migi.Component {
     });
   }
   clickDel(e) {
-    let postID = this.postID;
+    let postId = this.postId;
     jsBridge.confirm('确认删除吗？', function(res) {
       if(!res) {
         return;
       }
-      net.postJSON('/h5/post/del', { postID }, function(res) {
+      net.postJSON('/h5/post/del', { postID: postId }, function(res) {
         if(res.success) {
           location.reload(true);
         }
@@ -375,15 +404,15 @@ class Post extends migi.Component {
     });
   }
   share() {
-    migi.eventBus.emit('SHARE', '/post/' + this.postID);
+    migi.eventBus.emit('SHARE', '/post/' + this.postId);
   }
   comment() {
     let self = this;
-    if(!self.postID) {
+    if(!self.postId) {
       return;
     }
     jsBridge.pushWindow('/subcomment.html?type=1&id='
-      + self.postID + '&cid=' + (cId || '') + '&rid=' + (rId || ''), {
+      + self.postId + '&cid=' + (cId || '') + '&rid=' + (rId || ''), {
       title: '评论',
       optionMenu: '发布',
     });
@@ -392,7 +421,7 @@ class Post extends migi.Component {
     let self = this;
     if(!n || n === '0') {
       jsBridge.pushWindow('/subcomment.html?type=1&id='
-        + self.postID + '&cid=' + cid + '&rid=' + rid, {
+        + self.postId + '&cid=' + cid + '&rid=' + rid, {
         title: '评论',
         optionMenu: '发布',
       });
@@ -444,7 +473,7 @@ class Post extends migi.Component {
               postName += '(' + (data.Content.length > 10 ? (data.Content.slice(0, 10) + '...') : data.Content) + ')';
             }
             postName += $4;
-            return `<a href="/${$1}.html?postID=${$2}" class="link" title="画圈正文">${postName}</a>`;
+            return `<a href="/${$1}.html?postId=${$2}" class="link" title="画圈正文">${postName}</a>`;
           case 'author':
             let authorName = $0.trim();
             if(data) {
@@ -542,7 +571,7 @@ class Post extends migi.Component {
               (postData.Taglist || []).map(function(item) {
                 if(item.CirclingList && item.CirclingList.length) {
                   return <li>
-                    <a href={ '/circle.html?circleID=' + item.CirclingList[0].CirclingID }
+                    <a href={ '/circle.html?circleId=' + item.CirclingList[0].CirclingID }
                        title={ item.CirclingList[0].CirclingName }>{ item.CirclingList[0].CirclingName }</a>
                   </li>;
                 }

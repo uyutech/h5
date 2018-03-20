@@ -63,6 +63,9 @@ class VideoList extends migi.Component {
     let author = ((item.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     let url = util.getWorksUrl(works.WorksID, works.WorksType, item.ItemID);
     let option = util.getWorksUrlOption(works.WorkType);
+    let authorStr = (author.AuthorInfo || []).map(function(item) {
+      return item.AuthorName;
+    }).join(' ');
     return <li>
       <a href={ url }
          title={ item.ItemName }
@@ -102,6 +105,12 @@ class VideoList extends migi.Component {
           </div>
           <b class={ 'like' + (item.ISLike ? ' liked' : '') } workID={ item.ItemID }>{ item.LikeHis }</b>
           <b class="comment">{ works.CommentCount }</b>
+          <b class="fn"
+             worksId={ works.WorksID }
+             worksTitle={ works.WorksName }
+             workId={ item.ItemID }
+             workTitle={ item.ItemName }
+             authorStr={ authorStr }/>
         </div>
       </div>
     </li>;
@@ -185,6 +194,51 @@ class VideoList extends migi.Component {
       transparentTitle: true,
     });
   }
+  clickFn(e, vd, tvd) {
+    let worksId = tvd.props.worksId;
+    let worksTitle = tvd.props.worksTitle;
+    let workId = tvd.props.workId;
+    let authorStr = tvd.props.authorStr;
+    migi.eventBus.emit('BOT_FN', {
+      canShare: true,
+      canShareWb: true,
+      canShareLink: true,
+      clickShareWb: function() {
+        let url = window.ROOT_DOMAIN + '/works/' + worksId;
+        if(workId) {
+          url += '/' + workId;
+        }
+        let text = '【';
+        if(worksTitle) {
+          text += worksTitle;
+        }
+        text += '】';
+        text += authorStr;
+        text += ' #转圈circling# ';
+        text += url;
+        jsBridge.shareWb({
+          text,
+        }, function(res) {
+          if(res.success) {
+            jsBridge.toast("分享成功");
+          }
+          else if(res.cancel) {
+            jsBridge.toast("取消分享");
+          }
+          else {
+            jsBridge.toast("分享失败");
+          }
+        });
+      },
+      clickShareLink: function() {
+        let url = window.ROOT_DOMAIN + '/works/' + worksId;
+        if(workId) {
+          url += '/' + workId;
+        }
+        util.setClipboard(url);
+      },
+    });
+  }
   clearLast() {
     if(last) {
       let video = last.children[0];
@@ -200,6 +254,7 @@ class VideoList extends migi.Component {
             '.video': this.clickVideo,
             '.name': this.clickName,
             '.like': this.clickLike,
+            '.fn': this.clickFn,
             '.author a': this.clickAuthor } }>
       {
         (this.dataList || []).map(function(item) {

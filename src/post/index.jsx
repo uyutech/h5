@@ -14,16 +14,16 @@ import util from '../common/util';
 import Post from './Post.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let postID = search.postID;
+let postId = search.postId;
 
 jsBridge.ready(function() {
   let post = migi.preExist(
     <Post/>,
     '#page'
   );
-  net.postJSON('/h5/post/index', { postID }, function(res) {
+  net.postJSON('/h5/post/index', { postID: postId }, function(res) {
     if(res.success) {
-      post.setData(postID, res.data);
+      post.setData(postId, res.data);
     }
     else {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);

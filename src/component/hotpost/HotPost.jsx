@@ -107,7 +107,7 @@ class HotPost extends migi.Component {
         let $this = $(this);
         let id = $this.attr('rel');
         let count = $this.attr('count');
-        let url = count === '0' ? `/subcomment.html?type=1&id=${id}` : `/post.html?postID=${id}`;
+        let url = count === '0' ? `/subcomment.html?type=1&id=${id}` : `/post.html?postId=${id}`;
         let title = count === '0' ? '回复画圈' : '画圈正文';
         jsBridge.pushWindow(url, {
           title,
@@ -247,7 +247,7 @@ class HotPost extends migi.Component {
               postName += '(' + (data.Content.length > 10 ? (data.Content.slice(0, 10) + '...') : data.Content) + ')';
             }
             postName += $4;
-            return `<a href="/${$1}.html?postID=${$2}" class="link" title="画圈正文">${postName}</a>`;
+            return `<a href="/${$1}.html?postId=${$2}" class="link" title="画圈正文">${postName}</a>`;
           case 'author':
             let authorName = $0.trim();
             if(data) {
@@ -282,7 +282,7 @@ class HotPost extends migi.Component {
       let full = this.encode(item.Content, item.reference) + '<span class="placeholder"></span><span class="shrink">收起全文</span>';
       html = `<p class="snap">${html}</p><p class="full">${full}</p>`;
     }
-    let url = '/post.html?postID=' + id;
+    let url = '/post.html?postId=' + id;
     let peopleUrl = item.IsAuthor
       ? ('/author.html?authorId=' + item.AuthorID)
       : ('/user.html?userID=' + item.SendUserID);
@@ -356,12 +356,12 @@ class HotPost extends migi.Component {
             if(item.CirclingList) {
               if(item.CirclingList.length) {
                 return <li>
-                  <a href={ '/circle.html?circleID=' + item.CirclingList[0].CirclingID }
+                  <a href={ '/circle.html?circleId=' + item.CirclingList[0].CirclingID }
                      title={ item.CirclingList[0].CirclingName + '圈' }>{ item.CirclingList[0].CirclingName }</a></li>;
               }
               return <li><span>{ item.TagName }</span></li>;
             }
-            return <li><a href={ '/circle.html?circleID=' + item.TagID }
+            return <li><a href={ '/circle.html?circleId=' + item.TagID }
                           title={ item.TagName + '圈' }>{ item.TagName }</a></li>;
           })
         }

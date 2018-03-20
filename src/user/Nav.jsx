@@ -20,6 +20,7 @@ class Nav extends migi.Component {
     self.on(migi.Event.DOM, function() {
       jsBridge.on('optionMenu1', function() {
         migi.eventBus.emit('BOT_FN', {
+          canFn: true,
           canBlock: true,
           blockText: '加入黑名单',
           clickBlock: function(botFn) {

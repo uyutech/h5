@@ -17,6 +17,7 @@ class Nav extends migi.Component {
     self.on(migi.Event.DOM, function() {
       jsBridge.on('optionMenu1', function() {
         migi.eventBus.emit('BOT_FN', {
+          canFn: true,
           canFavor: true,
           favorText: '关注',
           favoredText: '已关注',
@@ -24,6 +25,9 @@ class Nav extends migi.Component {
           canBlock: true,
           canReport: true,
           blockText: '加入黑名单',
+          canShare: true,
+          canShareWb: true,
+          canShareLink: true,
           clickFavor: function(botFn) {
             self.follow(function() {
               botFn.isFavor = self.like;
@@ -40,6 +44,28 @@ class Nav extends migi.Component {
               jsBridge.toast('举报成功');
               botFn.cancel();
             });
+          },
+          clickShareWb: function() {
+            let url = window.ROOT_DOMAIN + '/author/' + self.authorId;
+            let text = self.authorName + ' 来欣赏【' + self.authorName + '】的作品吧~ ';
+            text += ' #转圈circling# ';
+            text += url;
+            jsBridge.shareWb({
+              text,
+            }, function(res) {
+              if(res.success) {
+                jsBridge.toast("分享成功");
+              }
+              else if(res.cancel) {
+                jsBridge.toast("取消分享");
+              }
+              else {
+                jsBridge.toast("分享失败");
+              }
+            });
+          },
+          clickShareLink: function() {
+            util.setClipboard(window.ROOT_DOMAIN + '/author/' + self.authorId);
           },
         });
       });

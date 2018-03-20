@@ -40,9 +40,17 @@ class Playlist extends migi.Component {
         let $fn = $(this);
         let isLike = $fn.attr('isLike') === 'true';
         let isFavor = $fn.attr('isFavor') === 'true';
+        let worksId = $fn.attr('worksId');
+        let workId = $fn.attr('workId');
+        let worksTitle = $fn.attr('worksTitle');
+        let authorStr = $fn.attr('authorStr');
         migi.eventBus.emit('BOT_FN', {
+          canFn: true,
           canLike: true,
           canFavor: true,
+          canShare: true,
+          canShareWb: true,
+          canShareLink: true,
           isLike,
           isFavor,
           clickFavor: function(botFn) {
@@ -50,7 +58,7 @@ class Playlist extends migi.Component {
               return;
             }
             loadingFavor = true;
-            ajaxFavor = net.postJSON(isFavor ? '/h5/works/unFavorWork' : '/h5/works/favorWork', { workID: $fn.attr('workID') }, function(res) {
+            ajaxFavor = net.postJSON(isFavor ? '/h5/works/unFavorWork' : '/h5/works/favorWork', { workID: $fn.attr('workId') }, function(res) {
               if(res.success) {
                 let data = res.data;
                 $fn.attr('isFavor', isFavor = botFn.isFavor = data.State === 'favorWork');
@@ -69,7 +77,7 @@ class Playlist extends migi.Component {
               return;
             }
             loadingLike = true;
-            ajaxLike = net.postJSON('/h5/works/likeWork', { workID: $fn.attr('workID') }, function(res) {
+            ajaxLike = net.postJSON('/h5/works/likeWork', { workID: $fn.attr('workId') }, function(res) {
               if(res.success) {
                 let data = res.data;
                 $fn.attr('isLike', isLike = botFn.isLike = data.State === 'likeWordsUser');
@@ -92,7 +100,41 @@ class Playlist extends migi.Component {
             }
             loadingFavor = false;
             loadingLike = false;
-          }
+          },
+          clickShareWb: function() {
+            let url = window.ROOT_DOMAIN + '/works/' + worksId;
+            if(workId) {
+              url += '/' + workId;
+            }
+            let text = '【';
+            if(worksTitle) {
+              text += worksTitle;
+            }
+            text += '】';
+            text += authorStr;
+            text += ' #转圈circling# ';
+            text += url;
+            jsBridge.shareWb({
+              text,
+            }, function(res) {
+              if(res.success) {
+                jsBridge.toast("分享成功");
+              }
+              else if(res.cancel) {
+                jsBridge.toast("取消分享");
+              }
+              else {
+                jsBridge.toast("分享失败");
+              }
+            });
+          },
+          clickShareLink: function() {
+            let url = window.ROOT_DOMAIN + '/works/' + worksId;
+            if(workId) {
+              url += '/' + workId;
+            }
+            util.setClipboard(url);
+            },
         });
       });
     });
@@ -135,26 +177,31 @@ class Playlist extends migi.Component {
     }
     let author = ((item.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     let url = util.getWorksUrl(works.WorksID, works.WorksType, item.ItemID);
+    let authorStr = (author.AuthorInfo || []).map(function(item) {
+      return item.AuthorName;
+    }).join(' ');
     if(item.WorksState === 2) {
       let temp = <li class={ item.ItemID === lastId ? 'cur' : '' }>
-        <a href={ url } title={ item.ItemName || '待揭秘' } class="pic">
-          <img class="pic" src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
+        <a href={ url }
+           title={ item.ItemName || '待揭秘' }
+           class="pic">
+          <img class="pic"
+               src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
         </a>
         <audio ref="audio"
                preload="meta"
                playsinline="true"
                webkit-playsinline="true"/>
         <div class="txt">
-          <a href={ url } title={ item.ItemName || '待揭秘' }
+          <a href={ url }
+             title={ item.ItemName || '待揭秘' }
              class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
           {
             self.props.profession
               ? <p class="author">{ (author.AuthorInfo || []).map(function(item) {
                 return item.AuthorTypeName;
               }).join(' ') }</p>
-              : <p class="author">{ (author.AuthorInfo || []).map(function(item) {
-                return item.AuthorName;
-              }).join(' ') }</p>
+              : <p class="author">{ authorStr }</p>
           }
         </div>
       </li>;
@@ -164,7 +211,10 @@ class Playlist extends migi.Component {
       return temp;
     }
     let temp = <li class={ item.ItemID === lastId ? 'cur' : '' }>
-      <a href={ url } title={ item.ItemName || '待揭秘' } class="pic" item={ item }>
+      <a href={ url }
+         title={ item.ItemName || '待揭秘' }
+         class="pic"
+         item={ item }>
         <img src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
       </a>
       <audio ref="audio"
@@ -181,12 +231,17 @@ class Playlist extends migi.Component {
             ? <p class="author">{ (author.AuthorInfo || []).map(function(item) {
               return item.AuthorTypeName;
             }).join(' ') }</p>
-            : <p class="author">{ (author.AuthorInfo || []).map(function(item) {
-              return item.AuthorName;
-            }).join(' ') }</p>
+            : <p class="author">{ authorStr }</p>
         }
       </div>
-      <b class="fn" workID={ item.ItemID } isLike={ item.ISLike } isFavor={ item.ISFavor }/>
+      <b class="fn"
+         worksId={ works.WorksID }
+         worksTitle={ works.WorksName }
+         workId={ item.ItemID }
+         workTitle={ item.ItemName }
+         authorStr={ authorStr }
+         isLike={ item.ISLike }
+         isFavor={ item.ISFavor }/>
     </li>;
     if(item.ItemID === lastId) {
       last = item;

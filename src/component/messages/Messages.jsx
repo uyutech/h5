@@ -50,7 +50,7 @@ class Messages extends migi.Component {
       title = '作品详情';
     }
     else if(type === 3 || type === 4) {
-      url = '/post.html?postID=' + item.urlID;
+      url = '/post.html?postId=' + item.urlID;
       title = '画圈正文';
     }
     let link = item.Send_UserISAuthor

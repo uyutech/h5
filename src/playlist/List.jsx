@@ -158,6 +158,7 @@ class List extends migi.Component {
     let index = $li.attr('index');
     let data = self.dataList[index];
     migi.eventBus.emit('BOT_FN', {
+      canFn: true,
       canLike: true,
       canFavor: true,
       isLike: data.isLike,

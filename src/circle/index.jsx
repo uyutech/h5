@@ -14,16 +14,16 @@ import util from '../common/util';
 import Circle from './Circle.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let circleID = search.circleID;
+let circleId = search.circleId;
 
 jsBridge.ready(function() {
   let circle = migi.preExist(
     <Circle/>,
     '#page'
   );
-  net.postJSON('/h5/circle/index', { circleID }, function(res) {
+  net.postJSON('/h5/circle/index', { circleID: circleId }, function(res) {
     if(res.success) {
-      circle.setData(circleID, res.data);
+      circle.setData(circleId, res.data);
     }
     else {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);

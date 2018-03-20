@@ -423,6 +423,17 @@ let util = {
     });
     return res;
   },
+  setClipboard: function(s) {
+    let input = document.createElement('input');
+    input.setAttribute('style', 'position:absolute;left:0;top:0;');
+    input.value = s;
+    document.body.appendChild(input);
+    input.focus();
+    input.setSelectionRange(0, 9999);
+    document.execCommand('copy');
+    document.body.removeChild(input);
+    jsBridge.toast('复制成功');
+  },
 };
 
 export default util;

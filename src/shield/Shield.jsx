@@ -97,10 +97,10 @@ class Shield extends migi.Component {
   }
   genCircle(data) {
     return <li>
-      <a href={ '/circle.html?circleID=' + data.CirclingID } class="pic" title={ data.CirclingName }>
+      <a href={ '/circle.html?circleId=' + data.CirclingID } class="pic" title={ data.CirclingName }>
         <img src={ util.autoSsl(util.img120_120_80(data.HeadUrl) || '/src/common/head.png') }/>
       </a>
-      <a href={ '/circle.html?circleID=' + data.CirclingID } class="txt" title={ data.CirclingName }>
+      <a href={ '/circle.html?circleId=' + data.CirclingID } class="txt" title={ data.CirclingName }>
         <span class="name">{ data.CirclingName }</span>
       </a>
       <button rel={ data.CirclingID }>解除屏蔽</button>

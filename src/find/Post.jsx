@@ -30,12 +30,12 @@ class Post extends migi.Component {
     let content = post.Content;
     content = content.length > 50 ? (content.slice(0, 50) + '...') : content;
     return <div class="mod-post">
-      <a href={ '/post.html?postID=' + post.CommentID } title={ data.Describe } class="pic">
+      <a href={ '/post.html?postId=' + post.CommentID } title={ data.Describe } class="pic">
         <img src={ util.autoSsl(util.img750__80(data.coverpic || '/src/common/blank.png')) }/>
       </a>
       <div class="txt">
         <span>{ data.Describe }</span>
-        <a href={ '/post.html?postID=' + post.CommentID } title={ data.Describe }>{ content }</a>
+        <a href={ '/post.html?postId=' + post.CommentID } title={ data.Describe }>{ content }</a>
       </div>
     </div>;
   }

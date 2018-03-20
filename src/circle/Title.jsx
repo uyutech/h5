@@ -7,15 +7,18 @@
 import net from '../common/net';
 import util from '../common/util';
 
+let loading;
+
 class Title extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.joined = !!this.props.circleDetail.ISLike;
-    this.count = this.props.circleDetail.FansNumber;
   }
   @bind joined
   @bind count
-  @bind loading
+  @bind cover
+  @bind sname
+  @bind desc
+  @bind id;
   click(e) {
     e.preventDefault();
     if(!util.isLogin()) {
@@ -23,11 +26,11 @@ class Title extends migi.Component {
       return;
     }
     let self = this;
-    if(self.loading) {
+    if(loading) {
       return;
     }
-    self.loading = true;
-    net.postJSON('/h5/circle/join', { circleID: this.props.circleDetail.TagID, state: self.joined }, function(res) {
+    loading = true;
+    net.postJSON('/h5/circle/join', { circleID: self.id, state: self.joined }, function(res) {
       if(res.success) {
         self.joined = !!res.data.ISLike;
         self.count = res.data.FansNumber;
@@ -35,27 +38,27 @@ class Title extends migi.Component {
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
-      self.loading = false;
+      loading = false;
     }, function(res) {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      self.loading = false;
+      loading = false;
     });
   }
   render() {
     return <div class="title">
       <div class="profile">
         <div class="pic">
-          <img src={ util.autoSsl(util.img200_200_80(this.props.circleDetail.TagCover || '//zhuanquan.xin/img/c370ff3fa46f4273d0f73147459a43d8.png')) }/>
+          <img src={ util.autoSsl(util.img200_200_80(this.cover || '//zhuanquan.xin/img/c370ff3fa46f4273d0f73147459a43d8.png')) }/>
         </div>
         <div class="txt">
-          <h1>{ this.props.circleDetail.TagName }</h1>
+          <h1>{ this.sname }</h1>
           <div class="rel">
             <span class="count">{ this.count || 0 }</span>
-            <a href="#" class={ 'join' + (this.joined ? ' joined' : '') } onClick={ this.click }>{ this.joined ? '已经加入' : '加入圈子' }</a>
+            <span class={ 'join' + (this.id ? '' : ' fn-hide') + (this.joined ? ' joined' : '') } onClick={ this.click }>{ this.joined ? '已经加入' : '加入圈子' }</span>
           </div>
         </div>
       </div>
-      <pre class={ 'intro' + (this.props.circleDetail.Describe ? '' : ' fn-hide') }>{ this.props.circleDetail.Describe }</pre>
+      <pre class={ 'intro' + (this.desc ? '' : ' fn-hide') }>{ this.desc }</pre>
     </div>;
   }
 }

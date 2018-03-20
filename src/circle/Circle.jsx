@@ -27,30 +27,59 @@ class Circle extends migi.Component {
       });
       jsBridge.on('optionMenu1', function() {
         migi.eventBus.emit('BOT_FN', {
+          canFn: true,
           canBlock: true,
+          canShare: true,
+          canShareWb: true,
+          canShareLink: true,
           clickBlock: function(botFn) {
-            self.block(self.circleID, function() {
+            self.block(self.circleId, function() {
               jsBridge.toast('屏蔽成功');
               botFn.cancel();
             });
+          },
+          clickShareWb: function() {
+            let url = window.ROOT_DOMAIN + '/circle/' + self.circleId;
+            let text = '来转转【' + self.circleName + '】圈吧~ 每天转转圈，玩转每个圈~';
+            text += ' #转圈circling# ';
+            text += url;
+            jsBridge.shareWb({
+              text,
+            }, function(res) {
+              if(res.success) {
+                jsBridge.toast("分享成功");
+              }
+              else if(res.cancel) {
+                jsBridge.toast("取消分享");
+              }
+              else {
+                jsBridge.toast("分享失败");
+              }
+            });
+          },
+          clickShareLink: function() {
+            util.setClipboard(window.ROOT_DOMAIN + '/circle/' + self.circleId);
           },
         });
       });
     });
   }
-  @bind hasData
-  @bind circleID
-  setData(circleID, data) {
+  @bind circleId
+  @bind circleName
+  setData(circleId, data) {
     let self = this;
-    self.circleID = circleID;
+    self.circleId = circleId;
+    self.circleName = data.circleDetail.TagName;
 
-    self.circleDetail = data.circleDetail;
-    self.stick = data.stick;
-    self.postList = data.postList;
+    let title = self.ref.title;
+    title.cover = data.circleDetail.TagCover;
+    title.sname = data.circleDetail.TagName;
+    title.id = data.circleDetail.TagID;
+    title.desc = data.circleDetail.Describe;
+    title.joined = data.circleDetail.ISLike;
+    title.count = data.circleDetail.Popular;
 
-    self.hasData = true;
-
-    if(self.postList.Size > take) {
+    if(data.postList.Size > take) {
       let $window = $(window);
       $window.on('scroll', function() {
         self.checkMore($window);
@@ -58,6 +87,7 @@ class Circle extends migi.Component {
     }
 
     let hotPost = self.ref.hotPost;
+    hotPost.setData(data.postList.data);
     let imageView = self.ref.imageView;
     imageView.on('clickLike', function(sid) {
       hotPost.like(sid, function(res) {
@@ -94,7 +124,7 @@ class Circle extends migi.Component {
     let hotPost = self.ref.hotPost;
     loading = true;
     hotPost.message = '正在加载...';
-    net.postJSON('/h5/circle/postList', { circleID: self.circleID, skip, take }, function(res) {
+    net.postJSON('/h5/circle/postList', { circleID: self.circleId, skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
@@ -124,14 +154,14 @@ class Circle extends migi.Component {
     });
   }
   share() {
-    migi.eventBus.emit('SHARE', '/circle/' + this.circleID);
+    migi.eventBus.emit('SHARE', '/circle/' + this.circleId);
   }
   comment() {
     let self = this;
-    if(!self.circleID) {
+    if(!self.circleId) {
       return;
     }
-    jsBridge.pushWindow('/subpost.html?circleID=' + self.circleID, {
+    jsBridge.pushWindow('/subpost.html?circleId=' + self.circleId, {
       title: '画个圈',
       optionMenu: '发布',
     });
@@ -158,32 +188,11 @@ class Circle extends migi.Component {
       });
     });
   }
-  genDom() {
-    let self = this;
-    return <div>
-      <Title ref="title"
-             circleDetail={ self.circleDetail }/>
-      {
-        self.stick && self.stick.Size
-          ? <HotPost dataList={ self.stick.data }/>
-          : ''
-      }
-      <HotPost ref="hotPost"
-               dataList={ self.postList.data }
-               message={ self.postList.Size > take ? '' : '已经到底了' }/>
-    </div>;
-  }
   render() {
     return <div class="circle">
-      {
-        this.hasData
-        ? this.genDom()
-        : <div>
-            <div class="fn-placeholder-pic"/>
-            <div class="fn-placeholder"/>
-            <div class="fn-placeholder"/>
-          </div>
-      }
+      <Title ref="title"/>
+      <HotPost ref="hotPost"
+               message={ '正在加载...' }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }
