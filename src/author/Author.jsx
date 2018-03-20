@@ -18,24 +18,9 @@ import BotFn from '../component/botfn/BotFn.jsx';
 import Work from './Work.jsx';
 import Dynamics from './Dynamics.jsx';
 
-let homeIndex;
-let workIndex;
-let dynamicIndex;
-let CommentIndex;
-
 class Author extends migi.Component {
   constructor(...data) {
     super(...data);
-    let self = this;
-    self.on(migi.Event.DOM, function() {
-      let inputCmt = self.ref.inputCmt;
-      inputCmt.on('share', function() {
-        if(!self.authorId) {
-          return;
-        }
-        migi.eventBus.emit('SHARE', '/author/' + self.authorId);
-      });
-    });
   }
   @bind authorId
   @bind index
@@ -44,7 +29,6 @@ class Author extends migi.Component {
   @bind showHome
   @bind showWork
   @bind showDynamic
-  @bind showComment
   load(authorId) {
     let self = this;
     self.authorId = authorId;
@@ -63,6 +47,7 @@ class Author extends migi.Component {
   }
   setData(data) {
     let self = this;
+    self.authorName = data.authorDetail.AuthorName;
     self.ref.nav.setData(data.authorDetail, 1);
     if(data.authorDetail.ISSettled && data.homeDetail.Hot_Works_Items && data.homeDetail.Hot_Works_Items.length) {
       self.showHome = true;
@@ -70,7 +55,7 @@ class Author extends migi.Component {
       self.ref.hotAlbum.list = data.album;
       self.ref.hotAuthor.list = data.homeDetail.AuthorToAuthor;
     }
-    if(data.itemList && data.itemList.data && data.itemList.data.length || data.type && data.type.length) {
+    if(data.authorDetail.ISSettled && (data.itemList && data.itemList.data && data.itemList.data.length || data.type && data.type.length)) {
       self.showWork = true;
       if(self.index === undefined) {
         self.index = 1;
@@ -85,13 +70,10 @@ class Author extends migi.Component {
         self.index = 2;
       }
     }
-    if(data.commentData && data.commentData.data && data.commentData.data.length) {
-      self.showComment = true;
-      self.ref.comments.authorId = self.authorId;
-      self.ref.comments.setData(data.commentData);
-      if(self.index === undefined) {
-        self.index = 3;
-      }
+    self.ref.comments.authorId = self.authorId;
+    self.ref.comments.setData(data.commentData);
+    if(self.index === undefined) {
+      self.index = 3;
     }
   }
   clickType(e, vd ,tvd) {
@@ -135,6 +117,36 @@ class Author extends migi.Component {
       });
     }
   }
+  share() {
+    let self = this;
+    migi.eventBus.emit('BOT_FN', {
+      canShare: true,
+      canShareWb: true,
+      canShareLink: true,
+      clickShareWb: function() {
+        let url = window.ROOT_DOMAIN + '/author/' + self.authorId;
+        let text = self.authorName + ' 来欣赏【' + self.authorName + '】的作品吧~ ';
+        text += ' #转圈circling# ';
+        text += url;
+        jsBridge.shareWb({
+          text,
+        }, function(res) {
+          if(res.success) {
+            jsBridge.toast("分享成功");
+          }
+          else if(res.cancel) {
+            jsBridge.toast("取消分享");
+          }
+          else {
+            jsBridge.toast("分享失败");
+          }
+        });
+      },
+      clickShareLink: function() {
+        util.setClipboard(window.ROOT_DOMAIN + '/author/' + self.authorId);
+      },
+    });
+  }
   render() {
     return <div class="author">
       <Background ref="background"/>
@@ -146,8 +158,8 @@ class Author extends migi.Component {
             rel={ 1 }>作品</li>
         <li class={ (this.showDynamic ? '' : 'fn-hide ') + (this.index === 2 ? 'cur' : '') }
             rel={ 2 }>动态</li>
-        <li class={ (this.showComment ? '' : 'fn-hide ') + (this.index === 3 ? 'cur' : '') }
-            rel={ 3 }>言论</li>
+        <li class={ (this.index === 3 ? 'cur' : '') }
+            rel={ 3 }>留言</li>
       </ul>
       <div class={ 'home' + (this.index === 0 ? '' : ' fn-hide') }>
         <h4>主打作品</h4>
@@ -168,6 +180,7 @@ class Author extends migi.Component {
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }
+                on-share={ this.share }
                 on-click={ this.clickInput }/>
       <BotFn ref="botFn"/>
     </div>;

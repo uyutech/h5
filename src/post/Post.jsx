@@ -139,7 +139,7 @@ class Post extends migi.Component {
           });
         },
         clickShareWb: function() {
-          let url = window.ROOT_DOMAIN + '/post/' + self.postId;console.log(self.postData)
+          let url = window.ROOT_DOMAIN + '/post/' + self.postId;
           let text = '';
           if(self.postData.Content) {
             text += self.postData.Content.length > 30 ? (self.postData.Content.slice(0, 30) + '...') : self.postData.Content;
@@ -404,7 +404,37 @@ class Post extends migi.Component {
     });
   }
   share() {
-    migi.eventBus.emit('SHARE', '/post/' + this.postId);
+    let self = this;
+    migi.eventBus.emit('BOT_FN', {
+      canShare: true,
+      canShareWb: true,
+      canShareLink: true,
+      clickShareWb: function() {
+        let url = window.ROOT_DOMAIN + '/post/' + self.postId;
+        let text = '';
+        if(self.postData.Content) {
+          text += self.postData.Content.length > 30 ? (self.postData.Content.slice(0, 30) + '...') : self.postData.Content;
+        }
+        text += ' #转圈circling# ';
+        text += url;
+        jsBridge.shareWb({
+          text,
+        }, function(res) {
+          if(res.success) {
+            jsBridge.toast("分享成功");
+          }
+          else if(res.cancel) {
+            jsBridge.toast("取消分享");
+          }
+          else {
+            jsBridge.toast("分享失败");
+          }
+        });
+      },
+      clickShareLink: function() {
+        util.setClipboard(window.ROOT_DOMAIN + '/post/' + self.postId);
+      },
+    });
   }
   comment() {
     let self = this;

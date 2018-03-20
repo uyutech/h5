@@ -13,21 +13,17 @@ let isMove;
 let sx;
 let sy;
 let dx;
-let $c;
-let $i1;
-let $i2;
-let $i3;
 let loading;
 let pos;
 let uuid = 0;
 
 function setTransform(dx) {
-  $c.css('-webkit-transform', `translate3d(${dx},0,0)`);
-  $c.css('transform', `translate3d(${dx},0,0)`);
+  this.$c.css('-webkit-transform', `translate3d(${dx},0,0)`);
+  this.$c.css('transform', `translate3d(${dx},0,0)`);
 }
 function clearTransform() {
-  $c.css('-webkit-transform', 'translate3d(0,0,0)');
-  $c.css('transform', 'translate3d(0,0,0)');
+  this.$c.css('-webkit-transform', 'translate3d(0,0,0)');
+  this.$c.css('transform', 'translate3d(0,0,0)');
 }
 
 class ImageView extends migi.Component {
@@ -38,10 +34,10 @@ class ImageView extends migi.Component {
     self.index = self.props.index || 0;
     self.on(migi.Event.DOM, function() {
       WIDTH = $(window).width();
-      $c = $(self.ref.c.element);
-      $i1 = $(self.ref.i1.element);
-      $i2 = $(self.ref.i2.element);
-      $i3 = $(self.ref.i3.element);
+      self.$c = $(self.ref.c.element);
+      self.$i1 = $(self.ref.i1.element);
+      self.$i2 = $(self.ref.i2.element);
+      self.$i3 = $(self.ref.i3.element);
       jsBridge.on('back', function(e) {
         if(!$(self.element).hasClass('fn-hide')) {
           e.preventDefault();
@@ -85,39 +81,39 @@ class ImageView extends migi.Component {
     let url = util.autoSsl(data.FileUrl);
     if(data.loaded || !data.preview) {
       ++uuid;
-      $i2.find('img').attr('src', url || '/src/common/blank.png');
+      self.$i2.find('img').attr('src', url || '/src/common/blank.png');
     }
     else {
-      $i2.find('img').attr('src', data.preview);
+      self.$i2.find('img').attr('src', data.preview);
       let cid = ++uuid;
       self.loadImg(url, function(res) {
         if(res && uuid === cid) {
           data.loaded = true;
-          $i2.find('img').attr('src', url);
+          self.$i2.find('img').attr('src', url);
         }
       });
     }
     if(index) {
       if(list[index - 1].loaded || !list[index - 1].preview) {
-        $i1.find('img').attr('src', list[index - 1].FileUrl || '/src/common/blank.png');
+        self.$i1.find('img').attr('src', list[index - 1].FileUrl || '/src/common/blank.png');
       }
       else {
-        $i1.find('img').attr('src', list[index - 1].preview);
+        self.$i1.find('img').attr('src', list[index - 1].preview);
       }
     }
     else {
-      $i1.find('img').attr('src', '/src/common/blank.png');
+      self.$i1.find('img').attr('src', '/src/common/blank.png');
     }
     if(index < list.length - 1) {
       if(list[index + 1].loaded || !list[index + 1].preview) {
-        $i3.find('img').attr('src', list[index + 1].FileUrl || '/src/common/blank.png');
+        self.$i3.find('img').attr('src', list[index + 1].FileUrl || '/src/common/blank.png');
       }
       else {
-        $i3.find('img').attr('src', list[index + 1].preview);
+        self.$i3.find('img').attr('src', list[index + 1].preview);
       }
     }
     else {
-      $i3.find('img').attr('src', '/src/common/blank.png');
+      self.$i3.find('img').attr('src', '/src/common/blank.png');
     }
   }
   loadImg(url, cb) {
@@ -149,7 +145,7 @@ class ImageView extends migi.Component {
       isStart = true;
       sx = e.touches[0].pageX;
       sy = e.touches[0].pageY;
-      $c.removeClass('transition');
+      this.$c.removeClass('transition');
       pos = [];
     }
   }
@@ -158,7 +154,7 @@ class ImageView extends migi.Component {
       e.preventDefault();
       let x = e.touches[0].pageX;
       dx = x - sx;
-      setTransform(dx + 'px');
+      setTransform.call(this, dx + 'px');
       pos.push({
         t: Date.now(),
         x,
@@ -175,7 +171,7 @@ class ImageView extends migi.Component {
       if(Math.abs(dx) > Math.abs(y - sy)) {
         e.preventDefault();
         isMove = true;
-        setTransform(dx + 'px');
+        setTransform.call(this, dx + 'px');
         pos.push({
           t: Date.now(),
           x,
@@ -244,20 +240,20 @@ class ImageView extends migi.Component {
       }
     }
     if(change) {
-      $c.addClass('transition');
-      setTransform(ts);
+      self.$c.addClass('transition');
+      setTransform.call(self, ts);
       loading = true;
       setTimeout(function() {
-        $c.removeClass('transition');
-        clearTransform();
+        self.$c.removeClass('transition');
+        clearTransform.call(self);
         self.setImg(i);
         loading = false;
       }, 200);
       return;
     }
-    $c.addClass('transition');
-    $c.css('-webkit-transform', 'translate3d(0,0,0)');
-    $c.css('transform', 'translate3d(0,0,0)');
+    self.$c.addClass('transition');
+    self.$c.css('-webkit-transform', 'translate3d(0,0,0)');
+    self.$c.css('transform', 'translate3d(0,0,0)');
   }
   clickDownload(e, vd) {
     e.stopPropagation();
@@ -282,10 +278,15 @@ class ImageView extends migi.Component {
   }
   render() {
     return <div class="cp-imageview fn-hide">
-      <div class="c" ref="c" onClick={ this.click }
-           onTouchStart={ this.start } onTouchMove={ this.move } onTouchEnd={ this.end } onTouchCancel={ this.end }>
+      <div class="c"
+           ref="c"
+           onClick={ this.click }
+           onTouchStart={ this.start }
+           onTouchMove={ this.move }
+           onTouchEnd={ this.end }
+           onTouchCancel={ this.end }>
         <div class="i1" ref="i1">
-          <img src="/src/common/blank.png"/>
+          <img src="/src/common/blank.png" test="1"/>
         </div>
         <div class="i2" ref="i2">
           <img src="/src/common/blank.png"/>

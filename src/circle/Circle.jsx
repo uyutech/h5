@@ -154,7 +154,40 @@ class Circle extends migi.Component {
     });
   }
   share() {
-    migi.eventBus.emit('SHARE', '/circle/' + this.circleId);
+    let self = this;
+    migi.eventBus.emit('BOT_FN', {
+      canShare: true,
+      canShareWb: true,
+      canShareLink: true,
+      clickBlock: function(botFn) {
+        self.block(self.circleId, function() {
+          jsBridge.toast('屏蔽成功');
+          botFn.cancel();
+        });
+      },
+      clickShareWb: function() {
+        let url = window.ROOT_DOMAIN + '/circle/' + self.circleId;
+        let text = '来转转【' + self.circleName + '】圈吧~ 每天转转圈，玩转每个圈~';
+        text += ' #转圈circling# ';
+        text += url;
+        jsBridge.shareWb({
+          text,
+        }, function(res) {
+          if(res.success) {
+            jsBridge.toast("分享成功");
+          }
+          else if(res.cancel) {
+            jsBridge.toast("取消分享");
+          }
+          else {
+            jsBridge.toast("分享失败");
+          }
+        });
+      },
+      clickShareLink: function() {
+        util.setClipboard(window.ROOT_DOMAIN + '/circle/' + self.circleId);
+      },
+    });
   }
   comment() {
     let self = this;

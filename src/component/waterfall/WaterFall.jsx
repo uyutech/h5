@@ -115,7 +115,7 @@ class WaterFall extends migi.Component {
 
       $root.on('click', 'img', function() {
         let $img = $(this);
-        let index = $img.attr('rel');
+        let index = $img.attr('rel');console.log(list, index);
         imageView.setData(list, index);
       });
 

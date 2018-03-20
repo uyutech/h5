@@ -247,7 +247,6 @@ class Works extends migi.Component {
   }
   share() {
     let self = this;
-    // migi.eventBus.emit('SHARE', '/works/' + this.worksId + (this.workId ? ('/' + this.workId) : ''));
     migi.eventBus.emit('BOT_FN', {
       canShare: true,
       clickShareIn: function(botFn) {
