@@ -24,6 +24,7 @@ class People extends migi.Component {
     else {
       jsBridge.pushWindow(url, {
         title,
+        transparentTitle: true,
       });
     }
   }
