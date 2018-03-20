@@ -18,6 +18,11 @@ import BotFn from '../component/botfn/BotFn.jsx';
 import Work from './Work.jsx';
 import Dynamics from './Dynamics.jsx';
 
+let homeIndex;
+let workIndex;
+let dynamicIndex;
+let CommentIndex;
+
 class Author extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -34,9 +39,12 @@ class Author extends migi.Component {
   }
   @bind authorId
   @bind index
-  @bind list
   @bind rid
   @bind cid
+  @bind showHome
+  @bind showWork
+  @bind showDynamic
+  @bind showComment
   load(authorId) {
     let self = this;
     self.authorId = authorId;
@@ -56,35 +64,35 @@ class Author extends migi.Component {
   setData(data) {
     let self = this;
     self.ref.nav.setData(data.authorDetail, 1);
-    let temp = [{
-      id: 1,
-      name: '作品',
-    }, {
-      id: 2,
-      name: '动态',
-    }, {
-      id: 3,
-      name: '留言',
-    }];
     if(data.authorDetail.ISSettled && data.homeDetail.Hot_Works_Items && data.homeDetail.Hot_Works_Items.length) {
+      self.showHome = true;
       self.index = 0;
-      temp.unshift({
-        id: 0,
-        name: '主页',
-      });
-      self.ref.hotWork.list = data.homeDetail.Hot_Works_Items;
+      self.ref.hotAlbum.list = data.album;
+      self.ref.hotAuthor.list = data.homeDetail.AuthorToAuthor;
     }
-    else {
-      self.index = 1;
+    if(data.itemList && data.itemList.data && data.itemList.data.length || data.type && data.type.length) {
+      self.showWork = true;
+      if(self.index === undefined) {
+        self.index = 1;
+      }
+      self.ref.work.setData(data.type, data.itemList);
     }
-    self.list = temp;
-    self.ref.hotAlbum.list = data.album;
-    self.ref.hotAuthor.list = data.homeDetail.AuthorToAuthor;
-    self.ref.dynamics.authorId = self.authorId;
-    self.ref.dynamics.setData(data.dynamic);
-    self.ref.comments.authorId = self.authorId;
-    self.ref.comments.setData(data.commentData);
-    self.ref.work.setData(data.type, data.itemList);
+    if(data.dynamic && data.dynamic.data && data.dynamic.data.length) {
+      self.showDynamic = true;
+      self.ref.dynamics.authorId = self.authorId;
+      self.ref.dynamics.setData(data.dynamic);
+      if(self.index === undefined) {
+        self.index = 2;
+      }
+    }
+    if(data.commentData && data.commentData.data && data.commentData.data.length) {
+      self.showComment = true;
+      self.ref.comments.authorId = self.authorId;
+      self.ref.comments.setData(data.commentData);
+      if(self.index === undefined) {
+        self.index = 3;
+      }
+    }
   }
   clickType(e, vd ,tvd) {
     let rel = tvd.props.rel;
@@ -132,12 +140,14 @@ class Author extends migi.Component {
       <Background ref="background"/>
       <Nav ref="nav"/>
       <ul class="index" onClick={ { li: this.clickType } }>
-      {
-        (this.index, this.list || []).map(function(item) {
-          return <li class={ this.index === item.id ? 'cur' : '' }
-                     rel={ item.id }>{ item.name }</li>;
-        }.bind(this))
-      }
+        <li class={ (this.showHome ? '' : 'fn-hide ') + (this.index === 0 ? 'cur' : '') }
+            rel={ 0 }>主页</li>
+        <li class={ (this.showWork ? '' : 'fn-hide ') + (this.index === 1 ? 'cur' : '') }
+            rel={ 1 }>作品</li>
+        <li class={ (this.showDynamic ? '' : 'fn-hide ') + (this.index === 2 ? 'cur' : '') }
+            rel={ 2 }>动态</li>
+        <li class={ (this.showComment ? '' : 'fn-hide ') + (this.index === 3 ? 'cur' : '') }
+            rel={ 3 }>言论</li>
       </ul>
       <div class={ 'home' + (this.index === 0 ? '' : ' fn-hide') }>
         <h4>主打作品</h4>

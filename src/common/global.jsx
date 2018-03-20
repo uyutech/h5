@@ -76,7 +76,7 @@ jsBridge.ready(function() {
         top.element.classList.remove('show');
       }
     });
-  }, 100);
+  }, 1000);
   jsBridge.getPreference('UUID', function(res) {
     let first = !res;
     if(first) {

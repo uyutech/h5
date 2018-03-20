@@ -43,7 +43,7 @@ class SubPost extends migi.Component {
             self.orginImage = true;
           }
         }
-        else if(major > 1 || minor > 5) {
+        else {
           self.orginImage = true;
         }
       }
