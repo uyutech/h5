@@ -14,7 +14,7 @@ import util from '../common/util';
 import Circle from './Circle.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let circleId = search.circleId;
+let circleId = search.circleId || search.circleID;
 
 jsBridge.ready(function() {
   let circle = migi.preExist(

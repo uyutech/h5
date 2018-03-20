@@ -221,9 +221,9 @@ class HotPost extends migi.Component {
         index++;
         switch($1) {
           case 'works':
-            let worksName = $0.trim();
+            let worksName = '';
             if(data) {
-              worksName += '(' + data.Title;
+              worksName += '《' + data.Title;
             }
             if($3) {
               if(data) {
@@ -231,34 +231,34 @@ class HotPost extends migi.Component {
                 if(sub) {
                   worksName += ' ' + sub;
                 }
-                worksName += ')'
+                worksName += '》';
               }
               worksName += $4;
               return `<a href="/${$1}.html?worksId=${$2}&workId=${$3}" class="link" transparentTitle="true">${worksName}</a>`;
             }
             if(data) {
-              worksName += ')';
+              worksName += '》';
             }
             worksName += $4;
             return `<a href="/${$1}.html?worksId=${$2}" class="link" transparentTitle="true">${worksName}</a>`;
           case 'post':
-            let postName = $0.trim();
+            let postName = '';
             if(data) {
-              postName += '(' + (data.Content.length > 10 ? (data.Content.slice(0, 10) + '...') : data.Content) + ')';
+              postName += data.Content.length > 10 ? (data.Content.slice(0, 10) + '...') : data.Content;
             }
             postName += $4;
             return `<a href="/${$1}.html?postId=${$2}" class="link" title="画圈正文">${postName}</a>`;
           case 'author':
-            let authorName = $0.trim();
+            let authorName = '';
             if(data) {
-              authorName += '(' + data.AuthorName + ')';
+              authorName += data.AuthorName;
             }
             authorName += $4;
             return `<a href="/${$1}.html?authorId=${$2}" class="link" transparentTitle="true">${authorName}</a>`;
           case 'user':
-            let userName = $0.trim();
+            let userName = '';
             if(data) {
-              userName += '(' + data.NickName + ')';
+              userName += data.NickName;
             }
             userName += $4;
             return `<a href="/${$1}.html?userID=${$2}" class="link" transparentTitle="true">${userName}</a>`;

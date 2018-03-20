@@ -74,6 +74,9 @@ class Media extends migi.Component {
             canBlock: true,
             canReport: true,
             canShare: true,
+            canShareIn: true,
+            canShareWb: true,
+            canShareLink: true,
             clickLike: function(botFn) {
               self.like(function() {
                 botFn.isLike = self.isLike;
@@ -107,8 +110,7 @@ class Media extends migi.Component {
               }
               jsBridge.pushWindow('/subpost.html?worksId=' + self.data.worksId
                 + '&workId=' + self.data.workId
-                + '&workType=' + self.data.workType
-                + '&cover=' + encodeURIComponent(self.data.workCover || self.data.worksCover || ''), {
+                + '&cover=' + encodeURIComponent(self.data.worksCover || ''), {
                 title: '画个圈',
                 optionMenu: '发布',
               });
@@ -673,41 +675,16 @@ class Media extends migi.Component {
     }
     migi.eventBus.emit('BOT_FN', {
       canShare: true,
-      clickLike: function(botFn) {
-        self.like(function() {
-          botFn.isLike = self.isLike;
-        });
-      },
-      clickFavor: function(botFn) {
-        self.favor(function() {
-          botFn.isFavor = self.isFavor;
-        });
-      },
-      clickCancel: function() {
-        loadingLike = loadingFavor = false;
-        if(ajaxLike) {
-          ajaxLike.abort();
-        }
-        if(ajaxFavor) {
-          ajaxFavor.abort();
-        }
-      },
-      clickBlock: function(botFn) {
-        jsBridge.toast('屏蔽成功');
-        botFn.cancel();
-      },
-      clickReport: function(botFn) {
-        jsBridge.toast('举报成功');
-        botFn.cancel();
-      },
+      canShareWb: true,
+      canShareLink: true,
+      canShareIn: true,
       clickShareIn: function(botFn) {
         if(!self.data) {
           return;
         }
         jsBridge.pushWindow('/subpost.html?worksId=' + self.data.worksId
           + '&workId=' + self.data.workId
-          + '&workType=' + self.data.workType
-          + '&cover=' + encodeURIComponent(self.data.workCover || self.data.worksCover || ''), {
+          + '&cover=' + encodeURIComponent(self.data.worksCover || ''), {
           title: '画个圈',
           optionMenu: '发布',
         });

@@ -43,12 +43,15 @@ class Playlist extends migi.Component {
         let worksId = $fn.attr('worksId');
         let workId = $fn.attr('workId');
         let worksTitle = $fn.attr('worksTitle');
+        let worksCover = $fn.attr('worksCover');
+        let workCover = $fn.attr('workCover');
         let authorStr = $fn.attr('authorStr');
         migi.eventBus.emit('BOT_FN', {
           canFn: true,
           canLike: true,
           canFavor: true,
           canShare: true,
+          canShareIn: true,
           canShareWb: true,
           canShareLink: true,
           isLike,
@@ -134,7 +137,15 @@ class Playlist extends migi.Component {
               url += '/' + workId;
             }
             util.setClipboard(url);
-            },
+          },
+          clickShareIn: function(botFn) {
+            jsBridge.pushWindow('/subpost.html?worksId=' + worksId
+              + '&workId=' + workId
+              + '&cover=' + encodeURIComponent(worksCover || ''), {
+              title: '画个圈',
+              optionMenu: '发布',
+            });
+          },
         });
       });
     });
@@ -179,7 +190,7 @@ class Playlist extends migi.Component {
     let url = util.getWorksUrl(works.WorksID, works.WorksType, item.ItemID);
     let authorStr = (author.AuthorInfo || []).map(function(item) {
       return item.AuthorName;
-    }).join(' ');
+    }).join(' ');console.log(item);
     if(item.WorksState === 2) {
       let temp = <li class={ item.ItemID === lastId ? 'cur' : '' }>
         <a href={ url }
@@ -239,6 +250,7 @@ class Playlist extends migi.Component {
          worksTitle={ works.WorksName }
          workId={ item.ItemID }
          workTitle={ item.ItemName }
+         worksCover={ works.WorksCoverPic }
          authorStr={ authorStr }
          isLike={ item.ISLike }
          isFavor={ item.ISFavor }/>

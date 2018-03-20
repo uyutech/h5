@@ -249,14 +249,8 @@ class Works extends migi.Component {
     let self = this;
     migi.eventBus.emit('BOT_FN', {
       canShare: true,
-      clickShareIn: function(botFn) {
-        jsBridge.pushWindow('/subpost.html?worksId=' + self.worksId
-          + '&workType=' + self.worksDetail.workType
-          + '&cover=' + encodeURIComponent(self.worksDetail.worksCover || ''), {
-          title: '画个圈',
-          optionMenu: '发布',
-        });
-      },
+      canShareWb: true,
+      canShareLink: true,
       clickShareWb: function(botFn) {
         let url = window.ROOT_DOMAIN + '/works/' + self.worksId;
         let text = '【';

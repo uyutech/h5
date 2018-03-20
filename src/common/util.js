@@ -15,7 +15,7 @@ let util = {
     location.href = url;
   },
   autoSsl: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
+    if(!/\/\/zhuanquan\./i.test(url) && !/\.sinaimg\.cn\//i.test(url)) {
       return url;
     }
     return (url || '').replace(/^https?:\/\//i, '//');

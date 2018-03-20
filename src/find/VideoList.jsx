@@ -108,6 +108,7 @@ class VideoList extends migi.Component {
           <b class="fn"
              worksId={ works.WorksID }
              worksTitle={ works.WorksName }
+             worksCover={ works.WorksCoverPic }
              workId={ item.ItemID }
              workTitle={ item.ItemName }
              authorStr={ authorStr }/>
@@ -199,10 +200,20 @@ class VideoList extends migi.Component {
     let worksTitle = tvd.props.worksTitle;
     let workId = tvd.props.workId;
     let authorStr = tvd.props.authorStr;
+    let worksCover = tvd.props.worksCover;
     migi.eventBus.emit('BOT_FN', {
       canShare: true,
       canShareWb: true,
       canShareLink: true,
+      canShareIn: true,
+      clickShareIn: function(botFn) {
+        jsBridge.pushWindow('/subpost.html?worksId=' + worksId
+          + '&workId=' + workId
+          + '&cover=' + encodeURIComponent(worksCover || ''), {
+          title: '画个圈',
+          optionMenu: '发布',
+        });
+      },
       clickShareWb: function() {
         let url = window.ROOT_DOMAIN + '/works/' + worksId;
         if(workId) {

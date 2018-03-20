@@ -10,7 +10,7 @@ let clickLike;
 let clickCancel;
 let clickBlock;
 let clickReport;
-let clickShare;
+let clickShareIn;
 let clickShareWb;
 let clickShareLink;
 
@@ -43,7 +43,7 @@ class BotFn extends migi.Component {
         clickCancel = data.clickCancel;
         clickBlock = data.clickBlock;
         clickReport = data.clickReport;
-        clickShare = data.clickShare;
+        clickShareIn = data.clickShareIn;
         clickShareWb = data.clickShareWb;
         clickShareLink = data.clickShareLink;
         self.pop = true;
@@ -118,9 +118,9 @@ class BotFn extends migi.Component {
     }
     this.cancel();
   }
-  clickShare() {
-    if(clickShare) {
-      clickShare(this);
+  clickShareIn() {
+    if(clickShareIn) {
+      clickShareIn(this);
     }
     this.cancel();
   }
@@ -145,7 +145,7 @@ class BotFn extends migi.Component {
     return <div class={ 'cp-botfn' + (this.pop ? ' on' : '') }>
       <div class="c">
         <ul class={ 'list share' + (this.canShare ? '' : ' fn-hide') }>
-          <li class={ 'in' + (this.canShareIn ? '' : ' fn-hide') } onClick={ this.clickShare }><b/>分享</li>
+          <li class={ 'in' + (this.canShareIn ? '' : ' fn-hide') } onClick={ this.clickShareIn }><b/>分享</li>
           <li class={ 'wb' + (this.canShareWb ? '' : ' fn-hide') } onClick={ this.clickShareWb }><b/>微博</li>
           <li class={ 'link' + (this.canShareLink ? '' : ' fn-hide') } onClick={ this.clickShareLink }><b/>复制链接</li>
         </ul>

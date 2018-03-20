@@ -118,7 +118,6 @@ class SubPost extends migi.Component {
     let tag = data.tag;
     if(data.workId) {
       self.workData = {
-        type: data.workType.charAt(0),
         cover: data.cover,
         workId: data.workId,
       };

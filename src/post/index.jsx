@@ -14,7 +14,7 @@ import util from '../common/util';
 import Post from './Post.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let postId = search.postId;
+let postId = search.postId || search.postID;
 
 jsBridge.ready(function() {
   let post = migi.preExist(
