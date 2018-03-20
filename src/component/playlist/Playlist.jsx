@@ -190,7 +190,7 @@ class Playlist extends migi.Component {
     let url = util.getWorksUrl(works.WorksID, works.WorksType, item.ItemID);
     let authorStr = (author.AuthorInfo || []).map(function(item) {
       return item.AuthorName;
-    }).join(' ');console.log(item);
+    }).join(' ');
     if(item.WorksState === 2) {
       let temp = <li class={ item.ItemID === lastId ? 'cur' : '' }>
         <a href={ url }

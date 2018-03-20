@@ -25,6 +25,12 @@ let avHash = {};
 class Works extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      jsBridge.setOptionMenu({
+        icon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAALVBMVEUAAAAAAAAAAAAAAAD+/v4AAAD5+fnk5OTq6uoAAAAwMDAAAAAAAACAgID///8waL84AAAADnRSTlMABxEL8BqUoZ0nIiITDIsBZnQAAABpSURBVEjHYxgFgxYICuKXl01xu4hPnlHs3btEAXwKTN69c8anQFDl3TsnfK4Q1nj3rskQnwlaJe6L8CpQ3Tk7CJ8VjDahoYfx+kJYSclQAG9AChsKEgxqCgHjaGyOxuZobA7K2BwFNAMAj1k2xo1Ti1oAAAAASUVORK5CYII=',
+      });
+    });
   }
   @bind worksId
   @bind workId
@@ -111,7 +117,7 @@ class Works extends migi.Component {
     self.setColumn(hash, commentData);
 
     author.list = worksDetail.GroupAuthorTypeHash;
-    self.setText(workList);
+    self.setText(worksDetail.Describe, workList);
     if(hash.poster) {
       self.setPoster(workList);
     }
@@ -166,8 +172,14 @@ class Works extends migi.Component {
     self.curColumn = 0;
     column.list = list;
   }
-  setText(list = []) {
+  setText(desc, list = []) {
     let res = [];
+    if(desc) {
+      res.push({
+        title: '简介',
+        data: desc,
+      });
+    }
     list.forEach(function(item) {
       let hash = {
         4110: '文案',

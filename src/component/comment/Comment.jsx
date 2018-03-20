@@ -181,6 +181,7 @@ class Comment extends migi.Component {
         });
       });
       $root.on('click', 'li.author a', function(e) {
+        e.stopImmediatePropagation();
         e.stopPropagation();
         e.preventDefault();
         let $this = $(this);
@@ -192,6 +193,7 @@ class Comment extends migi.Component {
         });
       });
       $root.on('click', 'li.user a', function(e) {
+        e.stopImmediatePropagation();
         e.stopPropagation();
         e.preventDefault();
         let $this = $(this);
@@ -422,7 +424,7 @@ class Comment extends migi.Component {
   }
   genChildComment(item) {
     if(item.IsAuthor) {
-      let authorID = item.IsAuthor;
+      let authorID = item.AuthorID;
       return <li class="author" id={ 'comment_' + item.Send_ID }>
         <div class="t">
           <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } title={ item.Send_AuthorName }>
