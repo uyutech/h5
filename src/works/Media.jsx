@@ -54,7 +54,18 @@ class Media extends migi.Component {
           jsBridge.on('mediaProgress', function(e) {
             if(self.data && e.data && e.data.id === self.data.workId.toString()) {
               let load = self.ref.load.element;
-              load.innerHTML = `<b style="width:${e.data.percent}%"/>`;
+              if(jsBridge.ios) {
+                let length = e.data.length;
+                let cache = e.data.cache || [];
+                let s = '';
+                cache.forEach(function(item) {
+                  s += `<b style="left:${item.offset * 100 / length}%;width:${item.length * 100 / length}%"></b>`;
+                });
+                load.innerHTML = s;
+              }
+              else {
+                load.innerHTML = `<b style="width:${e.data.percent}%"></b>`;
+              }
             }
           });
           jsBridge.on('mediaEnd', function() {
