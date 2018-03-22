@@ -314,7 +314,7 @@ class Music extends migi.Component {
     this.ref.botPlayBar.isPlaying = true;
     if(data.workType.toString().charAt(0) === '1') {
       jsBridge.getPreference('playlist', function(res) {
-        res = res || [];
+        res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
         for (let i = 0, len = res.length; i < len; i++) {
           if(res[i] === data.workId) {
             res.splice(i, 1);
@@ -322,7 +322,7 @@ class Music extends migi.Component {
           }
         }
         res.unshift(data.workId);
-        jsBridge.setPreference('playlist', res);
+        jsBridge.setPreference('playlist', jsBridge.android ? res : JSON.parse(res));
       });
       jsBridge.setPreference('playlistCur', data.workId);
     }

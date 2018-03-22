@@ -309,7 +309,7 @@ class Playlist extends migi.Component {
           key: 'play',
         });
         jsBridge.getPreference('playlist', function(res) {
-          res = res || [];
+          res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
           for (let i = 0, len = res.length; i < len; i++) {
             if(res[i].workId === item.ItemID) {
               res.splice(i, 1);
@@ -319,7 +319,7 @@ class Playlist extends migi.Component {
           res.unshift({
             workId: item.ItemID,
           });
-          jsBridge.setPreference('playlist', res);
+          jsBridge.setPreference('playlist', jsBridge.android ? res : JSON.parse(res));
         });
         jsBridge.setPreference('playlistCur', {
           workId: item.ItemID,

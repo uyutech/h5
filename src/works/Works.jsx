@@ -213,8 +213,8 @@ class Works extends migi.Component {
   mediaPlay(data) {
     if(data.workType.toString().charAt(0) === '1') {
       jsBridge.getPreference('playlist', function(res) {
-        res = res || [];
-        for (let i = 0, len = res.length; i < len; i++) {
+        res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
+        for(let i = 0, len = res.length; i < len; i++) {
           if(res[i].workId === data.workId) {
             res.splice(i, 1);
             break;
@@ -223,7 +223,7 @@ class Works extends migi.Component {
         res.unshift({
           workId: data.workId,
         });
-        jsBridge.setPreference('playlist', res);
+        jsBridge.setPreference('playlist', jsBridge.android ? res : JSON.stringify(res));
       });
       jsBridge.setPreference('playlistCur', {
         workId: data.workId,

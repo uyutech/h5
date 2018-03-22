@@ -107,7 +107,7 @@ class Background extends migi.Component {
             fin();
           });
           jsBridge.getPreference('playlist', function(res) {
-            playlist = res || [];
+            playlist = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
             count++;
             fin();
           });
@@ -121,7 +121,11 @@ class Background extends migi.Component {
     });
   }
   click() {
-    if(jsBridge.ios) {
+    let version = jsBridge.appVersion.split('.');
+    let major = parseInt(version[0]) || 0;
+    let minor = parseInt(version[1]) || 0;
+    let patch = parseInt(version[2]) || 0;
+    if(jsBridge.ios && major < 0 && minor < 6) {
       return;
     }
     jsBridge.pushWindow('/playlist.html', {

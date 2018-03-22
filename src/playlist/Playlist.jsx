@@ -94,7 +94,7 @@ class Playlist extends migi.Component {
         }
       }
       jsBridge.getPreference('playlist', function(res) {
-        playlistCache = res || [];
+        playlistCache = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
         count++;
         fin();
       });
@@ -140,12 +140,13 @@ class Playlist extends migi.Component {
           }
         }
         hisList.unshift(data);
-        jsBridge.setPreference('playlist', hisList.map(function(item) {
+        let res = hisList.map(function(item) {
           return {
             worksId: item.worksId,
             workId: item.workId,
           };
-        }));
+        });
+        jsBridge.setPreference('playlist', jsBridge.android ? res : JSON.stringify(res));
       });
       list.on('change', function(res) {
         let data = res.data;
@@ -167,12 +168,13 @@ class Playlist extends migi.Component {
           }
         }
         hisList.unshift(data);
-        jsBridge.setPreference('playlist', hisList.map(function(item) {
+        let res2 = hisList.map(function(item) {
           return {
             worksId: item.worksId,
             workId: item.workId,
           };
-        }));
+        });
+        jsBridge.setPreference('playlist', jsBridge.android ? res2 : JSON.stringify(res2));
       });
 
       media.on('play', function() {
@@ -213,12 +215,13 @@ class Playlist extends migi.Component {
           let item = hisList[i];
           if(item.workId.toString() === data.workId.toString()) {
             hisList.splice(i, 1);
-            jsBridge.setPreference('playlist', hisList.map(function(item) {
+            let res2 = hisList.map(function(item) {
               return {
                 worksId: item.worksId,
                 workId: item.workId,
               };
-            }));
+            });
+            jsBridge.setPreference('playlist', jsBridge.android ? res2 : JSON.stringify(res2));
             return;
           }
         }
