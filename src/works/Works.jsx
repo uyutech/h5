@@ -63,8 +63,8 @@ class Works extends migi.Component {
     }
     workList = worksDetail.Works_Items || [];
     let commentData = data.commentData;
-    // jsBridge.setTitle(worksDetail.Title);
-    // jsBridge.setSubTitle(worksDetail.sub_Title);
+    jsBridge.setTitle(worksDetail.Title);
+    jsBridge.setSubTitle(worksDetail.sub_Title);
 
     let info = self.ref.info;
     let select = self.ref.select;
@@ -97,7 +97,7 @@ class Works extends migi.Component {
     }
 
     let work = avList[index];
-    jsBridge.setTitle(work.ItemName);
+    // jsBridge.setTitle(work.ItemName);
     let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     let s = (authorList.AuthorInfo || []).map(function(item) {
       return item.AuthorName;
@@ -237,7 +237,7 @@ class Works extends migi.Component {
   change(workId) {
     let self = this;
     let work = avHash[workId];
-    jsBridge.setTitle(work.ItemName);
+    // jsBridge.setTitle(work.ItemName);
     let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     let s = (authorList.AuthorInfo || []).map(function(item) {
       return item.AuthorName;

@@ -96,6 +96,7 @@ class Search extends migi.Component {
     util.openAuthor({
       url,
       title,
+      transparentTitle: true,
     });
   }
   clickUser(e, vd, tvd) {
@@ -104,6 +105,7 @@ class Search extends migi.Component {
     let title = tvd.props.title;
     jsBridge.pushWindow(url, {
       title,
+      transparentTitle: true,
     });
   }
   clickWorks(e, vd, tvd) {
@@ -113,6 +115,8 @@ class Search extends migi.Component {
     util.openWorks({
       url,
       title,
+    }, {
+      transparentTitle: true,
     });
   }
   clickTag(e, vd, tvd) {
@@ -186,9 +190,9 @@ class Search extends migi.Component {
       <ul class="works fn-clear fn-hide" ref="works" onClick={ { a: this.clickWorks } }>
         {
           (this.worksList || []).map(function(item) {
-            let GroupAuthorTypeHash = item.GroupAuthorTypeHash || {};
-            let AuthorTypeHashlist = GroupAuthorTypeHash.AuthorTypeHashlist || [];
-            let author = AuthorTypeHashlist[0] || {};
+            // let GroupAuthorTypeHash = item.GroupAuthorTypeHash || {};
+            // let AuthorTypeHashlist = GroupAuthorTypeHash.AuthorTypeHashlist || [];
+            // let author = AuthorTypeHashlist[0] || {};
             return <li class={ 't' + item.WorkType }>
               <a href={ '/works.html?worksId=' + item.WorkID } title={ item.WorkName } class="pic">
                 <img src={ util.autoSsl(util.img170_170_80(item.CoverPic)) }/>

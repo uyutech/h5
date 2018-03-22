@@ -802,10 +802,15 @@ class Media extends migi.Component {
           <span class="total">{ util.formatTime(this.duration) }</span>
         </div>
         <div class={ 'progress' + (this.canControl ? ' can' : '') }>
-          <div class="load" ref="load"/>
-          <b class="vol" ref="vol"/>
-          <b class="p" ref="p"
-             onTouchStart={ this.touchStart } onTouchMove={ this.touchMove } onTouchEnd={ this.touchEnd }/>
+          <div class="load"
+               ref="load"/>
+          <b class="vol"
+             ref="vol"/>
+          <b class="p"
+             ref="p"
+             onTouchStart={ this.touchStart }
+             onTouchMove={ this.touchMove }
+             onTouchEnd={ this.touchEnd }/>
         </div>
       </div>
       <ul class="btn">

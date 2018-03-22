@@ -15,7 +15,7 @@ import Author from '../works/Author.jsx';
 import Text from '../works/Text.jsx';
 import Poster from '../works/Poster.jsx';
 import CommentWrap from '../works/CommentWrap.jsx';
-import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
+import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
 let worksDetail;
@@ -50,13 +50,13 @@ class Music extends migi.Component {
     });
   }
   setData(data) {
-    worksDetail = data.worksDetail;
+    let self = this;
+    self.worksDetail = worksDetail = data.worksDetail;
     workList = worksDetail.Works_Items || [];
     let commentData = data.commentData;
-    // jsBridge.setTitle(worksDetail.Title);
-    // jsBridge.setSubTitle(worksDetail.sub_Title);
+    jsBridge.setTitle(worksDetail.Title);
+    jsBridge.setSubTitle(worksDetail.sub_Title);
 
-    let self = this;
     let list = self.ref.list;
     let info = self.ref.info;
     let author = self.ref.author;
@@ -83,7 +83,7 @@ class Music extends migi.Component {
     }
 
     let work = avList[index];
-    jsBridge.setTitle(work.ItemName);
+    // jsBridge.setTitle(work.ItemName);
     let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     let s = (authorList.AuthorInfo || []).map(function(item) {
       return item.AuthorName;
@@ -200,7 +200,7 @@ class Music extends migi.Component {
   change(workId) {
     let self = this;
     let work = avHash[workId];
-    jsBridge.setTitle(work.ItemName);
+    // jsBridge.setTitle(work.ItemName);
     let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
     let s = (authorList.AuthorInfo || []).map(function(item) {
       return item.AuthorName;
@@ -389,6 +389,60 @@ class Music extends migi.Component {
       optionMenu: '发布',
     });
   }
+  share() {
+    let self = this;
+    migi.eventBus.emit('BOT_FN', {
+      canShare: true,
+      canShareWb: true,
+      canShareLink: true,
+      clickShareWb: function(botFn) {
+        let url = window.ROOT_DOMAIN + '/works/' + self.worksId;
+        let text = '【';
+        if(self.worksDetail.Title) {
+          text += self.worksDetail.Title;
+        }
+        if(self.worksDetail.sub_Title) {
+          if(self.worksDetail.Title) {
+            text += ' ';
+          }
+          text += self.worksDetail.sub_Title;
+        }
+        text += '】';
+        if(self.worksDetail.GroupAuthorTypeHash
+          && self.worksDetail.GroupAuthorTypeHash[0]
+          && self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist
+          && self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist[0].AuthorInfo
+          && self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist[0].AuthorInfo[0]) {
+          text += self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist[0].AuthorInfo[0].AuthorName;
+        }
+        text += ' #转圈circling# ';
+        text += url;
+        jsBridge.shareWb({
+          text,
+        }, function(res) {
+          if(res.success) {
+            jsBridge.toast("分享成功");
+          }
+          else if(res.cancel) {
+            jsBridge.toast("取消分享");
+          }
+          else {
+            jsBridge.toast("分享失败");
+          }
+        });
+      },
+      clickShareLink: function(botFn) {
+        if(!self.data) {
+          return;
+        }
+        let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
+        if(self.data.workId) {
+          url += '/' + self.data.workId;
+        }
+        util.setClipboard(url);
+      },
+    });
+  }
   render() {
     return <div class="music">
       <Media ref="media"
@@ -414,12 +468,11 @@ class Music extends migi.Component {
       </div>
       <CommentWrap ref="comment"
                    @visible={ this.curColumn === 3 }/>
-      <BotPlayBar ref="botPlayBar"
-                  on-play={ this.play }
-                  on-pause={ this.pause }
-                  on-prev={ this.prev }
-                  on-next={ this.next }
-                  on-comment={ this.comment }/>
+      <InputCmt ref="inputCmt"
+                placeholder={ '发表评论...' }
+                readOnly={ true }
+                on-click={ this.comment }
+                on-share={ this.share }/>
       <BotFn ref="botFn"/>
     </div>;
   }
