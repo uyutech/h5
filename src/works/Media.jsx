@@ -458,6 +458,9 @@ class Media extends migi.Component {
     this.lrcMode = !this.lrcMode;
   }
   clickFullScreen() {
+    if(jsBridge.ios) {
+      jsBridge.fullscreen(true);
+    }
     let video = this.ref.video.element;
     if(video.requestFullscreen) {
       video.requestFullscreen();

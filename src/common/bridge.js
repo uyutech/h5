@@ -519,6 +519,11 @@ let jsBridge = {
       this.call('shareWb', data, cb);
     }
   },
+  fullscreen: function(data) {
+    if(this.isInApp) {
+      this.call('fullscreen', data);
+    }
+  },
 };
 
 window.jsBridge = jsBridge;

@@ -71,7 +71,7 @@ class Works extends migi.Component {
     let author = self.ref.author;
     let comment = self.ref.comment;
 
-    // 音视频区域初始化
+    // 音视频区域初始化，音频1，视频2
     let seq = [2111,2112,2113,2000,2001,2002,2003,1220,1210,1230,1111,1121,1112,1122,1114,1113,1123,1140,1131,1132];
     migi.sort(workList, function(a, b) {
       return seq.indexOf(a.ItemType) > seq.indexOf(b.ItemType);
