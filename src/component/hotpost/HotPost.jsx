@@ -162,6 +162,93 @@ class HotPost extends migi.Component {
           transparentTitle,
         });
       });
+      $list.on('click', '.fn', function() {
+        let canRecommend = $.cookie('userType') === '3' || $.cookie('userType') === '4';
+        let $b = $(this);
+        let own = $b.attr('isOwn') === 'true';
+        let id = $b.attr('rel');
+        let recommend = parseInt($b.attr('recommend')) || 0;
+        let canClean =  $.cookie('userType') === '3' || $.cookie('userType') === '4';
+        migi.eventBus.emit('BOT_FN', {
+          canFn: true,
+          canReport: true,
+          canRecommend: canRecommend && recommend >= 3,
+          canUnRecommend: canRecommend && recommend < 3,
+          canDel: own,
+          canClean,
+          clickRecommend: function(botFn, n) {
+            jsBridge.showLoading();
+            net.postJSON('/h5/post/recommend', { postId: id, value: n }, function(res) {
+              jsBridge.hideLoading();
+              if(res.success) {
+                botFn.cancel();
+              }
+              else {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              }
+            }, function(res) {
+              jsBridge.hideLoading();
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            });
+          },
+          clickUnRecommend: function(botFn) {
+            jsBridge.showLoading();
+            net.postJSON('/h5/post/unRecommend', { postId: id }, function(res) {
+              jsBridge.hideLoading();
+              if(res.success) {
+                botFn.cancel();
+              }
+              else {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              }
+            }, function(res) {
+              jsBridge.hideLoading();
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            });
+          },
+          clickReport: function(botFn) {
+            jsBridge.toast('举报成功');
+            botFn.cancel();
+          },
+          clickDel: function(botFn) {
+            jsBridge.confirm('确认删除吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              jsBridge.showLoading();
+              net.postJSON('/h5/post/del', { postID: id }, function(res) {
+                jsBridge.hideLoading();
+                if(res.success) {
+                  botFn.cancel();
+                  $b.closest('li').remove();
+                }
+                else {
+                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                }
+              }, function(res) {
+                jsBridge.hideLoading();
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              });
+            });
+          },
+          clickClean: function(botFn) {
+            jsBridge.showLoading();
+            net.postJSON('/h5/post/clean', { postID: id }, function(res) {
+              jsBridge.hideLoading();
+              if(res.success) {
+                botFn.cancel();
+                $b.closest('li').remove();
+              }
+              else {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              }
+            }, function(res) {
+              jsBridge.hideLoading();
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            });
+          }
+        });
+      });
 
       let imageView = self.ref.imageView;
       $list.on('click', '.imgs li', function() {
@@ -330,7 +417,7 @@ class HotPost extends migi.Component {
         }
         last = audio;
       });
-    }
+    }console.log(item);
     return <li class={ item.IsAuthor ? 'author' : 'user' } id={ 'post_' + id }>
       <div class="profile fn-clear">
         <a class="pic" href={ peopleUrl } title={ item.SendUserNickName }>
@@ -405,16 +492,29 @@ class HotPost extends migi.Component {
         <b class="arrow"/>
       </div>
       <ul class="btn">
-        <li class="share" rel={ id }><b/><span>分享</span></li>
-        <li class={ 'favor' + (item.ISFavor ? ' has' : '') } rel={ id }>
-          <b/><span>{ item.FavorCount || '收藏' }</span></li>
-        <li class={ 'like' + (item.ISLike ? ' has' : '') } rel={ id }>
-          <b/><span>{ item.LikeCount || '点赞' }</span>
+        <li class="share"
+            rel={ id }>
+          <b/><span>分享</span>
         </li>
-        <li class="comment" rel={ id } count={ item.CommentCount }>
+        <li class={ 'favor' + (item.ISFavor ? ' has' : '') }
+            rel={ id }>
+          <b/><span>{ item.FavorCount || '收藏' }</span>
+        </li>
+        <li class={ 'like' + (item.ISLike ? ' has' : '') }
+            rel={ id }>
+          <b/><span>{ item.LikeCount || '点赞' }
+          </span>
+        </li>
+        <li class="comment"
+            rel={ id }
+            count={ item.CommentCount }>
           <b/><span>{ item.CommentCount || '评论' }</span>
         </li>
       </ul>
+      <b class="fn"
+         isOwn={ item.IsOwn }
+         recommend={ item.Recommend }
+         rel={ id }/>
     </li>;
   }
   setData(data) {

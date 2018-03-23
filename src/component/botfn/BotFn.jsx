@@ -13,6 +13,9 @@ let clickReport;
 let clickShareIn;
 let clickShareWb;
 let clickShareLink;
+let clickRecommend;
+let clickUnRecommend;
+let clickClean;
 
 class BotFn extends migi.Component {
   constructor(...data) {
@@ -25,6 +28,9 @@ class BotFn extends migi.Component {
         self.delText = data.delText;
         self.blockText = data.blockText;
         self.reportText = data.reportText;
+        self.recommendText = data.recommendText;
+        self.unRecommendText = data.unRecommendText;
+        self.cleanText = data.cleanText;
         self.canFn = data.canFn;
         self.canLike = data.canLike;
         self.canFavor = data.canFavor;
@@ -35,6 +41,9 @@ class BotFn extends migi.Component {
         self.canShareIn = data.canShareIn;
         self.canShareWb = data.canShareWb;
         self.canShareLink = data.canShareLink;
+        self.canRecommend = data.canRecommend;
+        self.canUnRecommend = data.canUnRecommend;
+        self.canClean = data.canClean;
         self.isFavor = data.isFavor;
         self.isLike = data.isLike;
         clickDel = data.clickDel;
@@ -46,10 +55,13 @@ class BotFn extends migi.Component {
         clickShareIn = data.clickShareIn;
         clickShareWb = data.clickShareWb;
         clickShareLink = data.clickShareLink;
+        clickRecommend = data.clickRecommend;
+        clickUnRecommend = data.clickUnRecommend;
+        clickClean = data.clickClean;
         self.pop = true;
       });
       $(self.element).on('click', function(e) {
-        if(!$(e.target).closest('.c')[0]) {
+        if(!$(e.target).closest('.c')[0] && !$(e.target).closest('.recommend')[0]) {
           self.clickCancel();
         }
       });
@@ -66,6 +78,9 @@ class BotFn extends migi.Component {
   @bind delText
   @bind blockText
   @bind reportText
+  @bind recommendText
+  @bind unRecommendText
+  @bind cleanText
   @bind canFn
   @bind canLike
   @bind canFavor
@@ -76,9 +91,13 @@ class BotFn extends migi.Component {
   @bind canShareIn
   @bind canShareWb
   @bind canShareLink
+  @bind canRecommend
+  @bind canUnRecommend
+  @bind canClean
   @bind isFavor
   @bind isLike
   @bind pop
+  @bind showRecommend
   show() {
     $(this.element).removeClass('fn-hide');
     return this;
@@ -141,6 +160,18 @@ class BotFn extends migi.Component {
     this.delText = this.blockText = this.reportText = null;
     clickDel = clickLike = clickFavor = clickCancel = clickReport = clickBlock = null;
   }
+  clickRecommend() {
+    this.showRecommend = true;
+  }
+  clickRecommend2(e, vd, tvd) {
+    clickRecommend(this, tvd.props.rel);
+  }
+  clickUnRecommend() {
+    clickUnRecommend(this);
+  }
+  clickClean() {
+    clickClean(this);
+  }
   render() {
     return <div class={ 'cp-botfn' + (this.pop ? ' on' : '') }>
       <div class="c">
@@ -160,8 +191,22 @@ class BotFn extends migi.Component {
               onClick={ this.clickBlock }><b/>{ this.blockText || '屏蔽' }</li>
           <li class={ 'report' + (this.canReport ? '' : ' fn-hide') }
               onClick={ this.clickReport }><b/>{ this.reportText || '举报' }</li>
+          <li class={ 'recommend' + (this.canRecommend ? '' : ' fn-hide') }
+              onClick={ this.clickRecommend }><b/>{ this.recommendText || '推荐' }</li>
+          <li class={ 'un-recommend' + (this.canUnRecommend ? '' : ' fn-hide') }
+              onClick={ this.clickUnRecommend }><b/>{ this.unRecommendText || '取消推荐' }</li>
+          <li class={ 'clean' + (this.canClean ? '' : ' fn-hide') }
+              onClick={ this.clickClean }><b/>{ this.cleanText || '清理' }</li>
         </ul>
         <button class="cancel" onClick={ this.clickCancel }>取消</button>
+      </div>
+      <div class={ 'recommend' + (this.pop && this.showRecommend ? '' : ' fn-hide') }
+      onClick={ { span: this.clickRecommend2 } }>
+        <span rel={ 3 }>精选</span>
+        <span rel={ 5 }>公告</span>
+        <span rel={ 6 }>活动</span>
+        <span rel={ 7 }>专题</span>
+        <span rel={ 8 }>长评</span>
       </div>
     </div>;
   }

@@ -58,10 +58,16 @@ class My extends migi.Component {
         let data = res.data;
         self.setData(data);
         jsBridge.setPreference('loginInfo', data);
+        $.cookie('isLogin', true);
+        $.cookie('uid', data.userInfo.UID);
+        $.cookie('userType', data.userInfo.UserType);
       }
       else if(res.code === 1000) {
         self.isLogin = false;
         jsBridge.delPreference('loginInfo');
+        $.cookie('isLogin', null);
+        $.cookie('uid', null);
+        $.cookie('userType', null);
         migi.eventBus.emit('LOGIN_OUT');
       }
       else {
@@ -143,6 +149,7 @@ class My extends migi.Component {
             jsBridge.setPreference('loginInfo', data);
             $.cookie('isLogin', true);
             $.cookie('uid', data.userInfo.UID);
+            $.cookie('userType', data.userInfo.UserType);
           }
           else {
             jsBridge.toast(res.message);

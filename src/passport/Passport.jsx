@@ -140,6 +140,7 @@ class Login extends migi.Component {
         });
         $.cookie('isLogin', true);
         $.cookie('uid', data.userInfo.UID);
+        $.cookie('userType', data.userInfo.UserType);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -199,6 +200,7 @@ class Login extends migi.Component {
             });
             $.cookie('isLogin', true);
             $.cookie('uid', data.userInfo.UID);
+            $.cookie('userType', data.userInfo.UserType);
           }
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);

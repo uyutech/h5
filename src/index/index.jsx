@@ -39,6 +39,7 @@ jsBridge.ready(function() {
             migi.eventBus.emit('LOGIN_OUT');
             $.cookie('isLogin', null);
             $.cookie('uid', null);
+            $.cookie('userType', null);
           }
           else if(!loginInfo && loginInfo2) {
             loginInfo = loginInfo2;
