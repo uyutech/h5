@@ -36,7 +36,19 @@
       height:0.24rem;
     }
     &.follow{
+      position:relative;
       padding-left:5%;
+      &.update:after{
+        position:absolute;
+        top:0.1rem;
+        right:0.1rem;
+        width:0.06rem;
+        height:0.06rem;
+        background:#F00;
+        border-radius:100%;
+        content:' ';
+        overflow:hidden;
+      }
     }
     &.follow .icon{
       background:url(follow-off.png) no-repeat center;

@@ -17,6 +17,9 @@ let loadEnd;
 let ajax;
 let visible;
 let scrollY = 0;
+let interval;
+let isPause;
+let lastId;
 
 class Follow extends migi.Component {
   constructor(...data) {
@@ -41,6 +44,12 @@ class Follow extends migi.Component {
         if(visible) {
           self.init();
         }
+      });
+      jsBridge.on('pause', function() {
+        isPause = true;
+      });
+      jsBridge.on('resume', function() {
+        isPause = false;
       });
     });
   }
@@ -68,10 +77,31 @@ class Follow extends migi.Component {
   }
   init() {
     let self = this;
+    if(!util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
     self.ref.hotPost.message = '正在加载...';
     net.postJSON('/h5/follow/index', { type: self.type }, function(res) {
       if(res.success) {
-        self.setData(res.data);
+        let data = res.data;
+        lastId = (data.postList.data[0] || {}).ID;
+        self.setData(data);
+        if(interval) {
+          clearInterval(interval);
+        }
+        interval = setInterval(function() {
+          if(isPause) {
+            return;
+          }
+          net.postJSON('/h5/follow/postList', { skip: 0, take: 1 }, function(res) {
+            if(res.success) {
+              if((res.data.data[0] || {}).ID !== lastId) {
+                migi.eventBus.emit('FOLLOW_UPDATE');
+              }
+            }
+          });
+        }, 10000);
       }
       else if(res.code === 1000) {
         migi.eventBus.emit('NEED_LOGIN');
@@ -136,6 +166,8 @@ class Follow extends migi.Component {
     ajax = net.postJSON('/h5/follow/postList', { skip, take, type: self.type }, function(res) {
       if(res.success) {
         let data = res.data;
+        lastId = (data.data[0] || {}).ID;
+        migi.eventBus.emit('FOLLOW_UPDATED');
         skip += take;
         hotPost.appendData(data.data);
         if(skip >= data.Size) {

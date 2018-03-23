@@ -19,8 +19,15 @@ class BotNav extends migi.Component {
           self.emit('change', rel);
         }
       });
+      migi.eventBus.on('FOLLOW_UPDATE', function() {
+        self.followUpdate = true;
+      });
+      migi.eventBus.on('FOLLOW_UPDATED', function() {
+        self.followUpdate = false;
+      });
     });
   }
+  @bind followUpdate
   click(e, vd, tvd) {
     if(tvd.props.class === 'new') {
       jsBridge.pushWindow('/subpost.html', {
@@ -52,7 +59,7 @@ class BotNav extends migi.Component {
       <li class="new">
         <b class="icon"/>
       </li>
-      <li class="follow" rel={ 2 }>
+      <li class={ 'follow' + (this.followUpdate ? ' update' : '') } rel={ 2 }>
         <b class="icon"/>
         <span>关注</span>
       </li>

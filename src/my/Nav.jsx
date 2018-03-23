@@ -73,10 +73,10 @@ class Nav extends migi.Component {
   }
   clickName() {
     let self = this;
-    if(self.updateNickNameTimeDiff < 24 * 60 * 60 * 1000) {
-      jsBridge.toast('昵称一天只能修改一次哦~');
-      return;
-    }
+    // if(self.updateNickNameTimeDiff < 24 * 60 * 60 * 1000) {
+    //   jsBridge.toast('昵称一天只能修改一次哦~');
+    //   return;
+    // }
     jsBridge.prompt(self.userName, function(res) {
       if(res.success) {
         let newName = res.value;
