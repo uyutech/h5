@@ -5,24 +5,7 @@
 'use strict';
 
 export default {
-  getStateStr: function(type, state) {
-    switch(type) {
-      case 1:
-      case 5:
-        switch(state) {
-          case 2:
-          case 3:
-            return '填坑中';
-        }
-        return '';
-      case 11:
-        switch(state) {
-          case 2:
-          case 3:
-            return '连载中';
-        }
-        return '';
-    }
-    return '';
-  },
+  0: '已完成',
+  1: '未完成',
+  2: '未完成',
 };

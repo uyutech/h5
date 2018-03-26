@@ -24,7 +24,7 @@ class Media extends migi.Component {
     self.lrc = {};
     self.lrcIndex = 0;
     self.on(migi.Event.DOM, function() {
-      WIDTH = $(window).width();
+      WIDTH = screen.availWidth;
       if(jsBridge.appVersion) {
         let version = jsBridge.appVersion.split('.');
         let major = parseInt(version[0]) || 0;
@@ -835,10 +835,6 @@ class Media extends migi.Component {
         <li onClick={ this.clickFavor }>
           <b class={ 'favor' + (this.isFavor ? ' favored' : '') }/>
           <span>{ this.isFavor ? '已收藏' : '收藏' }</span>
-        </li>
-        <li class="dl" onClick={ this.clickDownload }>
-          <b class="download"/>
-          <span>下载</span>
         </li>
         <li onClick={ this.clickShare }>
           <b class="share"/>

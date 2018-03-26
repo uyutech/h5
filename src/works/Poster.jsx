@@ -22,8 +22,8 @@ class Poster extends migi.Component {
         {
           (this.list || []).map(function(item) {
             return <li>
-              <a href={ util.autoSsl(item.FileUrl) || '/src/common/blank.png' }>
-                <img src={ util.autoSsl(util.img720__80(item.FileUrl)) || '/src/common/blank.png' }/>
+              <a href={ util.autoSsl(item.url) || '/src/common/blank.png' }>
+                <img src={ util.autoSsl(util.img720__80(item.url)) || '/src/common/blank.png' }/>
               </a>
             </li>;
           })

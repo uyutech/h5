@@ -8,10 +8,8 @@ import Comment from '../component/comment/Comment.jsx';
 import util from "../common/util";
 import net from "../common/net";
 
-let take = 30;
-let skip = take;
-let sortType = 0;
-let myComment = 0;
+let take;
+let skip;
 let ajax;
 let loading;
 let loadEnd;
@@ -34,32 +32,32 @@ class CommentWrap extends migi.Component {
       });
     });
   }
-  @bind worksId
-  @bind showSort
-  @bind sortText
   @bind isLogin
   @bind visible
-  setData(data) {
+  setData(worksId, data) {
     let self = this;
-    if(data.Size) {
-      self.ref.comment.appendData(data.data);
-      if(data.Size > take) {
-        let $window = $(window);
-        $window.on('scroll', function() {
-          self.checkMore($window);
+    take = data.take;
+    skip = take;
+    self.worksId = worksId;
+    if(data.size) {
+      self.ref.comment.setData(data.data);
+      if(data.size > take) {
+        window.addEventListener('scroll', function() {
+          self.checkMore();
         });
       }
     }
   }
-  checkMore($window) {
+  checkMore() {
     let self = this;
     if(loading || loadEnd || !self.visible) {
       return;
     }
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
+    let y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    let WIN_HEIGHT = document.documentElement.clientHeight;
+    let HEIGHT = document.body.clientHeight;
     let bool;
-    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
+    bool = y + WIN_HEIGHT + 30 > HEIGHT;
     if(bool) {
       self.load();
     }
@@ -72,14 +70,14 @@ class CommentWrap extends migi.Component {
     }
     loading = true;
     comment.message = '正在加载...';
-    ajax = net.postJSON('/h5/works/commentList', { worksID: self.worksId, skip, take, sortType, myComment }, function(res) {
+    ajax = net.postJSON('/h5/works2/comment', { worksId: self.worksId, skip, take, }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
         if(data.data.length) {
           comment.appendData(data.data);
         }
-        if(skip >= data.Size) {
+        if(skip >= data.size) {
           loadEnd = true;
           comment.message = '已经到底了';
         }
@@ -173,11 +171,6 @@ class CommentWrap extends migi.Component {
               : ''
           }
         </ul>
-        {/*<span class="sort" onClick={ this.clickSort }>{ this.sortText || '按时间' }</span>*/}
-        {/*<ul class={ 'sel' + (this.showSort ? '' : ' fn-hide') } onClick={ { li: this.clickSelSort } }>*/}
-          {/*<li class="cur" rel="0">按时间</li>*/}
-          {/*<li rel="1">按热度</li>*/}
-        {/*</ul>*/}
       </div>
       <Comment ref="comment"
                zanUrl="/h5/works/likeComment"

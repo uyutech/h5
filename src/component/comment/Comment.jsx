@@ -380,24 +380,38 @@ class Comment extends migi.Component {
     });
   }
   genComment(item) {
-    let id = item.ID;
+    let id = item.id;
     if(exist[id]) {
       return;
     }
     exist[id] = true;
-    let url = item.IsAuthor ? '/author.html?authorId=' + item.SendUserID : '/user.html?userID=' + item.SendUserID;
+    let url = item.isAuthor
+      ? '/author.html?authorId=' + item.authorId
+      : '/user.html?userId=' + item.userId;
     return <li class="user" id={ 'comment_' + id }>
       <div class="t">
         <div class="profile fn-clear">
-          <a class="pic" href={ url } title={ item.SendUserNickName }>
-            <img class="pic" src={ util.autoSsl(util.img60_60_80(item.SendUserHead_Url || '/src/common/head.png')) }/>
+          <a class="pic"
+             href={ url }
+             title={ item.isAuthor ? item.name : item.nickname }>
+            <img class="pic"
+                 src={ util.autoSsl(util.img60_60_80(item.headUrl
+                   || '/src/common/head.png')) }/>
           </a>
           <div class="txt">
-            <a class="name" href={ url } title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
-            <small class="time" rel={ item.CreateTime }>{ util.formatDate(item.CreateTime) }</small>
+            <a class="name"
+               href={ url }
+               title={ item.isAuthor
+                 ? item.name
+                 : item.nickname }>{ item.isAuthor
+              ? item.name
+              : item.nickname }</a>
+            <small class="time"
+                   rel={ item.createTime }>{ util.formatDate(item.createTime) }</small>
           </div>
         </div>
-        <b class="fn" own={ item.IsOwn } userId={ item.SendUserID }/>
+        <b class="fn"
+           own={ item.IsOwn }/>
       </div>
       <div class="c">
         {
@@ -408,17 +422,12 @@ class Comment extends migi.Component {
             </p>
             : ''
         }
-        <pre>{ item.LContent }<span class="placeholder"/></pre>
-        <div class="slide" cid={ id } rid={ item.RootID } name={ item.SendUserNickName }>
-          <small cid={ id } class={ 'like' + (item.ISLike ? ' liked' : '') }></small>
-          <small class="sub">{ item.CommentCountRaw || '' }</small>
-          <span>收起</span>
+        <pre>{ item.content }<span class="placeholder"/></pre>
+        <div class="slide">
+          <small class="like"></small>
+          <small class="sub"></small>
         </div>
         <b class="arrow"/>
-      </div>
-      <div class="list2">
-        <ul class="fn-hide"/>
-        <p class="message" cid={ id } rid={ item.RootID }>读取中...</p>
       </div>
     </li>;
   }
