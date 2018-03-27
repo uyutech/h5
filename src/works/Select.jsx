@@ -15,7 +15,7 @@ class Select extends migi.Component {
       return;
     }
     this.id = tvd.props.workId;
-    this.emit('change', this.workId);
+    this.emit('change', this.id);
   }
   render() {
     return <ul class={ 'mod-select' + (this.list && this.list.length > 1 ? '' : ' fn-hide') }

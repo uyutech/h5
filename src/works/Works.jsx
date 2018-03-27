@@ -64,11 +64,14 @@ class Works extends migi.Component {
       return;
     }
     info.setData(data.info);
-    let avList = [];
+    let avList = self.avList = [];
     let imgList = [];
     let textList = [];
     data.collection.forEach(function(item) {
       if([1, 2].indexOf(item.class) > -1) {
+        item.worksTitle = data.info.title;
+        item.worksSubTitle = data.info.subTitle;
+        item.worksCover = data.info.cover;
         avList.push(item);
       }
       else if(item.class === 3 && item.type === 4) {
@@ -88,100 +91,31 @@ class Works extends migi.Component {
         }
       }
     }
-    self.setMedia(data.info, avList[index]);
+    self.setMedia(avList[index]);
 
     self.setColumn(imgList, data.comment);
     select.id = avList[index].id;
+    author.list = data.authors;
     text.list = textList;
     select.list = avList;
     poster.list = imgList;
     commentWrap.setData(self.worksId, data.comment);
-
-
-    return;
-    self.worksDetail = worksDetail = data.worksDetail;
-    if([5, 6, 18].indexOf(worksDetail.WorkType) > -1) {
-      location.replace('/music.html?worksId=' + self.worksId + '&workId=' + (self.workId || ''));
-      return;
-    }
-    else if([11, 12].indexOf(worksDetail.WorkType) > -1) {
-      location.replace('/image.html?worksId=' + self.worksId);
-      return;
-    }
-    workList = worksDetail.Works_Items || [];
-    let commentData = data.commentData;
-    jsBridge.setTitle(worksDetail.Title);
-    jsBridge.setSubTitle(worksDetail.sub_Title);
-
-
-
-    // 音视频区域初始化，音频1，视频2
-    let seq = [2111,2112,2113,2000,2001,2002,2003,1220,1210,1230,1111,1121,1112,1122,1114,1113,1123,1140,1131,1132];
-    migi.sort(workList, function(a, b) {
-      return seq.indexOf(a.ItemType) > seq.indexOf(b.ItemType);
-    });
-    let hash = {};
-    workList.forEach(function(item) {
-      if(item.ItemType === 3120) {
-        hash.poster = true;
-      }
-      else if(/^[12]/.test(item.ItemType)) {
-        avList.push(item);
-        avHash[item.ItemID] = item;
-      }
-    });
-    if(self.workId) {
-      for(let i = 0, len = avList.length; i < len; i++) {
-        if(avList[i].ItemID === self.workId) {
-          index = i;
-          break;
-        }
-      }
-    }
-
-    let work = avList[index];
-    // jsBridge.setTitle(work.ItemName);
-    let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
-    let s = (authorList.AuthorInfo || []).map(function(item) {
-      return item.AuthorName;
-    });
-    jsBridge.setSubTitle(s.join('、'));
-
-
-    info.worksType = worksDetail.WorkType;
-    info.title = worksDetail.Title || '歌名待揭秘';
-    info.subTitle = worksDetail.sub_Title;
-    info.state = worksDetail.WorkState;
-
-    select.workId = work.ItemID;
-    select.list = avList;
-
-    self.setColumn(hash, commentData);
-
-    author.list = worksDetail.GroupAuthorTypeHash;
-    self.setText(worksDetail.Describe, workList);
-    if(hash.poster) {
-      self.setPoster(workList);
-    }
-
-    comment.worksId = self.worksId;
-    comment.setData(commentData);
   }
-  setMedia(info, item) {
+  setMedia(item) {
     let self = this;
     if(item) {
       let o = {
         worksId: self.worksId,
         workId: item.id,
         workType: item.type,
-        worksTitle: info.title,
-        worksSubTitle: info.subTitle,
+        worksTitle: item.title,
+        worksSubTitle: item.subTitle,
         author: [],
         workTitle: item.title,
         url: item.url,
         isFavor: 0,
         isLike: 0,
-        worksCover: info.cover,
+        worksCover: item.worksCover,
         cover: item.cover,
         likeNum: 0,
         lrc: item.lrc,
@@ -240,15 +174,22 @@ class Works extends migi.Component {
   }
   change(workId) {
     let self = this;
-    let work = avHash[workId];
-    // jsBridge.setTitle(work.ItemName);
-    let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
-    let s = (authorList.AuthorInfo || []).map(function(item) {
-      return item.AuthorName;
-    });
-    jsBridge.setSubTitle(s.join('、'));
-    self.setMedia(work);
-    history.replaceState(null, '', '/works.html?worksId=' + self.worksId + '&workId=' + workId);
+    self.workId = workId;
+    for(let i = 0; i < self.avList.length; i++) {
+      if(self.avList[i].id === workId) {
+        self.setMedia(self.avList[i]);
+        break;
+      }
+    }
+    // let work = avHash[workId];
+    // // jsBridge.setTitle(work.ItemName);
+    // let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
+    // let s = (authorList.AuthorInfo || []).map(function(item) {
+    //   return item.AuthorName;
+    // });
+    // jsBridge.setSubTitle(s.join('、'));
+    // self.setMedia(work);
+    // history.replaceState(null, '', '/works.html?worksId=' + self.worksId + '&workId=' + workId);
   }
   comment() {
     let self = this;
@@ -322,7 +263,8 @@ class Works extends migi.Component {
       <Info ref="info"/>
       <Select ref="select"
               on-change={ this.change }/>
-      <Column ref="column" on-change={ this.changeColumn }/>
+      <Column ref="column"
+              on-change={ this.changeColumn }/>
       <div class={ 'intro' + (this.curColumn === 0 ? '' : ' fn-hide') }>
         <Author ref="author"/>
         <Text ref="text"/>

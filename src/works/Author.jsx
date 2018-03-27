@@ -3,55 +3,46 @@
  */
 
 import util from '../common/util';
-import authorTemplate from '../component/author/authorTemplate';
 
 class Author extends migi.Component {
   constructor(...data) {
     super(...data);
-    let self = this;
-    self.list = self.props.list;
   }
-  @bind list = []
+  @bind list
   click(e, vd, tvd) {
     e.preventDefault();
     let $this = $(tvd.element);
-    let url = $this.attr('href');
-    let title = $this.attr('title');
+    let url = tvd.props.authorId;
+    let title = tvd.props.title;
     util.openAuthor({
       url,
       title,
     });
   }
   render() {
-    return <div class="mod mod-author" onClick={ { a: this.click } }>
+    return <ul class="mod-author" onClick={ { dd: this.click } }>
       {
         (this.list || []).map(function(arr) {
-          return <ul>
+          return <li>
             {
-              (arr.AuthorTypeHashlist || []).map(function(item) {
+              arr.map(function(item) {
                 return <dl>
-                  <dt>{ item.Describe }</dt>
+                  <dt>{ item.kindName }</dt>
                   {
-                    (item.AuthorInfo || []).map(function(author) {
-                      return <dd>
-                        <a href={ '/author.html?authorId=' + author.AuthorID } title={ author.AuthorName }>
-                          {
-                            author.ISSettled
-                              ? <img src={ util.autoSsl(util.img48_48_80(author.Head_url)) || '/src/common/head.png' }/>
-                              : ''
-                          }
-                          <span>{ author.AuthorName }</span>
-                        </a>
+                    item.list.map(function(author) {
+                      return <dd authorId={ author.id } title={ author.name }>
+                        <img src={ util.autoSsl(util.img48_48_80(author.headUrl)) || '/src/common/head.png' }/>
+                        <span>{ author.name }</span>
                       </dd>;
                     })
                   }
                 </dl>;
               })
             }
-          </ul>;
+          </li>;
         })
       }
-    </div>;
+    </ul>;
   }
 }
 

@@ -762,7 +762,9 @@ class Media extends migi.Component {
       <div class={ 'c'  + (this.isVideo ? ' is-video' : '') + (this.isPlaying ? ' is-playing' : '') }>
         <div class="cover">
           <img class={ this.lrcMode && this.lrc.data ? 'blur' : '' }
-               src={ util.autoSsl(util.img750_750_80((this.data || {}).worksCover || '/src/common/blank.png')) }/>
+               src={ util.autoSsl(util.img750_750_80(this.data
+                 ? (this.data.cover || this.data.worksCover) : null))
+               || '/src/common/blank.png' }/>
         </div>
         <video ref="video"
                poster="/src/common/blank.png"
