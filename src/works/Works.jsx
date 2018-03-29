@@ -17,11 +17,6 @@ import CommentWrap from './CommentWrap.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let worksDetail;
-let workList = [];
-let avList = [];
-let avHash = {};
-
 class Works extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -39,7 +34,7 @@ class Works extends migi.Component {
     let self = this;
     self.worksId = worksId;
     self.workId = workId;
-    net.postJSON('/h5/works2/index', { worksId, worksID: worksId }, function(res) {
+    net.postJSON('/h5/works2/index', { worksId }, function(res) {
       if(res.success) {
         self.setData(res.data);
       }
@@ -52,6 +47,7 @@ class Works extends migi.Component {
   }
   setData(data) {
     let self = this;
+    self.data = data;
     let info = self.ref.info;
     let select = self.ref.select;
     let author = self.ref.author;
@@ -181,15 +177,6 @@ class Works extends migi.Component {
         break;
       }
     }
-    // let work = avHash[workId];
-    // // jsBridge.setTitle(work.ItemName);
-    // let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
-    // let s = (authorList.AuthorInfo || []).map(function(item) {
-    //   return item.AuthorName;
-    // });
-    // jsBridge.setSubTitle(s.join('、'));
-    // self.setMedia(work);
-    // history.replaceState(null, '', '/works.html?worksId=' + self.worksId + '&workId=' + workId);
   }
   comment() {
     let self = this;
@@ -211,22 +198,22 @@ class Works extends migi.Component {
       clickShareWb: function(botFn) {
         let url = window.ROOT_DOMAIN + '/works/' + self.worksId;
         let text = '【';
-        if(self.worksDetail.Title) {
-          text += self.worksDetail.Title;
+        if(self.data.info.title) {
+          text += self.data.info.title;
         }
-        if(self.worksDetail.sub_Title) {
-          if(self.worksDetail.Title) {
+        if(self.data.info.subTitle) {
+          if(self.data.info.subTitle) {
             text += ' ';
           }
-          text += self.worksDetail.sub_Title;
+          text += self.data.info.subTitle;
         }
         text += '】';
-        if(self.worksDetail.GroupAuthorTypeHash
-          && self.worksDetail.GroupAuthorTypeHash[0]
-          && self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist
-          && self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist[0].AuthorInfo
-          && self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist[0].AuthorInfo[0]) {
-          text += self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist[0].AuthorInfo[0].AuthorName;
+        if(self.data.authors && self.data.authors[0]) {
+          self.data.authors[0].forEach(function(item) {
+            text += item.list.map(function(item2) {
+              return item2.name;
+            });
+          })
         }
         text += ' #转圈circling# ';
         text += url;

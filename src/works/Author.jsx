@@ -11,11 +11,9 @@ class Author extends migi.Component {
   @bind list
   click(e, vd, tvd) {
     e.preventDefault();
-    let $this = $(tvd.element);
-    let url = tvd.props.authorId;
+    let authorId = tvd.props.authorId;
     let title = tvd.props.title;
-    util.openAuthor({
-      url,
+    util.openAuthor(authorId, {
       title,
     });
   }

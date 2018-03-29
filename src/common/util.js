@@ -379,8 +379,9 @@ let util = {
   scrollTop: function(y) {
     $(window).scrollTop(y - 70);
   },
-  openAuthor: function(data) {
-    jsBridge.pushWindow(data.url || ('/author.html?authorId=' + data.authorId), {
+  openAuthor: function(authorId, option) {
+    jsBridge.pushWindow('/author.html?authorId=' + authorId, {
+      title: option.title,
       transparentTitle: true,
     });
   },
