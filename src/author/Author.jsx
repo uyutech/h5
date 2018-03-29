@@ -52,6 +52,7 @@ class Author extends migi.Component {
     if(data.authorDetail.ISSettled && data.homeDetail.Hot_Works_Items && data.homeDetail.Hot_Works_Items.length) {
       self.showHome = true;
       self.index = 0;
+      self.ref.hotWork.list = data.homeDetail.Hot_Works_Items;
       self.ref.hotAlbum.list = data.album;
       self.ref.hotAuthor.list = data.homeDetail.AuthorToAuthor;
     }
