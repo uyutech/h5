@@ -460,7 +460,8 @@ class Media extends migi.Component {
   clickFullScreen() {
     let video = this.ref.video.element;
     if(jsBridge.ios) {
-      jsBridge.fullscreen(true, function() {
+      jsBridge.fullscreen(true);
+      setTimeout(function() {
         if(video.requestFullscreen) {
           video.requestFullscreen();
         }
@@ -476,7 +477,7 @@ class Media extends migi.Component {
         else if(video.webkitEnterFullScreen) {
           video.webkitEnterFullScreen();
         }
-      });
+      }, 10);
     }
     else {
       if(video.requestFullscreen) {
