@@ -72,8 +72,8 @@ class Nav extends migi.Component {
     });
   }
   @bind authorId
-  @bind authorName
-  @bind authorAliasName
+  @bind name
+  @bind aliases
   @bind sign
   @bind authorType = []
   @bind headUrl
@@ -81,41 +81,21 @@ class Nav extends migi.Component {
   @bind like
   @bind loading
   @bind settled
-  @bind _5SingUrl
-  @bind _BilibiliUrl
-  @bind _BaiduUrl
-  @bind _WangyiUrl
-  @bind _WeiboUrl
-  @bind HuabanUrl
-  @bind LofterUrl
-  @bind POCOUrl
-  @bind ZcooUrl
-  setData(data, priority) {
+  @bind outsides
+  setData(data, aliases, outsides, priority) {
     priority = priority || 0;
     if(priority < currentPriority) {
       return;
     }
     let self = this;
-    hash = {};
-    jsBridge.setPreference('authorPageNav_' + self.authorId, data);
-    self.authorName = data.AuthorName;
-    self.authorAliasName = data.AuthorAliasName;
-    self.sign = data.Sign;
-    self.headUrl = data.Head_url;
-    self.fansNumber = data.FansNumber;
-    self.like = data.IsLike;
-    self.settled = data.ISSettled;
-    self.authorType = data.Authortype;
-    self._5SingUrl = data._5SingUrl;
-    self._BilibiliUrl = data._BilibiliUrl;
-    self._BaiduUrl = data._BaiduUrl;
-    self._WangyiUrl = data._WangyiUrl;
-    self._WeiboUrl = data._WeiboUrl;
-    self.HuabanUrl = data.HuabanUrl;
-    self.LofterUrl = data.LofterUrl;
-    self.POCOUrl = data.POCOUrl;
-    self.ZcooUrl = data.ZcooUrl;
-    self.loading = false;
+
+    console.log(data);
+    self.authorId = data.id;
+    self.name = data.name;
+    self.headUrl = data.headUrl;
+    self.sign = data.sign;
+    self.aliases = aliases;
+    self.outsides = outsides;
   }
   clickFollow(e) {
     e.preventDefault();
@@ -222,12 +202,16 @@ class Nav extends migi.Component {
         <div class="pic">
           <img src={ util.autoSsl(util.img288_288_80(this.headUrl || '/src/common/head.png')) }/>
           {
-            this.settled ? <b class="settled" title="已入驻" onClick={ function() { jsBridge.toast('已入驻') } }/> : ''
+            this.isSettled
+              ? <b class="settled"
+                   title="已入驻"
+                   onClick={ function() { jsBridge.toast('已入驻') } }/>
+              : ''
           }
         </div>
         <div class="txt">
           <div class="n">
-            <h3>{ this.authorName }</h3>
+            <h3>{ this.name }</h3>
             {
               (this.authorType || []).map(function(item) {
                 let css = authorTemplate.code2css[item.NewAuthorTypeID];
@@ -239,41 +223,21 @@ class Nav extends migi.Component {
               })
             }
           </div>
-          <p class={ 'alias' + (this.authorAliasName ? '' : ' fn-hide') }>别名：{ this.authorAliasName }</p>
+          <p class={ 'alias' + (this.aliases ? '' : ' fn-hide') }>别名：{ (this.aliases || []).map(function(item) {
+            return item.alias;
+          }).join(' ') }</p>
         </div>
         <button class={ (this.like ? 'un-follow' : 'follow') + (this.loading ? ' loading' : '') }
                 onClick={ this.clickFollow }>{ this.like ? '已关注' : '关 注' }</button>
       </div>
       <ul class="plus">
         <li class="fans">粉丝<strong>{ this.fansNumber || '0' }</strong></li>
-        <li class="outside" onClick={ { a: this.clickOut } }>
+        <li class="outsides" onClick={ { a: this.clickOut } }>
           <span>外站</span>
           {
-            this._5SingUrl ? <a target="_blank" href={ this._5SingUrl } class="sing5"/> : ''
-          }
-          {
-            this._BilibiliUrl ? <a target="_blank" href={ this._BilibiliUrl } class="bilibili"/> : ''
-          }
-          {
-            this._BaiduUrl ? <a target="_blank" href={ this._BaiduUrl } class="baidu"/> : ''
-          }
-          {
-            this._WangyiUrl ? <a target="_blank" href={ this._WangyiUrl } class="wangyi"/> : ''
-          }
-          {
-            this._WeiboUrl ? <a target="_blank" href={ this._WeiboUrl } class="weibo"/> : ''
-          }
-          {
-            this.HuabanUrl ? <a target="_blank" href={ this.HuabanUrl } class="huaban"/> : ''
-          }
-          {
-            this.LofterUrl ? <a target="_blank" href={ this.LofterUrl } class="lofter"/> : ''
-          }
-          {
-            this.POCOUrl ? <a target="_blank" href={ this.POCOUrl } class="poco"/> : ''
-          }
-          {
-            this.ZcooUrl ? <a target="_blank" href={ this.ZcooUrl } class="zcoo"/> : ''
+            (this.outsides || []).map(function(item) {
+              return <a target="_blank" href={ item.url } class={ 't' + item.type }/>;
+            })
           }
         </li>
       </ul>

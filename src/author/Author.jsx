@@ -8,6 +8,7 @@
 import net from '../common/net';
 import util from '../common/util';
 import Nav from './Nav.jsx';
+import WorksList from '../component/workslist/WorksList.jsx';
 import HotWork from '../component/hotwork/HotWork.jsx';
 import HotAlbum from '../component/hotalbum/HotAlbum.jsx';
 import HotAuthor from '../component/hotauthor/HotAuthor.jsx';
@@ -22,21 +23,24 @@ class Author extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  @bind authorId
+  // @bind authorId
   @bind index
   @bind rid
   @bind cid
   @bind showHome
   @bind showWork
   @bind showDynamic
-  load(authorId) {
+  init(authorId) {
     let self = this;
     self.authorId = authorId;
-    self.ref.nav.authorId = authorId;
-    self.ref.work.authorId = authorId;
-    net.postJSON('/h5/author/newIndex', { authorID: authorId }, function(res) {
+    jsBridge.getPreference('authorInfo_' + self.authorId, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
+      }
+    });
+    net.postJSON('/h5/author2/index', { authorId }, function(res) {
       if(res.success) {
-        self.setData(res.data);
+        self.setData(res.data, 1);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -45,36 +49,50 @@ class Author extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  setData(data) {
+  setData(data, priority) {
     let self = this;
-    self.authorName = data.authorDetail.AuthorName;
-    self.ref.nav.setData(data.authorDetail, 1);
-    if(data.authorDetail.ISSettled && data.homeDetail.Hot_Works_Items && data.homeDetail.Hot_Works_Items.length) {
+    let nav = self.ref.nav;
+
+    nav.setData(data.info, data.aliases, data.outsides, priority);
+
+    let showHome;
+    if(data.worksList) {
+      self.ref.worksList.list = data.worksList;
+      showHome = true;
+    }
+
+    if(showHome) {
       self.showHome = true;
       self.index = 0;
-      self.ref.hotAlbum.list = data.album;
-      self.ref.hotAuthor.list = data.homeDetail.AuthorToAuthor;
     }
-    if(data.authorDetail.ISSettled && (data.itemList && data.itemList.data && data.itemList.data.length || data.type && data.type.length)) {
-      self.showWork = true;
-      if(self.index === undefined) {
-        self.index = 1;
-      }
-      self.ref.work.setData(data.type, data.itemList);
-    }
-    if(data.dynamic && data.dynamic.data && data.dynamic.data.length) {
-      self.showDynamic = true;
-      self.ref.dynamics.authorId = self.authorId;
-      self.ref.dynamics.setData(data.dynamic);
-      if(self.index === undefined) {
-        self.index = 2;
-      }
-    }
-    self.ref.comments.authorId = self.authorId;
-    self.ref.comments.setData(data.commentData);
-    if(self.index === undefined) {
-      self.index = 3;
-    }
+    // self.authorName = data.authorDetail.AuthorName;
+    // self.ref.nav.setData(data.authorDetail, 1);
+    // if(data.authorDetail.ISSettled && data.homeDetail.Hot_Works_Items && data.homeDetail.Hot_Works_Items.length) {
+    //   self.showHome = true;
+    //   self.index = 0;
+    //   self.ref.hotAlbum.list = data.album;
+    //   self.ref.hotAuthor.list = data.homeDetail.AuthorToAuthor;
+    // }
+    // if(data.authorDetail.ISSettled && (data.itemList && data.itemList.data && data.itemList.data.length || data.type && data.type.length)) {
+    //   self.showWork = true;
+    //   if(self.index === undefined) {
+    //     self.index = 1;
+    //   }
+    //   self.ref.work.setData(data.type, data.itemList);
+    // }
+    // if(data.dynamic && data.dynamic.data && data.dynamic.data.length) {
+    //   self.showDynamic = true;
+    //   self.ref.dynamics.authorId = self.authorId;
+    //   self.ref.dynamics.setData(data.dynamic);
+    //   if(self.index === undefined) {
+    //     self.index = 2;
+    //   }
+    // }
+    // self.ref.comments.authorId = self.authorId;
+    // self.ref.comments.setData(data.commentData);
+    // if(self.index === undefined) {
+    //   self.index = 3;
+    // }
   }
   clickType(e, vd ,tvd) {
     let rel = tvd.props.rel;
@@ -163,7 +181,7 @@ class Author extends migi.Component {
       </ul>
       <div class={ 'home' + (this.index === 0 ? '' : ' fn-hide') }>
         <h4>主打作品</h4>
-        <HotWork ref="hotWork"/>
+        <WorksList ref="worksList"/>
         <h4>相关专辑</h4>
         <HotAlbum ref="hotAlbum"/>
         <h4>合作关系</h4>

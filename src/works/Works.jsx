@@ -20,15 +20,9 @@ import BotFn from '../component/botfn/BotFn.jsx';
 class Works extends migi.Component {
   constructor(...data) {
     super(...data);
-    let self = this;
-    self.on(migi.Event.DOM, function() {
-      jsBridge.setOptionMenu({
-        icon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAALVBMVEUAAAAAAAAAAAAAAAD+/v4AAAD5+fnk5OTq6uoAAAAwMDAAAAAAAACAgID///8waL84AAAADnRSTlMABxEL8BqUoZ0nIiITDIsBZnQAAABpSURBVEjHYxgFgxYICuKXl01xu4hPnlHs3btEAXwKTN69c8anQFDl3TsnfK4Q1nj3rskQnwlaJe6L8CpQ3Tk7CJ8VjDahoYfx+kJYSclQAG9AChsKEgxqCgHjaGyOxuZobA7K2BwFNAMAj1k2xo1Ti1oAAAAASUVORK5CYII=',
-      });
-    });
   }
-  @bind worksId
-  @bind workId
+  // @bind worksId
+  // @bind workId
   @bind curColumn = 0
   init(worksId, workId) {
     let self = this;
