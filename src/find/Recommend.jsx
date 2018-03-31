@@ -13,7 +13,7 @@ import Post from './Post.jsx';
 import WorksList from './WorksList.jsx';
 import AuthorList from './AuthorList.jsx';
 
-let visible;
+let visible = true;
 let scrollY = 0;
 let take = 10;
 let skip = take;
