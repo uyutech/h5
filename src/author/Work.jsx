@@ -6,13 +6,13 @@
 
 import net from '../common/net';
 import util from '../common/util';
-import Playlist from '../component/playlist/Playlist.jsx';
-import VideoList from '../find/VideoList.jsx';
+// import Playlist from '../component/playlist/Playlist.jsx';
+import VideoList from './VideoList.jsx';
+import AudioList from './AudioList.jsx';
 import WaterFall from '../component/waterfall/WaterFall.jsx';
 import Select from '../component/select/Select.jsx';
 
 const CACHE = {};
-let take = 10;
 
 class Work extends migi.Component {
   constructor(...data) {
@@ -24,134 +24,119 @@ class Work extends migi.Component {
         self.ref.waterFall.pause = !self.visible || self.groupId !== 3;
         self.ref.waterFall.checkPool();
       }
+      window.addEventListener('scroll', function() {
+        self.checkMore();
+      });
     });
   }
   @bind visible
   @bind klass
   @bind classList
-  @bind authorId
-  setData(classList, itemList) {
+  // @bind authorId
+  setData(classList, list) {
     let self = this;
     self.classList = classList;
+    classList.forEach(function(item) {
+      CACHE[item.klass] = {
+        skip: 0,
+      };
+    });
     self.klass = classList[0].klass;
-    // self.group = group;
-    // if(group.length) {
-    //   group.forEach(function(item) {
-    //     CACHE[item.GroupID] = {
-    //       loading: false,
-    //       loadEnd: false,
-    //       skip: 0,
-    //       sort: 0,
-    //       type: item.itemsTypeList,
-    //     };
-    //   });
-    //   let first = group[0];
-    //   self.groupId = first.GroupID;
-    //   let cache = CACHE[self.groupId];
-    //   cache.skip += take;
-    //   cache.loadEnd = itemList.Size <= take;
-    //   self.ref.fn.list = first.itemsTypeList;
-    //   switch(self.groupId) {
-    //     // 音频
-    //     case 1:
-    //       self.ref.playlist.setData(itemList.data);
-    //       if(cache.loadEnd) {
-    //         self.ref.playlist.message = '已经到底了';
-    //       }
-    //       break;
-    //     // 视频
-    //     case 2:
-    //       self.ref.videoList.setData(itemList.data);
-    //       if(cache.loadEnd) {
-    //         self.ref.videoList.message = '已经到底了';
-    //       }
-    //       break;
-    //     // 图片
-    //     case 3:
-    //       self.ref.waterFall.setData(itemList.data);
-    //       if(cache.loadEnd) {
-    //         self.ref.waterFall.message = '已经到底了';
-    //       }
-    //       if(self.visible && self.groupId === 3) {
-    //         self.ref.waterFall.pause = false;
-    //         self.ref.waterFall.checkPool();
-    //       }
-    //       break;
-    //   }
-    //   let $window = $(window);
-    //   $window.on('scroll', function() {
-    //     if(!self.visible) {
-    //       return;
-    //     }
-    //     self.checkMore($window);
-    //   });
-    //   self.ref.fn.on('sort', function(sort) {
-    //     let cache = CACHE[self.groupId];
-    //     cache.sort = sort;
-    //   });
-    // }
+    self.ref.select.list = classList[0].professionList.map(function(item) {
+      return {
+        id: item.class,
+        name: item.kindName,
+      }
+    });
+    let cache = CACHE[self.klass];
+    switch(self.klass) {
+      case 1:
+        cache.take = list.take;
+        cache.skip += list.take;
+        self.ref.videoList.setData(list.data);
+        if(list.size <= list.take) {
+          cache.loadEnd = true;
+          self.ref.videoList.message = '已经到底了';
+        }
+        break;
+      case 2:
+        cache.take = list.take;
+        cache.skip += list.take;
+        self.ref.audioList.setData(list.data);
+        if(cache.skip >= list.size) {
+          cache.loadEnd = true;
+          self.ref.videoList.message = '已经到底了';
+        }
+        break;
+    }
   }
   clickClass(e, vd, tvd) {
     let self = this;
-    if(tvd.props.rel === self.groupId) {
+    if(tvd.props.rel === self.klass) {
       return;
     }
-    self.groupId = tvd.props.rel;
-    let cache = CACHE[self.groupId];
+    self.klass = tvd.props.rel;
+    let cache = CACHE[self.klass];
     if(cache.skip === 0) {
       self.load();
     }
-    self.ref.fn.list = cache.type;
-    self.ref.fn.sort = cache.sort;
-    self.ref.waterFall.pause = !self.visible || self.groupId !== 3;
-    self.ref.waterFall.checkPool();
+    // self.ref.fn.list = cache.type;
+    // self.ref.fn.sort = cache.sort;
+    // self.ref.waterFall.pause = !self.visible || self.groupId !== 3;
+    // self.ref.waterFall.checkPool();
   }
-  checkMore($window) {
+  checkMore() {
     let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    let bool;
-    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    let cache = CACHE[self.klass];
+    if(!self.visible || cache.loading || cache.loadEnd) {
+      return;
+    }
+    if(util.isBottom()) {
       self.load();
     }
   }
   load() {
     let self = this;
-    let groupId = self.groupId;
-    let cache = CACHE[groupId];
+    let klass = self.klass;
+    let cache = CACHE[klass];
     if(cache.loading || cache.loadEnd) {
       return;
     }
     cache.loading = true;
-    switch(groupId) {
+    switch(klass) {
       case 1:
-        self.ref.playlist.message = '正在加载...';
-        break;
-      case 2:
         self.ref.videoList.message = '正在加载...';
         break;
-      case 3:
-        self.ref.waterFall.message = '正在加载...';
+      case 2:
+        self.ref.audioList.message = '正在加载...';
         break;
     }
-    cache.ajax = net.postJSON('/h5/author/itemList', { authorId: self.authorId, groupId, sort: cache.sort, skip: cache.skip, take, typeId: cache.typeId }, function(res) {
+    if(cache.ajax) {
+      cache.ajax.abort();
+    }
+    cache.ajax = net.postJSON('/h5/author2/classWork', {
+      authorId: self.authorId,
+      klass,
+      skip: cache.skip,
+      take: cache.take }, function(res) {
       if(res.success) {
         let data = res.data;
-        cache.skip += take;
-        cache.loadEnd = cache.skip >= data.Size;
-        switch(groupId) {
+        cache.take = data.take;
+        cache.skip += data.take;
+        switch(klass) {
           case 1:
-            self.ref.playlist.appendData(data.data);
-            self.ref.playlist.message = cache.loadEnd ? '已经到底了' : '';
+            if(cache.skip >= data.size) {
+              cache.loadEnd = true;
+              self.ref.videoList.message = '已经到底了';
+            }
+            self.ref.videoList.appendData(data.data);
             break;
           case 2:
-            self.ref.videoList.appendData(data.data);
-            self.ref.videoList.message = cache.loadEnd ? '已经到底了' : '';
-            break;
-          case 3:
-            self.ref.waterFall.appendData(data.data);
-            self.ref.waterFall.message = cache.loadEnd ? '已经到底了' : '';
+            if(cache.skip >= data.size) {
+              cache.loadEnd = true;
+              self.ref.audioList.message = '已经到底了';
+            }
+            self.ref.audioList.appendData(data.data);
             break;
         }
       }
@@ -218,16 +203,14 @@ class Work extends migi.Component {
       <Select ref="select"
           on-sort={ this.fnSort }
           on-type={ this.fnType }/>
-      <Playlist ref="playlist"
-                profession={ true }
-                @visible={ this.groupId === 1 }/>
       <VideoList ref="videoList"
-                 profession={ true }
-                 @visible={ this.groupId === 2 }/>
+                 @visible={ this.klass === 1 }/>
+      <AudioList ref="audioList"
+                 @visible={ this.klass === 2 }/>
       <WaterFall ref="waterFall"
                  profession={ true }
                  pause={ !this.visible }
-                 @visible={ this.groupId === 3 }/>
+                 @visible={ this.klass === 3 }/>
     </div>;
   }
 }

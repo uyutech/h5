@@ -53,12 +53,7 @@ class CommentWrap extends migi.Component {
     if(loading || loadEnd || !self.visible) {
       return;
     }
-    let y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-    let WIN_HEIGHT = document.documentElement.clientHeight;
-    let HEIGHT = document.body.clientHeight;
-    let bool;
-    bool = y + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    if(util.isBottom()) {
       self.load();
     }
   }

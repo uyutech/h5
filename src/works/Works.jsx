@@ -85,7 +85,7 @@ class Works extends migi.Component {
 
     self.setColumn(imgList, data.comment);
     select.id = avList[index].id;
-    author.list = data.authors;
+    author.list = data.authorList;
     text.list = textList;
     select.list = avList;
     poster.list = imgList;
@@ -202,8 +202,8 @@ class Works extends migi.Component {
           text += self.data.info.subTitle;
         }
         text += '】';
-        if(self.data.authors && self.data.authors[0]) {
-          self.data.authors[0].forEach(function(item) {
+        if(self.data.authorList && self.data.authorList[0]) {
+          self.data.authorList[0].forEach(function(item) {
             text += item.list.map(function(item2) {
               return item2.name;
             });

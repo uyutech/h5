@@ -435,6 +435,13 @@ let util = {
     document.body.removeChild(input);
     jsBridge.toast('复制成功');
   },
+  isBottom: function(offset) {
+    offset = offset || 30;
+    let y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    let WIN_HEIGHT = document.documentElement.clientHeight;
+    let HEIGHT = document.body.clientHeight;
+    return y + WIN_HEIGHT + offset > HEIGHT;
+  }
 };
 
 export default util;

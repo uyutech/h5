@@ -52,7 +52,7 @@ class Select extends migi.Component {
             <li class="cur">全部</li>
             {
               (this.list || []).map(function(item) {
-                return <li rel={ item.ItemsTypeID }>{ item.ItemsTypeName }</li>;
+                return <li rel={ item.id }>{ item.name }</li>;
               })
             }
           </ul>

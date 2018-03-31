@@ -34,7 +34,8 @@ class Author extends migi.Component {
   init(authorId) {
     let self = this;
     self.authorId = authorId;
-    jsBridge.getPreference('authorInfo_' + self.authorId, function(cache) {
+    self.ref.work.authorId = authorId;
+    jsBridge.getPreference('authorData_' + self.authorId, function(cache) {
       if(cache) {
         self.setData(cache, 0);
       }
@@ -48,7 +49,7 @@ class Author extends migi.Component {
             cache[k] = data[k];
           }
         });
-        jsBridge.setPreference('authorInfo_' + self.authorId, cache);
+        jsBridge.setPreference('authorData_' + self.authorId, cache);
         self.setData(res.data, 1);
       }
       else {
@@ -85,7 +86,7 @@ class Author extends migi.Component {
 
     if(data.workClassList) {
       self.showWork = true;
-      self.ref.work.setData(data.workClassList);
+      self.ref.work.setData(data.workClassList, data.classWorkList);
       if(self.index === undefined) {
         self.index = 1;
       }
