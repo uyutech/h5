@@ -9,7 +9,7 @@ import util from '../common/util';
 import Playlist from '../component/playlist/Playlist.jsx';
 import VideoList from '../find/VideoList.jsx';
 import WaterFall from '../component/waterfall/WaterFall.jsx';
-import Fn from '../find/Fn.jsx';
+import Select from '../component/select/Select.jsx';
 
 const CACHE = {};
 let take = 10;
@@ -27,69 +27,71 @@ class Work extends migi.Component {
     });
   }
   @bind visible
-  @bind group
-  @bind groupId
+  @bind klass
+  @bind classList
   @bind authorId
-  setData(group, itemList) {
+  setData(classList, itemList) {
     let self = this;
-    self.group = group;
-    if(group.length) {
-      group.forEach(function(item) {
-        CACHE[item.GroupID] = {
-          loading: false,
-          loadEnd: false,
-          skip: 0,
-          sort: 0,
-          type: item.itemsTypeList,
-        };
-      });
-      let first = group[0];
-      self.groupId = first.GroupID;
-      let cache = CACHE[self.groupId];
-      cache.skip += take;
-      cache.loadEnd = itemList.Size <= take;
-      self.ref.fn.list = first.itemsTypeList;
-      switch(self.groupId) {
-        // 音频
-        case 1:
-          self.ref.playlist.setData(itemList.data);
-          if(cache.loadEnd) {
-            self.ref.playlist.message = '已经到底了';
-          }
-          break;
-        // 视频
-        case 2:
-          self.ref.videoList.setData(itemList.data);
-          if(cache.loadEnd) {
-            self.ref.videoList.message = '已经到底了';
-          }
-          break;
-        // 图片
-        case 3:
-          self.ref.waterFall.setData(itemList.data);
-          if(cache.loadEnd) {
-            self.ref.waterFall.message = '已经到底了';
-          }
-          if(self.visible && self.groupId === 3) {
-            self.ref.waterFall.pause = false;
-            self.ref.waterFall.checkPool();
-          }
-          break;
-      }
-      let $window = $(window);
-      $window.on('scroll', function() {
-        if(!self.visible) {
-          return;
-        }
-        self.checkMore($window);
-      });
-      self.ref.fn.on('sort', function(sort) {
-        let cache = CACHE[self.groupId];
-        cache.sort = sort;
-      });
-    }
+    self.classList = classList;
+    self.klass = classList[0].klass;
+    // self.group = group;
+    // if(group.length) {
+    //   group.forEach(function(item) {
+    //     CACHE[item.GroupID] = {
+    //       loading: false,
+    //       loadEnd: false,
+    //       skip: 0,
+    //       sort: 0,
+    //       type: item.itemsTypeList,
+    //     };
+    //   });
+    //   let first = group[0];
+    //   self.groupId = first.GroupID;
+    //   let cache = CACHE[self.groupId];
+    //   cache.skip += take;
+    //   cache.loadEnd = itemList.Size <= take;
+    //   self.ref.fn.list = first.itemsTypeList;
+    //   switch(self.groupId) {
+    //     // 音频
+    //     case 1:
+    //       self.ref.playlist.setData(itemList.data);
+    //       if(cache.loadEnd) {
+    //         self.ref.playlist.message = '已经到底了';
+    //       }
+    //       break;
+    //     // 视频
+    //     case 2:
+    //       self.ref.videoList.setData(itemList.data);
+    //       if(cache.loadEnd) {
+    //         self.ref.videoList.message = '已经到底了';
+    //       }
+    //       break;
+    //     // 图片
+    //     case 3:
+    //       self.ref.waterFall.setData(itemList.data);
+    //       if(cache.loadEnd) {
+    //         self.ref.waterFall.message = '已经到底了';
+    //       }
+    //       if(self.visible && self.groupId === 3) {
+    //         self.ref.waterFall.pause = false;
+    //         self.ref.waterFall.checkPool();
+    //       }
+    //       break;
+    //   }
+    //   let $window = $(window);
+    //   $window.on('scroll', function() {
+    //     if(!self.visible) {
+    //       return;
+    //     }
+    //     self.checkMore($window);
+    //   });
+    //   self.ref.fn.on('sort', function(sort) {
+    //     let cache = CACHE[self.groupId];
+    //     cache.sort = sort;
+    //   });
+    // }
   }
-  clickGroup(e, vd, tvd) {
+  clickClass(e, vd, tvd) {
     let self = this;
     if(tvd.props.rel === self.groupId) {
       return;
@@ -204,16 +206,16 @@ class Work extends migi.Component {
   }
   render() {
     return <div class={ 'work' + (this.visible ? '' : ' fn-hide') }>
-      <ul class={ 'group' + (this.group && this.group.length > 1 ? '' : ' fn-hide') }
-          onClick={ { li: this.clickGroup } }>
+      <ul class={ 'group' + (this.klass ? '' : ' fn-hide') }
+          onClick={ { li: this.clickClass } }>
         {
-          (this.groupId, this.group || []).map(function(item) {
-            return <li class={ item.GroupID === this.groupId ? 'cur' : '' }
-                       rel={ item.GroupID }>{ item.GroupName }</li>;
+          (this.klass, this.classList || []).map(function(item) {
+            return <li class={ item.klass === this.klass ? 'cur' : '' }
+                       rel={ item.klass }>{ item.name }</li>;
           }.bind(this))
         }
       </ul>
-      <Fn ref="fn"
+      <Select ref="select"
           on-sort={ this.fnSort }
           on-type={ this.fnType }/>
       <Playlist ref="playlist"

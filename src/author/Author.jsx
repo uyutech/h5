@@ -8,9 +8,8 @@
 import net from '../common/net';
 import util from '../common/util';
 import Nav from './Nav.jsx';
-import WorksList from '../component/workslist/WorksList.jsx';
-import HotWork from '../component/hotwork/HotWork.jsx';
-import HotAlbum from '../component/hotalbum/HotAlbum.jsx';
+import WorksList from './WorksList.jsx';
+import MusicAlbumList from './MusicAlbumList.jsx';
 import HotAuthor from '../component/hotauthor/HotAuthor.jsx';
 import Comments from './Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
@@ -18,6 +17,8 @@ import Background from '../component/background/Background.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 import Work from './Work.jsx';
 import Dynamics from './Dynamics.jsx';
+
+let currentPriority = 0;
 
 class Author extends migi.Component {
   constructor(...data) {
@@ -40,6 +41,14 @@ class Author extends migi.Component {
     });
     net.postJSON('/h5/author2/index', { authorId }, function(res) {
       if(res.success) {
+        let data = res.data;
+        let cache = {};
+        Object.keys(data).forEach(function(k) {
+          if(k !== 'comment') {
+            cache[k] = data[k];
+          }
+        });
+        jsBridge.setPreference('authorInfo_' + self.authorId, cache);
         self.setData(res.data, 1);
       }
       else {
@@ -50,20 +59,36 @@ class Author extends migi.Component {
     });
   }
   setData(data, priority) {
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
     let self = this;
     let nav = self.ref.nav;
-
     nav.setData(data.info, data.aliases, data.outsides, priority);
 
     let showHome;
-    if(data.worksList) {
-      self.ref.worksList.list = data.worksList;
+    if(data.mainWorksList) {
+      self.ref.worksList.list = data.mainWorksList;
+      showHome = true;
+    }
+    if(data.musicAlbumList) {
+      self.ref.musicAlbumList.list = data.musicAlbumList;
       showHome = true;
     }
 
     if(showHome) {
       self.showHome = true;
       self.index = 0;
+    }
+
+    if(data.workClassList) {
+      self.showWork = true;
+      self.ref.work.setData(data.workClassList);
+      if(self.index === undefined) {
+        self.index = 1;
+      }
     }
     // self.authorName = data.authorDetail.AuthorName;
     // self.ref.nav.setData(data.authorDetail, 1);
@@ -183,9 +208,7 @@ class Author extends migi.Component {
         <h4>主打作品</h4>
         <WorksList ref="worksList"/>
         <h4>相关专辑</h4>
-        <HotAlbum ref="hotAlbum"/>
-        <h4>合作关系</h4>
-        <HotAuthor ref="hotAuthor"/>
+        <MusicAlbumList ref="musicAlbumList"/>
       </div>
       <Work ref="work"
             @visible={ this.index === 1 }/>

@@ -82,14 +82,8 @@ class Nav extends migi.Component {
   @bind loading
   @bind settled
   @bind outsides
-  setData(data, aliases, outsides, priority) {
-    priority = priority || 0;
-    if(priority < currentPriority) {
-      return;
-    }
+  setData(data, aliases, outsides) {
     let self = this;
-
-    console.log(data);
     self.authorId = data.id;
     self.name = data.name;
     self.headUrl = data.headUrl;
