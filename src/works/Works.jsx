@@ -58,16 +58,16 @@ class Works extends migi.Component {
     let imgList = [];
     let textList = [];
     data.collection.forEach(function(item) {
-      if([1, 2].indexOf(item.class) > -1) {
+      if([1, 2].indexOf(item.kind) > -1) {
         item.worksTitle = data.info.title;
         item.worksSubTitle = data.info.subTitle;
         item.worksCover = data.info.cover;
         avList.push(item);
       }
-      else if(item.class === 3 && item.type === 4) {
+      else if(item.kind === 3) {
         imgList.push(item);
       }
-      else if(item.class === 4) {
+      else if(item.kind === 4) {
         textList.push(item);
       }
     });
