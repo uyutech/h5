@@ -13,8 +13,8 @@ import ImageView from '../post/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let take;
-let skip;
+let take = 0;
+let skip = 0;
 let ajax;
 let loading;
 let loadEnd;
@@ -78,6 +78,13 @@ class Circle extends migi.Component {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
+        let cache = {};
+        Object.keys(data).forEach(function(k) {
+          if(k !== 'comment') {
+            cache[k] = data[k];
+          }
+        });
+        jsBridge.setPreference('circleData_' + circleId, cache);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -95,7 +102,7 @@ class Circle extends migi.Component {
     let self = this;
     self.ref.nav.setData(data.info);
 
-    if(data.comment.size) {
+    if(data.comment && data.comment.size) {
       take = data.comment.take;
       skip = take;
       self.ref.postList.setData(data.comment.data);
@@ -106,7 +113,6 @@ class Circle extends migi.Component {
       }
     }
 
-    return;
     // self.circleName = data.circleDetail.TagName;
     //
     // let title = self.ref.title;
