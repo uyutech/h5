@@ -82,6 +82,10 @@ class Post extends migi.Component {
       imageView.setData(itemImg, idx);
     });
 
+    $root.on('click', '.time', function() {
+      jsBridge.toast($(this).attr('title'));
+    });
+
     let imageView = self.ref.imageView;
     imageView.on('clickLike', function() {
       self.clickLike();
@@ -592,7 +596,7 @@ class Post extends migi.Component {
                      href={ '/user.html?userID=' + postData.SendUserID }
                      title={ postData.SendUserNickName }>{ postData.SendUserNickName }</a>
             }
-            <small class="time">{ util.formatDate(postData.Createtime) }</small>
+            <small class="time" title={ postData.Createtime }>{ util.formatDate(postData.Createtime) }</small>
           </div>
         </div>
         <div class="circle">
