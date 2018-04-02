@@ -336,7 +336,6 @@ let util = {
     return res;
   },
   formatDate: function(time) {
-    time = time.replace(/-/g, '/');
     time = new Date(time);
     let now = Date.now();
     let diff = now - time;

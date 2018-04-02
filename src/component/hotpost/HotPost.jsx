@@ -417,7 +417,7 @@ class HotPost extends migi.Component {
         }
         last = audio;
       });
-    }console.log(item);
+    }
     return <li class={ item.IsAuthor ? 'author' : 'user' } id={ 'post_' + id }>
       <div class="profile fn-clear">
         <a class="pic" href={ peopleUrl } title={ item.SendUserNickName }>

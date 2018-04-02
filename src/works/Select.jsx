@@ -9,13 +9,14 @@ class Select extends migi.Component {
     super(...data);
   }
   @bind list
+  @bind kind
   @bind id
   click(e, vd, tvd) {
     if(tvd.props.workId === this.id) {
       return;
     }
     this.id = tvd.props.workId;
-    this.emit('change', this.id);
+    this.emit('change', this.id, this.kind);
   }
   render() {
     return <ul class={ 'mod-select' + (this.list && this.list.length > 1 ? '' : ' fn-hide') }
@@ -23,11 +24,12 @@ class Select extends migi.Component {
       {
         (this.id, this.list || []).map(function(item, i) {
           return <li class={ (this.id
-            ? (item.id === this.id ? 'cur ' : '')
-              : (i ? '' : 'cur '))
-              + (item.class === 2 ? 'audio' : 'video') }
-                     rel={ i }
-                     workId={ item.id }>{ item.tips || item.typeName }</li>;
+            ? (item.id === this.id && item.kind === this.kind ? 'cur ' : '')
+            : (i ? '' : 'cur '))
+            + (item.class === 2 ? 'audio' : 'video') }
+              rel={ i }
+              kind={ item.kind }
+              workId={ item.id }>{ item.tips || item.typeName }</li>;
         }.bind(this))
       }
     </ul>;

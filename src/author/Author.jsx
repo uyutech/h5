@@ -35,7 +35,7 @@ class Author extends migi.Component {
     let self = this;
     self.authorId = authorId;
     self.ref.work.authorId = authorId;
-    jsBridge.getPreference('authorData_' + self.authorId, function(cache) {
+    jsBridge.getPreference('authorData_' + authorId, function(cache) {
       if(cache) {
         self.setData(cache, 0);
       }
@@ -91,21 +91,6 @@ class Author extends migi.Component {
         self.index = 1;
       }
     }
-    // self.authorName = data.authorDetail.AuthorName;
-    // self.ref.nav.setData(data.authorDetail, 1);
-    // if(data.authorDetail.ISSettled && data.homeDetail.Hot_Works_Items && data.homeDetail.Hot_Works_Items.length) {
-    //   self.showHome = true;
-    //   self.index = 0;
-    //   self.ref.hotAlbum.list = data.album;
-    //   self.ref.hotAuthor.list = data.homeDetail.AuthorToAuthor;
-    // }
-    // if(data.authorDetail.ISSettled && (data.itemList && data.itemList.data && data.itemList.data.length || data.type && data.type.length)) {
-    //   self.showWork = true;
-    //   if(self.index === undefined) {
-    //     self.index = 1;
-    //   }
-    //   self.ref.work.setData(data.type, data.itemList);
-    // }
     // if(data.dynamic && data.dynamic.data && data.dynamic.data.length) {
     //   self.showDynamic = true;
     //   self.ref.dynamics.authorId = self.authorId;
@@ -113,11 +98,6 @@ class Author extends migi.Component {
     //   if(self.index === undefined) {
     //     self.index = 2;
     //   }
-    // }
-    // self.ref.comments.authorId = self.authorId;
-    // self.ref.comments.setData(data.commentData);
-    // if(self.index === undefined) {
-    //   self.index = 3;
     // }
   }
   clickType(e, vd ,tvd) {

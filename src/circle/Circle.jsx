@@ -6,25 +6,25 @@
 
 import net from '../common/net';
 import util from '../common/util';
-import Title from './Title.jsx';
+import Nav from './Nav.jsx';
 import HotPost from '../component/hotpost/HotPost.jsx';
+import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../post/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let take = 10;
-let skip = take;
+let take;
+let skip;
+let ajax;
 let loading;
 let loadEnd;
+let currentPriority = 0;
 
 class Circle extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      jsBridge.setOptionMenu({
-        icon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAHlBMVEUAAACMvuGMvuGMvuGNveGMvuGNweOPwuuMvuKLveG52ByYAAAACXRSTlMA7+bFiGY1GfMKDs4PAAAASklEQVRIx2MYBSMZlIbjl2eTnJiAVwHzzJkGeBVwzJzZQK4JCDcQ9MUoAAInFfzyLDNnOuBVwDRzpgK5ChBWEHTkKBjNeqNgWAAAQowW2TR/xN0AAAAASUVORK5CYII=',
-      });
       jsBridge.on('optionMenu1', function() {
         migi.eventBus.emit('BOT_FN', {
           canFn: true,
@@ -64,79 +64,116 @@ class Circle extends migi.Component {
       });
     });
   }
-  @bind circleId
-  @bind circleName
-  setData(circleId, data) {
+  // @bind circleId
+  // @bind circleName
+  init(circleId) {
     let self = this;
     self.circleId = circleId;
-    self.circleName = data.circleDetail.TagName;
-
-    let title = self.ref.title;
-    title.cover = data.circleDetail.TagCover;
-    title.sname = data.circleDetail.TagName;
-    title.id = data.circleDetail.TagID;
-    title.desc = data.circleDetail.Describe;
-    title.joined = data.circleDetail.ISLike;
-    title.count = data.circleDetail.Popular;
-
-    if(data.postList.Size > take) {
-      let $window = $(window);
-      $window.on('scroll', function() {
-        self.checkMore($window);
-      });
-    }
-
-    let hotPost = self.ref.hotPost;
-    hotPost.setData(data.postList.data);
-    let imageView = self.ref.imageView;
-    imageView.on('clickLike', function(sid) {
-      hotPost.like(sid, function(res) {
-        imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
-      });
-    });
-    jsBridge.on('back', function(e) {
-      if(!imageView.isHide()) {
-        e.preventDefault();
-        imageView.hide();
+    jsBridge.getPreference('circleData_' + circleId, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
       }
     });
-    jsBridge.on('resume', function(e) {
-      if(e.data && e.data.type === 'subPost') {
-        self.ref.hotPost.prependData(e.data.data);
+    net.postJSON('/h5/circle2/index', { circleId }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        self.setData(data, 1);
       }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  checkMore($window) {
+  setData(data, priority) {
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
+    let self = this;
+    self.ref.nav.setData(data.info);
+
+    if(data.comment.size) {
+      take = data.comment.take;
+      skip = take;
+      self.ref.postList.setData(data.comment.data);
+      if(data.comment.size > take) {
+        window.addEventListener('scroll', function() {
+          self.checkMore();
+        });
+      }
+    }
+
+    return;
+    // self.circleName = data.circleDetail.TagName;
+    //
+    // let title = self.ref.title;
+    // title.cover = data.circleDetail.TagCover;
+    // title.sname = data.circleDetail.TagName;
+    // title.id = data.circleDetail.TagID;
+    // title.desc = data.circleDetail.Describe;
+    // title.joined = data.circleDetail.ISLike;
+    // title.count = data.circleDetail.Popular;
+    //
+    // if(data.postList.Size > take) {
+    //   let $window = $(window);
+    //   $window.on('scroll', function() {
+    //     self.checkMore($window);
+    //   });
+    // }
+    //
+    // let hotPost = self.ref.hotPost;
+    // hotPost.setData(data.postList.data);
+    // let imageView = self.ref.imageView;
+    // imageView.on('clickLike', function(sid) {
+    //   hotPost.like(sid, function(res) {
+    //     imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
+    //   });
+    // });
+    // jsBridge.on('back', function(e) {
+    //   if(!imageView.isHide()) {
+    //     e.preventDefault();
+    //     imageView.hide();
+    //   }
+    // });
+    // jsBridge.on('resume', function(e) {
+    //   if(e.data && e.data.type === 'subPost') {
+    //     self.ref.hotPost.prependData(e.data.data);
+    //   }
+    // });
+  }
+  checkMore() {
+    let self = this;
     if(loading || loadEnd) {
       return;
     }
-    let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    let bool;
-    bool = !$(self.element).hasClass('fn-hide') && $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    if(util.isBottom()) {
       self.load();
     }
   }
   load() {
     let self = this;
-    let hotPost = self.ref.hotPost;
+    let postList = self.ref.postList;
+    if(ajax) {
+      ajax.abort();
+    }
     loading = true;
-    hotPost.message = '正在加载...';
-    net.postJSON('/h5/circle/postList', { circleID: self.circleId, skip, take }, function(res) {
+    postList.message = '正在加载...';
+    ajax = net.postJSON('/h5/circle2/comment', { circleId: self.circleId, skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
         if(data.data.length) {
-          hotPost.appendData(data.data);
+          postList.appendData(data.data);
         }
-        if(skip >= data.Size) {
+        if(skip >= data.size) {
           loadEnd = true;
-          hotPost.message = '已经到底了';
+          postList.message = '已经到底了';
         }
         else {
-          hotPost.message = '';
+          postList.message = '';
         }
       }
       else {
@@ -223,9 +260,9 @@ class Circle extends migi.Component {
   }
   render() {
     return <div class="circle">
-      <Title ref="title"/>
-      <HotPost ref="hotPost"
-               message={ '正在加载...' }/>
+      <Nav ref="nav"/>
+      <PostList ref="postList"
+                message={ '正在加载...' }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }

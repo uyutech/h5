@@ -84,6 +84,7 @@ class Works extends migi.Component {
     self.setMedia(avList[index]);
 
     self.setColumn(imgList, data.comment);
+    select.kind = avList[index].kind;
     select.id = avList[index].id;
     author.list = data.authorList;
     text.list = textList;
