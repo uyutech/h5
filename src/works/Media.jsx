@@ -80,8 +80,8 @@ class Media extends migi.Component {
             canFn: true,
             canLike: true,
             canFavor: true,
-            isLiked: self.isLiked,
-            isFavored: self.isFavored,
+            isLike: self.isLike,
+            isFavor: self.isFavor,
             canBlock: true,
             canReport: true,
             canShare: true,
@@ -90,12 +90,12 @@ class Media extends migi.Component {
             canShareLink: true,
             clickLike: function(botFn) {
               self.like(function() {
-                botFn.isLiked = self.isLiked;
+                botFn.isLike = self.isLike;
               });
             },
             clickFavor: function(botFn) {
               self.favor(function() {
-                botFn.isFavored = self.isFavored;
+                botFn.isFavor = self.isFavor;
               });
             },
             clickCancel: function() {
@@ -191,9 +191,10 @@ class Media extends migi.Component {
   @bind duration
   @bind currentTime
   @bind canControl
-  @bind isLiked
-  @bind likeNum
-  @bind isFavored
+  @bind isLike
+  @bind likeCount
+  @bind isFavor
+  @bind favorCount
   @bind isVideo
   setData(data) {
     let self = this;
@@ -207,8 +208,9 @@ class Media extends migi.Component {
       self.data = data;
       self.stop();
       self.duration = 0;
-      self.isLiked = self.isFavored = false;
-      self.likeNum = 0;
+      self.isLike = self.isFavor = false;
+      self.likeCount = 0;
+      self.favorCount = 0;
       self.canControl = false;
       self.lrc = {};
       load.innerHTML = '';
@@ -226,8 +228,9 @@ class Media extends migi.Component {
           self.duration = 0;
           self.currentTime = 0;
           self.canControl = false;
-          self.isLiked = self.isFavored = false;
-          self.likeNum = 0;
+          self.isLike = self.isFavor = false;
+          self.likeCount = 0;
+          self.favorCount = 0;
           self.lrc = {};
           load.innerHTML = '';
           self.setBarPercent(0);
@@ -236,17 +239,20 @@ class Media extends migi.Component {
       return;
     }
 
-    // 如果传入相同信息则忽略
-    if(old && old.id === data.id) {
-      return;
-    }
     self.data = data;
     self.duration = 0;
     self.currentTime = 0;
     self.canControl = false;
-    self.isLiked = data.isLiked;
-    self.likeNum = data.likeNum;
-    self.isFavored = data.isFavored;
+    self.isLike = data.isLike;
+    self.likeCount = data.likeCount;
+    self.favorCount = data.favorCount;
+    self.isFavor = data.isFavor;
+
+    // 如果传入相同信息则忽略
+    if(old && old.id === data.id && old.kind === data.kind) {
+      return;
+    }
+
     self.setBarPercent(0);
 
     // 除了第一次，每次设置后除非信息相同，否则停止播放
@@ -568,11 +574,12 @@ class Media extends migi.Component {
       return;
     }
     loadingLike = true;
-    ajaxLike = net.postJSON('/h5/works/likeWork', { workID: self.data.workId }, function(res) {
+    ajaxLike = net.postJSON('/h5/works2/like',
+      { workId: self.data.id, worksId: self.data.worksId, state: !self.isLike }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.isLiked = self.data.isLiked = data.State === 'likeWordsUser';
-        self.data.likeNum = self.likeNum = data.LikeCount;
+        self.isLike = self.data.isLike = data.state;
+        self.likeCount = self.data.likeCount = data.count;
         cb && cb();
       }
       else if(res.code === 1000) {
@@ -603,42 +610,25 @@ class Media extends migi.Component {
       return;
     }
     loadingFavor = true;
-    if(self.isFavored) {
-      ajaxFavor = net.postJSON('/h5/works/unFavorWork', { workID: self.data.workId }, function (res) {
-        if(res.success) {
-          self.isFavored = self.data.isFavored = false;
-          cb && cb();
-        }
-        else if(res.code === 1000) {
-          migi.eventBus.emit('NEED_LOGIN');
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-        loadingFavor = false;
-      }, function(res) {
+    ajaxFavor = net.postJSON('/h5/works2/favor',
+      { workId: self.data.id, worksId: self.data.worksId, state: !self.isFavor, kind: self.data.kind }, function (res) {
+      if(res.success) {
+        let data = res.data;
+        self.isFavor = self.data.isFavor = data.state;
+        self.favorCount = self.data.favorCount = data.count;
+        cb && cb();
+      }
+      else if(res.code === 1000) {
+        migi.eventBus.emit('NEED_LOGIN');
+      }
+      else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        loadingFavor = false;
-      });
-    }
-    else {
-      ajaxFavor = net.postJSON('/h5/works/favorWork', { workID: self.data.workId }, function (res) {
-        if(res.success) {
-          self.isFavored = self.data.isFavored = true;
-          cb && cb();
-        }
-        else if(res.code === 1000) {
-          migi.eventBus.emit('NEED_LOGIN');
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-        loadingFavor = false;
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        loadingFavor = false;
-      });
-    }
+      }
+      loadingFavor = false;
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      loadingFavor = false;
+    });
   }
   clickDownload() {
     let self = this;
@@ -832,12 +822,12 @@ class Media extends migi.Component {
       </div>
       <ul class="btn">
         <li onClick={ this.clickLike }>
-          <b class={ 'like' + (this.isLiked ? ' liked' : '') }/>
-          <span>{ this.isLiked ? (this.likeNum || 0) : '点赞' }</span>
+          <b class={ 'like' + (this.isLike ? ' liked' : '') }/>
+          <span>{ this.likeCount || '点赞' }</span>
         </li>
         <li onClick={ this.clickFavor }>
-          <b class={ 'favor' + (this.isFavored ? ' favored' : '') }/>
-          <span>{ this.isFavored ? '已收藏' : '收藏' }</span>
+          <b class={ 'favor' + (this.isFavor ? ' favored' : '') }/>
+          <span>{ this.favorCount || '收藏' }</span>
         </li>
         <li onClick={ this.clickShare }>
           <b class="share"/>

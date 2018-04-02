@@ -4,32 +4,34 @@
 
 'use strict';
 
+const CLASS = {
+  1: 'video',
+  2: 'audio',
+};
+
 class Select extends migi.Component {
   constructor(...data) {
     super(...data);
   }
   @bind list
-  @bind kind
-  @bind id
+  @bind comboId
   click(e, vd, tvd) {
-    if(tvd.props.workId === this.id) {
+    let comboId = tvd.props.workId + '_' + tvd.props.kind;
+    if(comboId === this.comboId) {
       return;
     }
-    this.id = tvd.props.workId;
-    this.emit('change', this.id, this.kind);
+    this.comboId = comboId;
+    this.emit('change', tvd.props.workId, tvd.props.kind);
   }
   render() {
     return <ul class={ 'mod-select' + (this.list && this.list.length > 1 ? '' : ' fn-hide') }
                onClick={ { li: this.click } }>
       {
-        (this.id, this.list || []).map(function(item, i) {
-          return <li class={ (this.id
-            ? (item.id === this.id && item.kind === this.kind ? 'cur ' : '')
-            : (i ? '' : 'cur '))
-            + (item.class === 2 ? 'audio' : 'video') }
-              rel={ i }
-              kind={ item.kind }
-              workId={ item.id }>{ item.tips || item.typeName }</li>;
+        (this.comboId, this.list || []).map(function(item, i) {
+          return <li class={ (this.comboId === (item.id + '_' + item.kind) ? 'cur ' : '') + CLASS[item.kind] }
+                     rel={ i }
+                     kind={ item.kind }
+                     workId={ item.id }>{ item.tips || item.typeName }</li>;
         }.bind(this))
       }
     </ul>;

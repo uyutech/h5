@@ -8,8 +8,8 @@ import Comment from '../component/comment/Comment.jsx';
 import util from "../common/util";
 import net from "../common/net";
 
-let take;
-let skip;
+let limit;
+let offset;
 let ajax;
 let loading;
 let loadEnd;
@@ -36,12 +36,12 @@ class CommentWrap extends migi.Component {
   @bind visible
   setData(worksId, data) {
     let self = this;
-    take = data.take;
-    skip = take;
+    limit = data.limit;
+    offset = limit;
     self.worksId = worksId;
     if(data.size) {
       self.ref.comment.setData(data.data);
-      if(data.size > take) {
+      if(data.size > limit) {
         window.addEventListener('scroll', function() {
           self.checkMore();
         });
@@ -65,14 +65,14 @@ class CommentWrap extends migi.Component {
     }
     loading = true;
     comment.message = '正在加载...';
-    ajax = net.postJSON('/h5/works2/comment', { worksId: self.worksId, skip, take, }, function(res) {
+    ajax = net.postJSON('/h5/works2/comment', { worksId: self.worksId, offset, limit, }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
+        offset += limit;
         if(data.data.length) {
           comment.appendData(data.data);
         }
-        if(skip >= data.size) {
+        if(offset >= data.size) {
           loadEnd = true;
           comment.message = '已经到底了';
         }
@@ -109,7 +109,7 @@ class CommentWrap extends migi.Component {
     $(vd.element).find('.cur').removeClass('cur');
     $li.addClass('cur');
     myComment = tvd.props.rel;
-    skip = 0;
+    offset = 0;
     if(ajax) {
       ajax.abort();
     }
@@ -135,7 +135,7 @@ class CommentWrap extends migi.Component {
     $li.addClass('cur');
     self.sortText = tvd.children[0];
     sortType = tvd.props.rel;
-    skip = 0;
+    offset = 0;
     if(ajax) {
       ajax.abort();
     }

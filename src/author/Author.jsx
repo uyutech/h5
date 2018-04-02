@@ -43,7 +43,7 @@ class Author extends migi.Component {
     net.postJSON('/h5/author2/index', { authorId }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.setData(res.data, 1);
+        self.setData(data, 1);
         let cache = {};
         Object.keys(data).forEach(function(k) {
           if(k !== 'comment') {

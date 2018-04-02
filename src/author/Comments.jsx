@@ -6,8 +6,8 @@ import util from '../common/util';
 import net from '../common/net';
 import Comment from '../component/comment/Comment.jsx';
 
-let take = 30;
-let skip = 0;
+let limit = 30;
+let offset = 0;
 let sortType = 0;
 let myComment = 0;
 let currentCount = 0;
@@ -31,8 +31,8 @@ class Comments extends migi.Component {
   setData(data) {
     let self = this;
     self.ref.comment.setData(data.data);
-    skip += take;
-    if(data.Size > take) {
+    offset += limit;
+    if(data.Size > limit) {
       let $window = $(window);
       $window.on('scroll', function() {
         if(!self.visible) {
@@ -72,14 +72,14 @@ class Comments extends migi.Component {
     }
     loading = true;
     comment.message = '正在加载...';
-    ajax = net.postJSON('/h5/author/commentList', { authorID: self.authorId, skip, take, sortType, myComment, currentCount }, function(res) {
+    ajax = net.postJSON('/h5/author/commentList', { authorID: self.authorId, offset, limit, sortType, myComment, currentCount }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
+        offset += limit;
         if(data.data.length) {
           comment.appendData(data.data);
         }
-        if(skip >= data.Size) {
+        if(offset >= data.Size) {
           loadEnd = true;
           comment.message = '已经到底了';
         }
@@ -108,7 +108,7 @@ class Comments extends migi.Component {
     let rel = $ul.find('.cur').attr('rel');
     currentCount = 0;
     sortType = rel;
-    skip = 0;
+    offset = 0;
     if(ajax) {
       ajax.abort();
     }
@@ -125,7 +125,7 @@ class Comments extends migi.Component {
     let rel = $ul.find('.cur').attr('rel');
     currentCount = 0;
     myComment = rel;
-    skip = 0;
+    offset = 0;
     if(ajax) {
       ajax.abort();
     }

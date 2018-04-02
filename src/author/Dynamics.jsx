@@ -8,8 +8,8 @@ import HotPost from '../component/hotpost/HotPost.jsx';
 import net from "../common/net";
 import util from "../common/util";
 
-let take = 10;
-let skip = 0;
+let limit = 10;
+let offset = 0;
 let loading;
 let loadEnd;
 let ajax;
@@ -29,9 +29,9 @@ class Dynamics extends migi.Component {
   }
   setData(data) {
     let self = this;
-    skip += take;
+    offset += limit;
     self.ref.hotPost.setData(data.data);
-    if(data.Size > take) {
+    if(data.Size > limit) {
       let $window = $(window);
       $window.on('scroll', function() {
         if(!self.visible) {
@@ -69,12 +69,12 @@ class Dynamics extends migi.Component {
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON('/h5/author/dynamic', { authorId: self.authorId, skip, take }, function(res) {
+    ajax = net.postJSON('/h5/author/dynamic', { authorId: self.authorId, offset, limit }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
+        offset += limit;
         hotPost.appendData(data.data);
-        if(skip >= data.Size) {
+        if(offset >= data.Size) {
           loadEnd = true;
           hotPost.message = '已经到底了';
         }

@@ -17,20 +17,37 @@ import CommentWrap from './CommentWrap.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
+let currentPriority = 0;
+
 class Works extends migi.Component {
   constructor(...data) {
     super(...data);
   }
   // @bind worksId
   // @bind workId
+  // @bind kind
   @bind curColumn = 0
-  init(worksId, workId) {
+  init(worksId, workId, kind) {
     let self = this;
     self.worksId = worksId;
     self.workId = workId;
+    self.kind = kind;
+    jsBridge.getPreference('worksData_' + worksId, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
+      }
+    });
     net.postJSON('/h5/works2/index', { worksId }, function(res) {
       if(res.success) {
-        self.setData(res.data);
+        let data = res.data;
+        self.setData(data, 1);
+        let cache = {};
+        Object.keys(data).forEach(function(k) {
+          if(k !== 'comment') {
+            cache[k] = data[k];
+          }
+        });
+        jsBridge.setPreference('worksData_' + worksId, cache);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -39,7 +56,12 @@ class Works extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  setData(data) {
+  setData(data, priority) {
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
     let self = this;
     self.data = data;
     let info = self.ref.info;
@@ -58,6 +80,7 @@ class Works extends migi.Component {
     let imgList = [];
     let textList = [];
     data.collection.forEach(function(item) {
+      item.worksId = self.worksId;
       if([1, 2].indexOf(item.kind) > -1) {
         item.worksTitle = data.info.title;
         item.worksSubTitle = data.info.subTitle;
@@ -73,9 +96,9 @@ class Works extends migi.Component {
     });
 
     let index = 0;
-    if(self.workId) {
+    if(self.workId && self.kind) {
       for(let i = 0, len = avList.length; i < len; i++) {
-        if(avList[i].id === self.workId) {
+        if(avList[i].id === self.workId && avList[i].kind === self.kind) {
           index = i;
           break;
         }
@@ -84,13 +107,15 @@ class Works extends migi.Component {
     self.setMedia(avList[index]);
 
     self.setColumn(imgList, data.comment);
-    select.kind = avList[index].kind;
-    select.id = avList[index].id;
     author.list = data.authorList;
     text.list = textList;
+    select.comboId = avList[index].id + '_' + avList[index].kind;
     select.list = avList;
     poster.list = imgList;
-    commentWrap.setData(self.worksId, data.comment);
+
+    if(data.comment) {
+      commentWrap.setData(self.worksId, data.comment);
+    }
   }
   setMedia(item) {
     let self = this;
@@ -113,7 +138,7 @@ class Works extends migi.Component {
     }
     list.push({
       id: 2,
-      name: '评论 ' + (comment.size || ''),
+      name: '评论 ' + (comment ? comment.size || '' : ''),
     });
     self.curColumn = 0;
     column.list = list;
@@ -142,11 +167,11 @@ class Works extends migi.Component {
     let self = this;
     self.curColumn = id;
   }
-  change(workId) {
+  change(workId, kind) {
     let self = this;
     self.workId = workId;
     for(let i = 0; i < self.avList.length; i++) {
-      if(self.avList[i].id === workId) {
+      if(self.avList[i].id === workId && self.avList[i].kind === kind) {
         self.setMedia(self.avList[i]);
         break;
       }

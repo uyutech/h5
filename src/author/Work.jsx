@@ -38,7 +38,7 @@ class Work extends migi.Component {
     self.kindList = kindList;
     kindList.forEach(function(item) {
       CACHE[item.kind] = {
-        skip: 0,
+        offset: 0,
       };
     });
     self.kind = kindList[0].kind;
@@ -51,19 +51,19 @@ class Work extends migi.Component {
     let cache = CACHE[self.kind];
     switch(self.kind) {
       case 1:
-        cache.take = kindWork.take;
-        cache.skip += kindWork.take;
+        cache.limit = kindWork.limit;
+        cache.offset += kindWork.limit;
         self.ref.videoList.setData(kindWork.data);
-        if(kindWork.size <= kindWork.take) {
+        if(kindWork.size <= kindWork.limit) {
           cache.loadEnd = true;
           self.ref.videoList.message = '已经到底了';
         }
         break;
       case 2:
-        cache.take = kindWork.take;
-        cache.skip += kindWork.take;
+        cache.limit = kindWork.limit;
+        cache.offset += kindWork.limit;
         self.ref.audioList.setData(kindWork.data);
-        if(cache.skip >= kindWork.size) {
+        if(cache.offset >= kindWork.size) {
           cache.loadEnd = true;
           self.ref.videoList.message = '已经到底了';
         }
@@ -77,7 +77,7 @@ class Work extends migi.Component {
     }
     self.kind = tvd.props.rel;
     let cache = CACHE[self.kind];
-    if(cache.skip === 0) {
+    if(cache.offset === 0) {
       self.load();
     }
     // self.ref.fn.list = cache.type;
@@ -117,22 +117,22 @@ class Work extends migi.Component {
     cache.ajax = net.postJSON('/h5/author2/kindWork', {
       authorId: self.authorId,
       kind,
-      skip: cache.skip,
-      take: cache.take }, function(res) {
+      offset: cache.offset,
+      limit: cache.limit }, function(res) {
       if(res.success) {
         let data = res.data;
-        cache.take = data.take;
-        cache.skip += data.take;
+        cache.limit = data.limit;
+        cache.offset += data.limit;
         switch(kind) {
           case 1:
-            if(cache.skip >= data.size) {
+            if(cache.offset >= data.size) {
               cache.loadEnd = true;
               self.ref.videoList.message = '已经到底了';
             }
             self.ref.videoList.appendData(data.data);
             break;
           case 2:
-            if(cache.skip >= data.size) {
+            if(cache.offset >= data.size) {
               cache.loadEnd = true;
               self.ref.audioList.message = '已经到底了';
             }
@@ -152,7 +152,7 @@ class Work extends migi.Component {
   fnSort(sort) {
     let self = this;
     let cache = CACHE[self.groupId];
-    cache.skip = 0;
+    cache.offset = 0;
     cache.loading = false;
     cache.loadEnd = false;
     cache.sort = sort;
@@ -165,7 +165,7 @@ class Work extends migi.Component {
   fnType(typeId) {
     let self = this;
     let cache = CACHE[self.groupId];
-    cache.skip = 0;
+    cache.offset = 0;
     cache.loading = false;
     cache.loadEnd = false;
     cache.typeId = typeId;
