@@ -21,14 +21,5 @@ jsBridge.ready(function() {
     <Post/>,
     '#page'
   );
-  net.postJSON('/h5/post/index', { postID: postId }, function(res) {
-    if(res.success) {
-      post.setData(postId, res.data);
-    }
-    else {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-    }
-  }, function(res) {
-    jsBridge.toast(res.message || util.ERROR_MESSAGE);
-  });
+  post.init(postId);
 });

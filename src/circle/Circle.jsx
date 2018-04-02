@@ -74,7 +74,7 @@ class Circle extends migi.Component {
         self.setData(cache, 0);
       }
     });
-    net.postJSON('/h5/circle2/index', { circleId }, function(res) {
+    ajax = net.postJSON('/h5/circle2/index', { circleId }, function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -167,7 +167,7 @@ class Circle extends migi.Component {
     }
     loading = true;
     postList.message = '正在加载...';
-    ajax = net.postJSON('/h5/circle2/comment', { circleId: self.circleId, skip, take }, function(res) {
+    ajax = net.postJSON('/h5/circle2/comment', { circleId: self.circleId, skip, take, }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;

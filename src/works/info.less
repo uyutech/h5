@@ -40,7 +40,7 @@
     }
   }
   .state{
-    display:flex;
+    display:none;
     align-items:center;
     box-sizing:border-box;
     padding:0 0.04rem;
@@ -51,5 +51,8 @@
     white-space:nowrap;
     transform:translateY(0.01rem) scale(0.833);
     transform-origin:100% center;
+    &.s1,.s2{
+      display:flex;
+    }
   }
 }

@@ -158,7 +158,7 @@ class CommentWrap extends migi.Component {
   render() {
     return <div class={ 'mod-comment' + (this.visible ? '' : ' fn-hide') }>
       <div class="fn">
-        <ul class="type fn-clear" onClick={ { li: this.clickType } }>
+        <ul class="type" onClick={ { li: this.clickType } }>
           <li class="cur" rel="0">全部评论</li>
           {
             this.isLogin
