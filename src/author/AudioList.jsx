@@ -29,11 +29,18 @@ class AudioList extends migi.Component {
       <a class="pic"
          href={ url }
          title={ item.title }>
-        <img src={ util.autoSsl(util.img80_80_80(item.cover || '//zhuanquan.xin/img/blank.png')) }/>
+        <img src={ util.autoSsl(util.img80_80_80(item.work.cover || item.cover))
+          || '//zhuanquan.xin/img/blank.png' }/>
       </a>
       <div class="txt">
-        <p class="name">{ item.workTitle }</p>
-        <p class="plus">{ item.profession ? item.profession.kindName : '' }</p>
+        <p class="name">{ item.work.title }</p>
+        <p class="plus">
+        {
+          item.professionList.map(function(profession) {
+            return profession.name;
+          }).join(' ')
+        }
+        </p>
       </div>
     </li>;
   }

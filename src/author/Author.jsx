@@ -70,12 +70,12 @@ class Author extends migi.Component {
     nav.setData(data.info, data.aliases, data.outsides, priority);
 
     let showHome;
-    if(data.mainWorksList) {
-      self.ref.worksList.list = data.mainWorksList;
+    if(data.mainWorks) {
+      self.ref.worksList.list = data.mainWorks.data;
       showHome = true;
     }
-    if(data.musicAlbumList) {
-      self.ref.musicAlbumList.list = data.musicAlbumList;
+    if(data.musicAlbum) {
+      self.ref.musicAlbumList.list = data.musicAlbum.data;
       showHome = true;
     }
 
@@ -84,9 +84,9 @@ class Author extends migi.Component {
       self.index = 0;
     }
 
-    if(data.workClassList) {
+    if(data.workKindList) {
       self.showWork = true;
-      self.ref.work.setData(data.workClassList, data.classWorkList);
+      self.ref.work.setData(data.workKindList, data.kindWork);
       if(self.index === undefined) {
         self.index = 1;
       }

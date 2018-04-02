@@ -93,28 +93,7 @@ class Works extends migi.Component {
   }
   setMedia(item) {
     let self = this;
-    if(item) {
-      let o = {
-        worksId: self.worksId,
-        workId: item.id,
-        workType: item.type,
-        worksTitle: item.title,
-        worksSubTitle: item.subTitle,
-        author: [],
-        workTitle: item.title,
-        url: item.url,
-        isFavor: 0,
-        isLike: 0,
-        worksCover: item.worksCover,
-        cover: item.cover,
-        likeNum: 0,
-        lrc: item.lrc,
-      };
-      self.ref.media.setData(o);
-    }
-    else {
-      self.ref.media.setData(null);
-    }
+    self.ref.media.setData(item || null);
   }
   setColumn(imgList, comment) {
     let self = this;

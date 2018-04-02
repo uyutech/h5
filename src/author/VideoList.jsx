@@ -29,7 +29,8 @@ class VideoList extends migi.Component {
       <a class="pic"
          href={ url }
          title={ item.title }>
-        <img src={ util.autoSsl(util.img750__80(item.cover || '/src/common/blank.png')) }/>
+        <img src={ util.autoSsl(util.img750__80(item.work.cover || item.cover))
+          || '/src/common/blank.png' }/>
         <div class="num">
           <span class="play-times">{ util.abbrNum(item.PlayHis) }次播放</span>
         </div>
@@ -37,10 +38,16 @@ class VideoList extends migi.Component {
       <div class="txt">
         <a href={ url }
            title={ item.title }
-           class="name">{ item.workTitle }</a>
+           class="name">{ item.work.title }</a>
         <div class="info">
-          <span>{ item.profession ? item.profession.kindName : '' }</span>
-          <b class={ 'like' + (item.ISLike ? ' liked' : '') } workID={ item.ItemID }>{ item.LikeHis }</b>
+          <span>
+          {
+            item.professionList.map(function(profession) {
+              return profession.name;
+            }).join(' ')
+          }
+          </span>
+          <b class={ 'like' + (item.isLike ? ' liked' : '') } workID={ item.ItemID }>{ item.LikeHis }</b>
           <b class="comment">{ item.CommentCount }</b>
           <b class="fn"/>
         </div>

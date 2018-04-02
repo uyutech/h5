@@ -33,14 +33,14 @@ class Media extends migi.Component {
         if(jsBridge.android && (major > 0 || minor > 4) || jsBridge.ios && (major > 0 || minor > 5)) {
           mediaService = true;
           jsBridge.on('mediaPrepared', function(e) {
-            if(self.data && e.data && e.data.id === self.data.workId.toString()) {
+            if(self.data && e.data && e.data.id === self.data.id.toString()) {
               self.duration = e.data.duration * 0.001;
               self.canControl = true;
             }
           });
           jsBridge.on('mediaTimeupdate', function(e) {
             // 延迟导致拖动开始后，timeupdate还会抵达，需注意判断
-            if(self.data && e.data && !isStart && e.data.id === self.data.workId.toString()) {
+            if(self.data && e.data && !isStart && e.data.id === self.data.id.toString()) {
               self.duration = e.data.duration * 0.001;
               self.canControl = true;
               if(!isStart) {
@@ -52,7 +52,7 @@ class Media extends migi.Component {
             }
           });
           jsBridge.on('mediaProgress', function(e) {
-            if(self.data && e.data && e.data.id === self.data.workId.toString()) {
+            if(self.data && e.data && e.data.id === self.data.id.toString()) {
               let load = self.ref.load.element;
               if(jsBridge.ios) {
                 let length = e.data.length;
@@ -80,8 +80,8 @@ class Media extends migi.Component {
             canFn: true,
             canLike: true,
             canFavor: true,
-            isLike: self.isLike,
-            isFavor: self.isFavor,
+            isLiked: self.isLiked,
+            isFavored: self.isFavored,
             canBlock: true,
             canReport: true,
             canShare: true,
@@ -90,12 +90,12 @@ class Media extends migi.Component {
             canShareLink: true,
             clickLike: function(botFn) {
               self.like(function() {
-                botFn.isLike = self.isLike;
+                botFn.isLiked = self.isLiked;
               });
             },
             clickFavor: function(botFn) {
               self.favor(function() {
-                botFn.isFavor = self.isFavor;
+                botFn.isFavored = self.isFavored;
               });
             },
             clickCancel: function() {
@@ -120,7 +120,7 @@ class Media extends migi.Component {
                 return;
               }
               jsBridge.pushWindow('/subpost.html?worksId=' + self.data.worksId
-                + '&workId=' + self.data.workId
+                + '&workId=' + self.data.id
                 + '&cover=' + encodeURIComponent(self.data.worksCover || ''), {
                 title: '画个圈',
                 optionMenu: '发布',
@@ -131,8 +131,8 @@ class Media extends migi.Component {
                 return;
               }
               let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
-              if(self.data.workId) {
-                url += '/' + self.data.workId;
+              if(self.data.id) {
+                url += '/' + self.data.id;
               }
               let text = '【';
               if(self.data.worksTitle) {
@@ -191,9 +191,9 @@ class Media extends migi.Component {
   @bind duration
   @bind currentTime
   @bind canControl
-  @bind isLike
+  @bind isLiked
   @bind likeNum
-  @bind isFavor
+  @bind isFavored
   @bind isVideo
   setData(data) {
     let self = this;
@@ -207,7 +207,7 @@ class Media extends migi.Component {
       self.data = data;
       self.stop();
       self.duration = 0;
-      self.isLike = self.isFavor = false;
+      self.isLiked = self.isFavored = false;
       self.likeNum = 0;
       self.canControl = false;
       self.lrc = {};
@@ -226,7 +226,7 @@ class Media extends migi.Component {
           self.duration = 0;
           self.currentTime = 0;
           self.canControl = false;
-          self.isLike = self.isFavor = false;
+          self.isLiked = self.isFavored = false;
           self.likeNum = 0;
           self.lrc = {};
           load.innerHTML = '';
@@ -237,16 +237,16 @@ class Media extends migi.Component {
     }
 
     // 如果传入相同信息则忽略
-    if(old && old.workId === data.workId) {
+    if(old && old.id === data.id) {
       return;
     }
     self.data = data;
     self.duration = 0;
     self.currentTime = 0;
     self.canControl = false;
-    self.isLike = data.isLike;
+    self.isLiked = data.isLiked;
     self.likeNum = data.likeNum;
-    self.isFavor = data.isFavor;
+    self.isFavored = data.isFavored;
     self.setBarPercent(0);
 
     // 除了第一次，每次设置后除非信息相同，否则停止播放
@@ -264,7 +264,7 @@ class Media extends migi.Component {
     loadingLike = loadingFavor = false;
 
     // 1音频2视频
-    self.isVideo = data.workType.toString().charAt(0) === '2';
+    self.isVideo = data.kind === 1;
     let l = {};
     if(lrcParser.isLrc(data.lrc)) {
       l.is = true;
@@ -291,7 +291,7 @@ class Media extends migi.Component {
       jsBridge.media({
         key: 'info',
         value: {
-          id: self.data.workId,
+          id: self.data.id,
           url: location.protocol + util.autoSsl(self.data.url),
         },
       }, function(res) {
@@ -379,7 +379,8 @@ class Media extends migi.Component {
       self.isPlaying = true;
       self.emit('play', self.data);
     }
-    net.postJSON('/h5/works/addPlayCount', { workID: self.data.workId });
+    // TODO:
+    // net.postJSON('/h5/works/addPlayCount', { workID: self.data.workId });
   }
   pause() {
     let self = this;
@@ -570,7 +571,7 @@ class Media extends migi.Component {
     ajaxLike = net.postJSON('/h5/works/likeWork', { workID: self.data.workId }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.isLike = self.data.isLike = data.State === 'likeWordsUser';
+        self.isLiked = self.data.isLiked = data.State === 'likeWordsUser';
         self.data.likeNum = self.likeNum = data.LikeCount;
         cb && cb();
       }
@@ -602,10 +603,10 @@ class Media extends migi.Component {
       return;
     }
     loadingFavor = true;
-    if(self.isFavor) {
+    if(self.isFavored) {
       ajaxFavor = net.postJSON('/h5/works/unFavorWork', { workID: self.data.workId }, function (res) {
         if(res.success) {
-          self.isFavor = self.data.isFavor = false;
+          self.isFavored = self.data.isFavored = false;
           cb && cb();
         }
         else if(res.code === 1000) {
@@ -623,7 +624,7 @@ class Media extends migi.Component {
     else {
       ajaxFavor = net.postJSON('/h5/works/favorWork', { workID: self.data.workId }, function (res) {
         if(res.success) {
-          self.isFavor = self.data.isFavor = true;
+          self.isFavored = self.data.isFavored = true;
           cb && cb();
         }
         else if(res.code === 1000) {
@@ -831,12 +832,12 @@ class Media extends migi.Component {
       </div>
       <ul class="btn">
         <li onClick={ this.clickLike }>
-          <b class={ 'like' + (this.isLike ? ' liked' : '') }/>
-          <span>{ this.isLike ? (this.likeNum || 0) : '点赞' }</span>
+          <b class={ 'like' + (this.isLiked ? ' liked' : '') }/>
+          <span>{ this.isLiked ? (this.likeNum || 0) : '点赞' }</span>
         </li>
         <li onClick={ this.clickFavor }>
-          <b class={ 'favor' + (this.isFavor ? ' favored' : '') }/>
-          <span>{ this.isFavor ? '已收藏' : '收藏' }</span>
+          <b class={ 'favor' + (this.isFavored ? ' favored' : '') }/>
+          <span>{ this.isFavored ? '已收藏' : '收藏' }</span>
         </li>
         <li onClick={ this.clickShare }>
           <b class="share"/>

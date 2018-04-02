@@ -24,12 +24,12 @@ class WorksList extends migi.Component {
                 return <li>
                   <a href={ url } class="pic" title={ item.title }>
                     <img src={ util.autoSsl(util.img170_170_80(item.cover)) || '/src/common/blank.png' }/>
-                    <span class="type">原创音乐</span>
+                    <span class="type">{ item.typeName }</span>
                     <span class="num">{ util.abbrNum(item.popular) }</span>
                   </a>
                   <a href={ url } class="txt" title={ item.title }>
                     <span>{ item.title }</span>
-                    <span class="profession">{ item.profession.typeName }</span>
+                    <span class="profession">{ item.profession.name }</span>
                   </a>
                 </li>;
               })

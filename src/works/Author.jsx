@@ -23,11 +23,11 @@ class Author extends migi.Component {
         (this.list || []).map(function(arr) {
           return <li>
             {
-              arr.map(function(item) {
+              (arr || []).map(function(item) {
                 return <dl>
                   <dt>{ item.name }</dt>
                   {
-                    (item.authorList || []).map(function(author) {
+                    (item.list || []).map(function(author) {
                       return <dd authorId={ author.id } title={ author.name }>
                         <img src={ util.autoSsl(util.img48_48_80(author.headUrl)) || '/src/common/head.png' }/>
                         <span>{ author.name }</span>
