@@ -2,11 +2,9 @@
  * Created by army on 2017/6/16.
  */
 
-import authorTemplate from "../component/author/authorTemplate";
 import util from "../common/util";
 import net from "../common/net";
 
-let currentPriority = 0;
 let hash = {};
 
 class Nav extends migi.Component {
@@ -206,16 +204,6 @@ class Nav extends migi.Component {
         <div class="txt">
           <div class="n">
             <h3>{ this.name }</h3>
-            {
-              (this.authorType || []).map(function(item) {
-                let css = authorTemplate.code2css[item.NewAuthorTypeID];
-                if(hash[css]) {
-                  return;
-                }
-                hash[css] = true;
-                return <span class={ `cp-author-type-${css}` }/>;
-              })
-            }
           </div>
           <p class={ 'alias' + (this.aliases ? '' : ' fn-hide') }>别名：{ (this.aliases || []).map(function(item) {
             return item.alias;

@@ -34,24 +34,18 @@ class Nav extends migi.Component {
     });
   }
   @bind userId
-  @bind head
-  @bind userName
+  @bind nickname
+  @bind headUrl
   @bind sex
-  @bind followNum
-  @bind fansNum
   @bind sign
-  @bind followState
-  @bind loading
-  set userInfo(userInfo) {
-    userInfo = userInfo || {};
+  setData(data) {
+    data = data || {};
     let self = this;
-    self.userId = userInfo.UID;
-    self.head = userInfo.Head_Url;
-    self.userName = userInfo.NickName;
-    self.sex = userInfo.Sex;
-    self.followNum = userInfo.FollowNumber;
-    self.fansNum = userInfo.FansNumber;
-    self.sign = userInfo.User_Sign;
+    self.userId = data.id;
+    self.headUrl = data.headUrl;
+    self.nickname = data.nickname;
+    self.sex = data.sex;
+    self.sign = data.sign;
   }
   block(id, cb) {
     let self = this;
@@ -126,15 +120,15 @@ class Nav extends migi.Component {
     }
   }
   render() {
-    return <div class="nav">
+    return <div class="mod-nav">
       <div class="profile">
         <div class="pic">
-          <img src={ util.autoSsl(util.img200_200_80(this.head || '/src/common/head.png')) }
+          <img src={ util.autoSsl(util.img200_200_80(this.headUrl)) || '/src/common/head.png' }
                onClick={ this.clickPic }/>
         </div>
         <div class="txt">
           <div class="n">
-            <h3>{ this.userName }</h3>
+            <h3>{ this.nickname }</h3>
           </div>
           <p>uid: { (this.userId ? this.userId.toString() : '').replace(/^20180*/, '') }</p>
         </div>

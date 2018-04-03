@@ -91,7 +91,21 @@ class PostList extends migi.Component {
       </div>
       <div class="wrap">
         <div class="con" dangerouslySetInnerHTML={ html }/>
+        <b class="arrow"/>
       </div>
+      <ul class="btn">
+        <li class="share" onClick={ this.share }><b/><span>分享</span></li>
+        <li class={ 'favor' + (item.isFavor ? ' favored' : '') } onClick={ this.favor }>
+          <b/><span>{ item.favorCount || '收藏' }</span>
+        </li>
+        <li class={ 'like' + (item.isLike ? ' has' : '') } onClick={ this.like }>
+          <b/><span>{ item.likeCount || '点赞' }</span>
+        </li>
+        <li class="comment">
+          <b/><span>{ item.commentCount || '评论' }</span>
+        </li>
+        { item.isOwn ? <li class="del" onClick={ this.del }><b/></li> : '' }
+      </ul>
     </li>;
   }
   encode(s, reference) {

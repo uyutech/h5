@@ -8,26 +8,43 @@ import net from '../common/net';
 import util from '../common/util';
 import Nav from './Nav.jsx';
 import Background from '../component/background/Background.jsx';
-import HotPost from '../component/hotpost/HotPost.jsx';
+import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../post/ImageView.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let take = 10;
-let skip = take;
+let limit = 0;
+let offset = 0;
+let ajax;
 let loading;
 let loadEnd;
+let currentPriority = 0;
+let cacheKey;
 
 class User extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  @bind userID
-  load(userID) {
+  // @bind userId
+  init(userId) {
     let self = this;
-    self.userID = userID;
-    net.postJSON('/h5/user/index', { userID }, function(res) {
+    self.userId = userId;
+    cacheKey = 'userData_' + userId;
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
+      }
+    });
+    net.postJSON('/h5/user2/index', { userId }, function(res) {
       if(res.success) {
-        self.setData(res.data);
+        let data = res.data;
+        self.setData(data, 1);
+        let cache = {};
+        Object.keys(data).forEach(function(k) {
+          if(k !== 'comment') {
+            cache[k] = data[k];
+          }
+        });
+        jsBridge.setPreference(cacheKey, cache);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -36,8 +53,30 @@ class User extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  setData(data) {
+  setData(data, priority) {
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
     let self = this;
+    let nav = self.ref.nav;
+    let postList = self.ref.postList;
+
+    nav.setData(data.info);
+
+    if(data.post && data.post.size) {
+      limit = data.post.limit;
+      offset = limit;
+      postList.setData(data.post.data);
+      if(data.post.size > limit) {
+        window.addEventListener('scroll', function() {
+          self.checkMore();
+        });
+      }
+    }
+
+    return;
     self.ref.nav.userInfo = data.userInfo;
     self.ref.nav.followState = data.followState;
 
@@ -67,42 +106,45 @@ class User extends migi.Component {
       }
     });
   }
-  checkMore($window) {
+  checkMore() {
+    let self = this;
     if(loading || loadEnd) {
       return;
     }
-    let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    let bool;
-    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
-      self.loadMore();
+    if(util.isBottom()) {
+      self.load();
     }
   }
-  loadMore() {
+  load() {
     let self = this;
-    if(loading) {
-      return;
+    let postList = self.ref.postList;
+    if(ajax) {
+      ajax.abort();
     }
     loading = true;
-    let hotPost = self.ref.hotPost;
-    hotPost.message = '正在加载...';
-    net.postJSON('/h5/user/postList', { userID: self.userID, skip, take }, function(res) {
+    postList.message = '正在加载...';
+    ajax = net.postJSON('/h5/user2/post', { circleId: self.circleId, offset, limit, }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
-        hotPost.appendData(res.data.data);
-        if(skip >= data.Size) {
+        offset += limit;
+        if(data.data.length) {
+          postList.appendData(data.data);
+        }
+        if(offset >= data.size) {
           loadEnd = true;
-          hotPost.message = '已经到底了';
+          postList.message = '已经到底了';
         }
         else {
-          hotPost.message = '';
+          postList.message = '';
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        if(res.code === 1000) {
+          migi.eventBus.emit('NEED_LOGIN');
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
       }
       loading = false;
     }, function(res) {
@@ -114,7 +156,8 @@ class User extends migi.Component {
     return <div class="user">
       <Background/>
       <Nav ref="nav"/>
-      <HotPost ref="hotPost"/>
+      <PostList ref="postList"
+                message={ '正在加载...' }/>
       <ImageView ref="imageView"/>
       <BotFn ref="botFn"/>
     </div>;

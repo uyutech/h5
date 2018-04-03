@@ -101,12 +101,15 @@ class Circle extends migi.Component {
     currentPriority = priority;
 
     let self = this;
-    self.ref.nav.setData(data.info);
+    let nav = self.ref.nav;
+    let postList = self.ref.postList;
+
+    nav.setData(data.info);
 
     if(data.comment && data.comment.size) {
       limit = data.comment.limit;
       offset = limit;
-      self.ref.postList.setData(data.comment.data);
+      postList.setData(data.comment.data);
       if(data.comment.size > limit) {
         window.addEventListener('scroll', function() {
           self.checkMore();
@@ -168,7 +171,7 @@ class Circle extends migi.Component {
     }
     loading = true;
     postList.message = '正在加载...';
-    ajax = net.postJSON('/h5/circle2/comment', { circleId: self.circleId, offset, limit, }, function(res) {
+    ajax = net.postJSON('/h5/circle2/post', { circleId: self.circleId, offset, limit, }, function(res) {
       if(res.success) {
         let data = res.data;
         offset += limit;
