@@ -14,7 +14,7 @@ import List from './List.jsx';
 import Author from '../works/Author.jsx';
 import Text from '../works/Text.jsx';
 import Poster from '../works/Poster.jsx';
-import CommentWrap from '../works/CommentWrap.jsx';
+import Comments from '../works/Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
@@ -466,7 +466,7 @@ class Music extends migi.Component {
           <Poster ref="poster"/>
         }
       </div>
-      <CommentWrap ref="comment"
+      <Comments ref="comment"
                    @visible={ this.curColumn === 3 }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }

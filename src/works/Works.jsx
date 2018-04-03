@@ -13,7 +13,7 @@ import Column from './Column.jsx';
 import Author from './Author.jsx';
 import Text from './Text.jsx';
 import Poster from './Poster.jsx';
-import CommentWrap from './CommentWrap.jsx';
+import Comments from './Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
@@ -71,7 +71,7 @@ class Works extends migi.Component {
     let author = self.ref.author;
     let text = self.ref.text;
     let poster = self.ref.poster;
-    let commentWrap = self.ref.commentWrap;
+    let comments = self.ref.comments;
 
     // 未完成保密
     if(data.info.state === 2) {
@@ -116,7 +116,7 @@ class Works extends migi.Component {
     poster.list = imgList;
 
     if(data.comment) {
-      commentWrap.setData(self.worksId, data.comment);
+      comments.setData(self.worksId, data.comment);
     }
   }
   setMedia(item) {
@@ -296,7 +296,7 @@ class Works extends migi.Component {
         <Poster ref="poster"/>
       }
       </div>
-      <CommentWrap ref="commentWrap"
+      <Comments ref="comments"
                    @visible={ this.curColumn === 2 }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }

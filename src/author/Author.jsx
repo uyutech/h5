@@ -66,7 +66,10 @@ class Author extends migi.Component {
     currentPriority = priority;
 
     let self = this;
+    self.data = data;
     let nav = self.ref.nav;
+    let comments = self.ref.comments;
+
     nav.setData(data.info, data.aliases, data.outsides, priority);
 
     let showHome;
@@ -90,6 +93,10 @@ class Author extends migi.Component {
       if(self.index === undefined) {
         self.index = 1;
       }
+    }
+
+    if(data.comment) {
+      comments.setData(self.authorId, data.comment);
     }
     // if(data.dynamic && data.dynamic.data && data.dynamic.data.length) {
     //   self.showDynamic = true;

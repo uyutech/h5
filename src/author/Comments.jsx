@@ -4,13 +4,11 @@
 
 import util from '../common/util';
 import net from '../common/net';
+import CommentBar from '../component/commentbar/CommentBar.jsx';
 import Comment from '../component/comment/Comment.jsx';
 
-let limit = 30;
-let offset = 0;
-let sortType = 0;
-let myComment = 0;
-let currentCount = 0;
+let limit;
+let offset;
 let ajax;
 let loading;
 let loadEnd;
@@ -28,39 +26,26 @@ class Comments extends migi.Component {
   hide() {
     this.visible = false;
   }
-  setData(data) {
+  setData(authorId, data) {
     let self = this;
-    self.ref.comment.setData(data.data);
-    offset += limit;
-    if(data.Size > limit) {
-      let $window = $(window);
-      $window.on('scroll', function() {
-        if(!self.visible) {
-          return;
-        }
-        self.checkMore($window);
-      });
-    }
-    else {
-      self.ref.comment.message = '已经到底了';
-    }
-    jsBridge.on('resume', function(e) {
-      let data = e.data;
-      if(data && data.type && data.type === 'subComment') {
-        self.ref.comment.prependData(data.data);
+    self.authorId = authorId;
+    limit = data.limit;
+    offset = limit;
+    if(data.size) {
+      self.ref.comment.setData(data.data);
+      if(data.size > limit) {
+        window.addEventListener('scroll', function() {
+          self.checkMore();
+        });
       }
-    });
+    }
   }
-  checkMore($window) {
-    if(loading || loadEnd) {
+  checkMore() {
+    let self = this;
+    if(loading || loadEnd || !self.visible) {
       return;
     }
-    let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    let bool;
-    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    if(util.isBottom()) {
       self.load();
     }
   }
@@ -72,14 +57,14 @@ class Comments extends migi.Component {
     }
     loading = true;
     comment.message = '正在加载...';
-    ajax = net.postJSON('/h5/author/commentList', { authorID: self.authorId, offset, limit, sortType, myComment, currentCount }, function(res) {
+    ajax = net.postJSON('/h5/author2/comment', { authorId: self.authorId, offset, limit, }, function(res) {
       if(res.success) {
         let data = res.data;
         offset += limit;
         if(data.data.length) {
           comment.appendData(data.data);
         }
-        if(offset >= data.Size) {
+        if(offset >= data.size) {
           loadEnd = true;
           comment.message = '已经到底了';
         }
@@ -101,60 +86,10 @@ class Comments extends migi.Component {
       loading = false;
     });
   }
-  switchType(e, vd) {
-    let $ul = $(vd.element);
-    $ul.toggleClass('alt');
-    $ul.find('li').toggleClass('cur');
-    let rel = $ul.find('.cur').attr('rel');
-    currentCount = 0;
-    sortType = rel;
-    offset = 0;
-    if(ajax) {
-      ajax.abort();
-    }
-    loadEnd = false;
-    loading = false;
-    this.ref.comment.clearData();
-    this.ref.comment.empty = false;
-    this.load();
-  }
-  switchType2(e, vd) {
-    let $ul = $(vd.element);
-    $ul.toggleClass('alt');
-    $ul.find('li').toggleClass('cur');
-    let rel = $ul.find('.cur').attr('rel');
-    currentCount = 0;
-    myComment = rel;
-    offset = 0;
-    if(ajax) {
-      ajax.abort();
-    }
-    loadEnd = false;
-    loading = false;
-    this.ref.comment.clearData();
-    this.ref.comment.empty = false;
-    this.load();
-  }
   render() {
     return <div class={ 'comments' + (this.visible ? '' : ' fn-hide') }>
-      <div class="fn">
-        <ul class="type fn-clear" onClick={ { li: this.switchType2 } }>
-          <li class="cur" rel="0">全部评论<small>{ this.count }</small></li>
-          {
-            this.isLogin
-              ? <li rel="1">我的</li>
-              : ''
-          }
-        </ul>
-        <ul class="type2 fn-clear" onClick={ { li: this.switchType } }>
-          <li class="cur" rel="0">最新</li>
-          <li rel="1">最热</li>
-        </ul>
-      </div>
+      <CommentBar ref="commentBar"/>
       <Comment ref="comment"
-               zanUrl="/h5/author/likeComment"
-               subUrl="/h5/author/subCommentList"
-               delUrl="/h5/author/delComment"
                on-chooseSubComment={ function(rid, cid, name, n) { this.emit('chooseSubComment', rid, cid, name, n) } }
                on-closeSubComment={ function() { this.emit('closeSubComment') } }/>
     </div>;

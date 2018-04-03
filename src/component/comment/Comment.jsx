@@ -70,39 +70,6 @@ class Comment extends migi.Component {
           self.emit('chooseSubComment', $this.attr('rid'), $this.attr('cid'), $this.attr('name'));
         }
       });
-      $root.on('click', '.more', function() {
-        let $message = $(this);
-        let rid = $message.attr('rid');
-        $message.removeClass('more').text('读取中...');
-        ajax = net.postJSON(self.props.subUrl, { rootID: rid, skip: subSkipHash[rid], take }, function(res) {
-          if(res.success) {
-            let data = res.data;
-            if(data.data.length) {
-              subSkipHash[rid] += data.data.length;
-              let s = '';
-              data.data.forEach(function (item) {
-                s += self.genChildComment(item);
-              });
-              let $ul = $message.prev();
-              $ul.append(s);
-              if(data.data.length < take) {
-                $message.addClass('fn-hide');
-              }
-              else {
-                $message.addClass('more').text('点击加载更多');
-              }
-            }
-            else {
-              $message.addClass('fn-hide');
-            }
-          }
-          else {
-            $message.addClass('more').text(res.message || util.ERROR_MESSAGE);
-          }
-        }, function(res) {
-          $message.addClass('more').text(res.message || util.ERROR_MESSAGE);
-        });
-      });
       $root.on('click', '.fn', function() {
         let $fn = $(this);
         let $like = $fn.closest('li').find('.like');
@@ -208,76 +175,6 @@ class Comment extends migi.Component {
   }
   @bind message
   @bind empty
-  slide($li) {
-    let self = this;
-    if(ajax) {
-      ajax.abort();
-    }
-    let $slide = $li.find('.slide');
-    let $list2 = $li.find('.list2');
-    let $ul = $list2.find('ul');
-    let $message = $list2.find('.message');
-    let cid = $slide.attr('cid');
-    if($last && $last[0] !== $li[0] && $last.hasClass('on')) {
-      self.hideLast();
-    }
-    if($li.hasClass('on')) {
-      $li.removeClass('on');
-      $li.find('li.on').removeClass('on');
-      $list2.css('height', 0);
-      self.emit('closeSubComment');
-      $last = null;
-      if(subLoadHash[cid] === IS_LOADING) {
-        subLoadHash[cid] = NOT_LOADED;
-      }
-    }
-    else {
-      $last = $li;
-      $li.addClass('on');
-      self.emit('chooseSubComment', $slide.attr('rid'), $slide.attr('cid'), $slide.attr('name'), $slide.find('.sub').text());
-      let state = subLoadHash[cid];
-      if(state === HAS_LOADED || state === IS_LOADING) {
-        $list2.css('height', 'auto');
-      }
-      else {
-        $list2.css('height', 'auto');
-        subLoadHash[cid] = IS_LOADING;
-        ajax = net.postJSON(self.props.subUrl, { rootID: cid, skip: 0, take }, function(res) {
-          if(res.success) {
-            subLoadHash[cid] = HAS_LOADED;
-            let s = '';
-            let data = res.data;
-            data.data.forEach(function(item) {
-              s += self.genChildComment(item);
-            });
-            $ul.append(s);
-            if(data.data.length >= data.Size) {
-              $message.addClass('fn-hide');
-            }
-            else {
-              $message.addClass('more').text('点击加载更多');
-              subSkipHash[cid] = data.data.length;
-            }
-            $ul.removeClass('fn-hide');
-            $list2.css('height', 'auto');
-          }
-          else {
-            subLoadHash[cid] = NOT_LOADED;
-            $message.text(res.message || util.ERROR_MESSAGE);
-          }
-        }, function(res) {
-          subLoadHash[cid] = NOT_LOADED;
-          $message.text(res.message || util.ERROR_MESSAGE);
-        });
-      }
-    }
-  }
-  slideOn(cid) {
-    let $slide = $(this.element).find('#comment_' + cid).find('.slide');
-    if(!$slide.hasClass('on')) {
-      $slide.find('.sub').click();
-    }
-  }
   clearData(noEmpty) {
     if(ajax) {
       ajax.abort();
@@ -318,21 +215,6 @@ class Comment extends migi.Component {
       vd.prependTo(this.ref.list.element);
       this.empty = false;
     }
-  }
-  prependChild(item) {
-    let $comment = $('#comment_' + item.RootID);
-    let $list2 = $comment.find('.list2');
-    let $ul = $list2.find('ul');
-    let state = subLoadHash[item.RootID];
-    if(state === HAS_LOADED || state === IS_LOADING) {
-      let li = this.genChildComment(item);
-      li.prependTo($ul[0]);
-    }
-    if($ul.closest('li').find('.slide').hasClass('on')) {
-      $list2.css('height', $ul.height());
-    }
-    let $num = $comment.find('.slide small.sub');
-    $num.text((parseInt($num.text()) || 0) + 1);
   }
   block(id, type, cb) {
     if(!util.isLogin()) {
@@ -379,8 +261,8 @@ class Comment extends migi.Component {
     }
     exist[id] = true;
     let url = item.isAuthor
-      ? '/author.html?authorId=' + item.authorId
-      : '/user.html?userId=' + item.userId;
+      ? '/author.html?authorId=' + item.aid
+      : '/user.html?userId=' + item.uid;
     return <li class="user" id={ 'comment_' + id }>
       <div class="t">
         <div class="profile fn-clear">
@@ -419,77 +301,6 @@ class Comment extends migi.Component {
         <div class="slide">
           <small class="like"></small>
           <small class="sub"></small>
-        </div>
-        <b class="arrow"/>
-      </div>
-    </li>;
-  }
-  genChildComment(item) {
-    if(item.IsAuthor) {
-      let authorID = item.AuthorID;
-      return <li class="author" id={ 'comment_' + item.Send_ID }>
-        <div class="t">
-          <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } title={ item.Send_AuthorName }>
-            <a class="pic"
-               href={ '/author.html?authorId=' + authorID }
-               title={ item.Send_AuthorName }
-               transparentTitle={ true }>
-              <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '/src/common/head.png')) }/>
-            </a>
-            <div class="txt">
-              <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
-              <a class="name"
-                 href={ '/author.html?authorId=' + authorID }
-                 title={ item.Send_AuthorName }
-                 transparentTitle={ true }>{ item.Send_AuthorName }</a>
-            </div>
-          </div>
-          <b class="fn" own={ item.ISOwn } isAuthor={ true } authorId={ authorID }/>
-        </div>
-        <div class="c">
-          {
-            item.Content
-              ? <p class="quote">
-                  <label>回复@{ item.Send_ToUserName }：</label>
-                  <span>{ item.Content }</span>
-                </p>
-              : ''
-          }
-          <pre cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_AuthorName }>{ item.Send_Content }</pre>
-          <div class="slide2">
-            <small cid={ item.Send_ID } class={ 'like' + (item.IsLike ? ' liked' : '') }>{ item.LikeCount }</small>
-            <small class="sub" cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_AuthorName }>回复</small>
-          </div>
-          <b class="arrow"/>
-        </div>
-      </li>;
-    }
-    return <li class="user" id={ 'comment_' + item.Send_ID }>
-      <div class="t">
-        <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_UserName }>
-          <a class="pic" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>
-            <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_UserHeadUrl || '/src/common/head.png')) }/>
-          </a>
-          <div class="txt">
-            <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
-            <a class="name" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>{ item.Send_UserName }</a>
-          </div>
-        </div>
-        <b class="fn" own={ item.ISOwn } userId={ item.Send_UserID }/>
-      </div>
-      <div class="c">
-        {
-          item.Content
-            ? <p class="quote">
-              <label>回复@{ item.Send_ToUserName }：</label>
-              <span>{ item.Content }</span>
-            </p>
-            : ''
-        }
-        <pre cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_UserName }>{ item.Send_Content }</pre>
-        <div class="slide2">
-          <small cid={ item.Send_ID } class={ 'like' + (item.IsLike ? ' liked' : '') }>{ item.LikeCount }</small>
-          <small class="sub" cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_UserName }>回复</small>
         </div>
         <b class="arrow"/>
       </div>

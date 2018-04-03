@@ -12,7 +12,7 @@ import Fn from '../component/fn/Fn.jsx';
 import WaterFall from '../component/waterfall/WaterFall.jsx';
 import Author from '../works/Author.jsx';
 import Text from '../works/Text.jsx';
-import CommentWrap from '../works/CommentWrap.jsx';
+import Comments from '../works/Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 import BotList from '../component/botlist/BotList.jsx';
@@ -255,7 +255,7 @@ class Image extends migi.Component {
         <Author ref="author"/>
         <Text ref="text"/>
       </div>
-      <CommentWrap ref="comment"
+      <Comments ref="comment"
                    @visible={ this.curColumn === 2 }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }

@@ -4,9 +4,10 @@
 
 'use strict';
 
+import util from '../common/util';
+import net from '../common/net';
+import CommentBar from '../component/commentbar/CommentBar.jsx';
 import Comment from '../component/comment/Comment.jsx';
-import util from "../common/util";
-import net from "../common/net";
 
 let limit;
 let offset;
@@ -14,7 +15,7 @@ let ajax;
 let loading;
 let loadEnd;
 
-class CommentWrap extends migi.Component {
+class Comments extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
@@ -36,9 +37,9 @@ class CommentWrap extends migi.Component {
   @bind visible
   setData(worksId, data) {
     let self = this;
+    self.worksId = worksId;
     limit = data.limit;
     offset = limit;
-    self.worksId = worksId;
     if(data.size) {
       self.ref.comment.setData(data.data);
       if(data.size > limit) {
@@ -94,57 +95,6 @@ class CommentWrap extends migi.Component {
       loading = false;
     });
   }
-  show() {
-    this.visible = true;
-  }
-  hide() {
-    this.visible = false;
-  }
-  clickType(e, vd, tvd) {
-    let self = this;
-    let $li = $(tvd.element);
-    if($li.hasClass('cur')) {
-      return;
-    }
-    $(vd.element).find('.cur').removeClass('cur');
-    $li.addClass('cur');
-    myComment = tvd.props.rel;
-    offset = 0;
-    if(ajax) {
-      ajax.abort();
-    }
-    loadEnd = false;
-    loading = false;
-    self.ref.comment.clearData();
-    self.ref.comment.empty = false;
-    self.load();
-  }
-  clickSort(e) {
-    e.stopPropagation();
-    this.showSort = true;
-  }
-  clickSelSort(e, vd, tvd) {
-    e.stopPropagation();
-    let self = this;
-    self.showSort = false;
-    let $li = $(tvd.element);
-    if($li.hasClass('cur')) {
-      return;
-    }
-    $(vd.element).find('.cur').removeClass('cur');
-    $li.addClass('cur');
-    self.sortText = tvd.children[0];
-    sortType = tvd.props.rel;
-    offset = 0;
-    if(ajax) {
-      ajax.abort();
-    }
-    loadEnd = false;
-    loading = false;
-    self.ref.comment.clearData();
-    self.ref.comment.empty = false;
-    self.load();
-  }
   chooseSubComment(rid, cid, name, n) {
     let self = this;
     if(!n || n === '0') {
@@ -157,23 +107,11 @@ class CommentWrap extends migi.Component {
   }
   render() {
     return <div class={ 'mod-comment' + (this.visible ? '' : ' fn-hide') }>
-      <div class="fn">
-        <ul class="type" onClick={ { li: this.clickType } }>
-          <li class="cur" rel="0">全部评论</li>
-          {
-            this.isLogin
-              ? <li rel="1">我的</li>
-              : ''
-          }
-        </ul>
-      </div>
+      <CommentBar ref="commentBar"/>
       <Comment ref="comment"
-               zanUrl="/h5/works/likeComment"
-               subUrl="/h5/works/subCommentList"
-               delUrl="/h5/works/delComment"
                on-chooseSubComment={ this.chooseSubComment }/>
     </div>;
   }
 }
 
-export default CommentWrap;
+export default Comments;
