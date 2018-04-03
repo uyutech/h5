@@ -8,9 +8,10 @@ import util from '../common/util';
 import net from '../common/net';
 
 const FOLLOW_STATE = {
-  1: '已关注',
-  2: '未关注',
-  3: '互相关注',
+  '01': '未关注',
+  '00': '未关注',
+  '10': '已关注',
+  '11': '互相关注',
 };
 
 class Nav extends migi.Component {
@@ -38,7 +39,11 @@ class Nav extends migi.Component {
   @bind headUrl
   @bind sex
   @bind sign
-  setData(data) {
+  @bind isFollow
+  @bind followCount
+  @bind isFans
+  @bind fansCount
+  setData(data, followCount, fansCount, isFollow, isFans) {
     data = data || {};
     let self = this;
     self.userId = data.id;
@@ -46,6 +51,10 @@ class Nav extends migi.Component {
     self.nickname = data.nickname;
     self.sex = data.sex;
     self.sign = data.sign;
+    self.followCount = followCount;
+    self.fansCount = fansCount;
+    self.isFollow = isFollow;
+    self.isFans = isFans;
   }
   block(id, cb) {
     let self = this;
@@ -70,19 +79,50 @@ class Nav extends migi.Component {
     });
   }
   clickFollow() {
-    let self = this;
+    this.follow();
+  }
+  follow(cb) {
     if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
-    if(self.loading) {
-      return;
+    let self = this;
+    if(self.isFollow) {
+      jsBridge.confirm('确定取关吗？', function(res) {
+        if(!res) {
+          return;
+        }
+        self.loading = true;
+        net.postJSON('/h5/user2/unFollow', { userId: self.userId }, function(res) {
+          if(res.success) {
+            let data = res.data;
+            self.isFollow = data.state;
+            self.fansCount = data.count;
+            cb && cb();
+            self.emit('follow', data);
+          }
+          else if(res.code === 1000) {
+            migi.eventBus.emit('NEED_LOGIN');
+          }
+          else {
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          }
+          self.loading = false;
+        }, function(res) {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          self.loading = false;
+        });
+      });
     }
-    if(self.followState === 2) {
+    else {
       self.loading = true;
-      net.postJSON('/h5/user/follow', { userID: self.userId }, function(res) {
+      net.postJSON('/h5/user2/follow', { userId: self.userId } , function(res) {
         if(res.success) {
-          self.followState = res.data.FollowState;
+          let data = res.data;
+          self.isFollow = data.state;
+          self.fansCount = data.count;
+          cb && cb();
+          self.emit('follow', data);
         }
         else if(res.code === 1000) {
           migi.eventBus.emit('NEED_LOGIN');
@@ -94,28 +134,6 @@ class Nav extends migi.Component {
       }, function(res) {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
         self.loading = false;
-      });
-    }
-    else if(self.followState) {
-      jsBridge.confirm('取消关注吗？', function(res) {
-        if(res) {
-          self.loading = true;
-          net.postJSON('/h5/user/unFollow', { userID: self.userId }, function(res) {
-            if(res.success) {
-              self.followState = res.data.FollowState ;
-            }
-            else if(res.code === 1000) {
-              migi.eventBus.emit('NEED_LOGIN');
-            }
-            else {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
-            }
-            self.loading = false;
-          }, function(res) {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
-            self.loading = false;
-          });
-        }
       });
     }
   }
@@ -132,12 +150,12 @@ class Nav extends migi.Component {
           </div>
           <p>uid: { (this.userId ? this.userId.toString() : '').replace(/^20180*/, '') }</p>
         </div>
-        <button class={ 's' + this.followState + (this.loading ? ' loading' : '') }
-                onClick={ this.clickFollow }>{ FOLLOW_STATE[this.followState] }</button>
+        <button class={ 's' + (this.isFollow ? '1' : '0') + (this.isFans ? '1' : '0') + (this.loading ? ' loading' : '') }
+                onClick={ this.clickFollow }>{ FOLLOW_STATE[(this.isFollow ? '1' : '0') + (this.isFans ? '1' : '0')] }</button>
       </div>
       <ul class="num">
-        <li>关注<strong>{ this.followNum || 0 }</strong></li>
-        <li>粉丝<strong>{ this.fansNum || 0 }</strong></li>
+        <li>关注<strong>{ this.followCount || 0 }</strong></li>
+        <li>粉丝<strong>{ this.fansCount || 0 }</strong></li>
       </ul>
       <div class="sign">
         <label>签名</label>

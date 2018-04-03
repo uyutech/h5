@@ -180,10 +180,20 @@ class Author extends migi.Component {
       },
     });
   }
+  follow(data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.isFollow = data.state;
+        cache.fansCount = data.count;
+        jsBridge.setPreference(cacheKey, cache);
+      }
+    });
+  }
   render() {
     return <div class="author">
       <Background ref="background"/>
-      <Nav ref="nav"/>
+      <Nav ref="nav"
+           on-follow={ this.follow }/>
       <ul class="index" onClick={ { li: this.clickType } }>
         <li class={ (this.showHome ? '' : 'fn-hide ') + (this.index === 0 ? 'cur' : '') }
             rel={ 0 }>主页</li>

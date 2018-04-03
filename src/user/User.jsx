@@ -60,10 +60,11 @@ class User extends migi.Component {
     currentPriority = priority;
 
     let self = this;
+    self.data = data;
     let nav = self.ref.nav;
     let postList = self.ref.postList;
 
-    nav.setData(data.info);
+    nav.setData(data.info, data.followCount, data.fansCount, data.isFollow, data.isFans);
 
     if(data.post && data.post.size) {
       limit = data.post.limit;
@@ -77,22 +78,6 @@ class User extends migi.Component {
     }
 
     return;
-    self.ref.nav.userInfo = data.userInfo;
-    self.ref.nav.followState = data.followState;
-
-    let $window = $(window);
-    loadEnd = data.userPost.Size <= take;
-    if(loadEnd) {
-      self.ref.hotPost.message = '已经到底了';
-    }
-    else {
-      $window.on('scroll', function() {
-        self.checkMore($window);
-      });
-    }
-
-    let hotPost = self.ref.hotPost;
-    hotPost.appendData(data.userPost.data);
     let imageView = self.ref.imageView;
     imageView.on('clickLike', function(sid) {
       hotPost.like(sid, function(res) {
@@ -152,10 +137,20 @@ class User extends migi.Component {
       loading = false;
     });
   }
+  follow(data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.isFollow = data.state;
+        cache.fansCount = data.count;
+        jsBridge.setPreference(cacheKey, cache);
+      }
+    });
+  }
   render() {
     return <div class="user">
       <Background/>
-      <Nav ref="nav"/>
+      <Nav ref="nav"
+           on-follow={ this.follow }/>
       <PostList ref="postList"
                 message={ '正在加载...' }/>
       <ImageView ref="imageView"/>

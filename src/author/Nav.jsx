@@ -114,9 +114,11 @@ class Nav extends migi.Component {
         self.loading = true;
         net.postJSON('/h5/author2/unFollow', { authorId: self.authorId }, function(res) {
           if(res.success) {
-            self.isFollow = false;
-            self.fansCount = res.data.count;
+            let data = res.data;
+            self.isFollow = data.state;
+            self.fansCount = data.count;
             cb && cb();
+            self.emit('follow', data);
           }
           else if(res.code === 1000) {
             migi.eventBus.emit('NEED_LOGIN');
@@ -135,9 +137,11 @@ class Nav extends migi.Component {
       self.loading = true;
       net.postJSON('/h5/author2/follow', { authorId: self.authorId } , function(res) {
         if(res.success) {
-          self.isFollow = true;
-          self.fansCount = res.data.count;
+          let data = res.data;
+          self.isFollow = data.state;
+          self.fansCount = data.count;
           cb && cb();
+          self.emit('follow', data);
         }
         else if(res.code === 1000) {
           migi.eventBus.emit('NEED_LOGIN');
