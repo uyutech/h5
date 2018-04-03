@@ -558,7 +558,7 @@ class Media extends migi.Component {
       }
     }
   }
-  clickLike(e) {
+  clickLike() {
     this.like();
   }
   like(cb) {
@@ -574,13 +574,15 @@ class Media extends migi.Component {
       return;
     }
     loadingLike = true;
+    let item = self.data;
     ajaxLike = net.postJSON('/h5/works2/like',
-      { workId: self.data.id, worksId: self.data.worksId, state: !self.isLike }, function(res) {
+      { workId: item.id, worksId: item.worksId, state: !self.isLike, }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.isLike = self.data.isLike = data.state;
-        self.likeCount = self.data.likeCount = data.count;
+        self.isLike = item.isLike = data.state;
+        self.likeCount = item.likeCount = data.count;
         cb && cb();
+        self.emit('like', item);
       }
       else if(res.code === 1000) {
         migi.eventBus.emit('NEED_LOGIN');
@@ -594,7 +596,7 @@ class Media extends migi.Component {
       loadingLike = false;
     });
   }
-  clickFavor(e) {
+  clickFavor() {
     this.favor();
   }
   favor(cb) {
@@ -610,13 +612,15 @@ class Media extends migi.Component {
       return;
     }
     loadingFavor = true;
+    let item = self.data;
     ajaxFavor = net.postJSON('/h5/works2/favor',
-      { workId: self.data.id, worksId: self.data.worksId, state: !self.isFavor, kind: self.data.kind }, function (res) {
+      { workId: item.id, worksId: item.worksId, state: !self.isFavor, }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.isFavor = self.data.isFavor = data.state;
-        self.favorCount = self.data.favorCount = data.count;
+        self.isFavor = item.isFavor = data.state;
+        self.favorCount = item.favorCount = data.count;
         cb && cb();
+        self.emit('favor', item);
       }
       else if(res.code === 1000) {
         migi.eventBus.emit('NEED_LOGIN');

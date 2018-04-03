@@ -14,21 +14,21 @@ class Select extends migi.Component {
     super(...data);
   }
   @bind list
-  @bind comboId
+  @bind id
   click(e, vd, tvd) {
-    let comboId = tvd.props.workId + '_' + tvd.props.kind;
-    if(comboId === this.comboId) {
+    let id = tvd.props.workId;
+    if(id === this.id) {
       return;
     }
-    this.comboId = comboId;
-    this.emit('change', tvd.props.workId, tvd.props.kind);
+    this.id = id;
+    this.emit('change', id, tvd.props.kind);
   }
   render() {
     return <ul class={ 'mod-select' + (this.list && this.list.length > 1 ? '' : ' fn-hide') }
                onClick={ { li: this.click } }>
       {
         (this.comboId, this.list || []).map(function(item, i) {
-          return <li class={ (this.comboId === (item.id + '_' + item.kind) ? 'cur ' : '') + CLASS[item.kind] }
+          return <li class={ (this.id === item.id ? 'cur ' : '') + CLASS[item.kind] }
                      rel={ i }
                      kind={ item.kind }
                      workId={ item.id }>{ item.tips || item.typeName }</li>;

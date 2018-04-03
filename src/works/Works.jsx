@@ -18,6 +18,7 @@ import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
 let currentPriority = 0;
+let cacheKey;
 
 class Works extends migi.Component {
   constructor(...data) {
@@ -32,7 +33,8 @@ class Works extends migi.Component {
     self.worksId = worksId;
     self.workId = workId;
     self.kind = kind;
-    jsBridge.getPreference('worksData_' + worksId, function(cache) {
+    cacheKey = 'worksData_' + worksId;
+    jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         self.setData(cache, 0);
       }
@@ -47,7 +49,7 @@ class Works extends migi.Component {
             cache[k] = data[k];
           }
         });
-        jsBridge.setPreference('worksData_' + worksId, cache);
+        jsBridge.setPreference(cacheKey, cache);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -109,7 +111,7 @@ class Works extends migi.Component {
     self.setColumn(imgList, data.comment);
     author.list = data.authorList;
     text.list = textList;
-    select.comboId = avList[index].id + '_' + avList[index].kind;
+    select.id = avList[index].id;
     select.list = avList;
     poster.list = imgList;
 
@@ -163,15 +165,47 @@ class Works extends migi.Component {
       });
     }
   }
+  mediaLike(data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        let collection = cache.collection;
+        for(let i = 0, len = collection.length; i < len; i++) {
+          let item = collection[i];
+          if(item.id === data.id && item.kind === data.kind) {
+            item.isLike = data.isLike;
+            item.likeCount = data.likeCount;
+            jsBridge.setPreference(cacheKey, cache);
+            return;
+          }
+        }
+      }
+    });
+  }
+  mediaFavor(data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        let collection = cache.collection;
+        for(let i = 0, len = collection.length; i < len; i++) {
+          let item = collection[i];
+          if(item.id === data.id && item.kind === data.kind) {
+            item.isFavor = data.isFavor;
+            item.favorCount = data.favorCount;
+            jsBridge.setPreference(cacheKey, cache);
+            return;
+          }
+        }
+      }
+    });
+  }
   changeColumn(id) {
     let self = this;
     self.curColumn = id;
   }
-  change(workId, kind) {
+  change(workId) {
     let self = this;
     self.workId = workId;
     for(let i = 0; i < self.avList.length; i++) {
-      if(self.avList[i].id === workId && self.avList[i].kind === kind) {
+      if(self.avList[i].id === workId) {
         self.setMedia(self.avList[i]);
         break;
       }
@@ -245,7 +279,9 @@ class Works extends migi.Component {
   render() {
     return <div class="works">
       <Media ref="media"
-             on-play={ this.mediaPlay }/>
+             on-play={ this.mediaPlay }
+             on-like={ this.mediaLike }
+             on-favor={ this.mediaFavor }/>
       <Info ref="info"/>
       <Select ref="select"
               on-change={ this.change }/>
