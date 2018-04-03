@@ -31,7 +31,7 @@ class Dynamics extends migi.Component {
     let self = this;
     offset += limit;
     self.ref.hotPost.setData(data.data);
-    if(data.Size > limit) {
+    if(data.count > limit) {
       let $window = $(window);
       $window.on('scroll', function() {
         if(!self.visible) {
@@ -74,7 +74,7 @@ class Dynamics extends migi.Component {
         let data = res.data;
         offset += limit;
         hotPost.appendData(data.data);
-        if(offset >= data.Size) {
+        if(offset >= data.count) {
           loadEnd = true;
           hotPost.message = '已经到底了';
         }

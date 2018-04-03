@@ -75,26 +75,12 @@ class Post extends migi.Component {
       limit = data.comment.limit;
       offset = limit;
       self.ref.comment.setData(data.comment.data);
-      if(data.comment.size > limit) {
+      if(data.comment.count > limit) {
         window.addEventListener('scroll', function() {
           self.checkMore();
         });
       }
     }
-
-    // self.postId = postId;
-    // self.postData = data.postData;
-    // self.replyData = data.replyData;
-    // self.reference = data.reference;
-    //
-    // loadEnd = self.replyData.Size < take;
-    //
-    // self.isLike = self.postData.ISLike;
-    // self.likeCount = self.postData.LikeCount;
-    // self.isFavor = self.postData.ISFavor;
-    // self.favorCount = self.postData.FavorCount;
-    //
-    // self.hasData = true;
     //
     // let $root = $(self.element);
     // $root.on('click', 'a', function(e) {
@@ -235,7 +221,7 @@ class Post extends migi.Component {
         if(data.data.length) {
           comment.appendData(data.data);
         }
-        if(offset >= data.size) {
+        if(offset >= data.count) {
           loadEnd = true;
           comment.message = '已经到底了';
         }

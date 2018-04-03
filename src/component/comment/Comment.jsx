@@ -7,13 +7,9 @@
 import net from '../../common/net';
 import util from '../../common/util';
 
-const NOT_LOADED = 0;
-const IS_LOADING = 1;
-const HAS_LOADED = 2;
 let subLoadHash = {};
 let subSkipHash = {};
 let $last;
-let take = 10;
 let ajax;
 let exist = {};
 
@@ -49,12 +45,6 @@ class Comment extends migi.Component {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
           }
         });
-      });
-      $root.on('click', '.slide .sub, .slide span', function() {
-        self.slide($(this).closest('li'));
-      });
-      $root.on('click', '.list>li>.c>pre', function() {
-        self.slide($(this).closest('li'));
       });
       $root.on('click', '.list2 pre, .slide2 .sub', function() {
         let $this = $(this);

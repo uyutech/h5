@@ -66,14 +66,17 @@ class User extends migi.Component {
 
     nav.setData(data.info, data.followCount, data.fansCount, data.isFollow, data.isFans);
 
-    if(data.post && data.post.size) {
-      limit = data.post.limit;
-      offset = limit;
+    if(data.post && data.post.count) {
+      offset = limit = data.post.limit;
       postList.setData(data.post.data);
-      if(data.post.size > limit) {
+      if(data.post.count > limit) {
         window.addEventListener('scroll', function() {
           self.checkMore();
         });
+      }
+      else {
+        loadEnd = true;
+        postList.message = '已经到底了';
       }
     }
 
@@ -107,7 +110,6 @@ class User extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    postList.message = '正在加载...';
     ajax = net.postJSON('/h5/user2/post', { circleId: self.circleId, offset, limit, }, function(res) {
       if(res.success) {
         let data = res.data;
@@ -115,12 +117,9 @@ class User extends migi.Component {
         if(data.data.length) {
           postList.appendData(data.data);
         }
-        if(offset >= data.size) {
+        if(offset >= data.count) {
           loadEnd = true;
           postList.message = '已经到底了';
-        }
-        else {
-          postList.message = '';
         }
       }
       else {

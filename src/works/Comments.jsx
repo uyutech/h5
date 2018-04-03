@@ -40,9 +40,9 @@ class Comments extends migi.Component {
     self.worksId = worksId;
     limit = data.limit;
     offset = limit;
-    if(data.size) {
+    if(data.count) {
       self.ref.comment.setData(data.data);
-      if(data.size > limit) {
+      if(data.count > limit) {
         window.addEventListener('scroll', function() {
           self.checkMore();
         });
@@ -73,7 +73,7 @@ class Comments extends migi.Component {
         if(data.data.length) {
           comment.appendData(data.data);
         }
-        if(offset >= data.size) {
+        if(offset >= data.count) {
           loadEnd = true;
           comment.message = '已经到底了';
         }

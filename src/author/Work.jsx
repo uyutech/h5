@@ -54,7 +54,7 @@ class Work extends migi.Component {
         cache.limit = kindWork.limit;
         cache.offset += kindWork.limit;
         self.ref.videoList.setData(kindWork.data);
-        if(kindWork.size <= kindWork.limit) {
+        if(kindWork.count <= kindWork.limit) {
           cache.loadEnd = true;
           self.ref.videoList.message = '已经到底了';
         }
@@ -63,7 +63,7 @@ class Work extends migi.Component {
         cache.limit = kindWork.limit;
         cache.offset += kindWork.limit;
         self.ref.audioList.setData(kindWork.data);
-        if(cache.offset >= kindWork.size) {
+        if(cache.offset >= kindWork.count) {
           cache.loadEnd = true;
           self.ref.videoList.message = '已经到底了';
         }
@@ -125,14 +125,14 @@ class Work extends migi.Component {
         cache.offset += data.limit;
         switch(kind) {
           case 1:
-            if(cache.offset >= data.size) {
+            if(cache.offset >= data.count) {
               cache.loadEnd = true;
               self.ref.videoList.message = '已经到底了';
             }
             self.ref.videoList.appendData(data.data);
             break;
           case 2:
-            if(cache.offset >= data.size) {
+            if(cache.offset >= data.count) {
               cache.loadEnd = true;
               self.ref.audioList.message = '已经到底了';
             }

@@ -106,36 +106,17 @@ class Circle extends migi.Component {
 
     nav.setData(data.info);
 
-    if(data.comment && data.comment.size) {
+    if(data.comment && data.comment.count) {
       limit = data.comment.limit;
       offset = limit;
       postList.setData(data.comment.data);
-      if(data.comment.size > limit) {
+      if(data.comment.count > limit) {
         window.addEventListener('scroll', function() {
           self.checkMore();
         });
       }
     }
 
-    // self.circleName = data.circleDetail.TagName;
-    //
-    // let title = self.ref.title;
-    // title.cover = data.circleDetail.TagCover;
-    // title.sname = data.circleDetail.TagName;
-    // title.id = data.circleDetail.TagID;
-    // title.desc = data.circleDetail.Describe;
-    // title.joined = data.circleDetail.ISLike;
-    // title.count = data.circleDetail.Popular;
-    //
-    // if(data.postList.Size > take) {
-    //   let $window = $(window);
-    //   $window.on('scroll', function() {
-    //     self.checkMore($window);
-    //   });
-    // }
-    //
-    // let hotPost = self.ref.hotPost;
-    // hotPost.setData(data.postList.data);
     // let imageView = self.ref.imageView;
     // imageView.on('clickLike', function(sid) {
     //   hotPost.like(sid, function(res) {
@@ -178,7 +159,7 @@ class Circle extends migi.Component {
         if(data.data.length) {
           postList.appendData(data.data);
         }
-        if(offset >= data.size) {
+        if(offset >= data.count) {
           loadEnd = true;
           postList.message = '已经到底了';
         }

@@ -140,7 +140,7 @@ class Works extends migi.Component {
     }
     list.push({
       id: 2,
-      name: '评论 ' + (comment ? comment.size || '' : ''),
+      name: '评论 ' + (comment ? comment.count || '' : ''),
     });
     self.curColumn = 0;
     column.list = list;
