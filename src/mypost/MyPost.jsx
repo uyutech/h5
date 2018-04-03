@@ -6,20 +6,59 @@
 
 import net from '../common/net';
 import util from '../common/util';
-import HotPost from '../component/hotpost/HotPost.jsx';
+import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../post/ImageView.jsx';
 
-let take = 10;
-let skip = take;
+let limit = 0;
+let offset = 0;
+let ajax;
 let loading;
 let loadEnd;
+let currentPriority = 0;
+let cacheKey;
 
 class MyPost extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  setData(data) {
+  init() {
     let self = this;
+    cacheKey = 'myPost';
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
+      }
+    });
+    net.postJSON('/h5/my2/post', function(res) {
+      if(res.success) {
+        let data = res.data;
+        self.setData(data, 1);
+        jsBridge.setPreference(cacheKey, data);
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
+  }
+  setData(data, priority) {
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
+    let self = this;
+    let postList = self.ref.postList;
+    offset = limit = data.limit;
+    postList.setData(data.data);
+    if(data.count > limit) {
+      window.addEventListener('scroll', function() {
+        self.checkMore();
+      });
+    }
+
+    return;
 
     self.ref.hotPost.setData(data.data);
     loadEnd = data.Size <= take;
@@ -45,42 +84,41 @@ class MyPost extends migi.Component {
       }
     });
   }
-  checkMore($window) {
+  checkMore() {
+    let self = this;
     if(loading || loadEnd) {
       return;
     }
-    let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    let bool;
-    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    if(util.isBottom()) {
       self.load();
     }
   }
   load() {
     let self = this;
-    if(loading) {
-      return;
+    let postList = self.ref.postList;
+    if(ajax) {
+      ajax.abort();
     }
     loading = true;
-    let hotPost = self.ref.hotPost;
-    hotPost.message = '正在加载...';
-    net.postJSON('/h5/my/postList', { skip, take }, function(res) {
+    ajax = net.postJSON('/h5/my2/post', { offset, limit, }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
-        hotPost.appendData(data.data);
-        if(skip >= data.Size) {
-          loadEnd = true;
-          hotPost.message = '已经到底了';
+        offset += limit;
+        if(data.data.length) {
+          postList.appendData(data.data);
         }
-        else {
-          hotPost.message = '';
+        if(offset >= data.count) {
+          loadEnd = true;
+          postList.message = '已经到底了';
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        if(res.code === 1000) {
+          migi.eventBus.emit('NEED_LOGIN');
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
       }
       loading = false;
     }, function(res) {
@@ -91,7 +129,7 @@ class MyPost extends migi.Component {
   render() {
     return <div class="mypost">
       <h4>我画的圈</h4>
-      <HotPost ref="hotPost"
+      <PostList ref="postList"
                message={ '正在加载...' }/>
       <ImageView ref="imageView"/>
     </div>;

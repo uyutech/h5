@@ -43,10 +43,6 @@ class List extends migi.Component {
   }
   genItem(item) {
     let self = this;
-    if(self.exist[item.id]) {
-      return '';
-    }
-    self.exist[item.id] = true;
     let url = self.props.isAuthor
       ? ('/author.html?authorId=' + item.id)
       : ('/user.html?userId=' + item.id);
@@ -79,6 +75,10 @@ class List extends migi.Component {
         self.offset += self.limit;
         if(data.data.length) {
           data.data.forEach(function(item) {
+            if(self.exist[item.id]) {
+              return;
+            }
+            self.exist[item.id] = true;
             self.list.push(self.genItem(item));
           });
         }

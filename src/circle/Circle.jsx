@@ -106,11 +106,10 @@ class Circle extends migi.Component {
 
     nav.setData(data.info);
 
-    if(data.comment && data.comment.count) {
-      limit = data.comment.limit;
-      offset = limit;
-      postList.setData(data.comment.data);
-      if(data.comment.count > limit) {
+    if(data.post && data.post.count) {
+      offset = limit = data.post.limit;
+      postList.setData(data.post.data);
+      if(data.post.count > limit) {
         window.addEventListener('scroll', function() {
           self.checkMore();
         });
@@ -151,7 +150,6 @@ class Circle extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    postList.message = '正在加载...';
     ajax = net.postJSON('/h5/circle2/post', { circleId: self.circleId, offset, limit, }, function(res) {
       if(res.success) {
         let data = res.data;
@@ -162,9 +160,6 @@ class Circle extends migi.Component {
         if(offset >= data.count) {
           loadEnd = true;
           postList.message = '已经到底了';
-        }
-        else {
-          postList.message = '';
         }
       }
       else {
