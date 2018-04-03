@@ -575,8 +575,10 @@ class Media extends migi.Component {
     }
     loadingLike = true;
     let item = self.data;
-    ajaxLike = net.postJSON('/h5/works2/like',
-      { workId: item.id, worksId: item.worksId, state: !self.isLike, }, function(res) {
+    let url = self.isLike ? 'unLike' : 'like';
+    ajaxLike = net.postJSON('/h5/works2/' + url, {
+      workId: item.id, worksId: item.worksId,
+    }, function(res) {
       if(res.success) {
         let data = res.data;
         self.isLike = item.isLike = data.state;
@@ -613,8 +615,10 @@ class Media extends migi.Component {
     }
     loadingFavor = true;
     let item = self.data;
-    ajaxFavor = net.postJSON('/h5/works2/favor',
-      { workId: item.id, worksId: item.worksId, state: !self.isFavor, }, function(res) {
+    let url = self.isFavor ? 'unFavor' : 'favor';
+    ajaxFavor = net.postJSON('/h5/works2/' + url, {
+      workId: item.id, worksId: item.worksId,
+    }, function(res) {
       if(res.success) {
         let data = res.data;
         self.isFavor = item.isFavor = data.state;

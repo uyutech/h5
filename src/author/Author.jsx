@@ -61,7 +61,7 @@ class Author extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  setData(data, priority) {
+  setData(data, priority) {console.log(priority, data);
     if(priority < currentPriority) {
       return;
     }
@@ -72,7 +72,7 @@ class Author extends migi.Component {
     let nav = self.ref.nav;
     let comments = self.ref.comments;
 
-    nav.setData(data.info, data.aliases, data.outsides, priority);
+    nav.setData(data.info, data.aliases, data.fansCount, data.outsides, data.isFollow);
 
     let showHome;
     if(data.mainWorks) {

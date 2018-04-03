@@ -75,22 +75,24 @@ class Nav extends migi.Component {
   @bind sign
   @bind authorType = []
   @bind headUrl
-  @bind fansNumber
+  @bind fansCount
   @bind like
   @bind loading
   @bind settled
   @bind outsides
-  setData(data, aliases, outsides) {
+  @bind isFollow
+  setData(data, aliases, fansCount, outsides, isFollow) {
     let self = this;
     self.authorId = data.id;
     self.name = data.name;
     self.headUrl = data.headUrl;
     self.sign = data.sign;
     self.aliases = aliases;
+    self.fansCount = fansCount;
     self.outsides = outsides;
+    self.isFollow = isFollow;
   }
-  clickFollow(e) {
-    e.preventDefault();
+  clickFollow() {
     this.follow();
   }
   clickOut(e, vd, tvd) {
@@ -104,16 +106,16 @@ class Nav extends migi.Component {
       return;
     }
     let self = this;
-    if(self.like) {
+    if(self.isFollow) {
       jsBridge.confirm('确定取关吗？', function(res) {
         if(!res) {
           return;
         }
         self.loading = true;
-        net.postJSON('/h5/author/unFollow', { authorID: self.authorId }, function(res) {
+        net.postJSON('/h5/author2/unFollow', { authorId: self.authorId }, function(res) {
           if(res.success) {
-            self.like = false;
-            self.fansNumber = res.data.followCount;
+            self.isFollow = false;
+            self.fansCount = res.data.count;
             cb && cb();
           }
           else if(res.code === 1000) {
@@ -131,10 +133,10 @@ class Nav extends migi.Component {
     }
     else {
       self.loading = true;
-      net.postJSON('/h5/author/follow', { authorID: self.authorId } , function(res) {
+      net.postJSON('/h5/author2/follow', { authorId: self.authorId } , function(res) {
         if(res.success) {
-          self.like = true;
-          self.fansNumber = res.data.followCount;
+          self.isFollow = true;
+          self.fansCount = res.data.count;
           cb && cb();
         }
         else if(res.code === 1000) {
@@ -194,7 +196,7 @@ class Nav extends migi.Component {
         <div class="pic">
           <img src={ util.autoSsl(util.img288_288_80(this.headUrl || '/src/common/head.png')) }/>
           {
-            this.isSettled
+            this.isSettle
               ? <b class="settled"
                    title="已入驻"
                    onClick={ function() { jsBridge.toast('已入驻') } }/>
@@ -209,11 +211,11 @@ class Nav extends migi.Component {
             return item.alias;
           }).join(' ') }</p>
         </div>
-        <button class={ (this.like ? 'un-follow' : 'follow') + (this.loading ? ' loading' : '') }
-                onClick={ this.clickFollow }>{ this.like ? '已关注' : '关 注' }</button>
+        <button class={ (this.isFollow ? 'un-follow' : 'follow') + (this.loading ? ' loading' : '') }
+                onClick={ this.clickFollow }>{ this.isFollow ? '已关注' : '关 注' }</button>
       </div>
       <ul class="plus">
-        <li class="fans">粉丝<strong>{ this.fansNumber || '0' }</strong></li>
+        <li class="fans">粉丝<strong>{ this.fansCount || '0' }</strong></li>
         <li class="outsides" onClick={ { a: this.clickOut } }>
           <span>外站</span>
           {
