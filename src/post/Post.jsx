@@ -2,11 +2,13 @@
  * Created by army8735 on 2017/12/4.
  */
 
+
 'use strict';
 
 import net from '../common/net';
 import util from '../common/util';
 import Nav from './Nav.jsx';
+import CommentBar from '../component/commentbar/CommentBar.jsx';
 import Comment from '../component/comment/Comment.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
@@ -14,36 +16,33 @@ import BotFn from '../component/botfn/BotFn.jsx';
 import QuickVideo from '../component/quickVideo/QuickVideo.jsx';
 import QuickAudio from '../component/quickaudio/QuickAudio.jsx';
 
-let take = 30;
-let skip = take;
-let sortType = 0;
-let myComment = 0;
-let currentCount = 0;
+let limit;
+let offset;
+let ajax;
 let loading;
 let loadEnd;
-let ajax;
-let loadingLike;
-let loadingFavor;
-let cId;
-let rId;
-let last;
-let quickTempList = [];
-let itemImg;
 let currentPriority = 0;
+let cacheKey;
 
 class Post extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  @bind hasData
-  @bind postId
-  @bind isLike
-  @bind likeCount
-  @bind isFavor
-  @bind favorCount
+  // @bind hasData
+  // @bind postId
+  // @bind isLike
+  // @bind likeCount
+  // @bind isFavor
+  // @bind favorCount
   init(postId) {
     let self = this;
     self.postId = postId;
+    cacheKey = 'postData_' + postId;
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
+      }
+    });
     net.postJSON('/h5/post2/index', { postId }, function(res) {
       if(res.success) {
         let data = res.data;
@@ -54,7 +53,7 @@ class Post extends migi.Component {
             cache[k] = data[k];
           }
         });
-        jsBridge.setPreference('postData_' + postId, cache);
+        jsBridge.setPreference(cacheKey, cache);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -71,19 +70,17 @@ class Post extends migi.Component {
 
     let self = this;
     self.ref.nav.setData(data.info);
-    console.log(data);
-    if(data.comment && data.comment.size) {
-      take = data.comment.take;
-      skip = take;
+
+    if(data.comment) {
+      limit = data.comment.limit;
+      offset = limit;
       self.ref.comment.setData(data.comment.data);
-      if(data.comment.size > take) {
+      if(data.comment.size > limit) {
         window.addEventListener('scroll', function() {
           self.checkMore();
         });
       }
     }
-
-    return;
 
     // self.postId = postId;
     // self.postData = data.postData;
@@ -231,14 +228,14 @@ class Post extends migi.Component {
     }
     loading = true;
     comment.message = '正在加载...';
-    ajax = net.postJSON('/h5/post2/comment', { postId: self.postId, skip, take, }, function(res) {
+    ajax = net.postJSON('/h5/post2/comment', { postId: self.postId, offset, limit, }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
+        offset += limit;
         if(data.data.length) {
           comment.appendData(data.data);
         }
-        if(skip >= data.size) {
+        if(offset >= data.size) {
           loadEnd = true;
           comment.message = '已经到底了';
         }
@@ -456,16 +453,7 @@ class Post extends migi.Component {
   render() {
     return <div class="post">
       <Nav ref="nav"/>
-      <div class="fn">
-        <ul class="type" onClick={ { li: this.clickType } }>
-          <li class="cur" rel="0">全部评论</li>
-          {
-            this.isLogin
-              ? <li rel="1">我的</li>
-              : ''
-          }
-        </ul>
-      </div>
+      <CommentBar ref="commentBar"/>
       <Comment ref="comment"
                message="正在加载..."/>
       <InputCmt ref="inputCmt"

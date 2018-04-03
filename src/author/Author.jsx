@@ -19,6 +19,7 @@ import Work from './Work.jsx';
 import Dynamics from './Dynamics.jsx';
 
 let currentPriority = 0;
+let cacheKey;
 
 class Author extends migi.Component {
   constructor(...data) {
@@ -35,7 +36,8 @@ class Author extends migi.Component {
     let self = this;
     self.authorId = authorId;
     self.ref.work.authorId = authorId;
-    jsBridge.getPreference('authorData_' + authorId, function(cache) {
+    cacheKey = 'authorData_' + authorId;
+    jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         self.setData(cache, 0);
       }
@@ -50,7 +52,7 @@ class Author extends migi.Component {
             cache[k] = data[k];
           }
         });
-        jsBridge.setPreference('authorData_' + authorId, cache);
+        jsBridge.setPreference(cacheKey, cache);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);

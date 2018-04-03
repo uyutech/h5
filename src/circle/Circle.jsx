@@ -7,18 +7,18 @@
 import net from '../common/net';
 import util from '../common/util';
 import Nav from './Nav.jsx';
-import HotPost from '../component/hotpost/HotPost.jsx';
 import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../post/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let take = 0;
-let skip = 0;
+let limit = 0;
+let offset = 0;
 let ajax;
 let loading;
 let loadEnd;
 let currentPriority = 0;
+let cacheKey;
 
 class Circle extends migi.Component {
   constructor(...data) {
@@ -69,7 +69,8 @@ class Circle extends migi.Component {
   init(circleId) {
     let self = this;
     self.circleId = circleId;
-    jsBridge.getPreference('circleData_' + circleId, function(cache) {
+    cacheKey = 'circleData_' + circleId;
+    jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         self.setData(cache, 0);
       }
@@ -84,7 +85,7 @@ class Circle extends migi.Component {
             cache[k] = data[k];
           }
         });
-        jsBridge.setPreference('circleData_' + circleId, cache);
+        jsBridge.setPreference(cacheKey, cache);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -103,10 +104,10 @@ class Circle extends migi.Component {
     self.ref.nav.setData(data.info);
 
     if(data.comment && data.comment.size) {
-      take = data.comment.take;
-      skip = take;
+      limit = data.comment.limit;
+      offset = limit;
       self.ref.postList.setData(data.comment.data);
-      if(data.comment.size > take) {
+      if(data.comment.size > limit) {
         window.addEventListener('scroll', function() {
           self.checkMore();
         });
@@ -167,14 +168,14 @@ class Circle extends migi.Component {
     }
     loading = true;
     postList.message = '正在加载...';
-    ajax = net.postJSON('/h5/circle2/comment', { circleId: self.circleId, skip, take, }, function(res) {
+    ajax = net.postJSON('/h5/circle2/comment', { circleId: self.circleId, offset, limit, }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
+        offset += limit;
         if(data.data.length) {
           postList.appendData(data.data);
         }
-        if(skip >= data.size) {
+        if(offset >= data.size) {
           loadEnd = true;
           postList.message = '已经到底了';
         }
