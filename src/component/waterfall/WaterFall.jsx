@@ -6,12 +6,8 @@
 
 import net from '../../common/net';
 import util from '../../common/util';
-import ImageView from '../imageview/ImageView.jsx';
 
-let pool = [];
-let list = [];
-let index = 0;
-let WIDTH = 0;
+let uuid = 0;
 
 class WaterFall extends migi.Component {
   constructor(...data) {
@@ -19,17 +15,9 @@ class WaterFall extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.visible = self.props.visible;
-    if(self.props.visible !== undefined) {
-      self.visible = self.props.visible;
-    }
-    self.pause = self.props.pause;
+    self.WIDTH = self.props.WIDTH;
     self.on(migi.Event.DOM, function() {
-      if(self.props.dataList) {
-        self.appendData(self.props.dataList);
-      }
-      let imageView = self.ref.imageView;
       let $root = $(self.element);
-      WIDTH = $root.find('ul:first-child').width();
       $root.on('click', '.authors a', function(e) {
         e.preventDefault();
         let $this = $(this);
@@ -63,7 +51,7 @@ class WaterFall extends migi.Component {
             for(let i = 0, len = list.length; i < len; i++) {
               if(id.toString() === list[i].ItemID.toString()) {
                 list[i].ISLike = res.data.State === 'likeWordsUser';
-                imageView.list = list;
+                // imageView.list = list;
                 break;
               }
             }
@@ -116,13 +104,7 @@ class WaterFall extends migi.Component {
       $root.on('click', 'img', function() {
         let $img = $(this);
         let index = $img.attr('rel');
-        imageView.setData(list, index);
-      });
-
-      imageView.on('like', function(list, index) {
-        let id = list[index].ItemID;
-        let $li = $('#image_' + id);
-        like.call($li.find('.like'));
+        // imageView.setData(list, index);
       });
     });
   }
@@ -136,13 +118,14 @@ class WaterFall extends migi.Component {
   }
   clearData() {
     let self = this;
-    let $l1 = $(self.ref.l1.element);
-    let $l2 = $(self.ref.l2.element);
-    $l1.html('');
-    $l2.html('');
-    pool = [];
-    list = [];
-    index = 0;
+    self.ref.l1.element.innerHTML = '';
+    self.ref.l2.element.innerHTML = '';
+    self.pool = [];
+    self.list = [];
+    self.index = 0;
+    self.height1 = self.height2 = 0;
+    self.exist = {};
+    self.uuid = uuid++; //重新加载时防止未完成异步图片加载再次显示
   }
   setData(data) {
     this.clearData();
@@ -153,119 +136,112 @@ class WaterFall extends migi.Component {
     if(!Array.isArray(data)) {
       data = [data];
     }
+    for(let i = data.length - 1; i >= 0; i--) {
+      let id = data[i].work.id;
+      if(self.exist[id]) {
+        data.splice(i, 1);
+      }
+      self.exist[id] = true;
+    }
     if(data.length) {
       //未知高宽的去加载图片获取高宽
       data.forEach(function(item) {
-        if(!item.Width || !item.Height) {
-          self.loadImgSize(item, self.checkPool.bind(self));
+        if(!item.work.width || !item.work.height) {
+          self.loadImgSize(item, self.checkPool.bind(self), self.uuid);
         }
       });
-      pool = pool.concat(data);
-      list = list.concat(data);
-      if(self.visible && !self.pause) {
-        self.checkPool();
-      }
+      self.pool = self.pool.concat(data);
+      self.list = self.list.concat(data);
+      self.checkPool();
     }
   }
   checkPool() {
     let self = this;
-    if(!self.visible || self.pause) {
-      return;
-    }
-    if(WIDTH === 0) {
-      WIDTH = $(self.element).find('ul:first-child').width();
-    }
-    while(pool.length) {
-      let item = pool[0];
-      if(item.Width && item.Height) {
-        let li = self.genItem(item);
-        self.append(li);
-        pool.shift();
+    while(self.pool.length) {
+      let item = self.pool[0];
+      if(item.work.width && item.work.height) {
+        self.append(item);
+        self.pool.shift();
       }
       else {
         return;
       }
     }
   }
-  append(li) {
+  append(item) {
     let self = this;
-    let $l1 = $(self.ref.l1.element);
-    let $l2 = $(self.ref.l2.element);
-    let $min = $l1;
-    if($l2.height() < $min.height()) {
-      $min = $l2;
+    let target;
+    if(self.height1 > self.height2) {
+      target = self.ref.l2.element;
+      self.height2 += item.height;
     }
-    li.appendTo($min[0]);
+    else {
+      target = self.ref.l1.element;
+      self.height1 += item.height;
+    }
+    self.genItem(item).appendTo(target);
   }
-  genItem(data) {
+  genItem(item) {
     let self = this;
-    let author = ((data.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
-    data.preview = util.autoSsl(util.img375__80(data.FileUrl));
-    if(data.Width <= WIDTH * 2) {
-      return <li id={ 'image_' + data.ItemID }>
-        <img class="pic" src={ util.autoSsl(util.img375__80(data.FileUrl)) || '/src/common/blank.png' }
-             rel={ index++ } height={ data.Height / 2 }/>
+    let author = [];
+    let hash = {};
+    (item.author || []).forEach(function(list) {
+      list.list.forEach(function(at) {
+        if(!hash[at.id]) {
+          hash[at.id] = true;
+          author.push(at.name);
+        }
+      });
+    });
+    item.work.preview = util.autoSsl(util.img375__80(item.work.url));
+    if(item.work.width <= self.WIDTH) {
+      return <li id={ 'image_' + item.work.id }>
+        <img class="pic"
+             src={ util.autoSsl(item.work.preview) || '/src/common/blank.png' }
+             rel={ self.index++ }
+             height={ item.work.height / 2 }/>
         <div class="txt">
-          <div class="author">
-            {
-              (author.AuthorInfo || []).map(function(item) {
-                return <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
-                  <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/head.png')) }/>
-                  {
-                    self.props.profession
-                      ? <span>{ item.AuthorTypeName }</span>
-                      : <span>{ item.AuthorName }</span>
-                  }
-                </a>
-              })
-            }
-          </div>
-          <b class={ 'like' + (data.ISLike ? ' has' : '') } itemID={ data.ItemID }/>
+          <p class="author">{ author.join(' ') }</p>
+          <b class={ 'like' }/>
         </div>
       </li>;
     }
-    let height = data.Height * WIDTH * 2 / data.Width;
-    return <li id={ 'image_' + data.ItemID }>
-      <img class="pic" src={ util.autoSsl(util.img375__80(data.FileUrl)) || '/src/common/blank.png' }
-           rel={ index++ } height={ height / 2 }/>
+    let height = item.work.height * self.WIDTH * 2 / item.work.width;
+    return <li id={ 'image_' + item.work.id }>
+      <img class="pic"
+           src={ util.autoSsl(item.work.preview) || '/src/common/blank.png' }
+           rel={ self.index++ }
+           height={ height / 2 }/>
       <div class="txt">
-        <div class="authors">
-          {
-            (author.AuthorInfo || []).map(function(item) {
-              return <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
-                <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/head.png')) }/>
-                {
-                  self.props.profession
-                    ? <span>{ item.AuthorTypeName }</span>
-                    : <span>{ item.AuthorName }</span>
-                }
-              </a>
-            })
-          }
-        </div>
-        <b class={ 'like' + (data.ISLike ? ' has' : '') } itemID={ data.ItemID }/>
+        <p class="author">{ author.join(' ') }</p>
+        <b class={ 'like' }/>
       </div>
     </li>;
   }
-  loadImgSize(data, cb) {
+  loadImgSize(item, cb, uuid) {
+    let self = this;
     let img = document.createElement('img');
     img.style.position = 'absolute';
     img.style.left = '-9999rem;';
     img.style.top = '-9999rem';
     img.style.visibility = 'hidden';
-    img.src = util.autoSsl(util.img__60(data.FileUrl));
+    img.src = util.autoSsl(util.img__60(item.work.url));
     img.onload = function() {
-      data.Width = img.width;
-      data.Height = img.height;
-      cb();
+      item.work.width = img.width;
+      item.work.height = img.height;
       document.body.removeChild(img);
+      if(uuid === self.uuid) {
+        cb();
+      }
     };
     img.onerror = function() {
-      data.FileUrl = '//zhuanquan.xin/img/blank.png';
-      data.Width = 1;
-      data.Height = 100;
-      cb();
+      item.work.url = '//zhuanquan.xin/img/blank.png';
+      item.work.width = 1;
+      item.work.height = 100;
       document.body.removeChild(img);
+      if(uuid === self.uuid) {
+        cb();
+      }
     };
     document.body.appendChild(img);
   }
@@ -280,7 +256,6 @@ class WaterFall extends migi.Component {
         </div>
       </div>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
-      <ImageView ref="imageView"/>
     </div>;
   }
 }

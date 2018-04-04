@@ -61,7 +61,7 @@ class Author extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  setData(data, priority) {console.log(priority, data);
+  setData(data, priority) {
     if(priority < currentPriority) {
       return;
     }

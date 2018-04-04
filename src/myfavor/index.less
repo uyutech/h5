@@ -6,10 +6,10 @@
 @import '../component/playlist/index';
 @import '../component/waterfall/index';
 @import '../component/hotpost/index';
-@import '../find/videolist';
+@import '../component/videolist/index';
 
 #page > .myfavor{
-  > .type{
+  > .kind{
     position:relative;
     display:flex;
     margin:0.1rem 0.1rem 0.05rem;
@@ -37,11 +37,8 @@
           content:'';
         }
       }
-      span{
-        color:@mainLinkColor;
-        &.cur{
-          color:@secondColor;
-        }
+      &.cur{
+        color:#5D99C4;
       }
     }
     &:before{
@@ -56,12 +53,13 @@
       transform:translateY(-50%);
     }
   }
-}
-
-@media screen and (max-device-width:320px){
-  #page > .myfavor > div{
-    > .type li{
-      font-size:0.12rem;
-    }
+  .cp-videolist{
+    margin:0.1rem;
+  }
+  .cp-playlist{
+    margin:0.1rem;
+  }
+  .cp-waterfall{
+    margin:0.1rem;
   }
 }

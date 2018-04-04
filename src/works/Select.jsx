@@ -27,7 +27,7 @@ class Select extends migi.Component {
     return <ul class={ 'mod-select' + (this.list && this.list.length > 1 ? '' : ' fn-hide') }
                onClick={ { li: this.click } }>
       {
-        (this.comboId, this.list || []).map(function(item, i) {
+        (this.id, this.list || []).map(function(item, i) {
           return <li class={ (this.id === item.id ? 'cur ' : '') + CLASS[item.kind] }
                      rel={ i }
                      kind={ item.kind }

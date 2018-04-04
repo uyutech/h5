@@ -98,9 +98,9 @@ class Works extends migi.Component {
     });
 
     let index = 0;
-    if(self.workId && self.kind) {
+    if(self.workId) {
       for(let i = 0, len = avList.length; i < len; i++) {
-        if(avList[i].id === self.workId && avList[i].kind === self.kind) {
+        if(avList[i].id === self.workId) {
           index = i;
           break;
         }
@@ -241,8 +241,8 @@ class Works extends migi.Component {
           text += self.data.info.subTitle;
         }
         text += '】';
-        if(self.data.authorList && self.data.authorList[0]) {
-          self.data.authorList[0].forEach(function(item) {
+        if(self.data.author && self.data.author[0]) {
+          self.data.author[0].forEach(function(item) {
             text += item.list.map(function(item2) {
               return item2.name;
             });

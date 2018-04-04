@@ -21,10 +21,8 @@ class Playlist extends migi.Component {
     super(...data);
     let self = this;
     self.message = self.props.message;
-    self.dataList = self.props.dataList || [];
-    if(self.props.visible !== undefined) {
-      self.visible = self.props.visible;
-    }
+    self.visible = self.props.visible;
+    self.list = self.props.list;
     self.on(migi.Event.DOM, function() {
       if(jsBridge.appVersion) {
         let version = jsBridge.appVersion.split('.');
@@ -151,118 +149,58 @@ class Playlist extends migi.Component {
     });
   }
   @bind message
-  @bind visible = true
-  show() {
-    this.visible = true;
-  }
-  hide() {
-    this.visible = false;
-    this.clearLast();
-    last = lastId = null;
-    isPlaying = false;
-  }
+  @bind visible
+  @bind list
   setData(data) {
-    let s = '';
+    let self = this;
+    self.exist = {};
+    let list = [];
     (data || []).forEach(function(item) {
-      s += this.genItem(item) || '';
-    }.bind(this));
-    $(this.ref.list.element).html(s);
+      if(self.exist[item.work.id]) {
+        return;
+      }
+      self.exist[item.work.id] = true;
+      list.push(self.genItem(item));
+    });
+    self.list = list;
   }
   appendData(data) {
-    let s = '';
+    let self = this;
     (data || []).forEach(function(item) {
-      s += this.genItem(item) || '';
-    }.bind(this));
-    $(this.ref.list.element).append(s);
+      if(self.exist[item.work.id]) {
+        return;
+      }
+      self.exist[item.work.id] = true;
+      self.list.push(self.genItem(item));
+    });
   }
   genItem(item) {
-    let self = this;
-    if(item.WorksState === 3) {
-      return <li class="private">
-        <span class="name">待揭秘</span>
-      </li>;
-    }
-    let works = (item.Works_Items_Works || [])[0] || {};
-    if(!works) {
-      return;
-    }
-    let author = ((item.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
-    let url = util.getWorksUrl(works.WorksID, works.WorksType, item.ItemID);
-    let authorStr = (author.AuthorInfo || []).map(function(item) {
-      return item.AuthorName;
-    }).join(' ');
-    if(item.WorksState === 2) {
-      let temp = <li class={ item.ItemID === lastId ? 'cur' : '' }>
-        <a href={ url }
-           title={ item.ItemName || '待揭秘' }
-           class="pic">
-          <img class="pic"
-               src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
-        </a>
-        <audio ref="audio"
-               preload="meta"
-               playsinline="true"
-               webkit-playsinline="true"/>
-        <div class="txt">
-          <a href={ url }
-             title={ item.ItemName || '待揭秘' }
-             class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
-          {
-            self.props.profession
-              ? <p class="author">{ (author.AuthorInfo || []).map(function(item) {
-                return item.AuthorTypeName;
-              }).join(' ') }</p>
-              : <p class="author">{ authorStr }</p>
-          }
-        </div>
-      </li>;
-      if(item.ItemID === lastId) {
-        last = item;
-      }
-      return temp;
-    }
-    let temp = <li class={ item.ItemID === lastId ? 'cur' : '' }>
-      <a href={ url }
-         title={ item.ItemName || '待揭秘' }
-         class="pic"
-         item={ item }>
-        <img src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
-      </a>
-      <audio ref="audio"
-             preload="meta"
-             playsinline="true"
-             webkit-playsinline="true"/>
-      <div class="txt">
-        <a href={ url }
-           title={ item.ItemName || '待揭秘' }
-           item={ item }
-           class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
-        {
-          self.props.profession
-            ? <p class="author">{ (author.AuthorInfo || []).map(function(item) {
-              return item.AuthorTypeName;
-            }).join(' ') }</p>
-            : <p class="author">{ authorStr }</p>
+    let url = '/works.html?worksId=' + item.id + '&workId=' + item.work.id;
+    let author = [];
+    let hash = {};
+    (item.author || []).forEach(function(list) {
+      list.list.forEach(function(at) {
+        if(!hash[at.id]) {
+          hash[at.id] = true;
+          author.push(at.name);
         }
+      });
+    });
+    return <li>
+      <a class="pic"
+         title={ item.title }
+         href={ url }>
+        <img src={ util.autoSsl(util.img750__80(item.work.cover || item.cover)) || '/src/common/blank.png' }/>
+      </a>
+      <div class="txt">
+        <span class="name">{ item.work.title }</span>
+        <p class="author">{ author.join(' ') }</p>
       </div>
-      <b class="fn"
-         worksId={ works.WorksID }
-         worksTitle={ works.WorksName }
-         workId={ item.ItemID }
-         workTitle={ item.ItemName }
-         worksCover={ works.WorksCoverPic }
-         authorStr={ authorStr }
-         isLike={ item.ISLike }
-         isFavor={ item.ISFavor }/>
+      <b class="fn"/>
     </li>;
-    if(item.ItemID === lastId) {
-      last = item;
-    }
-    return temp;
   }
   clearData() {
-    $(this.ref.list.element).html('');
-    last = lastId = null;
+    this.list = [];
   }
   clickPic(e, vd, tvd) {
     e.preventDefault();
@@ -339,23 +277,10 @@ class Playlist extends migi.Component {
       transparentTitle: true,
     });
   }
-  clearLast() {
-    if(last) {
-      let audio = last.find('audio');
-      audio.element.pause();
-      last.element.classList.remove('cur');
-    }
-  }
   render() {
-    return <div class={ 'cp-playlist' + (this.visible ? '' : ' fn-hide') }
-                onClick={ { '.pic': this.clickPic, '.name': this.click } }>
-      <ol class="list" ref="list">
-      {
-        (this.dataList || []).map(function(item) {
-          return this.genItem(item);
-        }.bind(this))
-      }
-      </ol>
+    return <div class={ 'cp-playlist' + (this.visible ? '' : ' fn-hide') }>
+      <ol ref="list"
+          onClick={ { '.pic': this.clickPic } }>{ this.list }</ol>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;
   }
