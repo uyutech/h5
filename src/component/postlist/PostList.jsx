@@ -18,6 +18,7 @@ class PostList extends migi.Component {
     });
   }
   @bind message
+  @bind visible
   setData(data) {
     let self = this;
     self.exist = {};
@@ -168,7 +169,7 @@ class PostList extends migi.Component {
       .replace(/(http(?:s)?:\/\/[\w-]+\.[\w]+\S*)/gi, '<a href="$1" target="_blank">$1</a>');
   }
   render() {
-    return <div class="cp-postlist">
+    return <div class={ 'cp-postlist' + (this.visible ? '' : ' fn-hide') }>
       <ol class="list" ref="list"/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') } >{ this.message }</div>
     </div>;
