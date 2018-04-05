@@ -52,9 +52,9 @@ class Works extends migi.Component {
            title={ this.data.content.title }
            class="name">{ this.data.content.title }</a>
         <dl>
-          <dt>{ this.data.content.author[0].name }</dt>
+          <dt>{ ((this.data.content.author || [])[0] || {}).name }</dt>
           {
-            (this.data.content.author[0].list || []).map(function(item) {
+            (((this.data.content.author || [])[0] || {}).list || []).map(function(item) {
               return <dd>
                 <a href={ '/author.html?authorId=' + item.id }
                    title={ item.name }>

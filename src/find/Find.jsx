@@ -53,19 +53,7 @@ class Find extends migi.Component {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
-
         jsBridge.setPreference(cacheKey, data);
-        return;
-        hasLoad = true;
-        self.setData(data, 1);
-        if(lastId && lastId > 1) {
-          if(Array.isArray(self.ref.itemList)) {
-            last = self.ref.itemList[lastId - 2].show();
-          }
-          else {
-            last = self.ref.itemList.show();
-          }
-        }
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -113,6 +101,7 @@ class Find extends migi.Component {
     return <div class="find">
       <Nav ref="nav"
            on-change={ this.change }/>
+      <div class={ 'cp-message' + (this.list ? ' fn-hide' : '')}>正在加载...</div>
       {
         (this.list || []).map((item, i) => {
           let cache = hash[item.id];
@@ -120,6 +109,7 @@ class Find extends migi.Component {
             cache = hash[item.id]
               = <Item ref="item"
                       tag={ item.id }
+                      message={ '正在加载...' }
                       visible={ !i }/>;
           }
           return cache;
