@@ -29,7 +29,7 @@ class WorksList extends migi.Component {
                   </a>
                   <a href={ url } class="txt" title={ item.title }>
                     <span>{ item.title }</span>
-                    <span class="profession">{ item.profession.name }</span>
+                    <span class="profession">{ (item.profession || {}).name }</span>
                   </a>
                 </li>;
               })

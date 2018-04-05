@@ -6,7 +6,6 @@
 
 import util from '../common/util';
 
-let interval;
 let WIDTH;
 let isStart;
 let isMove;
@@ -19,14 +18,18 @@ class Banner extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.dataList = self.props.dataList || [];
+    self.list = self.props.list || [];
+    self.index = 0;
     self.on(migi.Event.DOM, function() {
-      self.addInterval();
       WIDTH = screen.availWidth;
+      self.addInterval();
     });
   }
-  @bind dataList;
-  @bind index = 0;
+  @bind list
+  @bind index
+  setData(data) {
+    this.list = data || [];
+  }
   clickTag(e, vd, tvd) {
     this.index = tvd.props.rel;
     this.setOffset(Math.floor(this.index * WIDTH));
@@ -39,22 +42,22 @@ class Banner extends migi.Component {
     $list.css('transform', 'translateX(-' + x + 'px)');
   }
   addInterval() {
-    if(interval) {
-      clearInterval(interval);
-    }
     let self = this;
-    interval = setInterval(function() {
+    if(self.interval) {
+      clearInterval(self.interval);
+    }
+    self.interval = setInterval(function() {
       self.index++;
-      if(self.index >= self.dataList.length) {
+      if(self.index >= self.list.length) {
         self.index = 0;
       }
       self.setOffset(self.index * WIDTH);
-    }, 5000);
+    }, 3000);
   }
   left() {
     this.index++;
-    if(this.index >= this.dataList.length) {
-      this.index = this.dataList.length - 1;
+    if(this.index >= this.list.length) {
+      this.index = this.list.length - 1;
     }
     this.setOffset(Math.floor(this.index * WIDTH));
     this.addInterval();
@@ -183,47 +186,50 @@ class Banner extends migi.Component {
     }
   }
   render() {
-    return <div class="mod-banner"
+    return <div class={ 'mod-banner' + (this.list.length ? '' : ' fn-hide') }
                 onTouchStart={ this.start }
                 onTouchMove={ this.move }
                 onTouchEnd={ this.end }
                 onTouchCancel={ this.end }
                 onClick={ { a: this.click } }>
-      <ul class="list fn-clear" ref="list" style={ 'width:' + Math.max(1, this.dataList.length) * 100 + '%' }>
+      <ul class="list"
+          ref="list"
+          style={ 'width:' + Math.max(1, this.list.length) * 100 + '%' }>
         {
-          this.dataList.map(function(item) {
+          this.list.map(function(item) {
             let url = '';
-            let cn = 'item';
-            switch(item.urltype) {
+            switch(item.type) {
               case 1:
-                url = '/works.html?worksId=' + item.urlid;
-                cn = 'works';
+                url = '/works.html?worksId=' + item.targetId;
                 break;
               case 2:
-                url = '/post.html?postId=' + item.urlid;
+                url = '/author.html?authorId=' + item.targetId;
                 break;
               case 3:
-                url = '/author.html?authorId=' + item.urlid;
-                cn = 'author';
+                url = '/user.html?userID=' + item.targetId;
                 break;
               case 4:
-                url = '/user.html?userID=' + item.urlid;
+                url = '/post.html?postId=' + item.targetId;
                 break;
             }
             return <li>
-              <a href={ url } target="_blank" title={ item.Describe } class={ cn }>
-                <img src={ util.autoSsl(util.img750__80(item.coverpic)) || '/src/common/blank.png' }/>
+              <a href={ url }
+                 title={ item.title }>
+                <img src={ util.autoSsl(util.img750__80(item.pic)) || '/src/common/blank.png' }/>
               </a>
             </li>;
           })
         }
       </ul>
-      <ul class="tags" ref="tags" onClick={ { li: this.clickTag } }>
-      {
-        (this.index, this.dataList).map(function(item, index) {
-          return <li class={ index === this.index ? 'cur' : '' } rel={ index }>{ index + 1 }</li>;
-        }.bind(this))
-      }
+      <ul class="tags"
+          ref="tags"
+          onClick={ { li: this.clickTag } }>
+        {
+          (this.index, this.list).map((item, index) => {
+            return <li class={ index === this.index ? 'cur' : '' }
+                       rel={ index }>{ index + 1 }</li>;
+          })
+        }
       </ul>
     </div>;
   }

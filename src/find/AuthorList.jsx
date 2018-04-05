@@ -12,6 +12,7 @@ class AuthorList extends migi.Component {
     super(...data);
     let self = this;
     self.index = 0;
+    self.data = self.props.data;
     self.on(migi.Event.DOM, function() {
       let $root = $(self.element);
       $root.on('click', 'a', function(e) {
@@ -27,9 +28,12 @@ class AuthorList extends migi.Component {
     });
   }
   @bind index
-  click() {
-    let data = this.props.data;
-    let length = (data.authorlist || []).length;
+  @bind data
+  setData(data) {
+    this.data = data;
+  }
+  clickChange() {
+    let length = (this.data.content || []).length;
     if(this.index >= length - 6) {
       this.index = 0;
     }
@@ -37,24 +41,37 @@ class AuthorList extends migi.Component {
       this.index += 6;
     }
   }
+  click(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+      transparentTitle: true,
+    });
+  }
   render() {
-    let data = this.props.data;
     return <div class="mod-authorlist">
-      <h3 style={ data.coverpic ? `background-image:url(${data.coverpic})` : '' }>
-        { data.Describe }{ (data.authorlist || []).length > 6 ? <span onClick={ this.click }>换一换</span> : '' }
+      <h3>
+        { this.data.title }
+        { (this.data.content || []).length > 6 ? <span onClick={ this.clickChange }>换一换</span> : '' }
       </h3>
-      <ul>
-        {
-          (data.authorlist || []).slice(this.index, this.index + 6).map(function(item) {
-            return <li>
-              <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName } class="pic">
-                <img src={ util.autoSsl(util.img120_120_80(item.Head_url)) || '/src/common/head.png' }/>
-              </a>
-              <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName } class="name">{ item.AuthorName }</a>
-              <p class="fans">{ item.FansNumber }</p>
-            </li>;
-          })
-        }
+      <ul onClick={ { a: this.click } }>
+      {
+        (this.data.content || []).slice(this.index, this.index + 6).map(function(item) {
+          return <li>
+            <a class="pic"
+               href={ '/author.html?authorId=' + item.id }
+               title={ item.name }>
+              <img src={ util.autoSsl(util.img120_120_80(item.headUrl)) || '/src/common/head.png' }/>
+            </a>
+            <a class="name"
+               href={ '/author.html?authorId=' + item.id }
+               title={ item.name }>{ item.name }</a>
+            <p class="fans">{ item.fansCount }</p>
+          </li>;
+        })
+      }
       </ul>
     </div>;
   }
