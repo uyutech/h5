@@ -6,11 +6,12 @@
 'use strict';
 
 import util from '../common/util';
+import net from '../common/net';
 import Banner from './Banner.jsx';
 import Works from './Works.jsx';
 import AuthorList from './AuthorList.jsx';
 import WorksList from './WorksList.jsx';
-import net from "../common/net";
+import WorksVideoList from '../component/worksvideolist/WorksVideoList.jsx';
 
 class Item extends migi.Component {
   constructor(...data) {
@@ -18,6 +19,9 @@ class Item extends migi.Component {
     let self = this;
     self.visible = self.props.visible;
     self.message = self.props.message;
+    self.tag = self.props.tag;
+    self.kind = self.props.kind;
+    self.offset = 0;
   }
   @bind visible
   @bind message
@@ -34,15 +38,12 @@ class Item extends migi.Component {
     $(self.ref.con.element).html(s);
     self.message = '';
 
-    if(self.listener) {
-      window.removeEventListener('scroll', self.listener);
-    }
     self.offset = self.limit = data.list.limit;
-    if(data.list.count > self.limit) {
-      self.listener = function() {
-        self.checkMore();
-      };
-      window.addEventListener('scroll', self.listener);
+    if(self.kind) {
+      self.loadEnd = self.offset >= data.kind.count;
+    }
+    else {
+      self.loadEnd = self.offset >= data.list.count;
     }
   }
   appendData(data) {
@@ -78,21 +79,37 @@ class Item extends migi.Component {
       self.ajax.abort();
     }
     self.loading = true;
-    self.message = '正在加载...';
     self.ajax = net.postJSON('/h5/find2/tag',
-      { tag: self.props.tag, offset: self.offset, limit: self.limit, }, function(res) {
+      { tag: self.tag, kind: self.kind, offset: self.offset, }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.offset += self.limit;
-        if(data.data.length) {
-          self.appendData(data.data);
+        let banner = data.banner;
+        let list = data.list;
+        let kind = data.kind;
+        if(banner) {
+          self.ref.banner.setData(banner);
         }
-        if(self.offset >= data.count) {
+        if(list) {
+          self.appendData(list.data);
+        }
+        if(kind) {
+          switch(self.kind) {
+            case 1:
+              if(self.offset) {
+                self.ref.videoList.appendData(kind.data);
+              }
+              else {
+                self.ref.videoList.visible = true;
+                self.ref.videoList.setData(kind.data);
+              }
+              break;
+          }
+        }
+        self.limit = list.limit;
+        self.offset += self.limit;
+        if(self.offset >= list.count) {
           self.loadEnd = true;
           self.message = '已经到底了';
-        }
-        else {
-          self.message = '';
         }
       }
       else {
@@ -113,6 +130,7 @@ class Item extends migi.Component {
     return <div class={ 'mod-item' + (this.visible ? '' : ' fn-hide') }>
       <Banner ref="banner"/>
       <div ref="con"/>
+      <WorksVideoList ref="videoList"/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;
   }

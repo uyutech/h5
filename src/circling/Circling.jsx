@@ -7,44 +7,61 @@
 
 import net from '../common/net';
 import util from '../common/util';
-import HotPost from '../component/hotpost/HotPost.jsx';
-import Banner from './Banner.jsx';
+import Banner from '../find/Banner.jsx';
+import PostList from '../component/postlist/PostList.jsx';
 
-let take = 10;
-let skip = 0;
-let ajax;
-let loading;
-let loadEnd;
-let visible;
 let scrollY = 0;
 let circleSkip = 0;
 let circleTake = 10;
 let loadingCircle;
 let loadCircleEnd;
+
+let ajax;
+let loading;
+let loadEnd;
 let elStack = [];
 let idStack = [];
+let offset = 0;
+
+let currentPriority = 0;
+let cacheKey = 'circling';
 
 class Circling extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    self.visible = self.props.visible;
     self.on(migi.Event.DOM, function() {
-      visible = true;
       self.init();
-      jsBridge.on('resume', function(e) {
-        if(e.data && e.data.type === 'subPost') {
-          self.ref.hotPost.prependData(e.data.data);
-        }
-      });
+      // jsBridge.on('resume', function(e) {
+      //   if(e.data && e.data.type === 'subPost') {
+      //     self.ref.hotPost.prependData(e.data.data);
+      //   }
+      // });
     });
   }
-  @bind circles
+  @bind visible
+  @bind circleList
   init() {
     let self = this;
-    net.postJSON('/h5/circling/index', function(res) {
+    if(ajax) {
+      ajax.abort();
+    }
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
+      }
+    });
+    ajax = net.postJSON('/h5/circling2/index', function(res) {
       if(res.success) {
         let data = res.data;
-        self.setData(data);
+        self.setData(data, 1);
+        jsBridge.setPreference(cacheKey, data);
+        window.addEventListener('scroll', function() {
+          if(self.visible) {
+            self.checkMore();
+          }
+        });
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -53,76 +70,28 @@ class Circling extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  show() {
-    $(this.element).removeClass('fn-hide');
-    $(window).scrollTop(scrollY);
-    visible = true;
-  }
-  hide() {
-    let self = this;
-    $(self.element).addClass('fn-hide');
-    visible = false;
-    self.ref.hotPost.pauseLast();
-  }
-  refresh() {
-    let self = this;
-    if(visible && !loading) {
-      loadEnd = false;
-      self.ref.hotPost.setData();
-      skip = 0;
-      self.load();
+  setData(data, priority) {
+    priority = priority || 0;
+    if(priority < currentPriority) {
+      return;
     }
-  }
-  setData(data) {
+    currentPriority = priority;
+
     let self = this;
-
-    circleTake = data.circleTake || circleTake;
-    circleSkip += circleTake;
-    loadCircleEnd = circleSkip >= data.hotCircleList.Size;
-    self.circles = data.hotCircleList.data;
-
-    take = data.take || take;
-    skip += take;
-    loadEnd = skip >= data.postList.Size;
-
-    let hotPost = self.ref.hotPost;
-    let postList = [];
-    if(data.top1 && data.top1.data) {
-      postList = data.top1.data || [];
-    }
-    if(data.top2 && data.top2.data) {
-      postList = postList.concat(data.top2.data || []);
-    }
-    postList = postList.concat(data.postList.data || []);
-    hotPost.setData(postList);
-    hotPost.message = '';
-
     let banner = self.ref.banner;
-    banner.dataList = data.bannerList || [];
-    banner.visible = data.bannerList && data.bannerList.length;
+    let postList = self.ref.postList;
 
-    let $window = $(window);
-    $window.on('scroll', function() {
-      if(!visible) {
-        return;
-      }
-      self.checkMore($window);
-    });
-    if(loadEnd) {
-      hotPost.message = '已经到底了';
-    }
+    banner.setData(data.banner);
+    self.circleList = data.circle.data;
+    postList.setData(data.post.data);
+    offset = data.post.limit;
   }
-  checkMore($window) {
+  checkMore() {
+    let self = this;
     if(loading || loadEnd) {
       return;
     }
-    let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    scrollY = $window.scrollTop();
-    let bool;
-    bool = scrollY + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    if(util.isBottom()) {
       self.load();
     }
   }
@@ -131,31 +100,19 @@ class Circling extends migi.Component {
     if(loading || loadEnd) {
       return;
     }
-    let hotPost = self.ref.hotPost;
-    loading = true;
-    hotPost.message = '正在加载...';
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON('/h5/circling/postList', { skip, take, circleId: idStack.join(',') }, function(res) {
+    let postList = self.ref.postList;
+    loading = true;
+    ajax = net.postJSON('/h5/circling2/post', { circleId: idStack.join(','), offset }, function(res) {
       if(res.success) {
-        let data = res.data;
-        skip += take;
-        let postList = [];
-        if(data.top1 && data.top1.data) {
-          postList = data.top1.data || [];
-        }
-        if(data.top2 && data.top2.data) {
-          postList = postList.concat(data.top2.data || []);
-        }
-        postList = postList.concat(data.postList.data || []);
-        hotPost.appendData(postList);
-        if(skip >= data.Size) {
+        let data = res.data;console.log(data);
+        postList.appendData(data.data);
+        offset += data.limit;
+        if(offset >= data.count) {
           loadEnd = true;
-          hotPost.message = '已经到底了';
-        }
-        else {
-          hotPost.message = '';
+          postList.message = '已经到底了';
         }
       }
       else {
@@ -175,10 +132,10 @@ class Circling extends migi.Component {
     }
     if(el.scrollLeft + el.offsetWidth + 30 > el.scrollWidth) {
       loadingCircle = true;
-      net.postJSON('/h5/circling/circleList', { skip: circleSkip, take: circleTake }, function(res) {
+      net.postJSON('/h5/circling/circle', { offset: circleOffset }, function(res) {
         if(res.success) {
           let data = res.data;
-          self.circles = self.circles.concat(data.data);
+          // self.circles = self.circles.concat(data.data);
         }
         else {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -234,19 +191,21 @@ class Circling extends migi.Component {
   }
   render() {
     return <div class="circling">
-      <Banner ref="banner"
-              dataList={ this.bannerList }/>
+      <Banner ref="banner"/>
       <div class="circle">
         <label onClick={ this.clickCircle }>圈子</label>
-        <ul onScroll={ this.scroll } onClick={ this.clickTag }>
+        <ul onScroll={ this.scroll }
+            onClick={ this.clickTag }>
         {
-          (this.circles || []).map(function(item) {
-            return <li rel={ item.TagID }>{ item.TagName }</li>;
+          (this.circleList || []).map(function(item) {
+            return <li rel={ item.id }>{ item.name }</li>;
           })
         }
         </ul>
       </div>
-      <HotPost ref="hotPost" message="正在加载..."/>
+      <PostList ref="postList"
+                visible={ true }
+                message="正在加载..."/>
     </div>;
   }
 }

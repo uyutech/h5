@@ -15,30 +15,23 @@ let scrollY = 0;
 let last;
 let hasLoad;
 let ajax;
-let lastId;
 
 let currentPriority = 0;
 let cacheKey = 'find';
 let hash = {};
+let first = {};
 
 class Find extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    self.visible = self.props.visible;
     self.on(migi.Event.DOM, function() {
       self.init();
     });
   }
   @bind list
-  show() {
-    $(this.element).removeClass('fn-hide');
-    $(window).scrollTop(scrollY);
-    visible = true;
-  }
-  hide() {
-    $(this.element).addClass('fn-hide');
-    visible = false;
-  }
+  @bind visible
   init() {
     let self = this;
     if(ajax) {
@@ -54,6 +47,15 @@ class Find extends migi.Component {
         let data = res.data;
         self.setData(data, 1);
         jsBridge.setPreference(cacheKey, data);
+        window.addEventListener('scroll', function() {
+          if(self.visible) {
+            for(let i = 0; i < self.ref.item.length; i++) {
+              if(self.ref.item[i].visible) {
+                self.ref.item[i].checkMore();
+              }
+            }
+          }
+        });
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -61,16 +63,6 @@ class Find extends migi.Component {
     }, function(res) {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
-  }
-  refresh() {
-    if(visible) {
-      if(hasLoad) {
-        last.reload();
-      }
-      else {
-        this.init();
-      }
-    }
   }
   setData(data, priority) {
     priority = priority || 0;
@@ -81,6 +73,7 @@ class Find extends migi.Component {
 
     let self = this;
     self.tag = data.tag[0].id;
+    first[self.tag] = true;
 
     self.ref.nav.setData(data.tag);
     self.list = data.tag;
@@ -91,6 +84,10 @@ class Find extends migi.Component {
     for(let i = 0; i < self.list.length; i++) {
       if(self.list[i].id === tag) {
         self.ref.item[i].visible = true;
+        if(!first[tag]) {
+          first[tag] = true;
+          self.ref.item[i].load();
+        }
       }
       else {
         self.ref.item[i].visible = false;
@@ -98,7 +95,7 @@ class Find extends migi.Component {
     }
   }
   render() {
-    return <div class="find">
+    return <div class={ 'find' + (this.visible ? '' : ' fn-hide') }>
       <Nav ref="nav"
            on-change={ this.change }/>
       <div class={ 'cp-message' + (this.list ? ' fn-hide' : '')}>正在加载...</div>
@@ -109,6 +106,7 @@ class Find extends migi.Component {
             cache = hash[item.id]
               = <Item ref="item"
                       tag={ item.id }
+                      kind={ item.kind }
                       message={ '正在加载...' }
                       visible={ !i }/>;
           }

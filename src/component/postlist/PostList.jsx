@@ -12,6 +12,7 @@ class PostList extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    self.visible = self.props.visible;
     self.message = self.props.message;
     self.on(migi.Event.DOM, function() {
       let $list = $(this.ref.list.element);

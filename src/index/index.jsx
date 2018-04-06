@@ -70,25 +70,34 @@ jsBridge.ready(function() {
     migi.eventBus.emit('LOGIN', loginInfo);
   });
 
-  let find = migi.preExist(<Find/>, '#page');
+  let find = migi.preExist(
+    <Find visible={ true }/>,
+    '#page'
+  );
   let my;
   let circling;
   let follow;
   let last = find;
 
   botNav.on('change', function(i) {
-    last.hide();
+    last.visible = false;
     if(i === 0) {
       topNav.hide();
       if(!find) {
-        find = migi.render(<Find/>, '#page');
+        find = migi.render(
+          <Find visible={ true }/>,
+          '#page'
+        );
       }
       last = find;
     }
     else if(i === 1) {
       topNav.show();
       if(!circling) {
-        circling = migi.render(<Circling/>, '#page');
+        circling = migi.render(
+          <Circling visible={ true }/>,
+          '#page'
+        );
       }
       last = circling;
     }
@@ -106,7 +115,7 @@ jsBridge.ready(function() {
       }
       last = my;
     }
-    last.show();
+    last.visible = true;
     migi.eventBus.emit('REFRESH_MESSAGE');
   });
   migi.render(<BotFn/>, '#page');
