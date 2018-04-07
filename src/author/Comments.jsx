@@ -7,7 +7,6 @@ import net from '../common/net';
 import CommentBar from '../component/commentbar/CommentBar.jsx';
 import Comment from '../component/comment/Comment.jsx';
 
-let limit;
 let offset;
 let ajax;
 let loading;
@@ -23,15 +22,9 @@ class Comments extends migi.Component {
   setData(authorId, data) {
     let self = this;
     self.authorId = authorId;
-    limit = data.limit;
-    offset = limit;
-    if(data.count) {
+    if(data) {
+      offset = data.limit;
       self.ref.comment.setData(data.data);
-      if(data.count > limit) {
-        window.addEventListener('scroll', function() {
-          self.checkMore();
-        });
-      }
     }
   }
   checkMore() {
@@ -43,27 +36,29 @@ class Comments extends migi.Component {
       self.load();
     }
   }
+  listenScroll() {
+    let self = this;
+    window.addEventListener('scroll', function() {
+      self.checkMore();
+    });
+  }
   load() {
     let self = this;
-    let comment = self.ref.comment;
     if(ajax) {
       ajax.abort();
     }
+    let comment = self.ref.comment;
     loading = true;
-    comment.message = '正在加载...';
-    ajax = net.postJSON('/h5/author2/comment', { authorId: self.authorId, offset, limit, }, function(res) {
+    ajax = net.postJSON('/h5/author2/comment', { authorId: self.authorId, offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        offset += limit;
         if(data.data.length) {
           comment.appendData(data.data);
         }
+        offset += limit;
         if(offset >= data.count) {
           loadEnd = true;
           comment.message = '已经到底了';
-        }
-        else {
-          comment.message = '';
         }
       }
       else {
@@ -84,8 +79,7 @@ class Comments extends migi.Component {
     return <div class={ 'comments' + (this.visible ? '' : ' fn-hide') }>
       <CommentBar ref="commentBar"/>
       <Comment ref="comment"
-               on-chooseSubComment={ function(rid, cid, name, n) { this.emit('chooseSubComment', rid, cid, name, n) } }
-               on-closeSubComment={ function() { this.emit('closeSubComment') } }/>
+               message="正在加载..."/>
     </div>;
   }
 }

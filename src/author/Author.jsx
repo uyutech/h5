@@ -46,13 +46,8 @@ class Author extends migi.Component {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
-        let cache = {};
-        Object.keys(data).forEach(function(k) {
-          if(k !== 'comment') {
-            cache[k] = data[k];
-          }
-        });
-        jsBridge.setPreference(cacheKey, cache);
+        self.ref.comments.listenScroll();
+        jsBridge.setPreference(cacheKey, data);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -97,9 +92,7 @@ class Author extends migi.Component {
       }
     }
 
-    if(data.comment) {
-      comments.setData(self.authorId, data.comment);
-    }
+    comments.setData(self.authorId, data.commentList);
     // if(data.dynamic && data.dynamic.data && data.dynamic.data.length) {
     //   self.showDynamic = true;
     //   self.ref.dynamics.authorId = self.authorId;
