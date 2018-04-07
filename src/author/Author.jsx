@@ -194,7 +194,8 @@ class Author extends migi.Component {
       <Background ref="background"/>
       <Nav ref="nav"
            on-follow={ this.follow }/>
-      <ul class="index" onClick={ { li: this.clickType } }>
+      <ul class="index"
+          onClick={ { li: this.clickType } }>
         <li class={ (this.showHome ? '' : 'fn-hide ') + (this.index === 0 ? 'cur' : '') }
             rel={ 0 }>主页</li>
         <li class={ (this.showWork ? '' : 'fn-hide ') + (this.index === 1 ? 'cur' : '') }

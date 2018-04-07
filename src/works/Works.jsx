@@ -43,13 +43,8 @@ class Works extends migi.Component {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
-        let cache = {};
-        Object.keys(data).forEach(function(k) {
-          if(k !== 'comment') {
-            cache[k] = data[k];
-          }
-        });
-        jsBridge.setPreference(cacheKey, cache);
+        self.ref.comments.listenScroll();
+        jsBridge.setPreference(cacheKey, data);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -108,22 +103,20 @@ class Works extends migi.Component {
     }
     self.setMedia(avList[index]);
 
-    self.setColumn(imgList, data.comment);
+    self.setColumn(imgList, data.commentList);
     author.list = data.authorList;
     text.list = textList;
     select.id = avList[index].id;
     select.list = avList;
     poster.list = imgList;
 
-    if(data.comment) {
-      comments.setData(self.worksId, data.comment);
-    }
+    comments.setData(self.worksId, data.commentList);
   }
   setMedia(item) {
     let self = this;
     self.ref.media.setData(item || null);
   }
-  setColumn(imgList, comment) {
+  setColumn(imgList, commentList) {
     let self = this;
     let column = self.ref.column;
     let list = [
@@ -140,7 +133,7 @@ class Works extends migi.Component {
     }
     list.push({
       id: 2,
-      name: '评论 ' + (comment ? comment.count || '' : ''),
+      name: '评论 ' + (commentList ? commentList.count || '' : ''),
     });
     self.curColumn = 0;
     column.list = list;

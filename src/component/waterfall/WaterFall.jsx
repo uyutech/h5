@@ -157,7 +157,7 @@ class WaterFall extends migi.Component {
   }
   checkPool() {
     let self = this;
-    while(self.pool.length) {
+    while(self.pool && self.pool.length) {
       let item = self.pool[0];
       if(item.work.width && item.work.height) {
         self.append(item);

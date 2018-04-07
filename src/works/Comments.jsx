@@ -9,7 +9,6 @@ import net from '../common/net';
 import CommentBar from '../component/commentbar/CommentBar.jsx';
 import Comment from '../component/comment/Comment.jsx';
 
-let limit;
 let offset;
 let ajax;
 let loading;
@@ -38,16 +37,16 @@ class Comments extends migi.Component {
   setData(worksId, data) {
     let self = this;
     self.worksId = worksId;
-    limit = data.limit;
-    offset = limit;
-    if(data.count) {
+    if(data) {
+      offset = data.limit;
       self.ref.comment.setData(data.data);
-      if(data.count > limit) {
-        window.addEventListener('scroll', function() {
-          self.checkMore();
-        });
-      }
     }
+  }
+  listenScroll() {
+    let self = this;
+    window.addEventListener('scroll', function() {
+      self.checkMore();
+    });
   }
   checkMore() {
     let self = this;
@@ -65,20 +64,16 @@ class Comments extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    comment.message = '正在加载...';
-    ajax = net.postJSON('/h5/works2/comment', { worksId: self.worksId, offset, limit, }, function(res) {
+    ajax = net.postJSON('/h5/works2/commentList', { worksId: self.worksId, offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        offset += limit;
         if(data.data.length) {
           comment.appendData(data.data);
         }
+        offset += data.limit;
         if(offset >= data.count) {
           loadEnd = true;
           comment.message = '已经到底了';
-        }
-        else {
-          comment.message = '';
         }
       }
       else {
@@ -109,6 +104,7 @@ class Comments extends migi.Component {
     return <div class={ 'mod-comment' + (this.visible ? '' : ' fn-hide') }>
       <CommentBar ref="commentBar"/>
       <Comment ref="comment"
+               message="正在加载..."
                on-chooseSubComment={ this.chooseSubComment }/>
     </div>;
   }

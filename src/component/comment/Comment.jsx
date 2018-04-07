@@ -24,19 +24,19 @@ class Comment extends migi.Component {
       let $root = $(self.element);
       $root.on('click', '.like', function() {
         let $elem = $(this);
-        let commentID = $elem.attr('cid');
-        net.postJSON(self.props.zanUrl, { commentID }, function(res) {
+        let commentId = $elem.attr('rel');
+        let isLike = $elem.hasClass('liked');
+        let url = isLike ? '/h5/comment2/unLike' : '/h5/comment2/like';
+        net.postJSON(url, { commentId }, function(res) {
           if(res.success) {
             let data = res.data;
-            if(data.State === 'likeWordsUser') {
+            if(data.state) {
               $elem.addClass('liked');
-              // $elem.text('已赞');
             }
             else {
               $elem.removeClass('liked');
-              // $elem.text('点赞');
             }
-            // $elem.text(data.LikeCount);
+            $elem.text(data.count || '');
           }
           else if(res.code === 1000) {
             migi.eventBus.emit('NEED_LOGIN');
@@ -45,20 +45,6 @@ class Comment extends migi.Component {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
           }
         });
-      });
-      $root.on('click', '.list2 pre, .slide2 .sub', function() {
-        let $this = $(this);
-        let $li = $this.closest('li');
-        if($li.hasClass('on')) {
-          $li.removeClass('on');
-          let $slide = $last.find('.slide');
-          self.emit('chooseSubComment', $slide.attr('rid'), $slide.attr('cid'), $slide.attr('name'));
-        }
-        else {
-          $li.parent().find('.on').removeClass('on');
-          $li.addClass('on');
-          self.emit('chooseSubComment', $this.attr('rid'), $this.attr('cid'), $this.attr('name'));
-        }
       });
       $root.on('click', '.fn', function() {
         let $fn = $(this);
@@ -153,13 +139,6 @@ class Comment extends migi.Component {
           title,
           transparentTitle: true,
         });
-      });
-      // TODO: del
-      migi.eventBus.on('subCmtDelTo', function() {
-        if($last && $last.hasClass('on')) {
-          self.hideLast();
-          self.emit('closeSubComment');
-        }
       });
     });
   }
@@ -280,17 +259,18 @@ class Comment extends migi.Component {
       </div>
       <div class="c">
         {
-          item.ParentContent
-            ? <p class="quote">
-              <label>回复@{ item.ParentSendUserNickName }：</label>
-              <span>{ item.ParentContent }</span>
-            </p>
+          item.quote
+            ? <div class="quote">
+              <span>回复@{ item.quote.isAuthor ? item.quote.name : item.quote.nickname }：</span>
+              <p>{ item.quote.content }</p>
+            </div>
             : ''
         }
         <pre>{ item.content }<span class="placeholder"/></pre>
         <div class="slide">
-          <small class="like"></small>
-          <small class="sub"></small>
+          <small class={ 'like' + (item.isLike ? ' liked' : '') }
+                 rel={ item.id }>{ item.likeCount || '' }</small>
+          <small class="sub"/>
         </div>
         <b class="arrow"/>
       </div>

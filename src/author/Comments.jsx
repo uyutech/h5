@@ -20,12 +20,6 @@ class Comments extends migi.Component {
     self.visible = self.props.visible;
   }
   @bind visible
-  show() {
-    this.visible = true;
-  }
-  hide() {
-    this.visible = false;
-  }
   setData(authorId, data) {
     let self = this;
     self.authorId = authorId;
