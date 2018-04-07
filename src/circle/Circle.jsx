@@ -79,13 +79,11 @@ class Circle extends migi.Component {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
-        let cache = {};
-        Object.keys(data).forEach(function(k) {
-          if(k !== 'comment') {
-            cache[k] = data[k];
-          }
+        jsBridge.setPreference(cacheKey, data);
+
+        window.addEventListener('scroll', function() {
+          self.checkMore();
         });
-        jsBridge.setPreference(cacheKey, cache);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -104,17 +102,11 @@ class Circle extends migi.Component {
     let nav = self.ref.nav;
     let postList = self.ref.postList;
 
-    nav.setData(data.info);
+    nav.setData(data.info, data.isFollow, data.fansCount);
 
-    if(data.post && data.post.count) {
-      offset = limit = data.post.limit;
-      postList.setData(data.post.data);
-      if(data.post.count > limit) {
-        window.addEventListener('scroll', function() {
-          self.checkMore();
-        });
-      }
-    }
+    offset = data.postList.limit;
+    postList.setData(data.postList.data);
+    loadEnd = offset >= data.postList.count;
 
     // let imageView = self.ref.imageView;
     // imageView.on('clickLike', function(sid) {
@@ -248,6 +240,7 @@ class Circle extends migi.Component {
     return <div class="circle">
       <Nav ref="nav"/>
       <PostList ref="postList"
+                visible={ true }
                 message={ '正在加载...' }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }

@@ -214,7 +214,7 @@ class Follow extends migi.Component {
       return;
     }
     self.type = tvd.props.rel;
-    skip = 0;
+    offset = 0;
     loading = loadEnd = false;
     self.ref.hotPost.clearData();
     self.load();

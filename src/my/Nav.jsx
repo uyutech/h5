@@ -29,7 +29,7 @@ class Nav extends migi.Component {
   @bind fansCount
   setData(data, followPersonCount, fansCount) {
     data = data || {};
-    let self = this;console.log(data.sign);
+    let self = this;
     self.userId = data.id;
     self.headUrl = data.headUrl;
     self.nickname = data.nickname;

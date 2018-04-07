@@ -12,16 +12,20 @@ class Nav extends migi.Component {
   }
   @bind circleId
   @bind circleName
+  @bind isFollow
+  @bind fansCount
   @bind desc
   @bind banner
   @bind cover
-  setData(data) {
+  setData(data, isFollow, fansCount) {
     let self = this;
     self.circleId = data.id;
     self.circleName = data.name;
     self.desc = data.describe;
     self.banner = data.banner;
     self.cover = data.cover;
+    self.isFollow = isFollow;
+    self.fansCount = fansCount;
   }
   render() {
     return <div class="mod-nav">
@@ -32,8 +36,8 @@ class Nav extends migi.Component {
         <div class="txt">
           <h1>{ this.circleName }</h1>
           <div class="rel">
-            <span class="count">{ this.count || 0 }</span>
-            <span class={ 'join' + (this.circleId ? '' : ' fn-hide') + (this.joined ? ' joined' : '') } onClick={ this.click }>{ this.joined ? '已经加入' : '加入圈子' }</span>
+            <span class="count">{ this.fansCount || 0 }</span>
+            <span class={ 'join' + (this.circleId ? '' : ' fn-hide') + (this.isFollow ? ' joined' : '') } onClick={ this.click }>{ this.isFollow ? '已经加入' : '加入圈子' }</span>
           </div>
         </div>
       </div>
