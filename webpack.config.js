@@ -13,7 +13,7 @@ module.exports = {
     post: './src/post/index.jsx',
     subcomment: './src/subcomment/index.jsx',
     user: './src/user/index.jsx',
-    relation: './src/relation/index.jsx',
+    myrelation: './src/myrelation/index.jsx',
     message: './src/message/index.jsx',
     mypost: './src/mypost/index.jsx',
     myfavor: './src/myfavor/index.jsx',

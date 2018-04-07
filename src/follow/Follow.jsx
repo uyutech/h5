@@ -23,7 +23,6 @@ let interval;
 let isPause;
 let lastId;
 
-
 let currentPriority = 0;
 let cacheKey = 'follow';
 

@@ -10,7 +10,7 @@ module.exports = {
     post: './src/post/pre.jsx',
     subcomment: './src/subcomment/pre.jsx',
     user: './src/user/pre.jsx',
-    relation: './src/relation/pre.jsx',
+    myrelation: './src/myrelation/pre.jsx',
     message: './src/message/pre.jsx',
     mypost: './src/mypost/pre.jsx',
     myfavor: './src/myfavor/pre.jsx',

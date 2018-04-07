@@ -12,7 +12,7 @@ let currentPriority = 0;
 let cacheKey;
 let ajax;
 
-class Relation extends migi.Component {
+class MyRelation extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
@@ -27,7 +27,7 @@ class Relation extends migi.Component {
         self.setData(cache, 0);
       }
     });
-    ajax = net.postJSON('/h5/relation2/index', function(res) {
+    ajax = net.postJSON('/h5/my2/relation2', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -94,4 +94,4 @@ class Relation extends migi.Component {
   }
 }
 
-export default Relation;
+export default MyRelation;

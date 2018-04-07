@@ -4,9 +4,9 @@
 
 'use strict';
 
-import Relation from './Relation.jsx';
+import MyRelation from './MyRelation.jsx';
 
 let s = '';
-s += migi.preRender(<Relation/>);
+s += migi.preRender(<MyRelation/>);
 
 export default s;

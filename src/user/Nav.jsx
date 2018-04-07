@@ -141,8 +141,7 @@ class Nav extends migi.Component {
     return <div class="mod-nav">
       <div class="profile">
         <div class="pic">
-          <img src={ util.autoSsl(util.img200_200_80(this.headUrl)) || '/src/common/head.png' }
-               onClick={ this.clickPic }/>
+          <img src={ util.autoSsl(util.img200_200_80(this.headUrl)) || '/src/common/head.png' }/>
         </div>
         <div class="txt">
           <div class="n">

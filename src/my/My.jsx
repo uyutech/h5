@@ -11,63 +11,76 @@ import Background from '../component/background/Background.jsx';
 
 const pack = require('../../package.json');
 
+let scrollY = 0;
 let ajax;
+
+let currentPriority = 0;
+let cacheKey = 'my';
 
 class My extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.coins = {};
-    if(self.props.loginInfo) {
-      let userInfo = self.props.loginInfo.userInfo;
-      if(userInfo) {
-        self.isLogin = true;
-      }
-    }
+    self.visible = self.props.visible;
+    // self.coins = {};
+    // if(self.props.loginInfo) {
+    //   let userInfo = self.props.loginInfo.userInfo;
+    //   if(userInfo) {
+    //     self.isLogin = true;
+    //   }
+    // }
     self.on(migi.Event.DOM, function() {
-      migi.eventBus.on('LOGIN', function(loginInfo) {
-        self.setData(loginInfo);
-      });
+      // migi.eventBus.on('LOGIN', function(loginInfo) {
+      //   self.setData(loginInfo);
+      // });
       self.init();
     });
-    jsBridge.on('resume', function(e) {
-      if(e.data && e.data.guide) {
-        self.init();
-      }
-      if(e.data && e.data.loginOut) {
-        self.isLogin = false;
-        self.ref.nav.userInfo = null;
-      }
-    });
+    // jsBridge.on('resume', function(e) {
+    //   if(e.data && e.data.guide) {
+    //     self.init();
+    //   }
+    //   if(e.data && e.data.loginOut) {
+    //     self.isLogin = false;
+    //     self.ref.nav.userInfo = null;
+    //   }
+    // });
+  }
+  get visible() {
+    return this._visible;
+  }
+  @bind
+  set visible(v) {
+    this._visible = v;
+    util.scrollY(scrollY);
   }
   @bind isLogin
   @bind coins
-  show() {
-    $(this.element).removeClass('fn-hide');
-  }
-  hide() {
-    $(this.element).addClass('fn-hide');
-  }
   init() {
     let self = this;
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON('/h5/my/index', function(res) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
+      }
+    });
+    ajax = net.postJSON('/h5/my2/index', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data);
-        jsBridge.setPreference('loginInfo', data);
+        self.isLogin = true;
+        jsBridge.setPreference(cacheKey, data);
+
         $.cookie('isLogin', true);
-        $.cookie('uid', data.userInfo.UID);
-        $.cookie('userType', data.userInfo.UserType);
+        $.cookie('uid', data.info.id);
       }
       else if(res.code === 1000) {
         self.isLogin = false;
-        jsBridge.delPreference('loginInfo');
+        jsBridge.delPreference(cacheKey);
+
         $.cookie('isLogin', null);
         $.cookie('uid', null);
-        $.cookie('userType', null);
         migi.eventBus.emit('LOGIN_OUT');
       }
       else {
@@ -77,62 +90,73 @@ class My extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  setData(data) {
+  setData(data, priority) {
+    priority = priority || 0;
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
     let self = this;
-    self.userInfo = data.userInfo;
-    self.oauthInfo = data.oauthInfo || [];
-    self.oauthHash = {};
-    self.oauthInfo.forEach(function(item) {
-      self.oauthHash[item.OpenType] = item;
-    });
-    self.bonusPoint = data.bonusPoint;
-    self.coins = data.coins || {};
-
-    self.isLogin = true;
-
     let nav = self.ref.nav;
-    nav.userInfo = data.userInfo;
 
-    let now = Date.now();
-    let lastUpdateNickNameTime = data.lastUpdateNickNameTime;
-    if(lastUpdateNickNameTime) {
-      lastUpdateNickNameTime = new Date(lastUpdateNickNameTime);
+    if(data && data.info) {
+      self.coins = data.info.coins;
     }
-    else {
-      lastUpdateNickNameTime = 0;
-    }
-    let updateNickNameTimeDiff = now - lastUpdateNickNameTime;
-    let lastUpdateHeadTime = data.lastUpdateHeadTime;
-    if(lastUpdateHeadTime) {
-      lastUpdateHeadTime = new Date(lastUpdateHeadTime);
-    }
-    else {
-      lastUpdateHeadTime = 0;
-    }
-    let updateHeadTimeDiff = now - lastUpdateHeadTime;
-
-    nav.updateNickNameTimeDiff = updateNickNameTimeDiff;
-    nav.updateHeadTimeDiff = updateHeadTimeDiff;
-
-    let step = self.userInfo.User_Reg_Stat || 0;
-    let basicAuthor = null;
-    let userToAuthorList = self.userInfo.userToAuthorList || [];
-    for(let i = 0, len = userToAuthorList.length; i < len; i++) {
-      if(userToAuthorList[i].Type === 0) {
-        basicAuthor = userToAuthorList[i];
-        break;
-      }
-    }
-    if((basicAuthor && basicAuthor.State === 0) || step < 99) {
-      jsBridge.pushWindow('/guide.html?step=' + step + '&nickName='
-        + encodeURIComponent(self.userInfo.NickName || '')
-        + '&isAuthor=' + !!basicAuthor
-        + '&authorId=' + (basicAuthor ? basicAuthor.AuthorID : '')
-        + '&authorName=' + (basicAuthor ? basicAuthor.AuthorName : '')
-        + '&authorState=' + (basicAuthor ? basicAuthor.State : ''), {
-        title: '用户引导',
-      });
-    }
+    nav.setData(data.info, data.followPersonCount, data.fansCount);
+    // self.userInfo = data.userInfo;
+    // self.oauthInfo = data.oauthInfo || [];
+    // self.oauthHash = {};
+    // self.oauthInfo.forEach(function(item) {
+    //   self.oauthHash[item.OpenType] = item;
+    // });
+    // self.bonusPoint = data.bonusPoint;
+    //
+    // self.isLogin = true;
+    //
+    // let nav = self.ref.nav;
+    // nav.userInfo = data.userInfo;
+    //
+    // let now = Date.now();
+    // let lastUpdateNickNameTime = data.lastUpdateNickNameTime;
+    // if(lastUpdateNickNameTime) {
+    //   lastUpdateNickNameTime = new Date(lastUpdateNickNameTime);
+    // }
+    // else {
+    //   lastUpdateNickNameTime = 0;
+    // }
+    // let updateNickNameTimeDiff = now - lastUpdateNickNameTime;
+    // let lastUpdateHeadTime = data.lastUpdateHeadTime;
+    // if(lastUpdateHeadTime) {
+    //   lastUpdateHeadTime = new Date(lastUpdateHeadTime);
+    // }
+    // else {
+    //   lastUpdateHeadTime = 0;
+    // }
+    // let updateHeadTimeDiff = now - lastUpdateHeadTime;
+    //
+    // nav.updateNickNameTimeDiff = updateNickNameTimeDiff;
+    // nav.updateHeadTimeDiff = updateHeadTimeDiff;
+    //
+    // let step = self.userInfo.User_Reg_Stat || 0;
+    // let basicAuthor = null;
+    // let userToAuthorList = self.userInfo.userToAuthorList || [];
+    // for(let i = 0, len = userToAuthorList.length; i < len; i++) {
+    //   if(userToAuthorList[i].Type === 0) {
+    //     basicAuthor = userToAuthorList[i];
+    //     break;
+    //   }
+    // }
+    // if((basicAuthor && basicAuthor.State === 0) || step < 99) {
+    //   jsBridge.pushWindow('/guide.html?step=' + step + '&nickName='
+    //     + encodeURIComponent(self.userInfo.NickName || '')
+    //     + '&isAuthor=' + !!basicAuthor
+    //     + '&authorId=' + (basicAuthor ? basicAuthor.AuthorID : '')
+    //     + '&authorName=' + (basicAuthor ? basicAuthor.AuthorName : '')
+    //     + '&authorState=' + (basicAuthor ? basicAuthor.State : ''), {
+    //     title: '用户引导',
+    //   });
+    // }
   }
   clickWeibo() {
     let self = this;
@@ -173,34 +197,22 @@ class My extends migi.Component {
     this.init();
   }
   clickLogin() {
-    if(jsBridge.appVersion) {
-      let version = jsBridge.appVersion.split('.');
-      let minor = parseInt(version[1]) || 0;
-      if(minor < 4) {
-        jsBridge.toast('转圈账号注册登录功能在0.4版本以后提供，请更新客户端~');
-        return;
-      }
-    }
-    else if(jsBridge.isInApp) {
-      jsBridge.toast('转圈账号注册登录功能在0.4版本以后提供，请更新客户端~');
-      return;
-    }
     jsBridge.pushWindow('/passport.html', {
       title: '登录注册',
       backgroundColor: '#b6d1e8',
     });
   }
   render() {
-    return <div class="my">
+    return <div class={ 'my' + (this.visible ? '' : ' fn-hide') }>
       <Background/>
       <Nav ref="nav"
-           loginInfo={ this.props.loginInfo }/>
+           cacheKey={ cacheKey }/>
       <ul class={ 'list' + (this.isLogin ? '' : ' fn-hide') }
           onClick={ { a: this.clickLink } }>
         <li><a href="/message.html" class="message">圈消息</a></li>
-        <li><a href="/relation.html" class="relation">圈关系</a></li>
+        <li><a href="/myrelation.html" class="relation">圈关系</a></li>
         <li>
-          <a href="/mall.html" class="mall">圈商城<small>（<b/>圈币：{ this.coins.Coins || 0 }）</small></a>
+          <a href="/mall.html" class="mall">圈商城<small>（<b/>圈币：{ this.coins || 0 }）</small></a>
         </li>
       </ul>
       <ul class={ 'list' + (this.isLogin ? '' : ' fn-hide') }

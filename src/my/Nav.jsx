@@ -19,80 +19,48 @@ class Nav extends migi.Component {
     }
   }
   @bind userId
-  @bind head
-  @bind userName
+  @bind nickname
+  @bind headUrl
   @bind sex
-  @bind followNum
-  @bind fansNum
   @bind sign
-  @bind isAuthor
-  @bind updateNickNameTimeDiff
-  @bind updateHeadTimeDiff
-  set userInfo(userInfo) {
-    userInfo = userInfo || {};
-    this._userInfo = userInfo;
-    let self = this;
-    self.userId = userInfo.UID;
-    self.head = userInfo.Head_Url;
-    self.userName = userInfo.NickName;
-    self.sex = userInfo.Sex;
-    self.followNum = userInfo.FollowNumber;
-    self.fansNum = userInfo.FansNumber;
-    self.sign = userInfo.User_Sign;
-    self.isAuthor = userInfo.ISAuthor;
+  @bind isFollow
+  @bind followPersonCount
+  @bind isFans
+  @bind fansCount
+  setData(data, followPersonCount, fansCount) {
+    data = data || {};
+    let self = this;console.log(data.sign);
+    self.userId = data.id;
+    self.headUrl = data.headUrl;
+    self.nickname = data.nickname;
+    self.sex = data.sex;
+    self.sign = data.sign;
+    self.followPersonCount = followPersonCount;
+    self.fansCount = fansCount;
   }
-  get userInfo() {
-    return this._userInfo;
+  clickPic(e) {
+    if(!util.isLogin()) {
+      e.preventDefault();
+    }
   }
-  clickPic() {
-    let self = this;
-    // if(self.updateHeadTimeDiff < 24 * 60 * 60 * 1000) {
-    //   jsBridge.toast('头像一天只能修改一次哦~');
-    //   return;
-    // }
-    jsBridge.album(function(res) {
-      if(res.success) {
-        let img = Array.isArray(res.base64) ? res.base64[0] : res.base64;
-        net.postJSON('/h5/my/uploadHead', { img }, function(res) {
-          if(res.success) {
-            self.head = res.url;
-            self.updateHeadTimeDiff = 0;
-            jsBridge.getPreference('loginInfo', function(loginInfo) {
-              loginInfo.userInfo.Head_Url = res.url;
-              jsBridge.setPreference('loginInfo', loginInfo);
-            });
-          }
-          else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
-          }
-        }, function(res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        });
-      }
-    });
-  }
+  change(e, vd) {}
   clickName() {
     let self = this;
-    // if(self.updateNickNameTimeDiff < 24 * 60 * 60 * 1000) {
-    //   jsBridge.toast('昵称一天只能修改一次哦~');
-    //   return;
-    // }
-    jsBridge.prompt(self.userName, function(res) {
+    jsBridge.prompt(self.nickname, function(res) {
       if(res.success) {
-        let newName = res.value;
-        let length = newName.length;
+        let nickname = res.value;
+        let length = nickname.length;
         if(length < 2 || length > 8) {
           jsBridge.toast('昵称长度需要在2~8个字之间哦~');
           return;
         }
-        if(newName !== self.userName) {
-          net.postJSON('/h5/my/updateNickName', { nickName: newName }, function(res) {
+        if(nickname !== self.nickname) {
+          net.postJSON('/h5/my2/nickname', { value: nickname }, function(res) {
             if(res.success) {
-              self.userName = newName;
-              self.updateNickNameTimeDiff = 0;
-              jsBridge.getPreference('loginInfo', function(loginInfo) {
-                loginInfo.userInfo.NickName = newName;
-                jsBridge.setPreference('loginInfo', loginInfo);
+              self.nickname = nickname;
+              jsBridge.getPreference(self.props.cacheKey, function(info) {
+                info.nickname = nickname;
+                jsBridge.setPreference(self.props.cacheKey, info);
               });
             }
             else {
@@ -109,16 +77,22 @@ class Nav extends migi.Component {
     let self = this;
     jsBridge.prompt(self.sign, function(res) {
       if(res.success) {
-        let newSign = res.value;
-        let length = newSign.length;
+        let sign = res.value;
+        let length = sign.length;
         if(length > 45) {
           jsBridge.toast('签名长度不能超过45个字哦~');
           return;
         }
-        if(newSign !== self.sign) {
-          net.postJSON('/h5/my/updateSign', { sign: newSign }, function(res) {
+        if(sign !== self.sign) {
+          net.postJSON('/h5/my2/sign', { value: sign }, function(res) {
             if(res.success) {
-              self.sign = newSign;
+              self.sign = sign;
+              jsBridge.getPreference(self.props.cacheKey, function(data) {
+                if(data) {
+                  data.info.sign = sign;
+                  jsBridge.setPreference(self.props.cacheKey, data);
+                }
+              });
             }
             else {
               jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -144,27 +118,25 @@ class Nav extends migi.Component {
     return <div class="nav">
       <div class="profile">
         <div class="pic">
-          <img src={ util.autoSsl(util.img200_200_80(this.head || '/src/common/head.png')) }
-               onClick={ this.clickPic }/>
+          <img src={ util.autoSsl(util.img200_200_80(this.headUrl || '/src/common/head.png')) }/>
+          <input type="file"
+                 onClick={ this.clickPic }
+                 onChange={ this.change }/>
         </div>
         <div class="txt">
           <div class="n">
-            <h3>{ this.userName }</h3>
+            <h3>{ this.nickname }</h3>
             <b class={ 'edit' + (this.userId ? '' : ' fn-hide') } onClick={ this.clickName }/>
           </div>
           <p>uid: { (this.userId ? this.userId.toString() : '').replace(/^20180*/, '') }</p>
         </div>
         <button onClick={ this.clickPersonal }>个人主页</button>
-        {
-          this.isAuthor
-            ? <button class="author"
-                      onClick={ this.clickAuthor }>作者主页</button>
-            : ''
-        }
+        <button class={ 'author' + (this.isAuthor ? '' : ' fn-hide') }
+                onClick={ this.clickAuthor }>作者主页</button>
       </div>
       <ul class="num">
-        <li>关注<strong>{ this.followNum || 0 }</strong></li>
-        <li>粉丝<strong>{ this.fansNum || 0 }</strong></li>
+        <li>关注<strong>{ this.followPersonCount || 0 }</strong></li>
+        <li>粉丝<strong>{ this.fansCount || 0 }</strong></li>
       </ul>
       <div class="sign">
         <label>签名</label>

@@ -4,14 +4,14 @@
 
 'use strict';
 
-import './relation.html';
+import './myrelation.html';
 import './index.less';
 
-import Relation from './Relation.jsx';
+import MyRelation from './MyRelation.jsx';
 
 jsBridge.ready(function() {
   let relation = migi.preExist(
-    <Relation/>,
+    <MyRelation/>,
     '#page'
   );
   relation.init();
