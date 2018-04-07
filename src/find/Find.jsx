@@ -10,14 +10,13 @@ import util from '../common/util';
 import Nav from './Nav.jsx';
 import Item from './Item.jsx';
 
-let visible;
 let scrollY = 0;
-let last;
-let hasLoad;
+
 let ajax;
 
 let currentPriority = 0;
 let cacheKey = 'find';
+
 let hash = {};
 let first = {};
 
@@ -31,7 +30,14 @@ class Find extends migi.Component {
     });
   }
   @bind list
-  @bind visible
+  get visible() {
+    return this._visible;
+  }
+  @bind
+  set visible(v) {
+    this._visible = v;
+    util.scrollY(scrollY);
+  }
   init() {
     let self = this;
     if(ajax) {
@@ -54,6 +60,7 @@ class Find extends migi.Component {
                 self.ref.item[i].checkMore();
               }
             }
+            scrollY = util.scrollY();
           }
         });
       }

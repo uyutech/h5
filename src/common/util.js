@@ -8,49 +8,24 @@ let util = {
   isLogin: function() {
     return $.cookie('isLogin') === 'true';
   },
-  isIPhone: function(){
-    return navigator.appVersion.match(/iphone/gi);
-  },
-  goto: function(url) {
-    location.href = url;
-  },
   autoSsl: function(url) {
     if(!/\/\/zhuanquan\./i.test(url) && !/\.sinaimg\.cn\//i.test(url)) {
       return url;
     }
     return (url || '').replace(/^https?:\/\//i, '//');
   },
-  img: function(url) {
+  img: function(url, w, h, q) {
     url = url || '';
     url = url.trim();
     if(!/\/\/zhuanquan\./i.test(url)) {
       return url;
     }
-    return url ? url.replace(/\.(\w+)-\d*_\d*_\d*/, '.$1') : url;
-  },
-  img1600__80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
+    url = url.replace(/\.(\w+)-\d*_\d*_\d*/, '.$1');
+    if(w === undefined) {
       return url;
     }
-    return url ? util.img(url) + '-1600__80' : url;
-  },
-  img1296_1296_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-1296_1296_80' : url;
-  },
-  img1200__80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-1200__80' : url;
-  },
-  img980_980_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-980_980_80' : url;
+    url += '-' + (w ? w : '') + '_' + (h ? h : '') + '_' + (q ? q : '');
+    return url;
   },
   img750_750_80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {
@@ -436,10 +411,16 @@ let util = {
   },
   isBottom: function(offset) {
     offset = offset || 30;
-    let y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    let y = this.scrollY();
     let WIN_HEIGHT = document.documentElement.clientHeight;
     let HEIGHT = document.body.clientHeight;
     return y + WIN_HEIGHT + offset > HEIGHT;
+  },
+  scrollY: function(v) {
+    if(v !== undefined) {
+      window.scrollY = document.documentElement.scrollTop = document.body.scrollTop = v;
+    }
+    return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
   }
 };
 

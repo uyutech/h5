@@ -11,8 +11,8 @@ import Banner from '../find/Banner.jsx';
 import PostList from '../component/postlist/PostList.jsx';
 
 let scrollY = 0;
-let circleSkip = 0;
-let circleTake = 10;
+
+let circleOffset = 0;
 let loadingCircle;
 let loadCircleEnd;
 
@@ -40,7 +40,14 @@ class Circling extends migi.Component {
       // });
     });
   }
-  @bind visible
+  get visible() {
+    return this._visible;
+  }
+  @bind
+  set visible(v) {
+    this._visible = v;
+    util.scrollY(scrollY);
+  }
   @bind circleList
   init() {
     let self = this;
@@ -60,6 +67,7 @@ class Circling extends migi.Component {
         window.addEventListener('scroll', function() {
           if(self.visible) {
             self.checkMore();
+            scrollY = util.scrollY();
           }
         });
       }
@@ -83,6 +91,8 @@ class Circling extends migi.Component {
 
     banner.setData(data.banner);
     self.circleList = data.circle.data;
+    circleOffset = data.circle.limit;
+
     postList.setData(data.post.data);
     offset = data.post.limit;
   }
@@ -107,7 +117,7 @@ class Circling extends migi.Component {
     loading = true;
     ajax = net.postJSON('/h5/circling2/post', { circleId: idStack.join(','), offset }, function(res) {
       if(res.success) {
-        let data = res.data;console.log(data);
+        let data = res.data;
         postList.appendData(data.data);
         offset += data.limit;
         if(offset >= data.count) {
@@ -132,10 +142,14 @@ class Circling extends migi.Component {
     }
     if(el.scrollLeft + el.offsetWidth + 30 > el.scrollWidth) {
       loadingCircle = true;
-      net.postJSON('/h5/circling/circle', { offset: circleOffset }, function(res) {
+      net.postJSON('/h5/circling2/circle', { offset: circleOffset }, function(res) {
         if(res.success) {
           let data = res.data;
-          // self.circles = self.circles.concat(data.data);
+          self.circleList = self.circleList.concat(data.data);
+          circleOffset += data.limit;
+          if(circleOffset >= data.count) {
+            loadCircleEnd = true;
+          }
         }
         else {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -190,7 +204,7 @@ class Circling extends migi.Component {
     this.load();
   }
   render() {
-    return <div class="circling">
+    return <div class={ 'circling' + (this.visible ? '' : ' fn-hide') }>
       <Banner ref="banner"/>
       <div class="circle">
         <label onClick={ this.clickCircle }>圈子</label>
