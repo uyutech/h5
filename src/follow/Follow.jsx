@@ -6,6 +6,7 @@
 
 import net from '../common/net';
 import util from '../common/util';
+import PostList from '../component/postlist/PostList.jsx';
 
 let scrollY = 0;
 
@@ -128,12 +129,16 @@ class Follow extends migi.Component {
     currentPriority = priority;
 
     let self = this;
-    let people = self.ref.people;
+    let postList = self.ref.postList;
 
     self.personList = data.personList.data;
 
     circleOffset = data.circleList.limit;
     self.circleList = data.circleList.data;
+
+    postList.setData(data.postList.data);
+    offset = data.postList.limit;
+    loadEnd = offset >= data.postList.count;
   }
   checkMore() {
     let self = this;
@@ -146,28 +151,19 @@ class Follow extends migi.Component {
   }
   load() {
     let self = this;
-    if(loading) {
-      return;
-    }
-    let hotPost = self.ref.hotPost;
-    loading = true;
-    hotPost.message = '正在加载...';
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON('/h5/follow/postList', { skip, take, type: self.type }, function(res) {
+    let postList = self.ref.postList;
+    loading = true;
+    ajax = net.postJSON('/h5/follow2/postList', { offset, type: self.type }, function(res) {
       if(res.success) {
         let data = res.data;
-        lastId = (data.data[0] || {}).ID;
-        migi.eventBus.emit('FOLLOW_UPDATED');
-        skip += take;
-        hotPost.appendData(data.data);
-        if(skip >= data.Size) {
+        postList.appendData(data.data);
+        offset += data.limit;
+        if(offset >= data.count) {
           loadEnd = true;
-          hotPost.message = '已经到底了';
-        }
-        else {
-          hotPost.message = '';
+          postList.message = '已经到底了';
         }
       }
       else {
@@ -179,7 +175,6 @@ class Follow extends migi.Component {
       loading = false;
     });
   }
-
   scroll(e, vd) {
     let self = this;
     let el = vd.element;
@@ -262,6 +257,9 @@ class Follow extends migi.Component {
         <li class={ this.type === 0 ? 'cur': '' } rel={ 0 }>全部</li>
         <li class={ this.type === 1 ? 'cur': '' } rel={ 1 }>圈友</li>
       </ul>
+      <PostList ref="postList"
+                visible={ true }
+                message="正在加载..."/>
     </div>;
   }
 }
