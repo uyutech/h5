@@ -21,75 +21,75 @@ let interval;
 let isPause;
 let lastId;
 
+
+let currentPriority = 0;
+let cacheKey = 'follow';
+
 class Follow extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    self.type = 0;
+    self.visible = self.props.visible;
     self.on(migi.Event.DOM, function() {
-      visible = true;
       self.init();
-      migi.eventBus.on('LOGIN_OUT', function() {
-        let people = self.ref.people;
-        people.list = [];
-
-        let circles = self.ref.circles;
-        circles.dataList = [];
-
-        let hotPost = self.ref.hotPost;
-        hotPost.clearData();
-
-        self.type = '0';
-      });
-      migi.eventBus.on('LOGIN', function() {
-        if(visible) {
-          self.init();
-        }
-      });
-      jsBridge.on('pause', function() {
-        isPause = true;
-      });
-      jsBridge.on('resume', function() {
-        isPause = false;
-      });
+      // migi.eventBus.on('LOGIN_OUT', function() {
+      //   let people = self.ref.people;
+      //   people.list = [];
+      //
+      //   let circles = self.ref.circles;
+      //   circles.dataList = [];
+      //
+      //   let hotPost = self.ref.hotPost;
+      //   hotPost.clearData();
+      //
+      //   self.type = '0';
+      // });
+      // migi.eventBus.on('LOGIN', function() {
+      //   if(visible) {
+      //     self.init();
+      //   }
+      // });
+      // jsBridge.on('pause', function() {
+      //   isPause = true;
+      // });
+      // jsBridge.on('resume', function() {
+      //   isPause = false;
+      // });
     });
   }
-  @bind type = '0'
-  show() {
-    $(this.element).removeClass('fn-hide');
-    $(window).scrollTop(scrollY);
-    visible = true;
+  get visible() {
+    return this._visible;
   }
-  hide() {
-    $(this.element).addClass('fn-hide');
-    visible = false;
+  @bind
+  set visible(v) {
+    this._visible = v;
+    util.scrollY(scrollY);
   }
-  refresh() {
-    let self = this;
-    if(visible) {
-      if(ajax) {
-        ajax.abort();
-      }
-      loadEnd = loading = false;
-      skip = 0;
-      self.ref.hotPost.clearData();
-      self.load();
-    }
-  }
+  @bind personList
+  @bind type
+  @bind circleList
   init() {
     let self = this;
     if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
-    self.ref.hotPost.message = '正在加载...';
-    net.postJSON('/h5/follow/index', { type: self.type }, function(res) {
+    if(ajax) {
+      ajax.abort();
+    }
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
+      }
+    });
+    net.postJSON('/h5/follow2/index', function(res) {
       if(res.success) {
         let data = res.data;
-        lastId = (data.postList.data[0] || {}).ID;
-        self.setData(data);
-        if(interval) {
-          clearInterval(interval);
-        }
+        self.setData(data, 1);
+        jsBridge.setPreference(cacheKey, data);
+
+        return;
         interval = setInterval(function() {
           if(isPause) {
             return;
@@ -113,30 +113,18 @@ class Follow extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  setData(data) {
+  setData(data, priority) {
+    priority = priority || 0;
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
     let self = this;
-
     let people = self.ref.people;
-    people.list = data.follows || [];
 
-    let circles = self.ref.circles;
-    circles.dataList = data.hotCircle || [];
-
-    let hotPost = self.ref.hotPost;
-    if(data.postList && data.postList.Size > 0) {
-      hotPost.setData(data.postList.data);
-    }
-
-    let $window = $(window);
-    $window.on('scroll', function() {
-      if(!visible) {
-        return;
-      }
-      self.checkMore($window);
-    });
-    if(loadEnd) {
-      self.ref.hotPost.message = '已经到底了';
-    }
+    self.personList = data.personList.data;
+    self.circleList = data.circleList.data;
   }
   checkMore($window) {
     if(loading || loadEnd) {
@@ -200,13 +188,35 @@ class Follow extends migi.Component {
   }
   render() {
     return <div class="follow">
-      <div class="author">
+      <div class="person">
         <h4>关注的人</h4>
-        <People ref="people"
-                more="/relation.html"/>
+        <ul>
+          {
+            (this.personList || []).map(function(item) {
+              return <li>
+                <a class="pic">
+                  <img src={ util.autoSsl(util.img(item.headUrl, 120, 120, 80)) || '/src/common/head.png' }/>
+                </a>
+              </li>;
+            })
+          }
+          <li>
+            <a class="more"
+               href="/relation.html"
+               title="圈关系">查看更多</a>
+          </li>
+        </ul>
       </div>
-      <Circles ref="circles"
-               empty={ '你还没有关注话题哦，快去发现页看看有没有喜欢的话题吧！' }/>
+      <div class="circle">
+        <ul onScroll={ this.scroll }
+            onClick={ this.clickTag }>
+          {
+            (this.circleList || []).map(function(item) {
+              return <li rel={ item.id }>{ item.name }</li>;
+            })
+          }
+        </ul>
+      </div>
       <ul class="type"
           onClick={ { li: this.clickType } }>
         <li class={ this.type === '0' ? 'cur': '' } rel="0">全部</li>

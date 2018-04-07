@@ -12,7 +12,7 @@ class Message extends migi.Component {
     super(...data);
     let self = this;
     self.num = self.props.num;
-    function reload() {
+    function reload() {return;
       jsBridge.getPreference('message-time', function(res) {
         res = res || 0;
         let now = Date.now();
