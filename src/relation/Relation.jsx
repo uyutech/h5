@@ -52,10 +52,10 @@ class Relation extends migi.Component {
     let fans = self.ref.fans;
     let author = self.ref.author;
 
-    friend.setData(data.friend);
-    follow.setData(data.followUser);
-    fans.setData(data.fans);
-    author.setData(data.followAuthor);
+    friend.setData(data.friendList);
+    follow.setData(data.followUserList);
+    fans.setData(data.fansList);
+    author.setData(data.followAuthorList);
   }
   clickTag(e, vd, tvd) {
     if(tvd.props.rel === this.tag) {

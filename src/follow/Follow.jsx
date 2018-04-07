@@ -6,17 +6,18 @@
 
 import net from '../common/net';
 import util from '../common/util';
-import HotPost from '../component/hotpost/HotPost.jsx';
-import People from './People.jsx';
-import Circles from './Circles.jsx';
 
-let take = 10;
-let skip = take;
+let scrollY = 0;
+
+let circleOffset = 0;
+let loadingCircle;
+let loadCircleEnd;
+
 let loading;
 let loadEnd;
 let ajax;
-let visible;
-let scrollY = 0;
+let offset = 0;
+
 let interval;
 let isPause;
 let lastId;
@@ -89,6 +90,12 @@ class Follow extends migi.Component {
         self.setData(data, 1);
         jsBridge.setPreference(cacheKey, data);
 
+        window.addEventListener('scroll', function() {
+          if(self.visible) {
+            self.checkMore();
+            scrollY = util.scrollY();
+          }
+        });
         return;
         interval = setInterval(function() {
           if(isPause) {
@@ -124,19 +131,16 @@ class Follow extends migi.Component {
     let people = self.ref.people;
 
     self.personList = data.personList.data;
+
+    circleOffset = data.circleList.limit;
     self.circleList = data.circleList.data;
   }
-  checkMore($window) {
+  checkMore() {
+    let self = this;
     if(loading || loadEnd) {
       return;
     }
-    let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    scrollY = $window.scrollTop();
-    let bool;
-    bool = scrollY + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    if(util.isBottom()) {
       self.load();
     }
   }
@@ -175,6 +179,41 @@ class Follow extends migi.Component {
       loading = false;
     });
   }
+
+  scroll(e, vd) {
+    let self = this;
+    let el = vd.element;
+    if(loadingCircle || loadCircleEnd) {
+      return;
+    }
+    if(el.scrollLeft + el.offsetWidth + 30 > el.scrollWidth) {
+      loadingCircle = true;
+      net.postJSON('/h5/follow2/circle', { offset: circleOffset }, function(res) {
+        if(res.success) {
+          let data = res.data;
+          self.circleList = self.circleList.concat(data.data);
+          circleOffset += data.limit;
+          if(circleOffset >= data.count) {
+            loadCircleEnd = true;
+          }
+        }
+        else {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        }
+        loadingCircle = false;
+      }, function(res) {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        loadingCircle = false;
+      });
+    }
+  }
+  clickTag(e, vd, tvd) {
+    let id = tvd.props.rel;
+    let title = tvd.props.title;
+    jsBridge.pushWindow('/circle.html?circleId=' + id, {
+      title,
+    });
+  }
   clickType(e, vd, tvd) {
     let self = this;
     if(tvd.props.rel === self.type) {
@@ -187,7 +226,7 @@ class Follow extends migi.Component {
     self.load();
   }
   render() {
-    return <div class="follow">
+    return <div class={ 'follow' + (this.visible ? '' : ' fn-hide') }>
       <div class="person">
         <h4>关注的人</h4>
         <ul>
@@ -212,17 +251,17 @@ class Follow extends migi.Component {
             onClick={ this.clickTag }>
           {
             (this.circleList || []).map(function(item) {
-              return <li rel={ item.id }>{ item.name }</li>;
+              return <li rel={ item.id }
+                         title={ item.name }>{ item.name }</li>;
             })
           }
         </ul>
       </div>
       <ul class="type"
           onClick={ { li: this.clickType } }>
-        <li class={ this.type === '0' ? 'cur': '' } rel="0">全部</li>
-        <li class={ this.type === '1' ? 'cur': '' } rel="1">圈友</li>
+        <li class={ this.type === 0 ? 'cur': '' } rel={ 0 }>全部</li>
+        <li class={ this.type === 1 ? 'cur': '' } rel={ 1 }>圈友</li>
       </ul>
-      <HotPost ref="hotPost"/>
     </div>;
   }
 }

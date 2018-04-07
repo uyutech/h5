@@ -64,12 +64,12 @@ class User extends migi.Component {
     let nav = self.ref.nav;
     let postList = self.ref.postList;
 
-    nav.setData(data.info, data.followCount, data.fansCount, data.isFollow, data.isFans);
+    nav.setData(data.info, data.followPersonCount, data.fansCount, data.isFollow, data.isFans);
 
-    if(data.post && data.post.count) {
-      offset = limit = data.post.limit;
-      postList.setData(data.post.data);
-      if(data.post.count > limit) {
+    if(data.postList && data.postList.count) {
+      offset = limit = data.postList.limit;
+      postList.setData(data.postList.data);
+      if(data.postList.count > limit) {
         window.addEventListener('scroll', function() {
           self.checkMore();
         });
@@ -80,19 +80,18 @@ class User extends migi.Component {
       }
     }
 
-    return;
-    let imageView = self.ref.imageView;
-    imageView.on('clickLike', function(sid) {
-      hotPost.like(sid, function(res) {
-        imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
-      });
-    });
-    jsBridge.on('back', function(e) {
-      if(!imageView.isHide()) {
-        e.preventDefault();
-        imageView.hide();
-      }
-    });
+    // let imageView = self.ref.imageView;
+    // imageView.on('clickLike', function(sid) {
+    //   hotPost.like(sid, function(res) {
+    //     imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
+    //   });
+    // });
+    // jsBridge.on('back', function(e) {
+    //   if(!imageView.isHide()) {
+    //     e.preventDefault();
+    //     imageView.hide();
+    //   }
+    // });
   }
   checkMore() {
     let self = this;
@@ -110,7 +109,7 @@ class User extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    ajax = net.postJSON('/h5/user2/post', { circleId: self.circleId, offset, limit, }, function(res) {
+    ajax = net.postJSON('/h5/user2/postList', { circleId: self.circleId, offset, limit, }, function(res) {
       if(res.success) {
         let data = res.data;
         offset += limit;
@@ -151,6 +150,7 @@ class User extends migi.Component {
       <Nav ref="nav"
            on-follow={ this.follow }/>
       <PostList ref="postList"
+                visible={ true }
                 message={ '正在加载...' }/>
       <ImageView ref="imageView"/>
       <BotFn ref="botFn"/>

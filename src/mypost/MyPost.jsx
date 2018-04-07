@@ -29,7 +29,7 @@ class MyPost extends migi.Component {
         self.setData(cache, 0);
       }
     });
-    net.postJSON('/h5/my2/post', function(res) {
+    net.postJSON('/h5/my2/postList', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -58,31 +58,19 @@ class MyPost extends migi.Component {
       });
     }
 
-    return;
-
-    self.ref.hotPost.setData(data.data);
-    loadEnd = data.Size <= take;
-
-    let $window = $(window);
-    if(!loadEnd) {
-      $window.on('scroll', function() {
-        self.checkMore($window);
-      });
-    }
-
-    let hotPost = self.ref.hotPost;
-    let imageView = self.ref.imageView;
-    imageView.on('clickLike', function(sid) {
-      hotPost.like(sid, function(res) {
-        imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
-      });
-    });
-    jsBridge.on('back', function(e) {
-      if(!imageView.isHide()) {
-        e.preventDefault();
-        imageView.hide();
-      }
-    });
+    // let hotPost = self.ref.hotPost;
+    // let imageView = self.ref.imageView;
+    // imageView.on('clickLike', function(sid) {
+    //   hotPost.like(sid, function(res) {
+    //     imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
+    //   });
+    // });
+    // jsBridge.on('back', function(e) {
+    //   if(!imageView.isHide()) {
+    //     e.preventDefault();
+    //     imageView.hide();
+    //   }
+    // });
   }
   checkMore() {
     let self = this;
@@ -100,7 +88,7 @@ class MyPost extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    ajax = net.postJSON('/h5/my2/post', { offset, limit, }, function(res) {
+    ajax = net.postJSON('/h5/my2/postList', { offset, }, function(res) {
       if(res.success) {
         let data = res.data;
         offset += limit;
@@ -130,7 +118,8 @@ class MyPost extends migi.Component {
     return <div class="mypost">
       <h4>我画的圈</h4>
       <PostList ref="postList"
-               message={ '正在加载...' }/>
+                visible={ true }
+                message={ '正在加载...' }/>
       <ImageView ref="imageView"/>
     </div>;
   }

@@ -40,10 +40,10 @@ class Nav extends migi.Component {
   @bind sex
   @bind sign
   @bind isFollow
-  @bind followCount
+  @bind followPersonCount
   @bind isFans
   @bind fansCount
-  setData(data, followCount, fansCount, isFollow, isFans) {
+  setData(data, followPersonCount, fansCount, isFollow, isFans) {
     data = data || {};
     let self = this;
     self.userId = data.id;
@@ -51,7 +51,7 @@ class Nav extends migi.Component {
     self.nickname = data.nickname;
     self.sex = data.sex;
     self.sign = data.sign;
-    self.followCount = followCount;
+    self.followPersonCount = followPersonCount;
     self.fansCount = fansCount;
     self.isFollow = isFollow;
     self.isFans = isFans;
@@ -154,7 +154,7 @@ class Nav extends migi.Component {
                 onClick={ this.clickFollow }>{ FOLLOW_STATE[(this.isFollow ? '1' : '0') + (this.isFans ? '1' : '0')] }</button>
       </div>
       <ul class="num">
-        <li>关注<strong>{ this.followCount || 0 }</strong></li>
+        <li>关注<strong>{ this.followPersonCount || 0 }</strong></li>
         <li>粉丝<strong>{ this.fansCount || 0 }</strong></li>
       </ul>
       <div class="sign">

@@ -50,7 +50,7 @@ class MyFavor extends migi.Component {
         self.setData(cache, 0);
       }
     });
-    net.postJSON('/h5/my2/favor', function(res) {
+    net.postJSON('/h5/my2/favorList', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -76,7 +76,7 @@ class MyFavor extends migi.Component {
     let waterFall = self.ref.waterFall;
     let postList = self.ref.postList;
 
-    let video = data.video;
+    let video = data.videoList;
     if(video.count) {
       videoOffset = videoLimit = video.limit;
       videoList.setData(video.data);
@@ -90,7 +90,7 @@ class MyFavor extends migi.Component {
       videoList.message = '暂无收藏视频';
     }
 
-    let audio = data.audio;
+    let audio = data.audioList;
     if(audio.count) {
       audioOffset = audioLimit = audio.limit;
       playlist.setData(audio.data);
@@ -104,7 +104,7 @@ class MyFavor extends migi.Component {
       playlist.message = '暂无收藏音频';
     }
 
-    let image = data.image;
+    let image = data.imageList;
     if(image.count) {
       imageOffset = imageLimit = image.limit;
       waterFall.setData(image.data);
@@ -118,7 +118,7 @@ class MyFavor extends migi.Component {
       waterFall.message = '暂无收藏图片';
     }
 
-    let post = data.post;
+    let post = data.postList;
     if(post.count) {
       postOffset = postLimit = post.limit;
       postList.setData(post.data);

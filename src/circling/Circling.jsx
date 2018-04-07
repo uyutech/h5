@@ -64,6 +64,7 @@ class Circling extends migi.Component {
         let data = res.data;
         self.setData(data, 1);
         jsBridge.setPreference(cacheKey, data);
+
         window.addEventListener('scroll', function() {
           if(self.visible) {
             self.checkMore();
