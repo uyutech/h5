@@ -47,13 +47,11 @@ class Post extends migi.Component {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
-        let cache = {};
-        Object.keys(data).forEach(function(k) {
-          if(k !== 'comment') {
-            cache[k] = data[k];
-          }
+        jsBridge.setPreference(cacheKey, data);
+
+        window.addEventListener('scroll', function() {
+          self.checkMore();
         });
-        jsBridge.setPreference(cacheKey, cache);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -71,16 +69,8 @@ class Post extends migi.Component {
     let self = this;
     self.ref.nav.setData(data.info);
 
-    if(data.comment) {
-      limit = data.comment.limit;
-      offset = limit;
-      self.ref.comment.setData(data.comment.data);
-      if(data.comment.count > limit) {
-        window.addEventListener('scroll', function() {
-          self.checkMore();
-        });
-      }
-    }
+    offset = data.commentList.limit;
+    self.ref.comment.setData(data.commentList.data);
     //
     // let $root = $(self.element);
     // $root.on('click', 'a', function(e) {
@@ -208,25 +198,21 @@ class Post extends migi.Component {
   }
   load() {
     let self = this;
-    let comment = self.ref.comment;
     if(ajax) {
       ajax.abort();
     }
+    let comment = self.ref.comment;
     loading = true;
-    comment.message = '正在加载...';
-    ajax = net.postJSON('/h5/post2/comment', { postId: self.postId, offset, limit, }, function(res) {
+    ajax = net.postJSON('/h5/post2/commentList', { postId: self.postId, offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        offset += limit;
         if(data.data.length) {
           comment.appendData(data.data);
         }
+        offset += data.limit;
         if(offset >= data.count) {
           loadEnd = true;
           comment.message = '已经到底了';
-        }
-        else {
-          comment.message = '';
         }
       }
       else {
@@ -420,21 +406,6 @@ class Post extends migi.Component {
       title: '评论',
       optionMenu: '发布',
     });
-  }
-  chooseSubComment(rid, cid, name, n) {
-    let self = this;
-    if(!n || n === '0') {
-      jsBridge.pushWindow('/subcomment.html?type=1&id='
-        + self.postId + '&cid=' + cid + '&rid=' + rid, {
-        title: '评论',
-        optionMenu: '发布',
-      });
-    }
-    cId = cid;
-    rId = rid;
-  }
-  closeSubComment() {
-    cId = rId = null;
   }
   render() {
     return <div class="post">
