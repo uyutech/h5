@@ -25,7 +25,7 @@ let util = {
       return url;
     }
     url += '-' + (w ? w : '') + '_' + (h ? h : '') + '_' + (q ? q : '');
-    return url;
+    return util.autoSsl(url);
   },
   img750_750_80: function(url) {
     if(!/\/\/zhuanquan\./i.test(url)) {

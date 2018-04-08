@@ -424,7 +424,8 @@ class Post extends migi.Component {
   render() {
     return <div class="post">
       <PostList ref="postList"
-                visible={ true }/>
+                visible={ true }
+                single={ true }/>
       <CommentBar ref="commentBar"/>
       <Comment ref="comment"
                message="正在加载..."

@@ -74,6 +74,10 @@ class PostList extends migi.Component {
           title: '画圈详情',
         });
       });
+      $list.on('click', '.more, .less', function() {
+        let $li = $(this).closest('li');
+        $li.find('.snap, .full, .more, .less').toggleClass('fn-hide');
+      });
     });
   }
   @bind message
@@ -81,22 +85,25 @@ class PostList extends migi.Component {
   setData(data) {
     let self = this;
     self.exist = {};
-    let html = '';
+    let s = '';
     if(!Array.isArray(data)) {
       data = [data];
     }
     (data || []).forEach(function(item) {
-      html += self.genItem(item) || '';
+      s += self.genItem(item) || '';
     });
-    $(self.ref.list.element).html(html);
+    $(self.ref.list.element).html(s);
   }
   appendData(data) {
     let self = this;
-    let html = '';
+    let s = '';
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
     (data || []).forEach(function(item) {
-      html += self.genItem(item) || '';
+      s += self.genItem(item) || '';
     });
-    $(self.ref.list.element).append(html);
+    $(self.ref.list.element).append(s);
   }
   clearData() {
     let self = this;
@@ -105,15 +112,14 @@ class PostList extends migi.Component {
   }
   prependData(data) {
     let self = this;
-    let html = '';
-    data = data || [];
+    let s = '';
     if(!Array.isArray(data)) {
       data = [data];
     }
     (data || []).forEach(function(item) {
-      html += self.genItem(item) || '';
+      s += self.genItem(item) || '';
     });
-    $(self.ref.list.element).prepend(html);
+    $(self.ref.list.element).prepend(s);
   }
   genItem(item) {
     let self = this;
@@ -127,15 +133,32 @@ class PostList extends migi.Component {
     html = this.encode(html, item.reference);
     if(len > MAX_LEN) {
       html += '<span class="placeholder"></span><span class="more">查看全文</span>';
-      let full = this.encode(item.content, item.reference) + '<span class="placeholder"></span><span class="shrink">收起全文</span>';
-      html = `<p class="snap">${html}</p><p class="full">${full}</p>`;
+      let full = this.encode(item.content, item.reference) + '<span class="placeholder"></span><span class="less fn-hide">收起全文</span>';
+      html = `<p class="snap">${html}</p><p class="full fn-hide">${full}</p>`;
     }
     let peopleUrl = item.isAuthor
       ? '/author.html?authorId=' + item.authorId
       : '/user.html?userId=' + item.userId;
     let url = '/post.html?postId=' + id;
-    return <li class={ item.isAuthor ? 'author'  : 'user' }
-               id={ 'post_' + id }>
+    let videoList = [];
+    let audioList = [];
+    let imageList = [];
+    if(item.media && item.media.length) {
+      item.media.forEach(function(item) {
+        switch(item.kind) {
+          case 0:
+            imageList.push(item);
+            break;
+          case 1:
+            videoList.push(item);
+            break;
+          case 2:
+            audioList.push(item);
+            break;
+        }
+      });
+    }
+    return <li class={ item.isAuthor ? 'author'  : 'user' }>
       <div class="profile">
         <a class="pic"
            href={ peopleUrl }
@@ -154,7 +177,53 @@ class PostList extends migi.Component {
       </div>
       <div class="wrap">
         <div class="con" dangerouslySetInnerHTML={ html }/>
-        <b class="arrow"/>
+        {
+          item.media && item.media.length
+            ? <div class="media">
+              {
+                videoList.length
+                  ? <ul class="video">
+                    {
+                      videoList.map(function(item) {
+                        return <li>
+                          <b class="play"/>
+                        </li>;
+                      })
+                    }
+                    </ul>
+                  : ''
+              }
+              {
+                audioList.length
+                  ? <ul class="audio">
+                    {
+                      audioList.map(function(item) {
+                        return <li>
+                          <b class="play"/>
+                        </li>;
+                      })
+                    }
+                    </ul>
+                  : ''
+              }
+              {
+                imageList.length
+                  ? <ul class="image">
+                    {
+                      imageList.map(function(item) {
+                        return <li>
+                          <img src={ self.props.single
+                            ? util.img(item.url, 750, 0, 80)
+                            : util.img(item.url, 200, 200, 80)}/>
+                        </li>;
+                      })
+                    }
+                    </ul>
+                  : ''
+              }
+              </div>
+            : ''
+        }
       </div>
       <ul class="btn">
         <li class="share">分享</li>
@@ -163,8 +232,7 @@ class PostList extends migi.Component {
         <li class={ 'like' + (item.isLike ? ' liked' : '') }
             rel={ id }>{ item.likeCount || '点赞' }</li>
         <li class="comment"
-            rel={ id }>{ item.commentCount || '评论' }</li>
-        { item.isOwn ? <li class="del"><b/></li> : '' }
+            rel={ id }>评论</li>
       </ul>
     </li>;
   }
