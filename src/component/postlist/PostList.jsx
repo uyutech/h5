@@ -174,6 +174,16 @@ class PostList extends migi.Component {
              title={ item.createTime }
              href={ url }>{ util.formatDate(item.createTime)}</a>
         </div>
+        <ul class="circle">
+        {
+          (item.circle || []).map(function(circle) {
+            return <li>
+              <a class="circle"
+                 href={ '/circle.html?circleId=' + circle.id }>{ circle.name }</a>
+            </li>;
+          })
+        }
+        </ul>
       </div>
       <div class="wrap">
         <div class="con" dangerouslySetInnerHTML={ html }/>
