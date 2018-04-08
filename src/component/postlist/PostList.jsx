@@ -232,7 +232,7 @@ class PostList extends migi.Component {
         <li class={ 'like' + (item.isLike ? ' liked' : '') }
             rel={ id }>{ item.likeCount || '点赞' }</li>
         <li class="comment"
-            rel={ id }>评论</li>
+            rel={ id }>{ item.replyCount || '评论' }</li>
       </ul>
     </li>;
   }
