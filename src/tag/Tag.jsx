@@ -7,7 +7,7 @@
 import net from '../common/net';
 import util from '../common/util';
 import HotPost from '../component/hotpost/HotPost.jsx';
-import ImageView from '../post/ImageView.jsx';
+import ImageView from '../component/imageview/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 

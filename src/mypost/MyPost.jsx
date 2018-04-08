@@ -7,7 +7,7 @@
 import net from '../common/net';
 import util from '../common/util';
 import PostList from '../component/postlist/PostList.jsx';
-import ImageView from '../post/ImageView.jsx';
+import ImageView from '../component/imageview/ImageView.jsx';
 
 let limit = 0;
 let offset = 0;

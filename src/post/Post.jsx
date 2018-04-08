@@ -7,14 +7,11 @@
 
 import net from '../common/net';
 import util from '../common/util';
-import Nav from './Nav.jsx';
+import PostList from '../component/postlist/PostList.jsx';
 import CommentBar from '../component/commentbar/CommentBar.jsx';
 import Comment from '../component/comment/Comment.jsx';
-import ImageView from '../component/imageview/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
-import QuickVideo from '../component/quickVideo/QuickVideo.jsx';
-import QuickAudio from '../component/quickaudio/QuickAudio.jsx';
 
 let limit;
 let offset;
@@ -67,10 +64,14 @@ class Post extends migi.Component {
     currentPriority = priority;
 
     let self = this;
-    self.ref.nav.setData(data.info);
+    self.ref.postList.setData(data.info);
 
     offset = data.commentList.limit;
     self.ref.comment.setData(data.commentList.data);
+    if(offset >= data.commentList.count) {
+      loadEnd = true;
+      self.ref.comment.message = data.commentList.count ? '已经到底了' : '';
+    }
     //
     // let $root = $(self.element);
     // $root.on('click', 'a', function(e) {
@@ -407,19 +408,33 @@ class Post extends migi.Component {
       optionMenu: '发布',
     });
   }
+  commentLike(id, data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.commentList.data.forEach(function(item) {
+          if(item.id === id) {
+            item.isLike = data.state;
+            item.likeCount = data.count;
+          }
+        });
+        jsBridge.setPreference(cacheKey, cache);
+      }
+    });
+  }
   render() {
     return <div class="post">
-      <Nav ref="nav"/>
+      <PostList ref="postList"
+                visible={ true }/>
       <CommentBar ref="commentBar"/>
       <Comment ref="comment"
-               message="正在加载..."/>
+               message="正在加载..."
+               on-like={ this.commentLike }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }
                 on-click={ this.comment }
                 on-share={ this.share }/>
       <BotFn ref="botFn"/>
-      <ImageView ref="imageView"/>
     </div>;
   }
 }

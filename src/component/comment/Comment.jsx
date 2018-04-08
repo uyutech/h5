@@ -23,20 +23,21 @@ class Comment extends migi.Component {
     self.on(migi.Event.DOM, function() {
       let $root = $(self.element);
       $root.on('click', '.like', function() {
-        let $elem = $(this);
-        let commentId = $elem.attr('rel');
-        let isLike = $elem.hasClass('liked');
+        let $this = $(this);
+        let commentId = parseInt($this.attr('rel'));
+        let isLike = $this.hasClass('liked');
         let url = isLike ? '/h5/comment2/unLike' : '/h5/comment2/like';
         net.postJSON(url, { commentId }, function(res) {
           if(res.success) {
             let data = res.data;
             if(data.state) {
-              $elem.addClass('liked');
+              $this.addClass('liked');
             }
             else {
-              $elem.removeClass('liked');
+              $this.removeClass('liked');
             }
-            $elem.text(data.count || '');
+            $this.text(data.count || '');
+            self.emit('like', commentId, data);
           }
           else if(res.code === 1000) {
             migi.eventBus.emit('NEED_LOGIN');
@@ -123,9 +124,9 @@ class Comment extends migi.Component {
         let $this = $(this);
         let url = $this.attr('href');
         let title = $this.attr('title');
-        util.openAuthor({
-          url,
+        jsBridge.pushWindow(url, {
           title,
+          transparentTitle: true,
         });
       });
       $root.on('click', 'li.user a', function(e) {
@@ -155,7 +156,7 @@ class Comment extends migi.Component {
     subSkipHash = {};
     $last = null;
   }
-  setData(data, noEmpty) {
+  setData(data) {
     let self = this;
     exist = {};
     let s = '';
@@ -163,26 +164,34 @@ class Comment extends migi.Component {
       s += self.genComment(item) || '';
     });
     $(self.ref.list.element).html(s);
-    self.empty = !noEmpty && !s;
+    self.empty = !s;
   }
   appendData(data) {
     let self = this;
     let s = '';
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
     (data || []).forEach(function(item) {
       s += self.genComment(item) || '';
     });
     $(self.ref.list.element).append(s);
-    if(self.empty) {
-      if(s) {
-        self.empty = false;
-      }
+    if(s) {
+      self.empty = false;
     }
   }
   prependData(item) {
-    let vd = this.genComment(item);
-    if(vd) {
-      vd.prependTo(this.ref.list.element);
-      this.empty = false;
+    let self = this;
+    let s = '';
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
+    (data || []).forEach(function(item) {
+      s += self.genComment(item) || '';
+    });
+    $(self.ref.list.element).prepend(s);
+    if(s) {
+      self.empty = false;
     }
   }
   block(id, type, cb) {

@@ -90,12 +90,12 @@ class Circling extends migi.Component {
     let banner = self.ref.banner;
     let postList = self.ref.postList;
 
-    banner.setData(data.banner);
-    self.circleList = data.circle.data;
-    circleOffset = data.circle.limit;
+    banner.setData(data.bannerList);
+    self.circleList = data.circleList.data;
+    circleOffset = data.circleList.limit;
 
-    postList.setData(data.post.data);
-    offset = data.post.limit;
+    postList.setData(data.postList.data);
+    offset = data.postList.limit;
   }
   checkMore() {
     let self = this;
@@ -116,7 +116,7 @@ class Circling extends migi.Component {
     }
     let postList = self.ref.postList;
     loading = true;
-    ajax = net.postJSON('/h5/circling2/post', { circleId: idStack.join(','), offset }, function(res) {
+    ajax = net.postJSON('/h5/circling2/postList', { circleId: idStack.join(','), offset }, function(res) {
       if(res.success) {
         let data = res.data;
         postList.appendData(data.data);
@@ -199,10 +199,23 @@ class Circling extends migi.Component {
       idStack.shift();
     }
     this.ref.hotPost.setData();
-    skip = 0;
+    offset = 0;
     loadEnd = false;
     loading = false;
     this.load();
+  }
+  commentLike(id, data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.postList.data.forEach(function(item) {
+          if(item.id === id) {
+            item.isLike = data.state;
+            item.likeCount = data.count;
+          }
+        })
+        jsBridge.setPreference(cacheKey, cache);
+      }
+    });
   }
   render() {
     return <div class={ 'circling' + (this.visible ? '' : ' fn-hide') }>
@@ -220,6 +233,7 @@ class Circling extends migi.Component {
       </div>
       <PostList ref="postList"
                 visible={ true }
+                on-like={ this.commentLike }
                 message="正在加载..."/>
     </div>;
   }

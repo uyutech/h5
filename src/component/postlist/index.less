@@ -203,67 +203,77 @@
             content:'';
             display:none;
           }
-          b{
-            display:block;
-            margin-right:0.05rem;
-            width:0.16rem;
-            height:0.16rem;
-            background-repeat:no-repeat;
-            background-position:center;
-            background-size:contain;
-          }
           &.favor{
-            b{
-              background-image:url(../../icon/favor-s.png);
+            &:before{
+              display:block;
+              margin-right:0.05rem;
+              width:0.16rem;
+              height:0.16rem;
+              background:url(../../icon/favor-s.png) no-repeat center;
+              background-size:contain;
+              content:' ';
             }
-            &:active b{
+            &:active:before{
               background-image:url(../../icon/favor-s-hover.png);
             }
-            &.has{
-              b{
+            &.favored{
+              color:#8BBDE1;
+              &:before{
                 background-image:url(../../icon/favored-s.png);
               }
-              &:active b{
+              &:active:before{
                 background-image:url(../../icon/favored-s.png);
               }
             }
           }
           &.share{
-            b{
-              background-image:url(../../icon/share-s.png);
+            &:before{
+              display:block;
+              margin-right:0.05rem;
+              width:0.16rem;
+              height:0.16rem;
+              background:url(../../icon/share-s.png) no-repeat center;
+              background-size:contain;
+              content:' ';
             }
-            &:active b{
+            &:active:before{
               background-image:url(../../icon/share-s-hover.png);
             }
           }
           &.like{
-            b{
-              background-image:url(../../icon/like-s.png);
+            &:before{
+              display:block;
+              margin-right:0.05rem;
+              width:0.16rem;
+              height:0.16rem;
+              background:url(../../icon/like-s.png) no-repeat center;
+              background-size:contain;
+              content:' ';
             }
-            &:active b{
+            &:active:before{
               background-image:url(../../icon/like-s-hover.png);
             }
-            &.has{
-              b{
+            &.liked{
+              color:#8BBDE1;
+              &:before{
                 background-image:url(../../icon/liked-s-hover.png);
               }
-              &:active b{
+              &:active:before{
                 background-image:url(../../icon/liked-s.png);
               }
             }
-            &.has{
-              color:#8BBDE1;
-            }
           }
           &.comment{
-            a{
+            &:before{
               display:block;
-              height:100%;
+              margin-right:0.05rem;
+              width:0.16rem;
+              height:0.16rem;
+              background:url(../../icon/comment-s.png) no-repeat center;
+              background-size:contain;
+              content:' ';
             }
-            b{
-              background-image:url(../../icon/comment-s.png);
-            }
-            &:active b{
+            &:active:before{
               background-image:url(../../icon/comment-s-hover.png);
             }
           }

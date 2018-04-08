@@ -4,7 +4,8 @@
 
 'use strict';
 
-import util from "../../common/util";
+import util from '../../common/util';
+import net from '../../common/net';
 
 const MAX_LEN = 144;
 
@@ -16,6 +17,63 @@ class PostList extends migi.Component {
     self.message = self.props.message;
     self.on(migi.Event.DOM, function() {
       let $list = $(this.ref.list.element);
+      $list.on('click', '.like', function() {
+        let $this = $(this);
+        let commentId = parseInt($this.attr('rel'));
+        let isLike = $this.hasClass('liked');
+        let url = isLike ? '/h5/comment2/unLike' : '/h5/comment2/like';
+        net.postJSON(url, { commentId }, function(res) {
+          if(res.success) {
+            let data = res.data;
+            if(data.state) {
+              $this.addClass('liked');
+            }
+            else {
+              $this.removeClass('liked');
+            }
+            $this.text(data.count || '点赞');
+            self.emit('like', commentId, data);
+          }
+          else if(res.code === 1000) {
+            migi.eventBus.emit('NEED_LOGIN');
+          }
+          else {
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          }
+        });
+      });
+      $list.on('click', '.favor', function() {
+        let $this = $(this);
+        let commentId = $this.attr('rel');
+        let isFavor = $this.hasClass('favored');
+        let url = isFavor ? '/h5/comment2/unFavor' : '/h5/comment2/favor';
+        net.postJSON(url, { commentId }, function(res) {
+          if(res.success) {
+            let data = res.data;
+            if(data.state) {
+              $this.addClass('favored');
+            }
+            else {
+              $this.removeClass('favored');
+            }
+            $this.text(data.count || '收藏');
+            self.emit('favor', commentId, data);
+          }
+          else if(res.code === 1000) {
+            migi.eventBus.emit('NEED_LOGIN');
+          }
+          else {
+            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          }
+        });
+      });
+      $list.on('click', '.time', function(e) {
+        e.preventDefault();
+        let url = $(this).attr('href');
+        jsBridge.pushWindow(url, {
+          title: '画圈详情',
+        });
+      });
     });
   }
   @bind message
@@ -24,6 +82,9 @@ class PostList extends migi.Component {
     let self = this;
     self.exist = {};
     let html = '';
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
     (data || []).forEach(function(item) {
       html += self.genItem(item) || '';
     });
@@ -96,17 +157,14 @@ class PostList extends migi.Component {
         <b class="arrow"/>
       </div>
       <ul class="btn">
-        <li class="share" onClick={ this.share }><b/><span>分享</span></li>
-        <li class={ 'favor' + (item.isFavor ? ' favored' : '') } onClick={ this.favor }>
-          <b/><span>{ item.favorCount || '收藏' }</span>
-        </li>
-        <li class={ 'like' + (item.isLike ? ' has' : '') } onClick={ this.like }>
-          <b/><span>{ item.likeCount || '点赞' }</span>
-        </li>
-        <li class="comment">
-          <b/><span>{ item.commentCount || '评论' }</span>
-        </li>
-        { item.isOwn ? <li class="del" onClick={ this.del }><b/></li> : '' }
+        <li class="share">分享</li>
+        <li class={ 'favor' + (item.isFavor ? ' favored' : '') }
+            rel={ id }>{ item.favorCount || '收藏' }</li>
+        <li class={ 'like' + (item.isLike ? ' liked' : '') }
+            rel={ id }>{ item.likeCount || '点赞' }</li>
+        <li class="comment"
+            rel={ id }>{ item.commentCount || '评论' }</li>
+        { item.isOwn ? <li class="del"><b/></li> : '' }
       </ul>
     </li>;
   }
@@ -171,7 +229,8 @@ class PostList extends migi.Component {
   }
   render() {
     return <div class={ 'cp-postlist' + (this.visible ? '' : ' fn-hide') }>
-      <ol class="list" ref="list"/>
+      <ol class="list"
+          ref="list"/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') } >{ this.message }</div>
     </div>;
   }

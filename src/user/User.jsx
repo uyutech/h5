@@ -9,7 +9,7 @@ import util from '../common/util';
 import Nav from './Nav.jsx';
 import Background from '../component/background/Background.jsx';
 import PostList from '../component/postlist/PostList.jsx';
-import ImageView from '../post/ImageView.jsx';
+import ImageView from '../component/imageview/ImageView.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
 let limit = 0;
