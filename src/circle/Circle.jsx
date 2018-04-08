@@ -12,7 +12,6 @@ import ImageView from '../component/imageview/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let limit = 0;
 let offset = 0;
 let ajax;
 let loading;
@@ -142,13 +141,13 @@ class Circle extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    ajax = net.postJSON('/h5/circle2/post', { circleId: self.circleId, offset, limit, }, function(res) {
+    ajax = net.postJSON('/h5/circle2/postList', { circleId: self.circleId, offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        offset += limit;
         if(data.data.length) {
           postList.appendData(data.data);
         }
+        offset += data.limit;
         if(offset >= data.count) {
           loadEnd = true;
           postList.message = '已经到底了';
@@ -236,12 +235,40 @@ class Circle extends migi.Component {
       });
     });
   }
+  commentFavor(id, data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.postList.data.forEach(function(item) {
+          if(item.id === id) {
+            item.isFavor = data.state;
+            item.favorCount = data.count;
+          }
+        })
+        jsBridge.setPreference(cacheKey, cache);
+      }
+    });
+  }
+  commentLike(id, data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.postList.data.forEach(function(item) {
+          if(item.id === id) {
+            item.isLike = data.state;
+            item.likeCount = data.count;
+          }
+        })
+        jsBridge.setPreference(cacheKey, cache);
+      }
+    });
+  }
   render() {
     return <div class="circle">
       <Nav ref="nav"/>
       <PostList ref="postList"
                 visible={ true }
-                message={ '正在加载...' }/>
+                message={ '正在加载...' }
+                on-favor={ this.commentFavor }
+                on-like={ this.commentLike }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }

@@ -204,6 +204,19 @@ class Circling extends migi.Component {
     loading = false;
     this.load();
   }
+  commentFavor(id, data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.postList.data.forEach(function(item) {
+          if(item.id === id) {
+            item.isFavor = data.state;
+            item.favorCount = data.count;
+          }
+        })
+        jsBridge.setPreference(cacheKey, cache);
+      }
+    });
+  }
   commentLike(id, data) {
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
@@ -233,8 +246,9 @@ class Circling extends migi.Component {
       </div>
       <PostList ref="postList"
                 visible={ true }
-                on-like={ this.commentLike }
-                message="正在加载..."/>
+                message="正在加载..."
+                on-favor={ this.commentFavor }
+                on-like={ this.commentLike }/>
     </div>;
   }
 }

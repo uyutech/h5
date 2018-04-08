@@ -44,7 +44,7 @@ class PostList extends migi.Component {
       });
       $list.on('click', '.favor', function() {
         let $this = $(this);
-        let commentId = $this.attr('rel');
+        let commentId = parseInt($this.attr('rel'));
         let isFavor = $this.hasClass('favored');
         let url = isFavor ? '/h5/comment2/unFavor' : '/h5/comment2/favor';
         net.postJSON(url, { commentId }, function(res) {
