@@ -8,14 +8,36 @@ import net from '../common/net';
 import util from '../common/util';
 
 const MAX_TEXT_LENGTH = 2048;
-let ajax;
 
 class SubComment extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    self.value = '';
+    self.invalid = true;
+    self.num = 0;
     self.on(migi.Event.DOM, function() {
       jsBridge.setOptionMenu('发布');
+      if(!jsBridge.isInApp) {
+        document.querySelector('input.submit.fn-hide').classList.remove('fn-hide');
+      }
+      jsBridge.getCache(['my', 'useAuthor'], (data, useAuthor) => {
+        if(data) {
+          self.myInfo = data;
+          self.isAuthor = data.author && data.author.length;
+          self.useAuthor = useAuthor;
+          if(self.isAuthor) {
+            if(useAuthor) {
+              self.headUrl = data.author[0].headUrl;
+              self.name = data.author[0].name;
+            }
+            else {
+              self.headUrl = data.info.headUrl;
+              self.name = data.info.nickname;
+            }
+          }
+        }
+      });
       jsBridge.getPreference(self.getContentKey(), function(cache) {
         if(cache) {
           self.value = cache.trim();
@@ -36,43 +58,35 @@ class SubComment extends migi.Component {
       });
     });
   }
-  @bind placeholder
-  @bind value = ''
-  @bind num = 0
-  @bind invalid = true
+  @bind value
+  @bind num
+  @bind invalid
   @bind warnLength
   @bind sending
-  @bind sid
-  @bind type
-  @bind rid
-  @bind cid
+  @bind name
+  @bind headUrl
   @bind isAuthor
-  @bind userName
-  @bind userHead
-  @bind authorName
-  @bind authorHead
-  @bind isPublic
-  init() {
+  @bind useAuthor
+  init(data) {
     let self = this;
-    net.postJSON('/h5/my/identity', function(res) {
-      if(res.success) {
-        let data = res.data;
-        self.userName = data.uname;
-        self.userHead = data.head;
-        self.isPublic = data.isPublic;
-        self.authorName = data.authorName;
-        self.authorHead = data.authorHead;
-        self.isAuthor = !!data.authorId;
+    self.id = data.id;
+    self.type = data.type;
+    self.pid = data.pid;
+  }
+  clickAlt() {
+    let self = this;
+    if(self.myInfo) {
+      self.useAuthor = !self.useAuthor;
+      if(self.useAuthor) {
+        self.headUrl = self.myInfo.author[0].headUrl;
+        self.name = self.myInfo.author[0].name;
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        self.headUrl = self.myInfo.info.headUrl;
+        self.name = self.myInfo.info.nickname;
       }
-    }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-    });
-  }
-  getContentKey() {
-    return '_subcmt_content';
+      jsBridge.setPreference('useAuthor', self.useAuthor);
+    }
   }
   input(e, vd) {
     let self = this;
@@ -101,16 +115,26 @@ class SubComment extends migi.Component {
   }
   submit(e) {
     e && e.preventDefault();
+    if(!util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
     let self = this;
     if(!self.sending && !self.invalid) {
       self.sending = true;
-      net.postJSON('/h5/comment/sub', {
+      jsBridge.showLoading();
+      let authorId;
+      if(self.useAuthor && self.myInfo && self.myInfo.author && self.myInfo.author.length) {
+        authorId = self.myInfo.author[0].id;
+      }
+      net.postJSON('/h5/comment2/sub', {
         content: self.value,
-        id: self.sid,
+        id: self.id,
         type: self.type,
-        cid: self.cid,
-        rid: self.rid
+        pid: self.pid,
+        authorId,
       }, function(res) {
+        jsBridge.hideLoading();
         if(res.success) {
           jsBridge.setPreference(self.getContentKey(), null);
           jsBridge.popWindow({ type: 'subComment', data: res.data });
@@ -120,39 +144,34 @@ class SubComment extends migi.Component {
         }
         self.sending = false;
       }, function(res) {
+        jsBridge.hideLoading();
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
         self.sending = false;
       });
     }
   }
-  clickAlt() {
-    let self = this;
-    let old = self.isPublic;
-    self.isPublic = !old;
-    if(ajax) {
-      ajax.abort();
-    }
-    ajax = net.postJSON('/h5/my/altIdentity', { public: self.isPublic }, function(res) {
-      if(!res.success) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        self.isPublic = old;
-      }
-    }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-    });
+  getContentKey() {
+    return '_subcmt_content';
   }
   render() {
-    return <form class="sub-cmt" ref="form" onSubmit={ this.submit }>
+    return <form class="mod-sub"
+                 ref="form"
+                 onSubmit={ this.submit }>
       <div class="c">
-        <textarea class="text" ref="input" placeholder={ this.placeholder || '请输入评论' }
-                  onInput={ this.input } maxLength={ MAX_TEXT_LENGTH }>{ this.value }</textarea>
+        <textarea class="text"
+                  ref="input"
+                  placeholder="请输入评论"
+                  onInput={ this.input }
+                  maxLength={ MAX_TEXT_LENGTH }>{ this.value }</textarea>
         <div class={ 'limit' + (this.warnLength ? ' warn' : '') }>
           <strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }
-          <div class={ 'alt' + (this.isAuthor ? '' : ' fn-hide') }
+          <input type="submit"
+                 class="submit fn-hide"
+                 disabled={ this.invalid }/>
+          <div class={ 'alt' + (this.isAuthor ? '' : ' fn-hide') + (this.useAuthor ? ' author' : '') }
                onClick={ this.clickAlt }>
-            <b/>
-            <img src={ util.img48_48_80((this.isPublic ? this.authorHead : this.userHead) || '/src/common/head.png') }/>
-            <span>{ this.isPublic ? this.authorName : this.userName }</span>
+            <img src={ util.img(this.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
+            <span>{ this.name }</span>
           </div>
         </div>
       </div>

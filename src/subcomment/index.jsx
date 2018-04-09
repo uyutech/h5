@@ -16,8 +16,7 @@ import SubComment from './SubComment.jsx';
 let search = qs.parse(location.search.replace(/^\?/, ''));
 let id = search.id;
 let type = search.type;
-let rid = search.rid;
-let cid = search.cid;
+let pid = search.pid;
 
 jsBridge.ready(function() {
   jsBridge.refreshState(false);
@@ -25,9 +24,5 @@ jsBridge.ready(function() {
     <SubComment/>,
     '#page'
   );
-  subComment.sid = id;
-  subComment.type = type;
-  subComment.rid = rid;
-  subComment.cid = cid;
-  subComment.init();
+  subComment.init({ id, type, pid });
 });

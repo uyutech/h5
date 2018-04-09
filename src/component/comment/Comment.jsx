@@ -241,7 +241,7 @@ class Comment extends migi.Component {
     let url = item.isAuthor
       ? '/author.html?authorId=' + item.aid
       : '/user.html?userId=' + item.uid;
-    return <li class="user" id={ 'comment_' + id }>
+    return <li class={ item.isAuthor ? 'author'  : 'user' }>
       <div class="t">
         <div class="profile fn-clear">
           <a class="pic"

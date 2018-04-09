@@ -23,10 +23,6 @@ const TEXT = {
 const MAX_IMG_NUM = 9;
 const MAX_TEXT_LENGTH = 4096;
 
-let tagHash = {};
-let timeout;
-let ajax;
-
 let currentPriority = 0;
 let cacheKey = 'subpost';
 
@@ -36,6 +32,9 @@ class SubPost extends migi.Component {
     let self = this;
     self.value = '';
     self.invalid = true;
+    self.num = 0;
+    self.imgNum = 0;
+    self.list = [];
     self.on(migi.Event.DOM, function() {
       jsBridge.setOptionMenu('发布');
       if(!jsBridge.isInApp) {
@@ -105,10 +104,10 @@ class SubPost extends migi.Component {
   @bind workData
   @bind value
   @bind invalid
-  @bind num = 0
+  @bind num
   @bind uploading
-  @bind list = []
-  @bind imgNum = 0
+  @bind list
+  @bind imgNum
   @bind warnLength
   @bind sending
   @bind name
@@ -197,17 +196,17 @@ class SubPost extends migi.Component {
     }
     let self = this;
     if(!self.sending && !self.invalid && !self.uploading) {
-      let imgs = [];
-      let widths = [];
-      let heights = [];
+      let image = [];
       self.list.forEach(function(item) {
         if(item.state === STATE.LOADED) {
-          imgs.push(item.url);
-          widths.push(item.width || 0);
-          heights.push(item.height || 0);
+          image.push({
+            url: item.url,
+            width: item.width || 0,
+            height: item.height || 0,
+          });
         }
       });
-      if(self.list.length > imgs.length) {
+      if(self.list.length > image.length) {
         if(!window.confirm('尚有未上传成功的图片，继续提交吗？')) {
           return;
         }
@@ -218,7 +217,17 @@ class SubPost extends migi.Component {
       $(self.ref.circle.element).find('.on').each(function(i, li) {
         circleId.push($(li).attr('rel'));
       });
-      net.postJSON('/h5/subpost2/sub', { content: self.value, imgs, widths, heights, circleId: circleID.join(','), workId: self.workData && self.workData.workId, }, function(res) {
+      let authorId;
+      if(self.useAuthor && self.myInfo && self.myInfo.author && self.myInfo.author.length) {
+        authorId = self.myInfo.author[0].id;
+      }
+      net.postJSON('/h5/subpost2/sub', {
+        content: self.value,
+        image: JSON.stringify(image),
+        circleId: circleId.join(','),
+        authorId,
+        // workId: self.workData && self.workData.workId,
+      }, function(res) {
         jsBridge.hideLoading();
         if(res.success) {
           self.value = '';
@@ -450,7 +459,8 @@ class SubPost extends migi.Component {
     return <form class="mod-sub"
                  ref="form"
                  onSubmit={ this.submit }>
-      <div class="circle">
+      <div class="circle"
+           ref="circle">
         <label>圈子</label>
         <ul onClick={ { li: this.clickCircle } }>
         {
@@ -475,7 +485,8 @@ class SubPost extends migi.Component {
         <textarea class="text"
                   ref="input"
                   placeholder="在转圈画个圈吧"
-                  onInput={ this.input }>{ this.value }</textarea>
+                  onInput={ this.input }
+                  maxLength={ MAX_TEXT_LENGTH }>{ this.value }</textarea>
         <div class={ 'limit' + (this.warnLength ? ' warn' : '') }>
           <strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }
           <div class={ 'alt' + (this.isAuthor ? '' : ' fn-hide') + (this.useAuthor ? ' author' : '') }
@@ -509,7 +520,9 @@ class SubPost extends migi.Component {
                  onChange={ this.change }/>
         </li>
         <li class="submit fn-hide">
-          <input type="submit" value="提交" disabled={ this.invalid }/>
+          <input type="submit"
+                 value="提交"
+                 disabled={ this.invalid }/>
         </li>
       </ul>
     </form>;
