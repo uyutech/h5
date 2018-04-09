@@ -402,8 +402,7 @@ class Post extends migi.Component {
     if(!self.postId) {
       return;
     }
-    jsBridge.pushWindow('/subcomment.html?type=1&id='
-      + self.postId + '&cid=' + (cId || '') + '&rid=' + (rId || ''), {
+    jsBridge.pushWindow('/subcomment.html?type=1&id=' + self.postId, {
       title: '评论',
       optionMenu: '发布',
     });

@@ -27,8 +27,6 @@ class Author extends migi.Component {
   }
   // @bind authorId
   @bind index
-  @bind rid
-  @bind cid
   @bind showHome
   @bind showWork
   @bind showDynamic
@@ -108,40 +106,12 @@ class Author extends migi.Component {
       this.index = rel;
     }
   }
-  chooseSubComment(rid, cid, name, n) {
+  comment() {
     let self = this;
-    if(rid === '-1') {
-      rid = cid;
-    }
-    self.rid = rid;
-    self.cid = cid;
-    if(!n || n === '0') {
-      jsBridge.pushWindow('/subcomment.html?type=2&id='
-        + self.authorId + '&cid=' + cid + '&rid=' + rid, {
-        title: '评论',
-        optionMenu: '发布',
-      });
-    }
-  }
-  closeSubComment() {
-    let self = this;
-    self.rid = self.cid = null;
-  }
-  clickInput() {
-    let self = this;
-    if(self.cid) {
-      jsBridge.pushWindow('/subcomment.html?type=2&id='
-        + self.authorId + '&cid=' + self.cid + '&rid=' + self.rid, {
-        title: '评论',
-        optionMenu: '发布',
-      });
-    }
-    else {
-      jsBridge.pushWindow('/subcomment.html?type=2&id=' + self.authorId, {
-        title: '评论',
-        optionMenu: '发布',
-      });
-    }
+    jsBridge.pushWindow('/subcomment.html?type=2&id=' + self.authorId, {
+      title: '评论',
+      optionMenu: '发布',
+    });
   }
   share() {
     let self = this;
@@ -216,7 +186,7 @@ class Author extends migi.Component {
                 placeholder={ '发表评论...' }
                 readOnly={ true }
                 on-share={ this.share }
-                on-click={ this.clickInput }/>
+                on-click={ this.comment }/>
       <BotFn ref="botFn"/>
     </div>;
   }

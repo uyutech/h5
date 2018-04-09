@@ -47,6 +47,12 @@ class Comment extends migi.Component {
           }
         });
       });
+      $root.on('click', '.sub', function() {
+        let $this = $(this);
+        let id = $this.attr('rel');
+        let rid = $this.attr('rid');
+        jsBridge.pushWindow('/subcomment.html?id=' + rid + '&type=0' + '&pid=' + id);
+      });
       $root.on('click', '.fn', function() {
         let $fn = $(this);
         let $like = $fn.closest('li').find('.like');
@@ -279,7 +285,9 @@ class Comment extends migi.Component {
         <div class="slide">
           <small class={ 'like' + (item.isLike ? ' liked' : '') }
                  rel={ item.id }>{ item.likeCount || '' }</small>
-          <small class="sub"/>
+          <small class="sub"
+                 rel={ item.id }
+                 rid={ item.rid }/>
         </div>
         <b class="arrow"/>
       </div>

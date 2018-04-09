@@ -49,13 +49,13 @@ class Comments extends migi.Component {
     }
     let comment = self.ref.comment;
     loading = true;
-    ajax = net.postJSON('/h5/author2/comment', { authorId: self.authorId, offset }, function(res) {
+    ajax = net.postJSON('/h5/author2/commentList', { authorId: self.authorId, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {
           comment.appendData(data.data);
         }
-        offset += limit;
+        offset += data.limit;
         if(offset >= data.count) {
           loadEnd = true;
           comment.message = '已经到底了';
