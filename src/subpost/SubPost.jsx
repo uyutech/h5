@@ -20,38 +20,45 @@ const TEXT = {
   2: '',
   3: '加载失败',
 };
-const MAX_IMG_NUM = 10;
+const MAX_IMG_NUM = 9;
 const MAX_TEXT_LENGTH = 4096;
 
 let tagHash = {};
 let timeout;
 let ajax;
 
+let currentPriority = 0;
+let cacheKey = 'subpost';
+
 class SubPost extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.placeholder = self.props.placeholder;
+    self.value = '';
+    self.invalid = true;
     self.on(migi.Event.DOM, function() {
-      if(jsBridge.appVersion) {
-        let version = jsBridge.appVersion.split('.');
-        let major = parseInt(version[0]) || 0;
-        let minor = parseInt(version[1]) || 0;
-        let patch = parseInt(version[2]) || 0;
-        if(jsBridge.android) {
-          if(major > 1 || minor > 5) {
-            self.orginImage = true;
+      jsBridge.setOptionMenu('发布');
+      if(!jsBridge.isInApp) {
+        document.querySelector('li.submit.fn-hide').classList.remove('fn-hide');
+      }
+      jsBridge.getCache(['my', 'useAuthor'], (data, useAuthor) => {
+        if(data) {
+          self.myInfo = data;
+          self.isAuthor = data.author && data.author.length;
+          self.useAuthor = useAuthor;
+          if(self.isAuthor) {
+            if(useAuthor) {
+              self.headUrl = data.author[0].headUrl;
+              self.name = data.author[0].name;
+            }
+            else {
+              self.headUrl = data.info.headUrl;
+              self.name = data.info.nickname;
+            }
           }
         }
-        else {
-          self.orginImage = true;
-        }
-      }
-      else {
-        self.orginImage = true;
-      }
-      jsBridge.setOptionMenu('发布');
-      jsBridge.getPreference(self.getImgKey(), function(cache) {
+      });
+      jsBridge.getPreference(self.getImgKey(), (cache) => {
         if(cache) {
           let temp = [];
           cache.forEach(function(item) {
@@ -64,7 +71,7 @@ class SubPost extends migi.Component {
           self.imgNum = temp.length;
         }
       });
-      jsBridge.getPreference(self.getContentKey(), function(cache) {
+      jsBridge.getPreference(self.getContentKey(), (cache) => {
         if(cache) {
           self.value = cache.trim();
           self.input(null, self.ref.input);
@@ -93,81 +100,33 @@ class SubPost extends migi.Component {
       });
     });
   }
+  @bind circleList
+  @bind tagList
   @bind workData
-  @bind placeholder
-  @bind value = ''
-  @bind to
-  @bind invalid = true
+  @bind value
+  @bind invalid
   @bind num = 0
-  @bind disableUpload
+  @bind uploading
   @bind list = []
   @bind imgNum = 0
   @bind warnLength
   @bind sending
-  @bind tagList = []
+  @bind name
+  @bind headUrl
   @bind isAuthor
-  @bind userName
-  @bind userHead
-  @bind authorName
-  @bind authorHead
-  @bind isPublic
-  @bind orginImage
+  @bind useAuthor
   init(data) {
     let self = this;
-    let circleID = data.circleID;
-    let tag = data.tag;
-    if(data.workId) {
-      self.workData = {
-        cover: data.cover,
-        workId: data.workId,
-      };
-    }
-    net.postJSON('/h5/subpost/index', { circleID }, function(res) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
+      }
+    });
+    net.postJSON('/h5/subpost2/index', function(res) {
       if(res.success) {
         let data = res.data;
-        self.userName = data.uname;
-        self.userHead = data.head;
-        self.isPublic = data.isPublic;
-        self.authorName = data.authorName;
-        self.authorHead = data.authorHead;
-        self.isAuthor = !!data.authorId;
-        let to = data.myCircleList;
-        if(to && to.length && circleID !== undefined) {
-          let has = false;
-          to.forEach(function(item) {
-            if(item.CirclingID.toString() === (circleID || '').toString()) {
-              has = true;
-            }
-          });
-          if(has) {
-            migi.sort(to, function(a, b) {
-              if(a.CirclingID.toString() === (circleID || '').toString()) {
-                return false;
-              }
-              else if(b.CirclingID.toString() === (circleID || '').toString()) {
-                return true;
-              }
-            });
-          }
-          else {
-            to.unshift({
-              CirclingID: circleID,
-              CirclingName: data.circleDetail.TagName,
-            });
-          }
-        }
-        self.to = to;
-        let activityLabel = data.activityLabel || [];
-        if(tag) {
-          activityLabel.unshift({
-            TagName: tag,
-          });
-        }
-        self.activityLabel = activityLabel;
-        self.tagList = (data.tagList || []).concat(activityLabel);
-        if(circleID && data.tagList) {
-          self.setCache(circleID, data.tagList);
-        }
+        self.setData(data, 1);
+        jsBridge.setPreference(cacheKey, data);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -176,21 +135,34 @@ class SubPost extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
+  setData(data, priority) {
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
+    let self = this;
+    self.circleList = data.circleList.data;
+    self.circleHash = {};
+    self.circleList.forEach((item) => {
+      self.circleHash[item.id] = item;
+    });
+    self.tagList = self.activity = data.activity;
+  }
   clickAlt() {
     let self = this;
-    let old = self.isPublic;
-    self.isPublic = !old;
-    if(ajax) {
-      ajax.abort();
-    }
-    ajax = net.postJSON('/h5/my/altIdentity', { public: self.isPublic }, function(res) {
-      if(!res.success) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        self.isPublic = old;
+    if(self.myInfo) {
+      self.useAuthor = !self.useAuthor;
+      if(self.useAuthor) {
+        self.headUrl = self.myInfo.author[0].headUrl;
+        self.name = self.myInfo.author[0].name;
       }
-    }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-    });
+      else {
+        self.headUrl = self.myInfo.info.headUrl;
+        self.name = self.myInfo.info.nickname;
+      }
+      jsBridge.setPreference('useAuthor', self.useAuthor);
+    }
   }
   input(e, vd) {
     let self = this;
@@ -224,7 +196,7 @@ class SubPost extends migi.Component {
       return;
     }
     let self = this;
-    if(!self.sending && !self.invalid && !self.disableUpload) {
+    if(!self.sending && !self.invalid && !self.uploading) {
       let imgs = [];
       let widths = [];
       let heights = [];
@@ -242,14 +214,11 @@ class SubPost extends migi.Component {
       }
       self.sending = true;
       jsBridge.showLoading();
-      let circleID = [];
+      let circleId = [];
       $(self.ref.circle.element).find('.on').each(function(i, li) {
-        circleID.push($(li).attr('rel'));
+        circleId.push($(li).attr('rel'));
       });
-      if(self.props.circleID && circleID.indexOf(self.props.circleID) === -1) {
-        circleID.push(self.props.circleID);
-      }
-      net.postJSON('/h5/circle/post', { content: self.value, imgs, widths, heights, circleID: circleID.join(','), workId: self.workData && self.workData.workId, }, function(res) {
+      net.postJSON('/h5/subpost2/sub', { content: self.value, imgs, widths, heights, circleId: circleID.join(','), workId: self.workData && self.workData.workId, }, function(res) {
         jsBridge.hideLoading();
         if(res.success) {
           self.value = '';
@@ -259,7 +228,7 @@ class SubPost extends migi.Component {
           self.clearCache();
           jsBridge.notify({
             title: '画圈成功',
-            url: '/post.html?postId=' + res.data.ID,
+            url: '/post.html?postId=' + res.data.id,
           }, {
             title: '画圈正文'
           });
@@ -276,111 +245,6 @@ class SubPost extends migi.Component {
       });
     }
   }
-  album(e, vd) {
-    let self = this;
-    if(self.orginImage) {
-      return;
-    }
-    if(self.disableUpload) {
-      return;
-    }
-    if(!util.isLogin()) {
-      migi.eventBus.emit('NEED_LOGIN');
-      return;
-    }
-    if(self.imgNum >= MAX_IMG_NUM) {
-      jsBridge('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
-      return;
-    }
-    self.disableUpload = true;
-    jsBridge.album(function(res) {
-      if(res.success) {
-        res = res.base64;
-        if(!Array.isArray(res)) {
-          res = [res];
-        }
-        let num = res.length;
-        let count = 0;
-        let hasUpload;
-        res.forEach(function(img, i) {
-          self.list.push({
-            state: STATE.SENDING,
-            url: /^data:image\/(\w+);base64,/.test(img) ? img : ('data:image/jpeg;base64,' + img),
-          });
-          let node = document.createElement('img');
-          node.style.position = 'absolute';
-          node.style.left = '-9999rem';
-          node.style.top = '-9999rem';
-          node.src = self.list[i + self.imgNum].url;
-          node.onload = function() {
-            self.list[i + self.imgNum].width = node.width;
-            self.list[i + self.imgNum].height = node.height;
-            document.body.removeChild(node);
-          };
-          document.body.appendChild(node);
-          net.postJSON('/h5/my/uploadPic', { img }, function(res) {
-            if(res.success) {
-              let url = res.data;
-              let has;
-              self.list.forEach(function(item, j) {
-                if(item && item.url === url) {
-                  hasUpload = has = true;
-                }
-              });
-              if(!has) {
-                self.list[i + self.imgNum].state = STATE.LOADED;
-                self.list[i + self.imgNum].url = url;
-                self.addCache(url);
-              }
-              else {
-                self.list[i + self.imgNum].state = STATE.ERROR;
-              }
-            }
-            else {
-              self.list[i + self.imgNum] = null;
-            }
-            self.list = self.list;
-            count++;
-            if(count === num) {
-              self.disableUpload = false;
-              for(let j = self.list.length - 1; j >= 0; j--) {
-                if(self.list[j] === null) {
-                  self.list.splice(j, 1);
-                }
-              }
-              self.imgNum = self.list.length;
-              if(hasUpload) {
-                jsBridge.toast('有图片已经重复上传过啦~');
-              }
-            }
-          }, function(res) {
-            self.list[i + self.imgNum].state = STATE.ERROR;
-            self.list = self.list;
-            count++;
-            if(count === num) {
-              self.disableUpload = false;
-              for(let j = self.list.length - 1; j >= 0; j--) {
-                if(self.list[j] === null) {
-                  self.list.splice(j, 1);
-                }
-              }
-              self.imgNum = self.list.length;
-              if(hasUpload) {
-                jsBridge.toast('有图片已经重复上传过啦~');
-              }
-            }
-          });
-        });
-      }
-      else if(res.cancel) {
-        self.disableUpload = false;
-      }
-      else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        self.disableUpload = false;
-      }
-    });
-  }
   clickFile(e) {
     if(!util.isLogin()) {
       e.preventDefault();
@@ -389,7 +253,7 @@ class SubPost extends migi.Component {
   }
   change(e) {
     let self = this;
-    if(self.disableUpload) {
+    if(self.uploading) {
       return;
     }
     if(!util.isLogin()) {
@@ -400,7 +264,7 @@ class SubPost extends migi.Component {
       jsBridge('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
       return;
     }
-    self.disableUpload = true;
+    self.uploading = true;
     let files = e.target.files;
     let count = 0;
     for(let i = 0, len = files.length; i < len; i++) {
@@ -460,7 +324,7 @@ class SubPost extends migi.Component {
                 self.list = self.list;
                 count++;
                 if(count === len) {
-                  self.disableUpload = false;
+                  self.uploading = false;
                   self.imgNum = self.list.length;
                 }
                 return;
@@ -487,7 +351,7 @@ class SubPost extends migi.Component {
                   self.list = self.list;
                   count++;
                   if(count === len) {
-                    self.disableUpload = false;
+                    self.uploading = false;
                     self.imgNum = self.list.length;
                   }
                 }
@@ -509,10 +373,10 @@ class SubPost extends migi.Component {
     }
   }
   getImgKey() {
-    return '_circle_img';
+    return '_subpost_img';
   }
   getContentKey() {
-    return '_circle_content';
+    return '_subpost_content';
   }
   addCache(url) {
     let self = this;
@@ -559,7 +423,6 @@ class SubPost extends migi.Component {
   }
   clickCircle(e, vd, tvd) {
     let self = this;
-    let circleID = tvd.props.rel;
     let $ul = $(vd.element);
     let $li = $(tvd.element);
     let $lis = $ul.find('.on');
@@ -568,102 +431,33 @@ class SubPost extends migi.Component {
       jsBridge.toast('最多只能选择3个圈子哦~');
       return;
     }
-    let on = $li.hasClass('on');
     $li.toggleClass('on');
-    let temp = self.activityLabel;
-    if(on) {
-      $ul.find('.on').each(function(i, o) {
-        let $o = $(o);
-        let tags = tagHash[$o.attr('rel')];
-        temp = temp.concat(tags);
-      });
-      self.tagList = temp;
-    }
-    else if(tagHash[circleID]) {
-      $lis.each(function(i, o) {
-        let $o = $(o);
-        let id = $o.attr('rel');
-        if(id === circleID) {
-          return;
-        }
-        let tags = tagHash[$o.attr('rel')];
-        temp = temp.concat(tags);
-      });
-      self.tagList = tagHash[circleID].concat(temp);
-    }
-    else {
-      net.postJSON('/h5/subpost/tag', { circleID }, function(res) {
-        if(res.success) {
-          tagHash[circleID] = res.data || [];
-          $lis.each(function(i, o) {
-            let $o = $(o);
-            let id = $o.attr('rel');
-            if(id === circleID) {
-              return;
-            }
-            let tags = tagHash[$o.attr('rel')];
-            temp = temp.concat(tags);
-          });
-          self.tagList = tagHash[circleID].concat(temp);
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
-    }
+    let temp = [];
+    $ul.find('.on').each((i, o) => {
+      let $o = $(o);
+      let circleId = $o.attr('rel');
+      temp = temp.concat(self.circleHash[circleId].tag);
+    });
+    temp = temp.concat(self.activity);
+    self.tagList = temp;
   }
   clickTag(e, vd, tvd) {
     let self = this;
-    if(tvd.props.class === 'more') {
-      jsBridge.pushWindow('/more_tag.html', {
-        title: tvd.props.rel,
-      });
-    }
-    else {
-      self.value += tvd.props.rel;
-      self.input(null, self.ref.input);
-      let desc = tvd.props.desc;
-      if(desc) {
-        let $tip = $(self.ref.tip.element);
-        $tip.text(desc);
-        $tip.removeClass('fn-hide');
-        if(timeout) {
-          clearTimeout(timeout);
-        }
-        timeout = setTimeout(function() {
-          $tip.addClass('fn-hide');
-        }, 3000);
-      }
-    }
-  }
-  clickTip(e, vd) {
-    let $tip = $(vd.element);
-    if($tip.text()) {
-      $tip.removeClass('fn-hide');
-      if(timeout) {
-        clearTimeout(timeout);
-      }
-      timeout = setTimeout(function() {
-        $tip.addClass('fn-hide');
-      }, 3000);
-    }
-  }
-  setCache(circleID, tagList) {
-    tagHash[circleID] = tagList;
+    self.value += tvd.props.rel + ' ';
+    self.input(null, self.ref.input);
   }
   render() {
-    return <form class="mod-sub" ref="form" onSubmit={ this.submit }>
-      <div class="circle" ref="circle">
+    return <form class="mod-sub"
+                 ref="form"
+                 onSubmit={ this.submit }>
+      <div class="circle">
         <label>圈子</label>
         <ul onClick={ { li: this.clickCircle } }>
         {
-          (this.to || []).map(function(item) {
-            return <li rel={ item.CirclingID }
-                       class={ item.CirclingID.toString() === (this.props.circleID || '').toString()
-                         ? 'on' : '' }>{ item.CirclingName }</li>;
-          }.bind(this))
+          (this.circleList || []).map((item) => {
+            return <li class={ item.id === this.props.circleId ? 'on' : '' }
+                       rel={ item.id }>{ item.name }</li>;
+          })
         }
         </ul>
       </div>
@@ -671,25 +465,23 @@ class SubPost extends migi.Component {
         <label>话题</label>
         <ul onClick={ { li: this.clickTag } }>
         {
-          this.tagList.map(function(item, i) {
-            return <li class={ item.more ? 'more' : '' }
-                       i={ i }
-                       rel={ item.value || ('#' + item.TagName + '#') }
-                       desc={ item.Describe || '' }>{ item.TagName }</li>;
-          }.bind(this))
+          (this.tagList || []).map((item) => {
+            return <li rel={ item.value || ('#' + item.name + '#') }>{ item.name }</li>;
+          })
         }
         </ul>
       </div>
       <div class="c">
-        <textarea class="text" ref="input" placeholder={ this.placeholder || '夸夸这个圈子吧' }
+        <textarea class="text"
+                  ref="input"
+                  placeholder="在转圈画个圈吧"
                   onInput={ this.input }>{ this.value }</textarea>
         <div class={ 'limit' + (this.warnLength ? ' warn' : '') }>
           <strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }
-          <div class={ 'alt' + (this.isAuthor ? '' : ' fn-hide') }
+          <div class={ 'alt' + (this.isAuthor ? '' : ' fn-hide') + (this.useAuthor ? ' author' : '') }
                onClick={ this.clickAlt }>
-            <b/>
-            <img src={ util.img48_48_80((this.isPublic ? this.authorHead : this.userHead) || '/src/common/head.png') }/>
-            <span>{ this.isPublic ? this.authorName : this.userName }</span>
+            <img src={ util.img(this.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
+            <span>{ this.name }</span>
           </div>
         </div>
       </div>
@@ -710,14 +502,14 @@ class SubPost extends migi.Component {
       }
       </ul>
       <ul class="btn">
-        <li class="tip">
-          <div ref="tip" class="fn-hide" onClick={ this.clickTip }/>
-        </li>
+        <li class="tip"><div ref="tip" class="fn-hide"/></li>
         <li class="pic" onClick={ this.album }>
           <input type="file"
-                 class={ this.orginImage ? '' : ' fn-hide' }
                  onClick={ this.clickFile }
                  onChange={ this.change }/>
+        </li>
+        <li class="submit fn-hide">
+          <input type="submit" value="提交" disabled={ this.invalid }/>
         </li>
       </ul>
     </form>;

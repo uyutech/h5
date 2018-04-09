@@ -16,6 +16,7 @@ let offset = 0;
 let ajax;
 let loading;
 let loadEnd;
+
 let currentPriority = 0;
 let cacheKey;
 
