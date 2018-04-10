@@ -68,12 +68,12 @@ class My extends migi.Component {
     ajax = net.postJSON('/h5/my2/index', function(res) {
       if(res.success) {
         let data = res.data;
-        self.setData(data);
+        self.setData(data, 1);
         self.isLogin = true;
-        jsBridge.setPreference(cacheKey, data);
 
+        util.setUserInfo(data.user, data.author);
+        jsBridge.setPreference(cacheKey, data);
         $.cookie('isLogin', true);
-        $.cookie('uid', data.info.id);
       }
       else if(res.code === 1000) {
         self.isLogin = false;
@@ -100,9 +100,9 @@ class My extends migi.Component {
     let self = this;
     let nav = self.ref.nav;
 
-    if(data && data.info) {
-      self.coins = data.info.coins;
-      nav.setData(data.info, data.author, data.followPersonCount, data.fansCount);
+    if(data && data.user) {
+      self.coins = data.user.coins;
+      nav.setData(data.user, data.author, data.followPersonCount, data.fansCount);
     }
 
     // let step = self.userInfo.User_Reg_Stat || 0;
@@ -130,17 +130,18 @@ class My extends migi.Component {
     jsBridge.loginWeibo(function(res) {
       if(res.success) {
         jsBridge.showLoading('正在登录...');
-        let openID = res.openID;
+        let openId = res.openId || res.openID;
         let token = res.token;
-        jsBridge.login('/h5/oauth/weibo', { openID, token }, function(res) {
+        jsBridge.login('/h5/passport2/loginWeibo', { openId, token }, function(res) {
           jsBridge.hideLoading();
           if(res.success) {
             let data = res.data;
-            migi.eventBus.emit('LOGIN', data);
-            jsBridge.setPreference('loginInfo', data);
+            self.setData(data, 1);
+            self.isLogin = true;
+
+            util.setUserInfo(data.user, data.author);
+            jsBridge.setPreference(cacheKey, data);
             $.cookie('isLogin', true);
-            $.cookie('uid', data.userInfo.UID);
-            $.cookie('userType', data.userInfo.UserType);
           }
           else {
             jsBridge.toast(res.message);

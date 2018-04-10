@@ -421,7 +421,18 @@ let util = {
       window.scrollY = document.documentElement.scrollTop = document.body.scrollTop = v;
     }
     return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-  }
+  },
+  setUserInfo: function(user, author) {
+    jsBridge.setPreference('USER_INFO', {
+      user,
+      author,
+    });
+  },
+  getUserInfo: function(cb) {
+    jsBridge.getPreference('USER_INFO', function(data) {
+      cb && cb(data);
+    });
+  },
 };
 
 export default util;
