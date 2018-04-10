@@ -127,7 +127,7 @@ class Login extends migi.Component {
     }
     self.loading = true;
     jsBridge.login('/h5/passport2/login', {
-      name: self.phone,
+      phone: self.phone,
       pw: self.password,
     }, function(res) {
       if(res.success) {
@@ -178,27 +178,25 @@ class Login extends migi.Component {
     self.loading = true;
     let phone = self.phone;
     let password = self.password;
-    net.postJSON('/h5/passport/register', {
+    net.postJSON('/h5/passport2/register', {
       phone,
-      password,
+      pw: password,
       code: self.code,
     }, function(res) {
       if(res.success) {
-        jsBridge.login('/h5/passport/login', {
+        jsBridge.login('/h5/passport2/login', {
           phone,
-          password,
+          pw: password,
         }, function(res) {
           if(res.success) {
             let data = res.data;
-            jsBridge.toast('注册成功');
-            jsBridge.setPreference('loginInfo', data, function() {
+            jsBridge.toast('登录成功');
+            $.cookie('isLogin', true);
+            setTimeout(function() {
               jsBridge.popWindow({
                 passport: true,
               });
-            });
-            $.cookie('isLogin', true);
-            $.cookie('uid', data.userInfo.UID);
-            $.cookie('userType', data.userInfo.UserType);
+            }, 10);
           }
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
