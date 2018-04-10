@@ -6,15 +6,18 @@
 
 import net from '../common/net';
 import util from '../common/util';
-import HotPost from '../component/hotpost/HotPost.jsx';
+import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let take = 10;
-let skip = take;
+let offset = 0;
 let loading;
 let loadEnd;
+let ajax;
+
+let currentPriority = 0;
+let cacheKey;
 
 class Tag extends migi.Component {
   constructor(...data) {
@@ -56,58 +59,69 @@ class Tag extends migi.Component {
     });
   }
   @bind tag
-  setData(tag, data) {
+  init(tag) {
     let self = this;
     self.tag = tag;
-
-    let hotPost = self.ref.hotPost;
-    hotPost.setData(data.data || []);
-    let imageView = self.ref.imageView;
-    imageView.on('clickLike', function(sid) {
-      hotPost.like(sid, function(res) {
-        imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
-      });
-    });
-    jsBridge.on('back', function(e) {
-      if(!imageView.isHide()) {
-        e.preventDefault();
-        imageView.hide();
+    cacheKey = 'tagName_' + tag;
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
       }
     });
+    ajax = net.postJSON('/h5/tag2/index', { tag }, function(res) {
+      if(res.success) {
+        let data = res.data;console.log(data);
+        self.setData(data, 1);
+        jsBridge.setPreference(cacheKey, data);
 
-    if(data.Size > take) {
-      let $window = $(window);
-      $window.on('scroll', function() {
-        self.checkMore($window);
-      });
-    }
+        window.addEventListener('scroll', function() {
+          self.checkMore();
+        });
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
   }
-  checkMore($window) {
+  setData(data, priority) {
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
     let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    let bool;
-    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-    if(!loading && !loadEnd && bool) {
+    let postList = self.ref.postList;
+
+    postList.setData(data.postList.data);
+    offset = data.postList.count;
+  }
+  checkMore() {
+    let self = this;
+    if(loading || loadEnd || !self.visible) {
+      return;
+    }
+    if(util.isBottom()) {
       self.load();
     }
   }
   load() {
     let self = this;
-    let hotPost = self.ref.hotPost;
+    if(ajax) {
+      ajax.abort();
+    }
+    let postList = self.ref.postList;
     loading = true;
-    hotPost.message = '正在加载...';
-    net.postJSON('/h5/tag/list', { skip, take, tag: self.tag }, function(res) {
+    ajax = net.postJSON('/h5/tag2/postList', { tag: self.tag, offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
-        hotPost.appendData(data.data);
-        if(!data.data.length || data.data.length < take) {
-          loadEnd = true;
-          hotPost.message = '已经到底了';
+        if(data.data.length) {
+          postList.appendData(data.data);
         }
-        else {
-          hotPost.message = '';
+        offset += data.limit;
+        if(offset >= data.count) {
+          loadEnd = true;
+          postList.message = '已经到底了';
         }
       }
       else {
@@ -129,7 +143,9 @@ class Tag extends migi.Component {
   render() {
     return <div class="tag">
       <h3>#{ this.tag }#</h3>
-      <HotPost ref="hotPost" message="正在加载..."/>
+      <PostList ref="postList"
+                visible={ true }
+                message="正在加载..."/>
       <ImageView ref="imageView"/>
       <InputCmt ref="inputCmt"
                 placeholder={ '画个圈吧！' }

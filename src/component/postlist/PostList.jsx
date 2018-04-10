@@ -252,7 +252,7 @@ class PostList extends migi.Component {
     return s.replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
-        return `<a href="tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
+        return `<a href="/tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
       })
       .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(\s|$)/g, function($0, $1, $2, $3, $4) {
         let data = reference[index];

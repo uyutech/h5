@@ -21,14 +21,5 @@ jsBridge.ready(function() {
     <Tag/>,
     '#page'
   );
-  net.postJSON('/h5/tag/list', { tag, skip: 0, take: 10 }, function(res) {
-    if(res.success) {
-      t.setData(tag, res.data);
-    }
-    else {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-    }
-  }, function(res) {
-    jsBridge.toast(res.message || util.ERROR_MESSAGE);
-  });
+  t.init(tag);
 });
