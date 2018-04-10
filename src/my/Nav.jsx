@@ -35,6 +35,9 @@ class Nav extends migi.Component {
     if(author && author.length) {
       self.authorId = author[0].id;
     }
+    else {
+      self.authorId = null;
+    }
   }
   clickPic(e) {
     if(!util.isLogin()) {

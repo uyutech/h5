@@ -184,13 +184,12 @@ class Config extends migi.Component {
     let self = this;
     net.postJSON('/h5/passport2/loginOut', function() {
       $.cookie('isLogin', null);
-      jsBridge.delPreference('my');
       jsBridge.loginOut();
-      setTimeout(function() {
+      jsBridge.delPreference('my', function() {
         jsBridge.popWindow({
           loginOut: true,
         });
-      }, 10);
+      });
     }, function(res) {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });

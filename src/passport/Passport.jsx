@@ -192,13 +192,13 @@ class Login extends migi.Component {
         }, function(res) {
           if(res.success) {
             let data = res.data;
-            jsBridge.toast('登录成功');
             $.cookie('isLogin', true);
-            setTimeout(function() {
+            jsBridge.toast('登录成功');
+            jsBridge.setPreference('my', data, function() {
               jsBridge.popWindow({
                 passport: true,
               });
-            }, 10);
+            });
           }
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);

@@ -500,7 +500,7 @@ class SubPost extends migi.Component {
       {
         this.workData
           ? <li class="share"
-                style={ 'background-image:url(' + this.workData.cover || '/src/common/blank.png' + ')' }></li>
+                style={ 'background-image:url(' + this.workData.cover || '/src/common/blank.png' + ')' }/>
           : ''
       }
       {
@@ -513,8 +513,11 @@ class SubPost extends migi.Component {
       }
       </ul>
       <ul class="btn">
-        <li class="tip"><div ref="tip" class="fn-hide"/></li>
-        <li class="pic" onClick={ this.album }>
+        <li class="tip">
+          <div ref="tip" class="fn-hide"/>
+        </li>
+        <li class="pic"
+            onClick={ this.album }>
           <input type="file"
                  onClick={ this.clickFile }
                  onChange={ this.change }/>

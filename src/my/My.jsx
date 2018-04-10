@@ -22,28 +22,22 @@ class My extends migi.Component {
     super(...data);
     let self = this;
     self.visible = self.props.visible;
-    // self.coins = {};
-    // if(self.props.loginInfo) {
-    //   let userInfo = self.props.loginInfo.userInfo;
-    //   if(userInfo) {
-    //     self.isLogin = true;
-    //   }
-    // }
     self.on(migi.Event.DOM, function() {
-      // migi.eventBus.on('LOGIN', function(loginInfo) {
-      //   self.setData(loginInfo);
-      // });
       self.init();
+      jsBridge.on('resume', function(e) {
+        if(e.data) {
+          if(e.data.loginOut) {
+            self.isLogin = false;
+            self.setData(null, 1);
+            jsBridge.delPreference(cacheKey);
+            $.cookie('isLogin', null);
+          }
+          else if(e.data.guide || e.data.passport) {
+            self.init();
+          }
+        }
+      });
     });
-    // jsBridge.on('resume', function(e) {
-    //   if(e.data && e.data.guide) {
-    //     self.init();
-    //   }
-    //   if(e.data && e.data.loginOut) {
-    //     self.isLogin = false;
-    //     self.ref.nav.userInfo = null;
-    //   }
-    // });
   }
   get visible() {
     return this._visible;
@@ -71,17 +65,15 @@ class My extends migi.Component {
         self.setData(data, 1);
         self.isLogin = true;
 
-        util.setUserInfo(data.user, data.author);
         jsBridge.setPreference(cacheKey, data);
         $.cookie('isLogin', true);
       }
       else if(res.code === 1000) {
         self.isLogin = false;
-        jsBridge.delPreference(cacheKey);
+        self.setData(null, 1);
 
+        jsBridge.delPreference(cacheKey);
         $.cookie('isLogin', null);
-        $.cookie('uid', null);
-        migi.eventBus.emit('LOGIN_OUT');
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -103,6 +95,10 @@ class My extends migi.Component {
     if(data && data.user) {
       self.coins = data.user.coins;
       nav.setData(data.user, data.author, data.followPersonCount, data.fansCount);
+    }
+    else {
+      self.coins = 0;
+      nav.setData();
     }
 
     // let step = self.userInfo.User_Reg_Stat || 0;
@@ -139,7 +135,6 @@ class My extends migi.Component {
             self.setData(data, 1);
             self.isLogin = true;
 
-            util.setUserInfo(data.user, data.author);
             jsBridge.setPreference(cacheKey, data);
             $.cookie('isLogin', true);
           }
