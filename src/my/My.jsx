@@ -102,42 +102,9 @@ class My extends migi.Component {
 
     if(data && data.info) {
       self.coins = data.info.coins;
+      nav.setData(data.info, data.author, data.followPersonCount, data.fansCount);
     }
-    nav.setData(data.info, data.followPersonCount, data.fansCount);
-    // self.userInfo = data.userInfo;
-    // self.oauthInfo = data.oauthInfo || [];
-    // self.oauthHash = {};
-    // self.oauthInfo.forEach(function(item) {
-    //   self.oauthHash[item.OpenType] = item;
-    // });
-    // self.bonusPoint = data.bonusPoint;
-    //
-    // self.isLogin = true;
-    //
-    // let nav = self.ref.nav;
-    // nav.userInfo = data.userInfo;
-    //
-    // let now = Date.now();
-    // let lastUpdateNickNameTime = data.lastUpdateNickNameTime;
-    // if(lastUpdateNickNameTime) {
-    //   lastUpdateNickNameTime = new Date(lastUpdateNickNameTime);
-    // }
-    // else {
-    //   lastUpdateNickNameTime = 0;
-    // }
-    // let updateNickNameTimeDiff = now - lastUpdateNickNameTime;
-    // let lastUpdateHeadTime = data.lastUpdateHeadTime;
-    // if(lastUpdateHeadTime) {
-    //   lastUpdateHeadTime = new Date(lastUpdateHeadTime);
-    // }
-    // else {
-    //   lastUpdateHeadTime = 0;
-    // }
-    // let updateHeadTimeDiff = now - lastUpdateHeadTime;
-    //
-    // nav.updateNickNameTimeDiff = updateNickNameTimeDiff;
-    // nav.updateHeadTimeDiff = updateHeadTimeDiff;
-    //
+
     // let step = self.userInfo.User_Reg_Stat || 0;
     // let basicAuthor = null;
     // let userToAuthorList = self.userInfo.userToAuthorList || [];

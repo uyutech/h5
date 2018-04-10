@@ -182,10 +182,10 @@ class Config extends migi.Component {
   }
   clickOut() {
     let self = this;
-    net.postJSON('/h5/login/loginOut', function() {
+    net.postJSON('/h5/login2/loginOut', function() {
       $.cookie('isLogin', null);
       $.cookie('uid', null);
-      jsBridge.delPreference('loginInfo');
+      jsBridge.delPreference('my');
       jsBridge.loginOut();
       jsBridge.popWindow({
         loginOut: true,
@@ -205,13 +205,10 @@ class Config extends migi.Component {
                  onClick={ this.clickWeibo }
                  class={ 'weibo' + (this.weibo ? ' has' : '') }>{ this.weibo ? ('已绑微博：' + this.weibo) : '绑定微博' }</a></li>
         </ul>
-        <ul class="list"
-            onClick={ { a: this.clickLink } }>
-          <li><a href="/shield.html" class="shield">屏蔽设置</a></li>
-        </ul>
       </div>
       <div class="bot">
-        <span class="out" onClick={ this.clickOut }>退出登录</span>
+        <span class="out"
+              onClick={ this.clickOut }>退出登录</span>
       </div>
       <div class={ 'confirm' + (this.confirm ? '' : ' fn-hide') }>
         <div class="c">

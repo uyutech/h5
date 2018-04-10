@@ -10,13 +10,6 @@ import net from "../common/net";
 class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
-    let self = this;
-    if(self.props.loginInfo) {
-      let userInfo = self.props.loginInfo.userInfo;
-      if(userInfo) {
-        self.userInfo = userInfo;
-      }
-    }
   }
   @bind userId
   @bind nickname
@@ -27,8 +20,10 @@ class Nav extends migi.Component {
   @bind followPersonCount
   @bind isFans
   @bind fansCount
-  setData(data, followPersonCount, fansCount) {
+  @bind authorId;
+  setData(data, author, followPersonCount, fansCount) {
     data = data || {};
+    author = author || {};
     let self = this;
     self.userId = data.id;
     self.headUrl = data.headUrl;
@@ -37,6 +32,9 @@ class Nav extends migi.Component {
     self.sign = data.sign;
     self.followPersonCount = followPersonCount;
     self.fansCount = fansCount;
+    if(author && author.length) {
+      self.authorId = author[0].id;
+    }
   }
   clickPic(e) {
     if(!util.isLogin()) {
@@ -105,12 +103,12 @@ class Nav extends migi.Component {
     });
   }
   clickPersonal() {
-    jsBridge.pushWindow('/user.html?userID=' + this.userId, {
+    jsBridge.pushWindow('/user.html?userId=' + this.userId, {
       transparentTitle: true,
     });
   }
   clickAuthor() {
-    jsBridge.pushWindow('/author.html?authorId=' + this.userInfo.AuthorID, {
+    jsBridge.pushWindow('/author.html?authorId=' + this.authorId, {
       transparentTitle: true,
     });
   }
@@ -126,12 +124,13 @@ class Nav extends migi.Component {
         <div class="txt">
           <div class="n">
             <h3>{ this.nickname }</h3>
-            <b class={ 'edit' + (this.userId ? '' : ' fn-hide') } onClick={ this.clickName }/>
+            <b class={ 'edit' + (this.userId ? '' : ' fn-hide') }
+               onClick={ this.clickName }/>
           </div>
           <p>uid: { (this.userId ? this.userId.toString() : '').replace(/^20180*/, '') }</p>
         </div>
         <button onClick={ this.clickPersonal }>个人主页</button>
-        <button class={ 'author' + (this.isAuthor ? '' : ' fn-hide') }
+        <button class={ 'author' + (this.authorId ? '' : ' fn-hide') }
                 onClick={ this.clickAuthor }>作者主页</button>
       </div>
       <ul class="num">
@@ -141,7 +140,8 @@ class Nav extends migi.Component {
       <div class="sign">
         <label>签名</label>
         <span>{ this.sign || '暂时还没有签名哦~' }</span>
-        <b class={ 'edit' + (this.userId ? '' : ' fn-hide') } onClick={ this.clickSign }/>
+        <b class={ 'edit' + (this.userId ? '' : ' fn-hide') }
+           onClick={ this.clickSign }/>
       </div>
     </div>;
   }

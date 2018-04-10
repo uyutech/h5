@@ -278,6 +278,10 @@ let jsBridge = {
         data,
       }, cb);
     }
+    else {
+      url = window.ROOT_DOMAIN + '/' + url.replace(/^\//, '');
+      $.ajax2(url, data, cb, cb, 'POST');
+    }
   },
   loginOut: function(cb) {
     if(this.isInApp) {
@@ -316,7 +320,13 @@ let jsBridge = {
     }
   },
   delPreference: function(key, cb) {
-    this.call('setPreference', { key, value: null }, cb);
+    if(this.isInApp) {
+      this.call('setPreference', { key, value: null }, cb);
+    }
+    else {
+      localStorage[key] = null;
+      cb && cb();
+    }
   },
   setCache: function(key, value, cb) {
     cb = cb || function() {};

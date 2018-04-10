@@ -65,7 +65,7 @@ class Login extends migi.Component {
     }, 1000);
     net.postJSON('/h5/passport/code', { phone: self.phone, type: 1 }, function(res) {
       if(res.success) {
-        jsBridge.toast('验证码已发送，30分钟内有效~');
+        jsBridge.toast('验证码已发送，10分钟内有效~');
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -93,9 +93,9 @@ class Login extends migi.Component {
         clearInterval(interval);
       }
     }, 1000);
-    net.postJSON('/h5/passport/code', { phone: self.phone, type: 2 }, function(res) {
+    net.postJSON('/h5/passport2/resetCode', { phone: self.phone }, function(res) {
       if(res.success) {
-        jsBridge.toast('验证码已发送，30分钟内有效~');
+        jsBridge.toast('验证码已发送，10分钟内有效~');
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -126,21 +126,19 @@ class Login extends migi.Component {
       return;
     }
     self.loading = true;
-    jsBridge.login('/h5/passport/login', {
-      phone: self.phone,
-      password: self.password,
+    jsBridge.login('/h5/passport2/login', {
+      name: self.phone,
+      pw: self.password,
     }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.toast('登录成功');
-        jsBridge.setPreference('loginInfo', data, function() {
+        $.cookie('isLogin', true);
+        setTimeout(function() {
           jsBridge.popWindow({
             passport: true,
           });
-        });
-        $.cookie('isLogin', true);
-        $.cookie('uid', data.userInfo.UID);
-        $.cookie('userType', data.userInfo.UserType);
+        }, 10);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -249,9 +247,9 @@ class Login extends migi.Component {
     self.loading = true;
     let phone = self.phone;
     let password = self.password;
-    net.postJSON('/h5/passport/reset', {
+    net.postJSON('/h5/passport2/reset', {
       phone,
-      password,
+      pw: password,
       code: self.code,
     }, function(res) {
       if(res.success) {
@@ -270,38 +268,71 @@ class Login extends migi.Component {
   render() {
     return <div class="passport">
       <div class={ 'c' + (this.forget ? ' fn-hide' : '') }>
-        <ul class="sel" onClick={ { li: this.clickSel } }>
-          <li class={ this.selReg ? '' : 'cur' } rel="login">登录</li>
-          <li class={ this.selReg ? 'cur' : '' } rel="register">注册</li>
+        <ul class="sel"
+            onClick={ { li: this.clickSel } }>
+          <li class={ this.selReg ? '' : 'cur' }
+              rel="login">登录</li>
+          <li class={ this.selReg ? 'cur' : '' }
+              rel="register">注册</li>
         </ul>
         <div class={ 'login' + (this.selReg ? ' fn-hide' : '') }>
           <div class="line">
-            <input type="tel" class="phone" placeholder="请输入手机号" maxlength="11" value={ this.phone }/>
-            <b class={ 'clear' + (this.phone ? '' : ' fn-hide') } onClick={ function() { this.phone = ''; } }/>
+            <input type="tel"
+                   class="phone"
+                   placeholder="请输入手机号"
+                   maxlength="11"
+                   value={ this.phone }/>
+            <b class={ 'clear' + (this.phone ? '' : ' fn-hide') }
+               onClick={ function() { this.phone = ''; } }/>
           </div>
           <div class="line">
-            <input type={ this.visible ? 'text' : 'password' } class="password" placeholder="请输入密码（至少6位）" maxlength="16" value={ this.password }/>
-            <b class={ 'clear' + (this.password ? '' : ' fn-hide') } onClick={ function() { this.password = ''; } }/>
-            <b class={ 'visible' + (this.visible ? '' : ' invisible') } onClick={ function() { this.visible = !this.visible; } }/>
+            <input type={ this.visible ? 'text' : 'password' }
+                   class="password"
+                   placeholder="请输入密码（至少6位）"
+                   maxlength="16"
+                   value={ this.password }/>
+            <b class={ 'clear' + (this.password ? '' : ' fn-hide') }
+               onClick={ function() { this.password = ''; } }/>
+            <b class={ 'visible' + (this.visible ? '' : ' invisible') }
+               onClick={ function() { this.visible = !this.visible; } }/>
           </div>
-          <p class="forget" onClick={ function() { this.forget = true; } }>忘记密码</p>
-          <button class={ this.loading ? 'dis' : '' } onClick={ this.clickLogin }>登录</button>
+          <p class="forget"
+             onClick={ function() { this.forget = true; } }>忘记密码</p>
+          <button class={ this.loading ? 'dis' : '' }
+                  onClick={ this.clickLogin }>登录</button>
         </div>
         <div class={ 'register' + (this.selReg ? '' : ' fn-hide') }>
           <div class="line">
-            <input type="tel" class="phone" placeholder="请输入手机号" maxlength="11" value={ this.phone }/>
-            <b class={ 'clear' + (this.phone ? '' : ' fn-hide') } onClick={ function() { this.phone = ''; } }/>
+            <input type="tel"
+                   class="phone"
+                   placeholder="请输入手机号"
+                   maxlength="11"
+                   value={ this.phone }/>
+            <b class={ 'clear' + (this.phone ? '' : ' fn-hide') }
+               onClick={ function() { this.phone = ''; } }/>
           </div>
           <div class="line">
-            <input type={ this.visible ? 'text' : 'password' } class="password" placeholder="请输入密码（至少6位）" maxlength="16" value={ this.password }/>
-            <b class={ 'clear' + (this.password ? '' : ' fn-hide') } onClick={ function() { this.password = ''; } }/>
-            <b class={ 'visible' + (this.visible ? '' : ' invisible') } onClick={ function() { this.visible = !this.visible; } }/>
+            <input type={ this.visible ? 'text' : 'password' }
+                   class="password"
+                   placeholder="请输入密码（至少6位）"
+                   maxlength="16"
+                   value={ this.password }/>
+            <b class={ 'clear' + (this.password ? '' : ' fn-hide') }
+               onClick={ function() { this.password = ''; } }/>
+            <b class={ 'visible' + (this.visible ? '' : ' invisible') }
+               onClick={ function() { this.visible = !this.visible; } }/>
           </div>
           <div class="line2">
-            <input type="tel" class="code" placeholder="请输入验证码" maxlength="6" value={ this.code }/>
-            <button class={ this.count ? 'dis' : '' } onClick={ this.clickCode }>{ this.count ? ('还剩' + this.count + '秒') : '发送验证码' }</button>
+            <input type="tel"
+                   class="code"
+                   placeholder="请输入验证码"
+                   maxlength="6"
+                   value={ this.code }/>
+            <button class={ this.count ? 'dis' : '' }
+                    onClick={ this.clickCode }>{ this.count ? ('还剩' + this.count + '秒') : '发送验证码' }</button>
           </div>
-          <button class={ this.loading ? 'dis' : '' } onClick={ this.clickRegister }>注册</button>
+          <button class={ this.loading ? 'dis' : '' }
+                  onClick={ this.clickRegister }>注册</button>
           <p class="schema">注册即代表同意<span onClick={ function() {
             jsBridge.pushWindow('https://zhuanquan.xin/schema.html', { title: '用户协议' });
           } }>《转圈用户协议》</span></p>
@@ -310,19 +341,36 @@ class Login extends migi.Component {
       <div class={ 'c' + (this.forget ? '' : ' fn-hide') }>
         <h5>重置密码<b onClick={ function() { this.forget = false; } }/></h5>
         <div class="line">
-          <input type="tel" class="phone" placeholder="请输入手机号" maxlength="11" value={ this.phone }/>
-          <b class={ 'clear' + (this.phone ? '' : ' fn-hide') } onClick={ function() { this.phone = ''; } }/>
+          <input type="tel"
+                 class="phone"
+                 placeholder="请输入手机号"
+                 maxlength="11"
+                 value={ this.phone }/>
+          <b class={ 'clear' + (this.phone ? '' : ' fn-hide') }
+             onClick={ function() { this.phone = ''; } }/>
         </div>
         <div class="line">
-          <input type={ this.visible ? 'text' : 'password' } class="password" placeholder="请输入密码（至少6位）" maxlength="16" value={ this.password }/>
-          <b class={ 'clear' + (this.password ? '' : ' fn-hide') } onClick={ function() { this.password = ''; } }/>
-          <b class={ 'visible' + (this.visible ? '' : ' invisible') } onClick={ function() { this.visible = !this.visible; } }/>
+          <input type={ this.visible ? 'text' : 'password' }
+                 class="password"
+                 placeholder="请输入密码（至少6位）"
+                 maxlength="16"
+                 value={ this.password }/>
+          <b class={ 'clear' + (this.password ? '' : ' fn-hide') }
+             onClick={ function() { this.password = ''; } }/>
+          <b class={ 'visible' + (this.visible ? '' : ' invisible') }
+             onClick={ function() { this.visible = !this.visible; } }/>
         </div>
         <div class="line2">
-          <input type="tel" class="code" placeholder="请输入验证码" maxlength="6" value={ this.code }/>
-          <button class={ this.count ? 'dis' : '' } onClick={ this.clickCode2 }>{ this.count ? ('还剩' + this.count + '秒') : '发送验证码' }</button>
+          <input type="tel"
+                 class="code"
+                 placeholder="请输入验证码"
+                 maxlength="6"
+                 value={ this.code }/>
+          <button class={ this.count ? 'dis' : '' }
+                  onClick={ this.clickCode2 }>{ this.count ? ('还剩' + this.count + '秒') : '发送验证码' }</button>
         </div>
-        <button class={ this.loading ? 'dis' : '' } onClick={ this.clickReset }>重设</button>
+        <button class={ this.loading ? 'dis' : '' }
+                onClick={ this.clickReset }>重设</button>
       </div>
     </div>;
   }
