@@ -64,7 +64,7 @@ class MyRelation extends migi.Component {
     this.tag = tvd.props.rel;
   }
   render() {
-    return <div class={ 'relation ' + (this.tag || '') }>
+    return <div class="relation">
       <ul class="tag"
           onClick={ { li: this.clickTag } }>
         <li class={ this.tag === 0 ? 'cur' : '' }

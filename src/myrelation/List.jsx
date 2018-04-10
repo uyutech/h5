@@ -104,18 +104,10 @@ class List extends migi.Component {
   click(e, vd, tvd) {
     let url = tvd.props.url;
     let title = tvd.props.title;
-    if(this.props.isAuthor) {
-      util.openAuthor({
-        url,
-        title,
-      });
-    }
-    else {
-      jsBridge.pushWindow(url, {
-        title,
-        transparentTitle: true,
-      });
-    }
+    jsBridge.pushWindow(url, {
+      title,
+      transparentTitle: true,
+    });
   }
   render() {
     return <div class={ 'mod-list' + (this.visible ? '' : ' fn-hide') }>

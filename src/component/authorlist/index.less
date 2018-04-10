@@ -1,0 +1,44 @@
+/**
+ * Created by army8735 on 2018/4/10.
+ */
+
+.cp-authorlist{
+  ul{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:flex-start;
+  }
+  li{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-right:5%;
+    margin-bottom:0.1rem;
+    width:30%;
+    height:1rem;
+    overflow:hidden;
+    &:nth-child(3n) {
+      margin-right:0;
+    }
+    a{
+      position:relative;
+      display:block;
+      margin:0 auto;
+      text-align:center;
+      img{
+        display:block;
+        margin:0 auto 0.05rem;
+        width:0.6rem;
+        height:0.6rem;
+        border-radius:100%;
+        object-fit:contain;
+      }
+      span{
+        display:block;
+        white-space:nowrap;
+        overflow:hidden;
+        text-overflow:ellipsis;
+      }
+    }
+  }
+}

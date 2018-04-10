@@ -22,12 +22,16 @@ class WorksList extends migi.Component {
               this.list.map(function(item) {
                 let url = `/works.html?worksId=${item.id}`;
                 return <li>
-                  <a href={ url } class="pic" title={ item.title }>
+                  <a class="pic"
+                     href={ url }
+                     title={ item.title }>
                     <img src={ util.autoSsl(util.img170_170_80(item.cover)) || '/src/common/blank.png' }/>
                     <span class="type">{ item.typeName }</span>
                     <span class="num">{ util.abbrNum(item.popular) }</span>
                   </a>
-                  <a href={ url } class="txt" title={ item.title }>
+                  <a class="txt"
+                     href={ url }
+                     title={ item.title }>
                     <span>{ item.title }</span>
                     <span class="profession">{ (item.profession || {}).name }</span>
                   </a>
@@ -36,7 +40,9 @@ class WorksList extends migi.Component {
             }
             {
               this.props.more
-                ? <li class="more"><a href={ this.props.more } title="全部作品">查看更多</a></li>
+                ? <li class="more">
+                    <a href={ this.props.more } title="全部作品">查看更多</a>
+                  </li>
                 : ''
             }
           </ul>
