@@ -214,7 +214,7 @@ class WaterFall extends migi.Component {
            height={ height / 2 }/>
       <div class="txt">
         <p class="author">{ author.join(' ') }</p>
-        <b class={ 'like' }/>
+        <b class={ 'like' + (item.work.isLike ? ' liked' : '') }>{ item.work.likeCount }</b>
       </div>
     </li>;
   }

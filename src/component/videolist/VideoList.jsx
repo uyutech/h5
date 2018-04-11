@@ -62,7 +62,7 @@ class VideoList extends migi.Component {
          href={ url }>
         <img src={ util.autoSsl(util.img750__80(item.work.cover || item.cover)) || '/src/common/blank.png' }/>
         <div class="num">
-          <span class="play">{ util.abbrNum(0) }次播放</span>
+          <span class="play">{ util.abbrNum(item.work.playCount) }次播放</span>
         </div>
       </a>
       <a class="name"
@@ -70,8 +70,8 @@ class VideoList extends migi.Component {
          title={ item.title }>{ item.work.title }</a>
       <div class="info">
         <p class="author">{ author.join(' ') }</p>
-        <b class="like">1</b>
-        <b class="comment">2</b>
+        <b class={ 'like' + (item.work.isLike ? ' liked' : '') }>{ item.work.likeCount || '' }</b>
+        <b class="comment">{ item.commentCount || '' }</b>
         <b class="fn"/>
       </div>
     </li>;

@@ -11,7 +11,6 @@ class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.loading = true;
     self.on(migi.Event.DOM, function() {
       jsBridge.on('optionMenu1', function() {
         migi.eventBus.emit('BOT_FN', {
@@ -91,6 +90,7 @@ class Nav extends migi.Component {
     self.fansCount = fansCount;
     self.outsides = outsides;
     self.isFollow = isFollow;
+    self.loading = false;
   }
   clickFollow() {
     this.follow();
