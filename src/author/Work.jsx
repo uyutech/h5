@@ -41,6 +41,9 @@ class Work extends migi.Component {
         offset: 0,
       };
     });
+    if(!kindList[0]) {
+      return;
+    }
     self.kind = kindList[0].kind;
     self.ref.select.list = kindList[0].professionList.map(function(item) {
       return {
@@ -118,7 +121,8 @@ class Work extends migi.Component {
       authorId: self.authorId,
       kind,
       offset: cache.offset,
-      limit: cache.limit }, function(res) {
+      limit: cache.limit
+    }, function(res) {
       if(res.success) {
         let data = res.data;
         cache.limit = data.limit;
