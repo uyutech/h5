@@ -11,4 +11,5 @@ import Config from './Config.jsx';
 
 jsBridge.ready(function() {
   let config = migi.preExist(<Config/>, '#page');
+  config.init();
 });

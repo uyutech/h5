@@ -70,7 +70,7 @@ class Tag extends migi.Component {
     });
     ajax = net.postJSON('/h5/tag2/index', { tag }, function(res) {
       if(res.success) {
-        let data = res.data;console.log(data);
+        let data = res.data;
         self.setData(data, 1);
         jsBridge.setPreference(cacheKey, data);
 

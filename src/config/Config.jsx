@@ -7,48 +7,84 @@
 import net from '../common/net';
 import util from '../common/util';
 
-let bindUuid;
 let bindName;
+let bindUuid;
 let openId;
+
+let cacheKey = 'bind';
+let ajax;
+let currentPriority = 0;
 
 class Config extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      jsBridge.getCache('loginInfo', function(loginInfo) {
-        if(loginInfo) {
-          let oauthInfo = loginInfo.oauthInfo;
-          (oauthInfo || []).forEach(function(item) {
-            switch(item.OpenType) {
-              case 'telphone':
-                self.phone = item.OpenID;
-                break;
-              case 'weibo':
-                self.weibo = item.OpenID;
-                break;
-            }
-          });
+      jsBridge.on('resume', function(e) {
+        if(e.data) {
+          if(e.data.bindPhone) {
+            self.phone = e.data.bindPhone;
+            self.init();
+          }
         }
       });
     });
   }
   @bind phone
   @bind weibo
-  @bind message
-  @bind confirm
+  // @bind message
+  // @bind confirm
+  init() {
+    let self = this;
+    if(ajax) {
+      ajax.abort();
+    }
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
+      }
+    });
+    ajax = net.postJSON('/h5/passport2/bindList', function(res) {
+      if(res.success) {
+        let data = res.data;
+        self.setData(data, 1);
+
+        jsBridge.setPreference(cacheKey, data);
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
+  }
+  setData(data, priority) {
+    priority = priority || 0;
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
+    let self = this;
+    let accountList = data.accountList;
+    let oauthList = data.oauthList;
+    self.phone = self.weibo = null;
+    (accountList || []).forEach((item) => {
+      if(item.type === 1) {
+        self.phone = item.name;
+      }
+    });
+    (oauthList || []).forEach((item) => {
+      if(item.type === 1) {
+        self.weibo = item.id;
+      }
+    });
+  }
   bindPhone() {
     let self = this;
     bindName = '手机';
     jsBridge.pushWindow('/phone.html', {
       title: '绑定手机',
-    });
-    jsBridge.on('resume', function cb(e) {
-      let data = e.data;
-      if(data && data.phone) {
-        self.phone = data.phone;
-      }
-      jsBridge.off('resume', cb);
     });
   }
   bindWeibo() {
@@ -56,40 +92,13 @@ class Config extends migi.Component {
     bindName = '微博';
     jsBridge.loginWeibo(function(res) {
       if(res.success) {
-        jsBridge.showLoading('正在登录...');
-        let openID = res.openID;
+        jsBridge.showLoading('正在绑定...');
+        let openId = res.openId || res.openID;
         let token = res.token;
-        net.postJSON('/h5/passport/bindOauth', { openID, token }, function(res) {
+        net.postJSON('/h5/passport2/bindWeibo', { openId, token }, function(res) {
           if(res.success) {
-            self.weibo = openID;
-          }
-          else if(res.code === 1008) {
-            bindUuid = res.data;
-            openId = openID;
-            self.message = res.message;
-            self.confirm = true;
-          }
-          else if(res.code === 1007) {
-            bindUuid = res.data;
-            jsBridge.confirm(res.message + '\n该操作将解除该' + bindName + '与其关联账号的绑定哦~', function(res) {
-              if(!res) {
-                return;
-              }
-              net.postJSON('/h5/passport/mergeOauth', {
-                code: bindUuid,
-                type: 2,
-              }, function(res) {
-                if(res.success) {
-                  jsBridge.toast('绑定成功');
-                  self.weibo = openID;
-                }
-                else {
-                  jsBridge.toast(res.message);
-                }
-              }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              });
-            });
+            self.weibo = res.data;
+            self.init();
           }
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -105,72 +114,70 @@ class Config extends migi.Component {
       }
     });
   }
-  clickMerge() {
-    let self = this;
-    jsBridge.confirm('合并后，会保留此账号之前的作品、发言、圈币和收藏数据~之后再以此账号登录时会直接进入当前账号哦！确定进行合并吗？', function(res) {
-      if(!res) {
-        return;
-      }
-      jsBridge.showLoading();
-      net.postJSON('/h5/passport/mergeOauth', {
-        code: bindUuid,
-        type: 1,
-      }, function(res) {
-        if(res.success) {
-          jsBridge.toast('绑定成功');
-          self.confirm = false;
-          self.weibo = openId;
-        }
-        else {
-          jsBridge.toast(res.message);
-        }
-        jsBridge.hideLoading();
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        jsBridge.hideLoading();
-      });
-    });
-  }
-  clickBind() {
-    let self = this;
-    jsBridge.confirm('该操作将注销之前的账号哦~', function(res) {
-      if(!res) {
-        return;
-      }
-      jsBridge.showLoading();
-      net.postJSON('/h5/passport/mergeOauth', {
-        code: bindUuid,
-        type: 2,
-      }, function(res) {
-        if(res.success) {
-          jsBridge.toast('绑定成功');
-          self.confirm = false;
-          self.weibo = openId;
-        }
-        else {
-          jsBridge.toast(res.message);
-        }
-        jsBridge.hideLoading();
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        jsBridge.hideLoading();
-      });
-    });
-  }
-  clickCancel() {
-    this.confirm = false;
-  }
+  // clickMerge() {
+  //   let self = this;
+  //   jsBridge.confirm('合并后，会保留此账号之前的作品、发言、圈币和收藏数据~之后再以此账号登录时会直接进入当前账号哦！确定进行合并吗？', function(res) {
+  //     if(!res) {
+  //       return;
+  //     }
+  //     jsBridge.showLoading();
+  //     net.postJSON('/h5/passport/mergeOauth', {
+  //       code: bindUuid,
+  //       type: 1,
+  //     }, function(res) {
+  //       if(res.success) {
+  //         jsBridge.toast('绑定成功');
+  //         self.confirm = false;
+  //         self.weibo = openId;
+  //       }
+  //       else {
+  //         jsBridge.toast(res.message);
+  //       }
+  //       jsBridge.hideLoading();
+  //     }, function(res) {
+  //       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+  //       jsBridge.hideLoading();
+  //     });
+  //   });
+  // }
+  // clickBind() {
+  //   let self = this;
+  //   jsBridge.confirm('该操作将注销之前的账号哦~', function(res) {
+  //     if(!res) {
+  //       return;
+  //     }
+  //     jsBridge.showLoading();
+  //     net.postJSON('/h5/passport/mergeOauth', {
+  //       code: bindUuid,
+  //       type: 2,
+  //     }, function(res) {
+  //       if(res.success) {
+  //         jsBridge.toast('绑定成功');
+  //         self.confirm = false;
+  //         self.weibo = openId;
+  //       }
+  //       else {
+  //         jsBridge.toast(res.message);
+  //       }
+  //       jsBridge.hideLoading();
+  //     }, function(res) {
+  //       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+  //       jsBridge.hideLoading();
+  //     });
+  //   });
+  // }
+  // clickCancel() {
+  //   this.confirm = false;
+  // }
   clickPhone(e) {
     e.preventDefault();
-    if(this.phone) {}
-    else {
+    if(!this.phone) {
       this.bindPhone();
     }
   }
   clickWeibo(e) {
     e.preventDefault();
-    if(this.weibo) {}
-    else {
+    if(!this.weibo) {
       this.bindWeibo();
     }
   }
@@ -210,15 +217,15 @@ class Config extends migi.Component {
         <span class="out"
               onClick={ this.clickOut }>退出登录</span>
       </div>
-      <div class={ 'confirm' + (this.confirm ? '' : ' fn-hide') }>
-        <div class="c">
-          <p>{ this.message }</p>
-          <strong>请问这是您之前的账号吗？</strong>
-          <button onClick={ this.clickMerge }>是的，我想要合并两个账号</button>
-          <button onClick={ this.clickBind }>不是的，我只要绑定就可以了</button>
-          <button onClick={ this.clickCancel }>算了，还是维持现状吧</button>
-        </div>
-      </div>
+      {/*<div class={ 'confirm' + (this.confirm ? '' : ' fn-hide') }>*/}
+        {/*<div class="c">*/}
+          {/*<p>{ this.message }</p>*/}
+          {/*<strong>请问这是您之前的账号吗？</strong>*/}
+          {/*<button onClick={ this.clickMerge }>是的，我想要合并两个账号</button>*/}
+          {/*<button onClick={ this.clickBind }>不是的，我只要绑定就可以了</button>*/}
+          {/*<button onClick={ this.clickCancel }>算了，还是维持现状吧</button>*/}
+        {/*</div>*/}
+      {/*</div>*/}
     </div>;
   }
 }

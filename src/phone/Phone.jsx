@@ -4,8 +4,8 @@
 
 'use strict';
 
-import util from "../common/util";
-import net from "../common/net";
+import util from '../common/util';
+import net from '../common/net';
 
 let interval;
 
@@ -24,8 +24,8 @@ class Phone extends migi.Component {
   @bind code
   @bind count
   @bind loading
-  @bind message
-  @bind confirm
+  // @bind message
+  // @bind confirm
   isPhoneValid() {
     return /^1\d{10}$/.test(this.phone);
   }
@@ -54,9 +54,9 @@ class Phone extends migi.Component {
         clearInterval(interval);
       }
     }, 1000);
-    net.postJSON('/h5/passport/code', { phone: self.phone, type: 3 }, function(res) {
+    net.postJSON('/h5/passport2/bindCode', { phone: self.phone }, function(res) {
       if(res.success) {
-        jsBridge.toast('验证码已发送，30分钟内有效~');
+        jsBridge.toast('验证码已发送，10分钟内有效~');
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -97,47 +97,15 @@ class Phone extends migi.Component {
     self.loading = true;
     let phone = self.phone;
     let password = self.password;
-    net.postJSON('/h5/passport/bindPhone', {
+    net.postJSON('/h5/passport2/bindPhone', {
       phone,
-      password,
+      pw: password,
       code: self.code,
     }, function(res) {
       if(res.success) {
         jsBridge.toast('绑定成功');
         jsBridge.popWindow({
-          phone,
-        });
-      }
-      else if(res.code === 1008) {
-        self.message = res.message;
-        self.confirm = true;
-        self.loading = false;
-      }
-      else if(res.code === 1007) {
-        jsBridge.confirm(res.message + '\n该操作将解除该手机与其关联账号的绑定哦~', function(res) {
-          if(!res) {
-            self.loading = false;
-            return;
-          }
-          net.postJSON('/h5/passport/merge', {
-            phone,
-            password,
-            type: 2,
-          }, function(res) {
-            if(res.success) {
-              jsBridge.toast('绑定成功');
-              jsBridge.popWindow({
-                phone,
-              });
-            }
-            else {
-              jsBridge.toast(res.message);
-            }
-            self.loading = false;
-          }, function(res) {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
-            self.loading = false;
-          });
+          bindPhone: phone,
         });
       }
       else {
@@ -149,75 +117,75 @@ class Phone extends migi.Component {
       self.loading = false;
     });
   }
-  clickMerge() {
-    let self = this;
-    let phone = self.phone;
-    let password = self.password;
-    jsBridge.confirm('合并后，会保留此账号之前的作品、发言、圈币和收藏数据~之后再以此账号登录时会直接进入当前账号哦！确定进行合并吗？', function(res) {
-      if(!res) {
-        return;
-      }
-      if(self.loading) {
-        return;
-      }
-      self.loading = true;
-      net.postJSON('/h5/passport/merge', {
-        phone,
-        password,
-        type: 1,
-      }, function(res) {
-        if(res.success) {
-          jsBridge.toast('绑定成功');
-          jsBridge.popWindow({
-            phone,
-          });
-        }
-        else {
-          jsBridge.toast(res.message);
-        }
-        self.loading = false;
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        self.loading = false;
-      });
-    });
-  }
-  clickBind() {
-    let self = this;
-    let phone = self.phone;
-    let password = self.password;
-    jsBridge.confirm('该操作将注销之前的账号哦~', function(res) {
-      if(!res) {
-        return;
-      }
-      if(self.loading) {
-        return;
-      }
-      self.loading = true;
-      net.postJSON('/h5/passport/merge', {
-        phone,
-        password,
-        type: 2,
-      }, function(res) {
-        if(res.success) {
-          jsBridge.toast('绑定成功');
-          jsBridge.popWindow({
-            phone,
-          });
-        }
-        else {
-          jsBridge.toast(res.message);
-        }
-        self.loading = false;
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        self.loading = false;
-      });
-    });
-  }
-  clickCancel() {
-    this.confirm = false;
-  }
+  // clickMerge() {
+  //   let self = this;
+  //   let phone = self.phone;
+  //   let password = self.password;
+  //   jsBridge.confirm('合并后，会保留此账号之前的作品、发言、圈币和收藏数据~之后再以此账号登录时会直接进入当前账号哦！确定进行合并吗？', function(res) {
+  //     if(!res) {
+  //       return;
+  //     }
+  //     if(self.loading) {
+  //       return;
+  //     }
+  //     self.loading = true;
+  //     net.postJSON('/h5/passport/merge', {
+  //       phone,
+  //       password,
+  //       type: 1,
+  //     }, function(res) {
+  //       if(res.success) {
+  //         jsBridge.toast('绑定成功');
+  //         jsBridge.popWindow({
+  //           phone,
+  //         });
+  //       }
+  //       else {
+  //         jsBridge.toast(res.message);
+  //       }
+  //       self.loading = false;
+  //     }, function(res) {
+  //       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+  //       self.loading = false;
+  //     });
+  //   });
+  // }
+  // clickBind() {
+  //   let self = this;
+  //   let phone = self.phone;
+  //   let password = self.password;
+  //   jsBridge.confirm('该操作将注销之前的账号哦~', function(res) {
+  //     if(!res) {
+  //       return;
+  //     }
+  //     if(self.loading) {
+  //       return;
+  //     }
+  //     self.loading = true;
+  //     net.postJSON('/h5/passport/merge', {
+  //       phone,
+  //       password,
+  //       type: 2,
+  //     }, function(res) {
+  //       if(res.success) {
+  //         jsBridge.toast('绑定成功');
+  //         jsBridge.popWindow({
+  //           phone,
+  //         });
+  //       }
+  //       else {
+  //         jsBridge.toast(res.message);
+  //       }
+  //       self.loading = false;
+  //     }, function(res) {
+  //       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+  //       self.loading = false;
+  //     });
+  //   });
+  // }
+  // clickCancel() {
+  //   this.confirm = false;
+  // }
   render() {
     return <div class="phone">
       <div class="c">
@@ -237,15 +205,15 @@ class Phone extends migi.Component {
         </div>
         <button class={ this.loading ? 'dis' : '' } onClick={ this.clickOk }>确定</button>
       </div>
-      <div class={ 'confirm' + (this.confirm ? '' : ' fn-hide') }>
-        <div class="c">
-          <p>{ this.message }</p>
-          <strong>请问这是您之前的账号吗？</strong>
-          <button onClick={ this.clickMerge }>是的，我想要合并两个账号</button>
-          <button onClick={ this.clickBind }>不是的，我只要绑定手机就可以了</button>
-          <button onClick={ this.clickCancel }>算了，还是维持现状吧</button>
-        </div>
-      </div>
+      {/*<div class={ 'confirm' + (this.confirm ? '' : ' fn-hide') }>*/}
+        {/*<div class="c">*/}
+          {/*<p>{ this.message }</p>*/}
+          {/*<strong>请问这是您之前的账号吗？</strong>*/}
+          {/*<button onClick={ this.clickMerge }>是的，我想要合并两个账号</button>*/}
+          {/*<button onClick={ this.clickBind }>不是的，我只要绑定手机就可以了</button>*/}
+          {/*<button onClick={ this.clickCancel }>算了，还是维持现状吧</button>*/}
+        {/*</div>*/}
+      {/*</div>*/}
     </div>;
   }
 }
