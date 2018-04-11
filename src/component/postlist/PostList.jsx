@@ -15,6 +15,7 @@ class PostList extends migi.Component {
     let self = this;
     self.visible = self.props.visible;
     self.message = self.props.message;
+    self.exist = {};
     self.on(migi.Event.DOM, function() {
       let $list = $(this.ref.list.element);
       $list.on('click', '.like', function() {

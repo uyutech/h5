@@ -16,8 +16,13 @@ let loadCircleEnd;
 
 let loading;
 let loadEnd;
-let ajax;
 let offset = 0;
+let ajax;
+let loading2;
+let loadEnd2;
+let offset2 = 0;
+let ajax2;
+let friendFirst = true;
 
 let interval;
 let isPause;
@@ -79,6 +84,9 @@ class Follow extends migi.Component {
     if(ajax) {
       ajax.abort();
     }
+    if(ajax2) {
+      ajax.abort();
+    }
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         self.setData(cache, 0);
@@ -129,6 +137,7 @@ class Follow extends migi.Component {
 
     let self = this;
     let postList = self.ref.postList;
+    let postList2 = self.ref.postList2;
 
     self.personList = data.personList.data;
 
@@ -141,11 +150,18 @@ class Follow extends migi.Component {
   }
   checkMore() {
     let self = this;
-    if(loading || loadEnd) {
-      return;
+    if(self.type === 0) {
+      if(loading || loadEnd) {
+        return;
+      }
+    }
+    else {
+      if(loading2 || loadEnd2) {
+        return;
+      }
     }
     if(util.isBottom()) {
-      self.load();
+      self.type === 0 ? self.load() : self.load2();
     }
   }
   load() {
@@ -155,7 +171,7 @@ class Follow extends migi.Component {
     }
     let postList = self.ref.postList;
     loading = true;
-    ajax = net.postJSON('/h5/follow2/postList', { offset, type: self.type }, function(res) {
+    ajax = net.postJSON('/h5/follow2/postList', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
         postList.appendData(data.data);
@@ -172,6 +188,32 @@ class Follow extends migi.Component {
     }, function(res) {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
       loading = false;
+    });
+  }
+  load2() {
+    let self = this;
+    if(ajax) {
+      ajax.abort();
+    }
+    let postList = self.ref.postList2;
+    loading2 = true;
+    ajax = net.postJSON('/h5/follow2/friendPostList', { offset: offset2 }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        postList.appendData(data.data);
+        offset2 += data.limit;
+        if(offset >= data.count) {
+          loadEnd2 = true;
+          postList.message = '已经到底了';
+        }
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+      loading2 = false;
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      loading2 = false;
     });
   }
   scroll(e, vd) {
@@ -229,10 +271,10 @@ class Follow extends migi.Component {
       return;
     }
     self.type = tvd.props.rel;
-    offset = 0;
-    loading = loadEnd = false;
-    self.ref.hotPost.clearData();
-    self.load();
+    if(self.type === 1 && friendFirst) {
+      friendFirst = false;
+      self.load2();
+    }
   }
   render() {
     return <div class={ 'follow' + (this.visible ? '' : ' fn-hide') }>
@@ -273,7 +315,10 @@ class Follow extends migi.Component {
         <li class={ this.type === 1 ? 'cur': '' } rel={ 1 }>圈友</li>
       </ul>
       <PostList ref="postList"
-                visible={ true }
+                @visible={ this.type === 0 }
+                message="正在加载..."/>
+      <PostList ref="postList2"
+                @visible={ this.type === 1 }
                 message="正在加载..."/>
     </div>;
   }
