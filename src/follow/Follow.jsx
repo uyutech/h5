@@ -208,6 +208,21 @@ class Follow extends migi.Component {
       title,
     });
   }
+  clickPerson(e, vd, tvd) {
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+      transparentTitle: true,
+    });
+  }
+  clickMore(e, vd, tvd) {
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+    });
+  }
   clickType(e, vd, tvd) {
     let self = this;
     if(tvd.props.rel === self.type) {
@@ -223,11 +238,12 @@ class Follow extends migi.Component {
     return <div class={ 'follow' + (this.visible ? '' : ' fn-hide') }>
       <div class="person">
         <h4>关注的人</h4>
-        <ul>
+        <ul onClick={ { '.pic': this.clickPerson, '.more': this.clickMore } }>
           {
             (this.personList || []).map(function(item) {
               return <li>
-                <a class="pic">
+                <a class="pic"
+                   href={ item.isAuthor ? ('/author.html?authorId=' + item.id) : ('/user.html?userId=' + item.id) }>
                   <img src={ util.autoSsl(util.img(item.headUrl, 120, 120, 80)) || '/src/common/head.png' }/>
                 </a>
               </li>;
@@ -235,7 +251,7 @@ class Follow extends migi.Component {
           }
           <li>
             <a class="more"
-               href="/relation.html"
+               href="/myrelation.html"
                title="圈关系">查看更多</a>
           </li>
         </ul>
