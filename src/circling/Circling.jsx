@@ -198,13 +198,14 @@ class Circling extends migi.Component {
     if(idStack.length > 3) {
       idStack.shift();
     }
-    this.ref.hotPost.setData();
+    this.ref.postList.clearData();
+    this.ref.postList.message = '正在加载...';
     offset = 0;
     loadEnd = false;
     loading = false;
     this.load();
   }
-  commentFavor(id, data) {
+  favor(id, data) {
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         cache.postList.data.forEach(function(item) {
@@ -217,7 +218,7 @@ class Circling extends migi.Component {
       }
     });
   }
-  commentLike(id, data) {
+  like(id, data) {
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         cache.postList.data.forEach(function(item) {
@@ -247,8 +248,8 @@ class Circling extends migi.Component {
       <PostList ref="postList"
                 visible={ true }
                 message="正在加载..."
-                on-favor={ this.commentFavor }
-                on-like={ this.commentLike }/>
+                on-favor={ this.favor }
+                on-like={ this.like }/>
     </div>;
   }
 }

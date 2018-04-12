@@ -94,7 +94,15 @@ class Tag extends migi.Component {
     let postList = self.ref.postList;
 
     postList.setData(data.postList.data);
-    offset = data.postList.count;
+    offset = data.postList.limit;
+    if(offset === 0) {
+      loadEnd = true;
+      postList.message = '暂无信息';
+    }
+    else if(offset >= data.postList.count) {
+      loadEnd = true;
+      postList.message = '已经到底了';
+    }
   }
   checkMore() {
     let self = this;

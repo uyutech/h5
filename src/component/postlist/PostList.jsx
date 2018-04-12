@@ -92,10 +92,13 @@ class PostList extends migi.Component {
     let self = this;
     self.exist = {};
     let s = '';
+    if(!data) {
+      return;
+    }
     if(!Array.isArray(data)) {
       data = [data];
     }
-    (data || []).forEach(function(item) {
+    data.forEach(function(item) {
       s += self.genItem(item) || '';
     });
     $(self.ref.list.element).html(s);
