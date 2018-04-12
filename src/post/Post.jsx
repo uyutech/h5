@@ -13,7 +13,6 @@ import Comment from '../component/comment/Comment.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let limit;
 let offset;
 let ajax;
 let loading;
@@ -68,9 +67,13 @@ class Post extends migi.Component {
 
     offset = data.commentList.limit;
     self.ref.comment.setData(data.commentList.data);
-    if(offset >= data.commentList.count) {
+    if(data.commentList.count === 0) {
       loadEnd = true;
-      self.ref.comment.message = data.commentList.count ? '已经到底了' : '';
+      self.ref.comment.message = '暂无评论';
+    }
+    else if(offset >= data.commentList.count) {
+      loadEnd = true;
+      self.ref.comment.message = '已经到底了';
     }
     //
     // let $root = $(self.element);

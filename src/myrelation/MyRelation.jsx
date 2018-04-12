@@ -27,7 +27,7 @@ class MyRelation extends migi.Component {
         self.setData(cache, 0);
       }
     });
-    ajax = net.postJSON('/h5/my2/relation2', function(res) {
+    ajax = net.postJSON('/h5/my2/relation', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -77,17 +77,17 @@ class MyRelation extends migi.Component {
             rel={ 3 }>关注作者</li>
       </ul>
       <List ref="friend"
-            url={ '/h5/relation2/friend' }
+            url={ '/h5/my2/relation/friend' }
             message="正在加载..."
             @visible={ this.tag === 0}/>
       <List ref="follow"
-            url={ '/h5/relation2/follow' }
+            url={ '/h5/my2/relation/follow' }
             @visible={ this.tag === 1}/>
       <List ref="fans"
-            url={ '/h5/relation2/fans' }
+            url={ '/h5/my2/relation/fans' }
             @visible={ this.tag === 2}/>
       <List ref="author"
-            url={ '/h5/relation2/author' }
+            url={ '/h5/my2/relation/author' }
             isAuthor={ true }
             @visible={ this.tag === 3}/>
     </div>;

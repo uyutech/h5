@@ -4,14 +4,10 @@
 
 'use strict';
 
-import './message.html';
+import './mymessage.html';
 import './index.less';
 
-import qs from 'anima-querystring';
-
-import net from '../common/net';
-import util from '../common/util';
-import Message from './Message.jsx';
+import MyMessage from './MyMessage.jsx';
 
 jsBridge.ready(function() {
   jsBridge.on('back', function(e) {
@@ -21,7 +17,8 @@ jsBridge.ready(function() {
     });
   });
   let message = migi.preExist(
-    <Message/>,
+    <MyMessage/>,
     '#page'
   );
+  message.init();
 });

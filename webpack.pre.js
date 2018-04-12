@@ -11,7 +11,7 @@ module.exports = {
     subcomment: './src/subcomment/pre.jsx',
     user: './src/user/pre.jsx',
     myrelation: './src/myrelation/pre.jsx',
-    message: './src/message/pre.jsx',
+    mymessage: './src/mymessage/pre.jsx',
     mypost: './src/mypost/pre.jsx',
     myfavor: './src/myfavor/pre.jsx',
     // allworks: './src/allworks/pre.jsx',

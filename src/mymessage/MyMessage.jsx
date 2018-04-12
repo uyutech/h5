@@ -6,42 +6,83 @@
 
 import net from '../common/net';
 import util from '../common/util';
-import Messages from '../component/messages/Messages.jsx';
+import Message from './Message.jsx';
 import SubCmt from '../component/subcmt/SubCmt.jsx';
 
-let take = 10;
-let skip = take;
+let offset = 0;
 let loading;
 let loadEnd;
 let ajax;
 
-class Message extends migi.Component {
+let currentPriority = 0;
+let cacheKey = 'message';
+
+class MyMessage extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      net.postJSON('/h5/my/message', function(res) {
-        if(res.success) {
-          let data = res.data;
-          self.setData(data);
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
-      jsBridge.on('refresh', function(e) {
-        e.preventDefault();
-        skip = 0;
-        loading = loadEnd = false;
-        self.ref.messages.clearData();
-        self.load();
-      });
+
     });
   }
-  setData(data) {
+  init() {
     let self = this;
+    if(ajax) {
+      ajax.abort();
+    }
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        self.setData(cache, 0);
+      }
+    });
+    ajax = net.postJSON('/h5/my2/message', function(res) {
+      if(res.success) {
+        let data = res.data;
+        self.setData(data, 1);
+        jsBridge.setPreference(cacheKey, data);
+
+        window.addEventListener('scroll', function() {
+          self.checkMore();
+        });
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
+    // jsBridge.on('refresh', function(e) {
+    //   e.preventDefault();
+    //   skip = 0;
+    //   loading = loadEnd = false;
+    //   self.ref.messages.clearData();
+    //   self.load();
+    // });
+  }
+  setData(data, priority) {
+    priority = priority || 0;
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
+    let self = this;
+    let message = self.ref.message;
+
+    message.setData(data.data);
+    offset = data.limit;
+    if(data.count === 0) {
+      loadEnd = true;
+      message.message = '暂无消息';
+    }
+    else if(offset >= data.count) {
+      loadEnd = true;
+      message.message = '已经到底了';
+    }
+
+    return;
+
+
     let messages = self.ref.messages;
     messages.setData(data.data);
     loadEnd = data.Size <= take;
@@ -106,38 +147,30 @@ class Message extends migi.Component {
     });
     self.read(data.data);
   }
-  checkMore($window) {
+  checkMore() {
     let self = this;
     if(loading || loadEnd) {
       return;
     }
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    let bool;
-    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    if(util.isBottom()) {
       self.load();
     }
   }
   load() {
     let self = this;
-    loading = true;
-    self.ref.messages.message = '正在加载...';
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON('/h5/my/message', { skip, take }, function(res) {
+    let message = self.ref.message;
+    loading = true;
+    ajax = net.postJSON('/h5/my2/message', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
-        self.ref.messages.appendData(data.data);
-        self.read(data.data);
-        if(skip >= data.Size) {
+        message.appendData(data.data);
+        offset += data.limit;
+        if(offset >= data.count) {
           loadEnd = true;
-          self.ref.messages.message = '已经到底了';
-        }
-        else {
-          self.ref.messages.message = '';
+          message.message = '已经到底了';
         }
       }
       else {
@@ -169,9 +202,10 @@ class Message extends migi.Component {
     }
   }
   render() {
-    return <div class="message">
+    return <div class="my-message">
       <h4>圈消息</h4>
-      <Messages ref="messages" ellipsis={ true }/>
+      <Message ref="message"
+               message="正在加载..."/>
       <SubCmt ref="subCmt"
               readOnly={ true }
               placeholder="请选择留言回复"
@@ -181,4 +215,4 @@ class Message extends migi.Component {
   }
 }
 
-export default Message;
+export default MyMessage;

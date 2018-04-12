@@ -172,7 +172,7 @@ class My extends migi.Component {
            cacheKey={ cacheKey }/>
       <ul class={ 'list' + (this.isLogin ? '' : ' fn-hide') }
           onClick={ { a: this.clickLink } }>
-        <li><a href="/message.html" class="message">圈消息</a></li>
+        <li><a href="/mymessage.html" class="message">圈消息</a></li>
         <li><a href="/myrelation.html" class="relation">圈关系</a></li>
         <li>
           <a href="/mall.html" class="mall">圈商城<small>（<b/>圈币：{ this.coins || 0 }）</small></a>
