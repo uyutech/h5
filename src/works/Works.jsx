@@ -33,6 +33,7 @@ class Works extends migi.Component {
     self.worksId = worksId;
     self.workId = workId;
     self.kind = kind;
+    self.ref.comments.worksId = worksId;
     cacheKey = 'worksData_' + worksId;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
@@ -289,7 +290,7 @@ class Works extends migi.Component {
       }
       </div>
       <Comments ref="comments"
-                   @visible={ this.curColumn === 2 }/>
+                @visible={ this.curColumn === 2 }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }

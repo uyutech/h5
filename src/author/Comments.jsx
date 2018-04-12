@@ -75,11 +75,18 @@ class Comments extends migi.Component {
       loading = false;
     });
   }
+  reply(id) {
+    jsBridge.pushWindow('/subcomment.html?type=1&id=' + this.authorId + '&pid=' + id, {
+      title: '评论',
+      optionMenu: '发布',
+    });
+  }
   render() {
     return <div class={ 'comments' + (this.visible ? '' : ' fn-hide') }>
       <CommentBar ref="commentBar"/>
       <Comment ref="comment"
-               message="正在加载..."/>
+               message="正在加载..."
+               on-reply={ this.reply }/>
     </div>;
   }
 }

@@ -34,6 +34,7 @@ class Author extends migi.Component {
     let self = this;
     self.authorId = authorId;
     self.ref.work.authorId = authorId;
+    self.ref.comments.authorId = authorId;
     cacheKey = 'authorData_' + authorId;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {

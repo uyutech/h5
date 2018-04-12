@@ -90,21 +90,18 @@ class Comments extends migi.Component {
       loading = false;
     });
   }
-  chooseSubComment(rid, cid, name, n) {
-    let self = this;
-    if(!n || n === '0') {
-      jsBridge.pushWindow('/subcomment.html?type=3&id='
-        + self.worksId + '&cid=' + cid + '&rid=' + rid, {
-        title: '评论',
-        optionMenu: '发布',
-      });
-    }
+  reply(id) {
+    jsBridge.pushWindow('/subcomment.html?type=2&id=' + this.worksId + '&pid=' + id, {
+      title: '评论',
+      optionMenu: '发布',
+    });
   }
   render() {
     return <div class={ 'mod-comment' + (this.visible ? '' : ' fn-hide') }>
       <CommentBar ref="commentBar"/>
       <Comment ref="comment"
-               message="正在加载..."/>
+               message="正在加载..."
+               on-reply={ this.reply }/>
     </div>;
   }
 }

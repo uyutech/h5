@@ -62,14 +62,14 @@ class Post extends migi.Component {
     }
     currentPriority = priority;
 
-    let self = this;console.log(data.info);
+    let self = this;
     self.ref.postList.setData(data.info);
 
     offset = data.commentList.limit;
     self.ref.comment.setData(data.commentList.data);
     if(data.commentList.count === 0) {
       loadEnd = true;
-      self.ref.comment.message = '暂无评论';
+      self.ref.comment.message = '';
     }
     else if(offset >= data.commentList.count) {
       loadEnd = true;
@@ -231,6 +231,30 @@ class Post extends migi.Component {
       loading = false;
     });
   }
+  like(id, data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.info.isLike = data.state;
+        cache.info.likeCount = data.count;
+        jsBridge.setPreference(cacheKey, cache);
+      }
+    });
+  }
+  favor(id, data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.info.isFavor = data.state;
+        cache.info.favorCount = data.count;
+        jsBridge.setPreference(cacheKey, cache);
+      }
+    });
+  }
+  comment(id) {
+    jsBridge.pushWindow('/subcomment.html?type=1&id=' + id, {
+      title: '评论',
+      optionMenu: '发布',
+    });
+  }
   clickDel(e) {
     let postId = this.postId;
     jsBridge.confirm('确认删除吗？', function(res) {
@@ -343,15 +367,25 @@ class Post extends migi.Component {
       }
     });
   }
+  reply(id) {
+    jsBridge.pushWindow('/subcomment.html?type=3&id=' + this.postId + '&pid=' + id, {
+      title: '评论',
+      optionMenu: '发布',
+    });
+  }
   render() {
     return <div class="post">
       <PostList ref="postList"
                 visible={ true }
-                single={ true }/>
+                single={ true }
+                on-like={ this.like }
+                on-favor={ this.favor }
+                on-reply={ this.comment }/>
       <CommentBar ref="commentBar"/>
       <Comment ref="comment"
                message="正在加载..."
-               on-like={ this.commentLike }/>
+               on-like={ this.commentLike }
+               on-reply={ this.reply }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }

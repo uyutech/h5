@@ -68,6 +68,11 @@ class PostList extends migi.Component {
           }
         });
       });
+      $list.on('click', '.comment', function() {
+        let $this = $(this);
+        let commentId = parseInt($this.attr('rel'));
+        self.emit('reply', commentId);
+      });
       $list.on('click', '.time', function(e) {
         e.preventDefault();
         let url = $(this).attr('href');
