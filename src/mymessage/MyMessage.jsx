@@ -85,73 +85,6 @@ class MyMessage extends migi.Component {
       loadEnd = true;
       message.message = '已经到底了';
     }
-
-    return;
-
-
-    let messages = self.ref.messages;
-    messages.setData(data.data);
-    loadEnd = data.Size <= take;
-
-    let subCmt = self.ref.subCmt;
-    messages.on('comment', function(mid, rid, cid, name, type, tid) {
-      subCmt.readOnly = false;
-      subCmt.to = name;
-      self.messageID = mid;
-      self.rootID = rid;
-      self.parentID = cid;
-      self.type = type;
-      self.targetID = tid;
-      subCmt.focus();
-    });
-    subCmt.on('submit', function(content) {
-      subCmt.invalid = true;
-      let rootID = self.rootID;
-      let parentID = self.parentID;
-      let url = '';
-      if(self.type === 1) {
-        url = '/h5/author/addComment';
-      }
-      else if(self.type === 2) {
-        url = '/h5/works/addComment';
-      }
-      else if(self.type === 3 || self.type === 4) {
-        url = '/h5/post/addComment';
-      }
-      net.postJSON(url, {
-        parentID: parentID,
-        rootID: rootID,
-        worksID: self.targetID,
-        authorID: self.targetID,
-        postID: self.targetID,
-        content,
-      }, function(res) {
-        if(res.success) {
-          subCmt.value = '';
-          messages.appendChild(content, self.messageID);
-        }
-        else if(res.code === 1000) {
-          migi.eventBus.emit('NEED_LOGIN');
-          subCmt.invalid = false;
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-          subCmt.invalid = false;
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        subCmt.invalid = false;
-      });
-    });
-
-    if(loadEnd) {
-      return;
-    }
-    let $window = $(window);
-    $window.on('scroll', function() {
-      self.checkMore($window);
-    });
-    self.read(data.data);
   }
   checkMore() {
     let self = this;
@@ -188,27 +121,7 @@ class MyMessage extends migi.Component {
       loading = false;
     });
   }
-  read(data) {
-    let ids = (data || []).filter(function(item) {
-      return !item.ISRead;
-    }).map(function(item) {
-      return item.NotifyID;
-    });
-    if(ids.length) {
-      net.postJSON('/h5/my/readMessage', { ids }, function(res) {
-        if(res.success) {
-          migi.eventBus.emit('READ_MESSAGE_NUM', ids.length);
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
-    }
-  }
   reply(id) {
-    console.log(id);
     let self = this;
     let subCmt = self.ref.subCmt;
     subCmt.readOnly = false;

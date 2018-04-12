@@ -109,7 +109,7 @@ class Author extends migi.Component {
   }
   comment() {
     let self = this;
-    jsBridge.pushWindow('/subcomment.html?type=2&id=' + self.authorId, {
+    jsBridge.pushWindow('/subcomment.html?type=1&id=' + self.authorId, {
       title: '评论',
       optionMenu: '发布',
     });

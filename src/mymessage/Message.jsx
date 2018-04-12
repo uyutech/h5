@@ -88,7 +88,7 @@ class Message extends migi.Component {
         url = '/post.html?postId=' + item.refId;
         break;
     }
-    return <li class={ comment.isAuthor ? 'author'  : 'user' }>
+    return <li class={ (comment.isAuthor ? 'author' : 'user') + (item.isRead ? ' read' : '') }>
       <div class="profile">
         <a class="pic"
            href={ peopleUrl }
