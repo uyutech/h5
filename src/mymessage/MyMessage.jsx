@@ -22,7 +22,13 @@ class MyMessage extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-
+      jsBridge.getCache(['my', 'useAuthor'], (data, useAuthor) => {
+        if(data) {
+          self.myInfo = data;
+          self.isAuthor = data.author && data.author.length;
+          self.useAuthor = useAuthor;
+        }
+      });
     });
   }
   init() {
@@ -201,16 +207,53 @@ class MyMessage extends migi.Component {
       });
     }
   }
+  reply(id) {
+    console.log(id);
+    let self = this;
+    let subCmt = self.ref.subCmt;
+    subCmt.readOnly = false;
+    subCmt.focus();
+    self.cid = id;
+  }
+  submit(content) {
+    let self = this;
+    let subCmt = self.ref.subCmt;
+    subCmt.invalid = true;
+    jsBridge.showLoading();
+    let authorId;
+    if(self.useAuthor && self.myInfo && self.myInfo.author && self.myInfo.author.length) {
+      authorId = self.myInfo.author[0].id;
+    }
+    net.postJSON('/h5/comment2/sub', {
+      content,
+      id: self.cid,
+      authorId,
+    }, function(res) {
+      jsBridge.hideLoading();
+      if(res.success) {
+        jsBridge.toast('回复成功');
+        subCmt.value = '';
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.hideLoading();
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
+  }
   render() {
     return <div class="my-message">
       <h4>圈消息</h4>
       <Message ref="message"
-               message="正在加载..."/>
+               message="正在加载..."
+               on-reply={ this.reply }/>
       <SubCmt ref="subCmt"
               readOnly={ true }
               placeholder="请选择留言回复"
               subText="发送"
-              tipText="-${n}"/>
+              tipText="-${n}"
+              on-submit={ this.submit }/>
     </div>;
   }
 }

@@ -62,7 +62,7 @@ class Post extends migi.Component {
     }
     currentPriority = priority;
 
-    let self = this;
+    let self = this;console.log(data.info);
     self.ref.postList.setData(data.info);
 
     offset = data.commentList.limit;
@@ -229,86 +229,6 @@ class Post extends migi.Component {
     }, function(res) {
       comment.message = res.message || util.ERROR_MESSAGE;
       loading = false;
-    });
-  }
-  clickFavor(e) {
-    this.favor();
-  }
-  favor(cb) {
-    let self = this;
-    if(!util.isLogin()) {
-      migi.eventBus.emit('NEED_LOGIN');
-      return;
-    }
-    if(loadingFavor) {
-      return;
-    }
-    loadingFavor = true;
-    let postId = self.postId;
-    let url = '/h5/post/favor';
-    if(self.isFavor) {
-      url = '/h5/post/unFavor';
-    }
-    net.postJSON(url, { postID: postId }, function(res) {
-      if(res.success) {
-        let data = res.data;
-        self.isFavor = data.State === 'favorWork';
-        self.favorCount = data.FavorCount || '收藏';
-        let $li = $(self.element).find('li.favor');
-        if(self.isFavor) {
-          $li.addClass('has');
-        }
-        else {
-          $li.removeClass('has');
-        }
-        $li.find('span').text(self.favorCount);
-        cb && cb();
-      }
-      else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      }
-      loadingFavor = false;
-    }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      loadingFavor = false;
-    });
-  }
-  clickLike(e) {
-    this.like();
-  }
-  like(cb) {
-    let self = this;
-    if(!util.isLogin()) {
-      migi.eventBus.emit('NEED_LOGIN');
-      return;
-    }
-    if(loadingLike) {
-      return;
-    }
-    loadingLike = true;
-    let postId = self.postId;
-    net.postJSON('/h5/post/like', { postID: postId }, function(res) {
-      if(res.success) {
-        let data = res.data;
-        self.isLike = data.State === 'likeWordsUser';
-        self.likeCount = data.LikeCount || '点赞';
-        let $li = $(self.element).find('li.like');
-        if(self.isLike) {
-          $li.addClass('has');
-        }
-        else {
-          $li.removeClass('has');
-        }
-        $li.find('span').text(self.likeCount);
-        cb && cb();
-      }
-      else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      }
-      loadingLike = false;
-    }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      loadingLike = false;
     });
   }
   clickDel(e) {

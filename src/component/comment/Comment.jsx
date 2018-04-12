@@ -51,7 +51,7 @@ class Comment extends migi.Component {
         let $this = $(this);
         let id = $this.attr('rel');
         let rid = $this.attr('rid');
-        jsBridge.pushWindow('/subcomment.html?id=' + rid + '&type=0' + '&pid=' + id);
+        jsBridge.pushWindow('/subcomment.html?id=' + id);
       });
       $root.on('click', '.fn', function() {
         let $fn = $(this);

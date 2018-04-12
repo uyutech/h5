@@ -32,8 +32,8 @@ class SubComment extends migi.Component {
               self.name = data.author[0].name;
             }
             else {
-              self.headUrl = data.info.headUrl;
-              self.name = data.info.nickname;
+              self.headUrl = data.user.headUrl;
+              self.name = data.user.nickname;
             }
           }
         }
@@ -82,8 +82,8 @@ class SubComment extends migi.Component {
         self.name = self.myInfo.author[0].name;
       }
       else {
-        self.headUrl = self.myInfo.info.headUrl;
-        self.name = self.myInfo.info.nickname;
+        self.headUrl = self.myInfo.user.headUrl;
+        self.name = self.myInfo.user.nickname;
       }
       jsBridge.setPreference('useAuthor', self.useAuthor);
     }

@@ -4,7 +4,7 @@
 
 'use strict';
 
-import util from "../common/util";
+import util from '../common/util';
 
 class Message extends migi.Component {
   constructor(...data) {
@@ -12,6 +12,16 @@ class Message extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.exist = {};
+    self.on(migi.Event.DOM, function() {
+      let $list = $(self.ref.list.element);
+      $list.on('click', '.reply', function() {
+        $list.find('li.cur').removeClass('cur');
+        let $this = $(this);
+        $this.closest('li').addClass('cur');
+        let id = $this.attr('rel');
+        self.emit('reply', id);
+      });
+    });
   }
   @bind message
   setData(data) {
@@ -102,6 +112,8 @@ class Message extends migi.Component {
         </div>
         <div class="con">{ comment.content }</div>
       </div>
+      <b class="reply"
+         rel={ comment.id }>回复</b>
     </li>;
   }
   render() {
