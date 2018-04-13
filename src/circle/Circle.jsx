@@ -236,7 +236,7 @@ class Circle extends migi.Component {
       });
     });
   }
-  commentFavor(id, data) {
+  favor(id, data) {
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         cache.postList.data.forEach(function(item) {
@@ -244,12 +244,12 @@ class Circle extends migi.Component {
             item.isFavor = data.state;
             item.favorCount = data.count;
           }
-        })
+        });
         jsBridge.setPreference(cacheKey, cache);
       }
     });
   }
-  commentLike(id, data) {
+  like(id, data) {
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         cache.postList.data.forEach(function(item) {
@@ -257,19 +257,29 @@ class Circle extends migi.Component {
             item.isLike = data.state;
             item.likeCount = data.count;
           }
-        })
+        });
+        jsBridge.setPreference(cacheKey, cache);
+      }
+    });
+  }
+  follow(data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.isFollow = data.state;
+        cache.fansCount = data.count;
         jsBridge.setPreference(cacheKey, cache);
       }
     });
   }
   render() {
     return <div class="circle">
-      <Nav ref="nav"/>
+      <Nav ref="nav"
+           on-follow={ this.follow }/>
       <PostList ref="postList"
                 visible={ true }
                 message={ '正在加载...' }
-                on-favor={ this.commentFavor }
-                on-like={ this.commentLike }/>
+                on-favor={ this.favor }
+                on-like={ this.like }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }

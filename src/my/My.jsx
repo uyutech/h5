@@ -95,31 +95,24 @@ class My extends migi.Component {
     if(data && data.user) {
       self.coins = data.user.coins;
       nav.setData(data.user, data.author, data.followPersonCount, data.fansCount);
+      let regState = data.user.regState || 0;console.log(data.user);
+      let isAuthor = !!(data.author && data.author.length);
+      let settle = isAuthor ? data.author[0].settle : 0;
+      if(isAuthor && settle === 0 || regState < 99) {
+        jsBridge.pushWindow('/guide.html?regState=' + regState + '&nickname='
+          + encodeURIComponent(data.user.nickname || '')
+          + '&isAuthor=' + isAuthor
+          + '&authorId=' + (isAuthor ? data.author[0].id : '')
+          + '&authorName=' + (isAuthor ? data.author[0].name : '')
+          + '&settle=' + settle, {
+          title: '用户引导',
+        });
+      }
     }
     else {
       self.coins = 0;
       nav.setData();
     }
-
-    // let step = self.userInfo.User_Reg_Stat || 0;
-    // let basicAuthor = null;
-    // let userToAuthorList = self.userInfo.userToAuthorList || [];
-    // for(let i = 0, len = userToAuthorList.length; i < len; i++) {
-    //   if(userToAuthorList[i].Type === 0) {
-    //     basicAuthor = userToAuthorList[i];
-    //     break;
-    //   }
-    // }
-    // if((basicAuthor && basicAuthor.State === 0) || step < 99) {
-    //   jsBridge.pushWindow('/guide.html?step=' + step + '&nickName='
-    //     + encodeURIComponent(self.userInfo.NickName || '')
-    //     + '&isAuthor=' + !!basicAuthor
-    //     + '&authorId=' + (basicAuthor ? basicAuthor.AuthorID : '')
-    //     + '&authorName=' + (basicAuthor ? basicAuthor.AuthorName : '')
-    //     + '&authorState=' + (basicAuthor ? basicAuthor.State : ''), {
-    //     title: '用户引导',
-    //   });
-    // }
   }
   clickWeibo() {
     let self = this;

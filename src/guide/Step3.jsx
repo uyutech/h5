@@ -24,42 +24,35 @@ class Step3 extends migi.Component {
       $list.on('click', 'li', function() {
         let $this = $(this);
         $this.toggleClass('on');
-        let authorID = $this.attr('rel');
+        let authorId = $this.attr('rel');
         if($this.hasClass('on')) {
           $sel.prepend(self.genItem2({
-            AuthorID: authorID,
-            Head_url: $this.find('img').attr('src'),
+            id: authorId,
+            headUrl: $this.find('img').attr('src'),
           }).toString());
         }
         else {
-          $sel.find('li[rel="' + authorID + '"]').remove();
+          $sel.find('li[rel="' + authorId + '"]').remove();
         }
       });
       $sel.on('click', 'li', function() {
         let $this = $(this);
-        let authorID = $this.attr('rel');
+        let authorId = $this.attr('rel');
         $this.remove();
-        $list.find('li[rel="' + authorID + '"]').removeClass('on');
+        $list.find('li[rel="' + authorId + '"]').removeClass('on');
       });
     });
   }
   @bind isShow
   @bind sending
   @bind message
-  get list() {
-    return this._list || [];
-  }
-  @bind
-  set list(v) {
-    this._list = v;
-  }
   show() {
     this.isShow = true;
   }
   hide() {
     this.isShow = false;
   }
-  next(e, vd) {
+  next() {
     let self = this;
     if(self.sending) {
       return;
@@ -70,7 +63,7 @@ class Step3 extends migi.Component {
       ids.push($(o).attr('rel'));
     });
     ids = ids.join(',');
-    net.postJSON('/h5/passport/guideAuthor', { ids }, function(res) {
+    net.postJSON('/h5/my2/guideAuthor', { ids }, function(res) {
       if(res.success) {
         self.emit('next');
       }
@@ -90,26 +83,15 @@ class Step3 extends migi.Component {
     }
     loading = true;
     self.message = '正在加载...';
-    net.postJSON('/h5/passport/guideAuthorList', { skip, take }, function(res) {
+    net.postJSON('/h5/author2/all', function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
-        if(skip >= data.Size) {
-          loadEnd = true;
-          self.message = '已经到底了';
-        }
         let s = '';
         (data.data || []).forEach(function(item) {
           s += self.genItem(item);
         });
         $(self.ref.list.element).append(s);
-        s = '';
-        (data.data || []).filter(function(item) {
-          return item.ISlike;
-        }).forEach(function(item) {
-          s += self.genItem2(item);
-        });
-        $(self.ref.sel.element).append(s);
+        self.message = '';
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -121,14 +103,14 @@ class Step3 extends migi.Component {
     });
   }
   genItem(item) {
-    return <li rel={ item.AuthorID } class={ item.ISlike ? 'on' : '' }>
-      <img src={ util.img120_120_80(item.Head_url) || '/src/common/head.png' }/>
-      <span>{ item.AuthorName }</span>
+    return <li rel={ item.id }>
+      <img src={ util.img120_120_80(item.headUrl) || '/src/common/head.png' }/>
+      <span>{ item.name }</span>
     </li>;
   }
   genItem2(item) {
-    return <li rel={ item.AuthorID }>
-      <img src={ util.img120_120_80(item.Head_url) || '/src/common/head.png' }/>
+    return <li rel={ item.id }>
+      <img src={ util.img120_120_80(item.headUrl) || '/src/common/head.png' }/>
     </li>;
   }
   render() {
@@ -137,11 +119,13 @@ class Step3 extends migi.Component {
         <b class="icon"/>
         <h2>这里有你喜欢的作者吗？</h2>
         <h4>没有也没关系，之后随时可以添加</h4>
-        <ul class="list" ref="list"/>
+        <ul class="list"
+            ref="list"/>
         <p class="cp-message">{ this.message }</p>
       </div>
       <ul class="sel" ref="sel"/>
-      <button class={ 'sub' + (this.sending ? ' dis' : '') } onClick={ this.next }>我选好啦!</button>
+      <button class={ 'sub' + (this.sending ? ' dis' : '') }
+              onClick={ this.next }>我选好啦!</button>
     </div>;
   }
 }
