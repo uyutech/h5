@@ -33,7 +33,9 @@ class WorksList extends migi.Component {
                      href={ url }
                      title={ item.title }>
                     <span>{ item.title }</span>
-                    <span class="profession">{ (item.profession || {}).name }</span>
+                    <span class="profession">{ (item.profession || []).map((item) => {
+                      return item.name;
+                    }).join(' ') }</span>
                   </a>
                 </li>;
               })
