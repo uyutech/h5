@@ -12,14 +12,10 @@ import Info from '../works/Info.jsx';
 import Column from '../works/Column.jsx';
 import List from './List.jsx';
 import Author from '../works/Author.jsx';
-import Text from '../works/Text.jsx';
-import Poster from '../works/Poster.jsx';
 import Comments from '../works/Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let worksDetail;
-let workList = [];
 let avList = [];
 let avHash = {};
 let loadingLike;
@@ -27,20 +23,34 @@ let loadingFavor;
 let ajaxLike;
 let ajaxFavor;
 
+let currentPriority = 0;
+let cacheKey;
+
 class Music extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  @bind worksId
-  @bind workId
+  // @bind albumId
+  // @bind workId
   @bind curColumn = 0
-  init(worksId, workId) {
+  init(albumId, workId) {
     let self = this;
-    self.worksId = worksId;
+    self.albumId = albumId;
     self.workId = workId;
-    net.postJSON('/h5/works/index', { worksID: worksId, workID: workId }, function(res) {
+    cacheKey = 'musicAlbumData_' + albumId;
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        try {
+          self.setData(cache, 0);
+        }
+        catch(e) {}
+      }
+    });
+    net.postJSON('/h5/musicAlbum/index', { albumId }, function(res) {
       if(res.success) {
-        self.setData(res.data);
+        let data = res.data;
+        self.setData(data, 1);
+        jsBridge.setPreference(cacheKey, data);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -49,93 +59,60 @@ class Music extends migi.Component {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
   }
-  setData(data) {
+  setData(data, priority) {
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
     let self = this;
-    self.worksDetail = worksDetail = data.worksDetail;
-    workList = worksDetail.Works_Items || [];
-    let commentData = data.commentData;
-    jsBridge.setTitle(worksDetail.Title);
-    jsBridge.setSubTitle(worksDetail.sub_Title);
-
-    let list = self.ref.list;
+    self.data = data;
     let info = self.ref.info;
+    let list = self.ref.list;
     let author = self.ref.author;
-    let comment = self.ref.comment;
+    let comments = self.ref.comments;
 
-    let hash = {};
-    workList.forEach(function(item) {
-      if(item.ItemType === 3120) {
-        hash.poster = true;
-      }
-      if(/^[12]/.test(item.ItemType)) {
-        avList.push(item);
-        avHash[item.ItemID] = item;
-      }
-    });
+    // 未完成保密
+    if(data.info.state === 2) {
+      return;
+    }
+    info.setData(data.info);
+
     let index = 0;
     if(self.workId) {
-      for(let i = 0, len = avList.length; i < len; i++) {
-        if(avList[i].ItemID === self.workId) {
+      for(let i = 0, len = data.collection.length; i < len; i++) {
+        if(data.collection[i].id === self.workId) {
           index = i;
           break;
         }
       }
     }
+    self.setMedia(data.collection[index]);
 
-    let work = avList[index];
-    // jsBridge.setTitle(work.ItemName);
-    let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
-    let s = (authorList.AuthorInfo || []).map(function(item) {
-      return item.AuthorName;
-    });
-    jsBridge.setSubTitle(s.join('、'));
+    self.setColumn(data.commentList);
 
-    self.setMedia(work);
+    list.workId = data.collection[index].id;
+    list.list = data.collection;
 
-    list.workId = work.ItemID;
-    list.list = avList;
+    author.list = data.author;
 
-    info.worksType = worksDetail.WorkType;
-    info.title = worksDetail.Title || '歌名待揭秘';
-    info.subTitle = worksDetail.sub_Title;
-    info.state = worksDetail.WorkState;
-
-    self.setColumn(hash, commentData);
-
-    author.list = worksDetail.GroupAuthorTypeHash;
-    self.setText(workList);
-    if(hash.poster) {
-      self.setPoster(workList);
-    }
-
-    comment.worksId = self.worksId;
-    comment.setData(commentData);
+    comments.setData(self.albumId, data.commentList);
   }
   setMedia(item) {
     let self = this;
-    if(item) {
-      let works = (item.Works_Items_Works || [])[0] || {};
-      let o = {
-        worksId: self.worksId,
-        workId: item.ItemID,
-        workType: item.ItemType,
-        worksTitle: worksDetail.Title,
-        workTitle: item.ItemName,
-        url: item.FileUrl,
-        isFavor: item.ISFavor,
-        isLike: item.ISLike,
-        worksCover: works.WorksCoverPic || worksDetail.cover_Pic,
-        workCover: item.ItemCoverPic,
-        likeNum: item.LikeHis,
-        lrc: item.lrc,
-      };
-      this.ref.media.setData(o);
-    }
-    else {
-      this.ref.media.setData(null);
-    }
+    let temp = {};
+    Object.keys(item).forEach((k) => {
+      if(k !== 'works') {
+        temp[k] = item[k];
+      }
+    });
+    temp.worksId = item.works.id;
+    temp.worksTitle = item.works.title;
+    temp.worksSubTitle = item.works.subTitle;
+    temp.worksCover = item.works.cover;
+    self.ref.media.setData(temp);
   }
-  setColumn(hash, commentData) {
+  setColumn(commentList) {
     let self = this;
     let column = self.ref.column;
     let list = [
@@ -146,52 +123,46 @@ class Music extends migi.Component {
       {
         id: 1,
         name: '简介',
+      },
+      {
+        id: 2,
+        name: '评论' + (commentList ? commentList.count || '' : ''),
       }
     ];
-    if(hash.poster) {
-      list.push({
-        id: 2,
-        name: '海报',
-      });
-    }
-    list.push({
-      id: 3,
-      name: '评论 ' + (commentData.Count || ''),
-    });
     self.curColumn = 0;
     column.list = list;
   }
-  setText(list = []) {
-    let res = [];
-    list.forEach(function(item) {
-      let hash = {
-        4140: '文案',
-        4120: '随笔',
-        4210: '诗词',
-        4211: '歌词',
-        4212: '歌词',
-        4310: '小说',
-        4320: '剧本',
-        4330: '散文',
-        4340: '故事',
-      };
-      if(hash.hasOwnProperty(item.ItemType)) {
-        res.push({
-          title: hash[item.ItemType],
-          data: item.Text,
-        });
+  mediaLike(data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        let collection = cache.collection;
+        for(let i = 0, len = collection.length; i < len; i++) {
+          let item = collection[i];
+          if(item.id === data.id) {
+            item.isLike = data.isLike;
+            item.likeCount = data.likeCount;
+            jsBridge.setPreference(cacheKey, cache);
+            return;
+          }
+        }
       }
     });
-    this.ref.text.list = res;
   }
-  setPoster(list = []) {
-    let res = [];
-    list.forEach(function(item) {
-      if(item.ItemType === 3120) {
-        res.push(item);
+  mediaFavor(data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        let collection = cache.collection;
+        for(let i = 0, len = collection.length; i < len; i++) {
+          let item = collection[i];
+          if(item.id === data.id) {
+            item.isFavor = data.isFavor;
+            item.favorCount = data.favorCount;
+            jsBridge.setPreference(cacheKey, cache);
+            return;
+          }
+        }
       }
     });
-    this.ref.poster.list = res;
   }
   changeColumn(id) {
     let self = this;
@@ -327,64 +298,9 @@ class Music extends migi.Component {
       jsBridge.setPreference('playlistCur', data.workId);
     }
   }
-  mediaPause() {
-    this.ref.botPlayBar.isPlaying = false;
-  }
-  mediaEnd() {
-    let mode = this.ref.botPlayBar.mode;
-    if(mode === 'repeat') {
-      this.ref.media.repeat();
-    }
-    else if(mode === 'loop') {}
-  }
-  play() {
-    this.ref.media.play();
-  }
-  pause() {
-    this.ref.media.pause();
-  }
-  prev() {
-    if(avList.length < 2) {
-      return;
-    }
-    let workId = this.ref.list.workId;
-    let index = 0;
-    for(let i = 0, len = avList.length; i < len; i++) {
-      if(avList[i].ItemID === workId) {
-        index = i - 1;
-        break;
-      }
-    }
-    if(index < 0) {
-      index = avList.length - 1;
-    }
-    let newWorkId = avList[index].ItemID;
-    this.change(newWorkId);
-    this.ref.list.workId = newWorkId;
-  }
-  next() {
-    if(avList.length < 2) {
-      return;
-    }
-    let workId = this.ref.list.workId;
-    let index = avList.length - 1;
-    for(let i = 0, len = avList.length; i < len; i++) {
-      if(avList[i].ItemID === workId) {
-        index = i + 1;
-        break;
-      }
-    }
-    if(index > avList.length - 1) {
-      index = 0;
-    }
-    let newWorkId = avList[index].ItemID;
-    this.change(newWorkId);
-    this.ref.list.workId = newWorkId;
-  }
   comment() {
     let self = this;
-    jsBridge.pushWindow('/subcomment.html?type=3&id='
-      + self.worksId + '&sid=' + self.workId, {
+    jsBridge.pushWindow('/subcomment.html?type=2&id=' + self.albumId, {
       title: '评论',
       optionMenu: '发布',
     });
@@ -447,8 +363,8 @@ class Music extends migi.Component {
     return <div class="music">
       <Media ref="media"
              on-play={ this.mediaPlay }
-             on-pause={ this.mediaPause }
-             on-end={ this.mediaEnd }/>
+             on-like={ this.mediaLike }
+             on-favor={ this.mediaFavor }/>
       <Info ref="info"/>
       <Column ref="column"
               on-change={ this.changeColumn }/>
@@ -459,15 +375,9 @@ class Music extends migi.Component {
       </div>
       <div class={ 'intro' + (this.curColumn === 1 ? '' : ' fn-hide') }>
         <Author ref="author"/>
-        <Text ref="text"/>
       </div>
-      <div class={ 'poster' + (this.curColumn === 2 ? '' : ' fn-hide') }>
-        {
-          <Poster ref="poster"/>
-        }
-      </div>
-      <Comments ref="comment"
-                   @visible={ this.curColumn === 3 }/>
+      <Comments ref="comments"
+                @visible={ this.curColumn === 2 }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }

@@ -12,7 +12,7 @@ import qs from 'anima-querystring';
 import Music from './Music.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let worksId = parseInt(search.worksId);
+let albumId = parseInt(search.albumId);
 let workId = parseInt(search.workId) || undefined;
 
 jsBridge.ready(function() {
@@ -20,5 +20,5 @@ jsBridge.ready(function() {
     <Music/>,
     '#page'
   );
-  music.init(worksId, workId);
+  music.init(albumId, workId);
 });

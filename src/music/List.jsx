@@ -25,53 +25,36 @@ class List extends migi.Component {
   clickPic(e, vd, tvd) {
     e.preventDefault();
     let url = tvd.props.href;
+    let title = tvd.props.title;
     jsBridge.pushWindow(url, {
-      title: tvd.props.title,
+      title,
       transparentTitle: true,
     });
   }
   render() {
-    return <div class="mod-list"
-                onClick={ {
-                  '.item .txt': this.clickItem,
-                  '.fn': this.clickFn,
-                  '.pic': this.clickPic,
-                } }>
-      <ol>
-        {
-          (this.workId, this.list || []).map(function(item) {
-            if(item.WorksState === 3) {
-              return <li class="private">
-                <span class="name">待揭秘</span>
-              </li>;
-            }
-            let works = item.Works_Items_Works[0] || {};
-            let url = '/works.html?worksId=' + works.WorksID;
-            if(!item.FileUrl) {
-              return <li class="empty">
-                <a href={ url } class="pic" title={ item.ItemName }>
-                  <img src={ util.autoSsl(util.img64_64_80(works.WorksCoverPic))
-                  || '//zhuanquan.xin/img/blank.png' }/>
-                </a>
-                <div class="txt" workId={ item.ItemID }>
-                  <span class={ 'title' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</span>
-                </div>
-              </li>;
-            }
-            return <li class={ 'item' + (this.workId === item.ItemID ? ' cur' : '') }>
-              <a href={ url } class="pic" title={ item.ItemName }>
-                <img src={ util.autoSsl(util.img64_64_80(works.WorksCoverPic))
-                || '//zhuanquan.xin/img/blank.png' }/>
-              </a>
-              <div class="txt" workId={ item.ItemID }>
-                <span class={ 'title' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</span>
-              </div>
-              <b class="fn" workId={ item.ItemID }/>
-            </li>;
-          }.bind(this))
-        }
-      </ol>
-    </div>;
+    return <ol class="mod-list"
+               onClick={ {
+                 '.txt': this.clickItem,
+                 '.fn': this.clickFn,
+                 '.pic': this.clickPic,
+               } }>
+      {
+        (this.workId, this.list || []).map((item) => {
+          let url = '/works.html?worksId=' + item.works.id;
+          return <li class={ this.workId === item.id ? 'cur' : '' }>
+            <a class="pic"
+               href={ url }
+               title={ item.works.title }>
+              <img src={ util.img(item.works ? item.works.cover : item.cover, 64, 64, 80)
+              || '//zhuanquan.xin/img/blank.png' }/>
+            </a>
+            <div class="txt" workId={ item.id }>
+              <span class="title">{ item.title }</span>
+            </div>
+          </li>;
+        })
+      }
+    </ol>;
   }
 }
 

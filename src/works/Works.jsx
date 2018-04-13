@@ -28,11 +28,10 @@ class Works extends migi.Component {
   // @bind workId
   // @bind kind
   @bind curColumn = 0
-  init(worksId, workId, kind) {
+  init(worksId, workId) {
     let self = this;
     self.worksId = worksId;
     self.workId = workId;
-    self.kind = kind;
     self.ref.comments.worksId = worksId;
     cacheKey = 'worksData_' + worksId;
     jsBridge.getPreference(cacheKey, function(cache) {
@@ -105,7 +104,7 @@ class Works extends migi.Component {
     self.setMedia(avList[index]);
 
     self.setColumn(imgList, data.commentList);
-    author.list = data.authorList;
+    author.list = data.author;
     text.list = textList;
     select.id = avList[index].id;
     select.list = avList;
@@ -165,7 +164,7 @@ class Works extends migi.Component {
         let collection = cache.collection;
         for(let i = 0, len = collection.length; i < len; i++) {
           let item = collection[i];
-          if(item.id === data.id && item.kind === data.kind) {
+          if(item.id === data.id) {
             item.isLike = data.isLike;
             item.likeCount = data.likeCount;
             jsBridge.setPreference(cacheKey, cache);
@@ -181,7 +180,7 @@ class Works extends migi.Component {
         let collection = cache.collection;
         for(let i = 0, len = collection.length; i < len; i++) {
           let item = collection[i];
-          if(item.id === data.id && item.kind === data.kind) {
+          if(item.id === data.id) {
             item.isFavor = data.isFavor;
             item.favorCount = data.favorCount;
             jsBridge.setPreference(cacheKey, cache);
@@ -284,11 +283,8 @@ class Works extends migi.Component {
         <Author ref="author"/>
         <Text ref="text"/>
       </div>
-      <div class={ 'poster' + (this.curColumn === 1 ? '' : ' fn-hide') }>
-      {
-        <Poster ref="poster"/>
-      }
-      </div>
+      <Poster ref="poster"
+              @visible={ this.curColumn === 1 }/>
       <Comments ref="comments"
                 @visible={ this.curColumn === 2 }/>
       <InputCmt ref="inputCmt"

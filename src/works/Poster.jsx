@@ -11,13 +11,14 @@ class Poster extends migi.Component {
     super(...data);
   }
   @bind list
+  @bind visible
   click(e, vd, tvd) {
     e.preventDefault();
     let url = tvd.props.href;
     jsBridge.openUri('https://' + url);
   }
   render() {
-    return <div class="mod mod-poster">
+    return <div class={ 'mod-poster' + (this.visible ? '' : ' fn-hide') }>
       <ul class="c" onClick={ { a: this.click } }>
         {
           (this.list || []).map(function(item) {
