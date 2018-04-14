@@ -193,14 +193,21 @@ class WaterFall extends migi.Component {
     let self = this;
     let author = [];
     let hash = {};
-    (item.author || []).forEach(function(list) {
-      list.list.forEach(function(at) {
-        if(!hash[at.id]) {
-          hash[at.id] = true;
-          author.push(at.name);
-        }
+    if(self.props.profession) {
+      (item.profession || []).forEach((item) => {
+        author.push(item.name);
       });
-    });
+    }
+    else {
+      (item.author || []).forEach((list) => {
+        list.list.forEach((at) => {
+          if(!hash[at.id]) {
+            hash[at.id] = true;
+            author.push(at.name);
+          }
+        });
+      });
+    }
     item.preview = util.autoSsl(util.img375__80(item.url));
     if(item.width <= self.WIDTH) {
       return <li id={ 'image_' + item.id }>
@@ -209,7 +216,7 @@ class WaterFall extends migi.Component {
              rel={ self.index++ }
              height={ item.height / 2 }/>
         <div class="txt">
-          <p class="author">{ author.join(' ') }</p>
+          <p class={ 'author' + (self.props.profession ? ' profession' : '') }>{ author.join(' ') }</p>
           <b class={ 'like' }/>
         </div>
       </li>;
@@ -221,7 +228,7 @@ class WaterFall extends migi.Component {
            rel={ self.index++ }
            height={ height / 2 }/>
       <div class="txt">
-        <p class="author">{ author.join(' ') }</p>
+        <p class={ 'author' + (self.props.profession ? ' profession' : '') }>{ author.join(' ') }</p>
         <b class={ 'like' + (item.isLike ? ' liked' : '') }>{ item.likeCount }</b>
       </div>
     </li>;

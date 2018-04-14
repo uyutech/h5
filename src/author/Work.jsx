@@ -52,23 +52,28 @@ class Work extends migi.Component {
       }
     });
     let cache = CACHE[self.kind];
+    cache.limit = kindWorkList.limit;
+    cache.offset += kindWorkList.limit;
     switch(self.kind) {
       case 1:
-        cache.limit = kindWorkList.limit;
-        cache.offset += kindWorkList.limit;
         self.ref.videoList.setData(kindWorkList.data);
-        if(kindWorkList.count <= kindWorkList.limit) {
+        if(cache.offset >= kindWorkList.count) {
           cache.loadEnd = true;
           self.ref.videoList.message = '已经到底了';
         }
         break;
       case 2:
-        cache.limit = kindWorkList.limit;
-        cache.offset += kindWorkList.limit;
         self.ref.audioList.setData(kindWorkList.data);
         if(cache.offset >= kindWorkList.count) {
           cache.loadEnd = true;
-          self.ref.videoList.message = '已经到底了';
+          self.ref.audioList.message = '已经到底了';
+        }
+        break;
+      case 3:
+        self.ref.waterFall.setData(kindWorkList.data);
+        if(cache.offset >= kindWorkList.count) {
+          cache.loadEnd = true;
+          self.ref.waterFall.message = '已经到底了';
         }
         break;
     }
@@ -130,6 +135,13 @@ class Work extends migi.Component {
               self.ref.audioList.message = '已经到底了';
             }
             self.ref.audioList.appendData(data.data);
+            break;
+          case 3:
+            if(cache.offset >= data.count) {
+              cache.loadEnd = true;
+              self.ref.waterFall.message = '已经到底了';
+            }
+            self.ref.waterFall.appendData(data.data);
             break;
         }
       }
@@ -203,7 +215,7 @@ class Work extends migi.Component {
                  @visible={ this.kind === 2 }/>
       <WaterFall ref="waterFall"
                  profession={ true }
-                 pause={ !this.visible }
+                 message="正在加载..."
                  @visible={ this.kind === 3 }/>
     </div>;
   }

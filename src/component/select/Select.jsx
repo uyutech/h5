@@ -22,7 +22,9 @@ class Select extends migi.Component {
   clickPop(e, vd, tvd) {
     e.stopPropagation();
     let self = this;
-    self.showPop = true;
+    if(self.list && self.list.length > 1) {
+      self.showPop = true;
+    }
   }
   clickSelPop(e, vd, tvd) {
     e.stopPropagation();
@@ -39,7 +41,7 @@ class Select extends migi.Component {
   }
   render() {
     return <div class="mod-select">
-      <label class={ this.list && this.list.length > 1 ? '' : ' fn-hide' }
+      <label class={ this.list && this.list.length > 1 ? '' : ' no' }
              onClick={ this.clickPop }>
         {
           this.text || '全部'
