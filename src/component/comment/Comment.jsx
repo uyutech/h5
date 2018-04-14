@@ -150,22 +150,17 @@ class Comment extends migi.Component {
   }
   @bind message
   @bind empty
-  clearData(noEmpty) {
-    if(ajax) {
-      ajax.abort();
-    }
-    exist = {};
-    this.message = '';
-    this.setData(null, noEmpty);
-    subLoadHash = {};
-    subSkipHash = {};
-    $last = null;
-  }
   setData(data) {
     let self = this;
     exist = {};
+    if(!data) {
+      return;
+    }
     let s = '';
-    (data || []).forEach(function(item) {
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
+    data.forEach(function(item) {
       s += self.genComment(item) || '';
     });
     $(self.ref.list.element).html(s);
@@ -173,11 +168,14 @@ class Comment extends migi.Component {
   }
   appendData(data) {
     let self = this;
+    if(!data) {
+      return;
+    }
     let s = '';
     if(!Array.isArray(data)) {
       data = [data];
     }
-    (data || []).forEach(function(item) {
+    data.forEach(function(item) {
       s += self.genComment(item) || '';
     });
     $(self.ref.list.element).append(s);
@@ -185,19 +183,27 @@ class Comment extends migi.Component {
       self.empty = false;
     }
   }
-  prependData(item) {
+  prependData(data) {
     let self = this;
+    if(!data) {
+      return;
+    }
     let s = '';
     if(!Array.isArray(data)) {
       data = [data];
     }
-    (data || []).forEach(function(item) {
+    data.forEach(function(item) {
       s += self.genComment(item) || '';
     });
     $(self.ref.list.element).prepend(s);
     if(s) {
       self.empty = false;
     }
+  }
+  clearData() {
+    let self = this;
+    exist = {};
+    $(self.ref.list.element).html('');
   }
   block(id, type, cb) {
     if(!util.isLogin()) {

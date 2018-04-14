@@ -91,10 +91,10 @@ class PostList extends migi.Component {
   setData(data) {
     let self = this;
     self.exist = {};
-    let s = '';
     if(!data) {
       return;
     }
+    let s = '';
     if(!Array.isArray(data)) {
       data = [data];
     }
@@ -105,6 +105,9 @@ class PostList extends migi.Component {
   }
   appendData(data) {
     let self = this;
+    if(!data) {
+      return;
+    }
     let s = '';
     if(!Array.isArray(data)) {
       data = [data];
@@ -121,6 +124,9 @@ class PostList extends migi.Component {
   }
   prependData(data) {
     let self = this;
+    if(!data) {
+      return;
+    }
     let s = '';
     if(!Array.isArray(data)) {
       data = [data];
@@ -132,6 +138,9 @@ class PostList extends migi.Component {
   }
   genItem(item) {
     let self = this;
+    if(!item) {
+      return;
+    }
     let id = item.id;
     if(self.exist[id]) {
       return;
