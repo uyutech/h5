@@ -32,7 +32,7 @@ class Music extends migi.Component {
   }
   // @bind albumId
   // @bind workId
-  @bind curColumn = 0
+  @bind curColumn
   init(albumId, workId) {
     let self = this;
     self.albumId = albumId;
@@ -50,6 +50,7 @@ class Music extends migi.Component {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
+        self.ref.comments.listenScroll();
         jsBridge.setPreference(cacheKey, data);
       }
       else {
@@ -66,7 +67,6 @@ class Music extends migi.Component {
     currentPriority = priority;
 
     let self = this;
-    self.data = data;
     let info = self.ref.info;
     let list = self.ref.list;
     let author = self.ref.author;

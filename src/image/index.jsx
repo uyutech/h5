@@ -12,12 +12,12 @@ import qs from 'anima-querystring';
 import Image from './Image.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let worksId = parseInt(search.worksId);
+let albumId = parseInt(search.albumId);
 
 jsBridge.ready(function() {
   let image = migi.preExist(
     <Image/>,
     '#page'
   );
-  image.init(worksId);
+  image.init(albumId);
 });

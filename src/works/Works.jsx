@@ -27,7 +27,7 @@ class Works extends migi.Component {
   // @bind worksId
   // @bind workId
   // @bind kind
-  @bind curColumn = 0
+  @bind curColumn
   init(worksId, workId) {
     let self = this;
     self.worksId = worksId;

@@ -15,6 +15,11 @@ class WaterFall extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.visible = self.props.visible;
+    self.pool = [];
+    self.exist = {};
+    self.list = [];
+    self.index = 0;
+    self.height1 = self.height2 = 0;
     self.WIDTH = self.props.WIDTH;
     self.on(migi.Event.DOM, function() {
       let $root = $(self.element);
@@ -133,11 +138,14 @@ class WaterFall extends migi.Component {
   }
   appendData(data) {
     let self = this;
+    if(!data) {
+      return;
+    }
     if(!Array.isArray(data)) {
       data = [data];
     }
     for(let i = data.length - 1; i >= 0; i--) {
-      let id = data[i].work.id;
+      let id = data[i].id;
       if(self.exist[id]) {
         data.splice(i, 1);
       }
@@ -146,7 +154,7 @@ class WaterFall extends migi.Component {
     if(data.length) {
       //未知高宽的去加载图片获取高宽
       data.forEach(function(item) {
-        if(!item.work.width || !item.work.height) {
+        if(!item.width || !item.height) {
           self.loadImgSize(item, self.checkPool.bind(self), self.uuid);
         }
       });
@@ -159,7 +167,7 @@ class WaterFall extends migi.Component {
     let self = this;
     while(self.pool && self.pool.length) {
       let item = self.pool[0];
-      if(item.work.width && item.work.height) {
+      if(item.width && item.height) {
         self.append(item);
         self.pool.shift();
       }
@@ -193,28 +201,28 @@ class WaterFall extends migi.Component {
         }
       });
     });
-    item.work.preview = util.autoSsl(util.img375__80(item.work.url));
-    if(item.work.width <= self.WIDTH) {
-      return <li id={ 'image_' + item.work.id }>
+    item.preview = util.autoSsl(util.img375__80(item.url));
+    if(item.width <= self.WIDTH) {
+      return <li id={ 'image_' + item.id }>
         <img class="pic"
-             src={ util.autoSsl(item.work.preview) || '/src/common/blank.png' }
+             src={ util.autoSsl(item.preview) || '/src/common/blank.png' }
              rel={ self.index++ }
-             height={ item.work.height / 2 }/>
+             height={ item.height / 2 }/>
         <div class="txt">
           <p class="author">{ author.join(' ') }</p>
           <b class={ 'like' }/>
         </div>
       </li>;
     }
-    let height = item.work.height * self.WIDTH * 2 / item.work.width;
-    return <li id={ 'image_' + item.work.id }>
+    let height = item.height * self.WIDTH * 2 / item.width;
+    return <li id={ 'image_' + item.id }>
       <img class="pic"
-           src={ util.autoSsl(item.work.preview) || '/src/common/blank.png' }
+           src={ util.autoSsl(item.preview) || '/src/common/blank.png' }
            rel={ self.index++ }
            height={ height / 2 }/>
       <div class="txt">
         <p class="author">{ author.join(' ') }</p>
-        <b class={ 'like' + (item.work.isLike ? ' liked' : '') }>{ item.work.likeCount }</b>
+        <b class={ 'like' + (item.isLike ? ' liked' : '') }>{ item.likeCount }</b>
       </div>
     </li>;
   }
@@ -225,19 +233,19 @@ class WaterFall extends migi.Component {
     img.style.left = '-9999rem;';
     img.style.top = '-9999rem';
     img.style.visibility = 'hidden';
-    img.src = util.autoSsl(util.img__60(item.work.url));
+    img.src = util.autoSsl(util.img__60(item.url));
     img.onload = function() {
-      item.work.width = img.width;
-      item.work.height = img.height;
+      item.width = img.width;
+      item.height = img.height;
       document.body.removeChild(img);
       if(uuid === self.uuid) {
         cb();
       }
     };
     img.onerror = function() {
-      item.work.url = '//zhuanquan.xin/img/blank.png';
-      item.work.width = 1;
-      item.work.height = 100;
+      item.url = '//zhuanquan.xin/img/blank.png';
+      item.width = 1;
+      item.height = 100;
       document.body.removeChild(img);
       if(uuid === self.uuid) {
         cb();
