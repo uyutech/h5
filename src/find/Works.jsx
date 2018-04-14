@@ -14,7 +14,7 @@ class Works extends migi.Component {
     self.data = self.props.data;
   }
   @bind data
-  setData(data) {
+  setData(data) {console.log(data)
     this.data = data;
   }
   clickWorks(e, vd, tvd) {
@@ -36,10 +36,20 @@ class Works extends migi.Component {
     });
   }
   render() {
+    let url;
+    if(this.props.type === 3) {
+      url = '/image.html?albumId=' + this.data.content.id;
+    }
+    else if(this.props.type === 2) {
+      url = '/music.html?albumId=' + this.data.content.id;
+    }
+    else {
+      url = '/works.html?worksId=' + this.data.content.id;
+    }
     return <div class="mod-works"
                 onClick={ { '.pic,.name,.intro': this.clickWorks, 'dd a': this.clickAuthor } }>
       <a class="pic"
-         href={ '/works.html?worksId=' + this.data.content.id }
+         href={ url }
          title={ this.data.content.title }>
         <img src={ util.autoSsl(util.img250_250_80(this.data.content.cover))
           || '/src/common/blank.png' }/>
@@ -48,7 +58,7 @@ class Works extends migi.Component {
         </div>
       </a>
       <div class="txt">
-        <a href={ '/works.html?worksId=' + this.data.content.id }
+        <a href={ url }
            title={ this.data.content.title }
            class="name">{ this.data.content.title }</a>
         <dl>

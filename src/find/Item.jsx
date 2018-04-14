@@ -11,7 +11,9 @@ import Banner from './Banner.jsx';
 import Works from './Works.jsx';
 import AuthorList from './AuthorList.jsx';
 import WorksList from './WorksList.jsx';
-import WorksVideoList from '../component/worksvideolist/WorksVideoList.jsx';
+import VideoList from '../component/videolist/VideoList.jsx';
+import Playlist from '../component/playlist/Playlist.jsx';
+import WaterFall from '../component/waterfall/WaterFall.jsx';
 
 class Item extends migi.Component {
   constructor(...data) {
@@ -58,6 +60,12 @@ class Item extends migi.Component {
     switch(item.type) {
       case 1:
         return <Works data={item}/>;
+      case 2:
+        return <Works data={item}
+                      type={ 2 }/>;
+      case 3:
+        return <Works data={item}
+                      type={ 3 }/>;
       case 4:
         return <AuthorList data={item}/>;
       case 5:
@@ -85,22 +93,40 @@ class Item extends migi.Component {
         let data = res.data;
         let banner = data.banner;
         let list = data.list;
-        let kind = data.kind;
+        let kindList = data.kindList;
         if(banner) {
           self.ref.banner.setData(banner);
         }
         if(list) {
           self.appendData(list.data);
         }
-        if(kind) {
+        if(kindList) {
           switch(self.kind) {
             case 1:
               if(self.offset) {
-                self.ref.videoList.appendData(kind.data);
+                self.ref.videoList.appendData(kindList.data);
               }
               else {
                 self.ref.videoList.visible = true;
-                self.ref.videoList.setData(kind.data);
+                self.ref.videoList.setData(kindList.data);
+              }
+              break;
+            case 2:
+              if(self.offset) {
+                self.ref.playlist.appendData(kindList.data);
+              }
+              else {
+                self.ref.playlist.visible = true;
+                self.ref.playlist.setData(kindList.data);
+              }
+              break;
+            case 3:
+              if(self.offset) {
+                self.ref.waterFall.appendData(kindList.data);
+              }
+              else {
+                self.ref.waterFall.visible = true;
+                self.ref.waterFall.setData(kindList.data);
               }
               break;
           }
@@ -130,7 +156,9 @@ class Item extends migi.Component {
     return <div class={ 'mod-item' + (this.visible ? '' : ' fn-hide') }>
       <Banner ref="banner"/>
       <div ref="con"/>
-      <WorksVideoList ref="videoList"/>
+      <VideoList ref="videoList"/>
+      <Playlist ref="playlist"/>
+      <WaterFall ref="waterFall"/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;
   }

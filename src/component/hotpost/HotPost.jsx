@@ -7,8 +7,8 @@
 import net from '../../common/net';
 import util from '../../common/util';
 import ImageView from '../imageview/ImageView.jsx';
-import QuickVideo from '../quickVideo/QuickVideo.jsx';
-import QuickAudio from '../quickaudio/QuickAudio.jsx';
+// import QuickVideo from '../quickVideo/QuickVideo.jsx';
+// import QuickAudio from '../quickaudio/QuickAudio.jsx';
 
 let exist = {};
 let itemImg = {};

@@ -107,6 +107,12 @@ class Circle extends migi.Component {
     offset = data.postList.limit;
     postList.setData(data.postList.data);
     loadEnd = offset >= data.postList.count;
+    if(data.postList.count === 0) {
+      postList.message = '暂无画圈';
+    }
+    else if(loadEnd) {
+      postList.message = '已经到底了';
+    }
 
     // let imageView = self.ref.imageView;
     // imageView.on('clickLike', function(sid) {
