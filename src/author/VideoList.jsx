@@ -42,7 +42,7 @@ class VideoList extends migi.Component {
         <div class="info">
           <span>
           {
-            item.professionList.map(function(profession) {
+            (item.work.profession || []).map(function(profession) {
               return profession.name;
             }).join(' ')
           }

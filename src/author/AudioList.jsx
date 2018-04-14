@@ -10,8 +10,10 @@ import util from '../common/util';
 class AudioList extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.visible = this.props.visible;
-    this.list = [];
+    let self = this;
+    self.visible = self.props.visible;
+    self.message = self.props.message;
+    self.list = [];
   }
   @bind visible
   @bind list
@@ -29,14 +31,14 @@ class AudioList extends migi.Component {
       <a class="pic"
          href={ url }
          title={ item.title }>
-        <img src={ util.autoSsl(util.img80_80_80(item.work.cover || item.cover))
+        <img src={ util.autoSsl(util.img80_80_80(item.cover))
           || '//zhuanquan.xin/img/blank.png' }/>
       </a>
       <div class="txt">
         <p class="name">{ item.work.title }</p>
         <p class="plus">
         {
-          item.professionList.map(function(profession) {
+          (item.work.profession || []).map(function(profession) {
             return profession.name;
           }).join(' ')
         }

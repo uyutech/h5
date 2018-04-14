@@ -38,7 +38,10 @@ class Author extends migi.Component {
     cacheKey = 'authorData_' + authorId;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
+        try {
         self.setData(cache, 0);
+        }
+        catch(e) {}
       }
     });
     net.postJSON('/h5/author2/index', { authorId }, function(res) {
@@ -85,7 +88,7 @@ class Author extends migi.Component {
 
     if(data.workKindList) {
       self.showWork = true;
-      self.ref.work.setData(data.workKindList, data.kindWork);
+      self.ref.work.setData(data.workKindList, data.kindWorkList);
       if(self.index === undefined) {
         self.index = 1;
       }

@@ -190,7 +190,7 @@ class Playlist extends migi.Component {
       <a class="pic"
          title={ item.title }
          href={ url }>
-        <img src={ util.autoSsl(util.img750__80(item.work.cover || item.cover)) || '/src/common/blank.png' }/>
+        <img src={ util.autoSsl(util.img750__80(item.cover)) || '/src/common/blank.png' }/>
       </a>
       <div class="txt">
         <span class="name">{ item.work.title }</span>

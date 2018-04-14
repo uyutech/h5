@@ -33,7 +33,7 @@ class Work extends migi.Component {
   @bind kind
   @bind kindList
   // @bind authorId
-  setData(kindList, kindWork) {
+  setData(kindList, kindWorkList) {
     let self = this;
     self.kindList = kindList;
     kindList.forEach(function(item) {
@@ -54,19 +54,19 @@ class Work extends migi.Component {
     let cache = CACHE[self.kind];
     switch(self.kind) {
       case 1:
-        cache.limit = kindWork.limit;
-        cache.offset += kindWork.limit;
-        self.ref.videoList.setData(kindWork.data);
-        if(kindWork.count <= kindWork.limit) {
+        cache.limit = kindWorkList.limit;
+        cache.offset += kindWorkList.limit;
+        self.ref.videoList.setData(kindWorkList.data);
+        if(kindWorkList.count <= kindWorkList.limit) {
           cache.loadEnd = true;
           self.ref.videoList.message = '已经到底了';
         }
         break;
       case 2:
-        cache.limit = kindWork.limit;
-        cache.offset += kindWork.limit;
-        self.ref.audioList.setData(kindWork.data);
-        if(cache.offset >= kindWork.count) {
+        cache.limit = kindWorkList.limit;
+        cache.offset += kindWorkList.limit;
+        self.ref.audioList.setData(kindWorkList.data);
+        if(cache.offset >= kindWorkList.count) {
           cache.loadEnd = true;
           self.ref.videoList.message = '已经到底了';
         }
@@ -102,22 +102,11 @@ class Work extends migi.Component {
     let self = this;
     let kind = self.kind;
     let cache = CACHE[kind];
-    if(cache.loading || cache.loadEnd) {
-      return;
-    }
     cache.loading = true;
-    switch(kind) {
-      case 1:
-        self.ref.videoList.message = '正在加载...';
-        break;
-      case 2:
-        self.ref.audioList.message = '正在加载...';
-        break;
-    }
     if(cache.ajax) {
       cache.ajax.abort();
     }
-    cache.ajax = net.postJSON('/h5/author2/kindWork', {
+    cache.ajax = net.postJSON('/h5/author2/kindWorkList', {
       authorId: self.authorId,
       kind,
       offset: cache.offset,
@@ -210,6 +199,7 @@ class Work extends migi.Component {
       <VideoList ref="videoList"
                  @visible={ this.kind === 1 }/>
       <AudioList ref="audioList"
+                 message="正在加载..."
                  @visible={ this.kind === 2 }/>
       <WaterFall ref="waterFall"
                  profession={ true }
