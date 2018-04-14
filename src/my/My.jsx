@@ -95,18 +95,20 @@ class My extends migi.Component {
     if(data && data.user) {
       self.coins = data.user.coins;
       nav.setData(data.user, data.author, data.followPersonCount, data.fansCount);
-      let regState = data.user.regState || 0;console.log(data.user);
-      let isAuthor = !!(data.author && data.author.length);
-      let settle = isAuthor ? data.author[0].settle : 0;
-      if(isAuthor && settle === 0 || regState < 99) {
-        jsBridge.pushWindow('/guide.html?regState=' + regState + '&nickname='
-          + encodeURIComponent(data.user.nickname || '')
-          + '&isAuthor=' + isAuthor
-          + '&authorId=' + (isAuthor ? data.author[0].id : '')
-          + '&authorName=' + (isAuthor ? data.author[0].name : '')
-          + '&settle=' + settle, {
-          title: '用户引导',
-        });
+      if(priority === 1) {
+        let regState = data.user.regState || 0;
+        let isAuthor = !!(data.author && data.author.length);
+        let settle = isAuthor ? data.author[0].settle : 0;
+        if(isAuthor && settle === 0 || regState < 99) {
+          jsBridge.pushWindow('/guide.html?regState=' + regState + '&nickname='
+            + encodeURIComponent(data.user.nickname || '')
+            + '&isAuthor=' + isAuthor
+            + '&authorId=' + (isAuthor ? data.author[0].id : '')
+            + '&authorName=' + (isAuthor ? data.author[0].name : '')
+            + '&settle=' + settle, {
+            title: '用户引导',
+          });
+        }
       }
     }
     else {
