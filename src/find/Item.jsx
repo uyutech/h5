@@ -24,6 +24,19 @@ class Item extends migi.Component {
     self.tag = self.props.tag;
     self.kind = self.props.kind;
     self.offset = 0;
+    self.on(migi.Event.DOM, () => {
+      let $con = $(self.ref.con.element);
+      $con.on('click', 'a', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle: true,
+        });
+      });
+    });
   }
   @bind visible
   @bind message

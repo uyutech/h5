@@ -14,26 +14,8 @@ class Works extends migi.Component {
     self.data = self.props.data;
   }
   @bind data
-  setData(data) {console.log(data)
+  setData(data) {
     this.data = data;
-  }
-  clickWorks(e, vd, tvd) {
-    e.preventDefault();
-    let url = tvd.props.href;
-    let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-      transparentTitle: true,
-    });
-  }
-  clickAuthor(e, vd, tvd) {
-    e.preventDefault();
-    let url = tvd.props.href;
-    let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-      transparentTitle: true,
-    });
   }
   render() {
     let url;
@@ -46,8 +28,7 @@ class Works extends migi.Component {
     else {
       url = '/works.html?worksId=' + this.data.content.id;
     }
-    return <div class="mod-works"
-                onClick={ { '.pic,.name,.intro': this.clickWorks, 'dd a': this.clickAuthor } }>
+    return <div class="mod-works">
       <a class="pic"
          href={ url }
          title={ this.data.content.title }>

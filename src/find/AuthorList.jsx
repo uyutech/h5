@@ -4,8 +4,7 @@
 
 'use strict';
 
-import net from "../common/net";
-import util from "../common/util";
+import util from '../common/util';
 
 class AuthorList extends migi.Component {
   constructor(...data) {
@@ -13,19 +12,6 @@ class AuthorList extends migi.Component {
     let self = this;
     self.index = 0;
     self.data = self.props.data;
-    self.on(migi.Event.DOM, function() {
-      let $root = $(self.element);
-      $root.on('click', 'a', function(e) {
-        e.preventDefault();
-        let $a = $(this);
-        let url = $a.attr('href');
-        let title = $a.attr('title');
-        util.openAuthor({
-          url,
-          title,
-        });
-      });
-    });
   }
   @bind index
   @bind data
@@ -41,15 +27,6 @@ class AuthorList extends migi.Component {
       this.index += 6;
     }
   }
-  click(e, vd, tvd) {
-    e.preventDefault();
-    let url = tvd.props.href;
-    let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-      transparentTitle: true,
-    });
-  }
   render() {
     return <div class="mod-authorlist">
       <h3>
@@ -63,7 +40,7 @@ class AuthorList extends migi.Component {
             <a class="pic"
                href={ '/author.html?authorId=' + item.id }
                title={ item.name }>
-              <img src={ util.autoSsl(util.img120_120_80(item.headUrl)) || '/src/common/head.png' }/>
+              <img src={ util.img(item.headUrl, 120, 120, 80) || '/src/common/head.png' }/>
             </a>
             <a class="name"
                href={ '/author.html?authorId=' + item.id }

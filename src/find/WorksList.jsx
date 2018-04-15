@@ -29,13 +29,6 @@ class WorksList extends migi.Component {
       this.index += 6;
     }
   }
-  clickWorks(e, vd, tvd) {
-    e.preventDefault();
-    util.openWorks({
-      url: tvd.props.href,
-      title: tvd.props.title,
-    }, tvd.props.option);
-  }
   render() {
     let data = this.props.data;
     return <div class="mod-workslist">
