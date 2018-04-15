@@ -13,8 +13,7 @@
 @import '../component/hotpost/index';
 @import '../component/select/index';
 @import '../component/waterfall/index';
-@import './videolist';
-@import './audiolist';
+@import '../component/videolist/index';
 @import './workslist';
 @import './musicalbumlist';
 @import './comments';
@@ -27,6 +26,12 @@
     b{
       box-shadow:0 0.01rem 0.02rem rgba(0, 0, 0, 0.3);
     }
+  }
+  .cp-videolist{
+    margin:0 0.1rem;
+  }
+  .cp-playlist{
+    margin:0 0.1rem;
   }
   > .nav{
     position:relative;
@@ -295,7 +300,7 @@
       line-height:0.3rem;
       font-size:0.13rem;
       color:#B9B9B9;
-      background:@mainColor;
+      background:#8BBDE1;
       border-bottom:0.04rem solid #F0F0F0;
       .type{
         position:absolute;

@@ -6,9 +6,8 @@
 
 import net from '../common/net';
 import util from '../common/util';
-// import Playlist from '../component/playlist/Playlist.jsx';
-import VideoList from './VideoList.jsx';
-import AudioList from './AudioList.jsx';
+import Playlist from '../component/playlist/Playlist.jsx';
+import VideoList from '../component/videolist/VideoList.jsx';
 import WaterFall from '../component/waterfall/WaterFall.jsx';
 import Select from '../component/select/Select.jsx';
 
@@ -63,10 +62,10 @@ class Work extends migi.Component {
         }
         break;
       case 2:
-        self.ref.audioList.setData(kindWorkList.data);
+        self.ref.playlist.setData(kindWorkList.data);
         if(cache.offset >= kindWorkList.count) {
           cache.loadEnd = true;
-          self.ref.audioList.message = '已经到底了';
+          self.ref.playlist.message = '已经到底了';
         }
         break;
       case 3:
@@ -132,9 +131,9 @@ class Work extends migi.Component {
           case 2:
             if(cache.offset >= data.count) {
               cache.loadEnd = true;
-              self.ref.audioList.message = '已经到底了';
+              self.ref.playlist.message = '已经到底了';
             }
-            self.ref.audioList.appendData(data.data);
+            self.ref.playlist.appendData(data.data);
             break;
           case 3:
             if(cache.offset >= data.count) {
@@ -184,10 +183,10 @@ class Work extends migi.Component {
     let self = this;
     switch(self.groupId) {
       case 1:
-        self.ref.playlist.clearData();
+        self.ref.videoList.clearData();
         break;
       case 2:
-        self.ref.videoList.clearData();
+        self.ref.playlist.clearData();
         break;
       case 3:
         self.ref.waterFall.clearData();
@@ -209,10 +208,13 @@ class Work extends migi.Component {
           on-sort={ this.fnSort }
           on-type={ this.fnType }/>
       <VideoList ref="videoList"
-                 @visible={ this.kind === 1 }/>
-      <AudioList ref="audioList"
+                 profession={ true }
                  message="正在加载..."
-                 @visible={ this.kind === 2 }/>
+                 @visible={ this.kind === 1 }/>
+      <Playlist ref="playlist"
+                profession={ true }
+                message="正在加载..."
+                @visible={ this.kind === 2 }/>
       <WaterFall ref="waterFall"
                  profession={ true }
                  message="正在加载..."

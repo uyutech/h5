@@ -22,7 +22,8 @@ class Playlist extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.visible = self.props.visible;
-    self.list = self.props.list;
+    self.list = [];
+    self.exist = {};
     self.on(migi.Event.DOM, function() {
       if(jsBridge.appVersion) {
         let version = jsBridge.appVersion.split('.');
@@ -175,17 +176,25 @@ class Playlist extends migi.Component {
     });
   }
   genItem(item) {
+    let self = this;
     let url = '/works.html?worksId=' + item.id + '&workId=' + item.work.id;
     let author = [];
     let hash = {};
-    (item.author || []).forEach(function(list) {
-      list.list.forEach(function(at) {
-        if(!hash[at.id]) {
-          hash[at.id] = true;
-          author.push(at.name);
-        }
+    if(self.props.profession) {
+      (item.work.profession || []).forEach((item) => {
+        author.push(item.name);
       });
-    });
+    }
+    else {
+      (item.work.author || []).forEach(function(list) {
+        list.list.forEach(function(at) {
+          if(!hash[at.id]) {
+            hash[at.id] = true;
+            author.push(at.name);
+          }
+        });
+      });
+    }
     return <li>
       <a class="pic"
          title={ item.title }

@@ -13,7 +13,8 @@ class VideoList extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.visible = self.props.visible;
-    self.list = self.props.list;
+    self.list = [];
+    self.exist = {};
   }
   @bind message
   @bind visible
@@ -22,7 +23,13 @@ class VideoList extends migi.Component {
     let self = this;
     self.exist = {};
     let list = [];
-    (data || []).forEach(function(item) {
+    if(!data) {
+      return;
+    }
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
+    data.forEach(function(item) {
       if(self.exist[item.work.id]) {
         return;
       }
@@ -33,7 +40,13 @@ class VideoList extends migi.Component {
   }
   appendData(data) {
     let self = this;
-    (data || []).forEach(function(item) {
+    if(!data) {
+      return;
+    }
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
+    data.forEach(function(item) {
       if(self.exist[item.work.id]) {
         return;
       }
@@ -45,17 +58,25 @@ class VideoList extends migi.Component {
     this.list = [];
   }
   genItem(item) {
+    let self = this;
     let url = '/works.html?worksId=' + item.id + '&workId=' + item.work.id;
     let author = [];
     let hash = {};
-    (item.author || []).forEach(function(list) {
-      list.list.forEach(function(at) {
-        if(!hash[at.id]) {
-          hash[at.id] = true;
-          author.push(at.name);
-        }
+    if(self.props.profession) {
+      (item.work.profession || []).forEach((item) => {
+        author.push(item.name);
       });
-    });
+    }
+    else {
+      (item.work.author || []).forEach(function(list) {
+        list.list.forEach(function(at) {
+          if(!hash[at.id]) {
+            hash[at.id] = true;
+            author.push(at.name);
+          }
+        });
+      });
+    }
     return <li>
       <a class="pic"
          title={ item.title }
