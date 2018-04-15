@@ -138,7 +138,7 @@ class Login extends migi.Component {
 
         setTimeout(function() {
           jsBridge.popWindow({
-            passport: true,
+            login: true,
           });
         }, 10);
       }
@@ -196,7 +196,7 @@ class Login extends migi.Component {
             jsBridge.toast('登录成功');
             jsBridge.setPreference('my', data, function() {
               jsBridge.popWindow({
-                passport: true,
+                login: true,
               });
             });
           }

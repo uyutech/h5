@@ -25,14 +25,14 @@ class My extends migi.Component {
     self.on(migi.Event.DOM, function() {
       self.init();
       jsBridge.on('resume', function(e) {
-        if(e.data) {
+        if(e.data) {console.log(e.data);
           if(e.data.loginOut) {
             self.isLogin = false;
             self.setData(null, 1);
             jsBridge.delPreference(cacheKey);
             $.cookie('isLogin', null);
           }
-          else if(e.data.guide || e.data.passport) {
+          else if(e.data.guide || e.data.login) {
             self.init();
           }
         }
@@ -132,6 +132,7 @@ class My extends migi.Component {
 
             jsBridge.setPreference(cacheKey, data);
             $.cookie('isLogin', true);
+            migi.eventBus.emit('LOGIN');
           }
           else {
             jsBridge.toast(res.message);

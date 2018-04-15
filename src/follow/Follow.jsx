@@ -13,6 +13,7 @@ let scrollY = 0;
 let circleOffset = 0;
 let loadingCircle;
 let loadCircleEnd;
+let circleAjax;
 
 let loading;
 let loadEnd;
@@ -39,29 +40,20 @@ class Follow extends migi.Component {
     self._visible = self.props.visible;
     self.on(migi.Event.DOM, function() {
       self.init();
-      // migi.eventBus.on('LOGIN_OUT', function() {
-      //   let people = self.ref.people;
-      //   people.list = [];
-      //
-      //   let circles = self.ref.circles;
-      //   circles.dataList = [];
-      //
-      //   let hotPost = self.ref.hotPost;
-      //   hotPost.clearData();
-      //
-      //   self.type = '0';
-      // });
-      // migi.eventBus.on('LOGIN', function() {
-      //   if(visible) {
-      //     self.init();
-      //   }
-      // });
-      // jsBridge.on('pause', function() {
-      //   isPause = true;
-      // });
-      // jsBridge.on('resume', function() {
-      //   isPause = false;
-      // });
+      jsBridge.on('resume', function(e) {
+        if(e.data) {
+          if(e.data.login) {
+            self.init();
+          }
+          else if(e.data.loginOut) {
+            jsBridge.delPreference(cacheKey);
+            self.setData(null, 1);
+          }
+        }
+      });
+      migi.eventBus.on('LOGIN', function() {
+        self.init();
+      });
     });
   }
   get visible() {
@@ -71,6 +63,9 @@ class Follow extends migi.Component {
   set visible(v) {
     this._visible = v;
     util.scrollY(scrollY);
+    if(v && !util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+    }
   }
   @bind personList
   @bind type
@@ -87,12 +82,15 @@ class Follow extends migi.Component {
     if(ajax2) {
       ajax.abort();
     }
+    if(circleAjax) {
+      circleAjax.abort();
+    }
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         self.setData(cache, 0);
       }
     });
-    net.postJSON('/h5/follow2/index', function(res) {
+    ajax = net.postJSON('/h5/follow2/index', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -137,16 +135,27 @@ class Follow extends migi.Component {
 
     let self = this;
     let postList = self.ref.postList;
-    let postList2 = self.ref.postList2;
 
-    self.personList = data.personList.data;
+    if(data) {
+      self.personList = data.personList.data;
 
-    circleOffset = data.circleList.limit;
-    self.circleList = data.circleList.data;
+      circleOffset = data.circleList.limit;
+      self.circleList = data.circleList.data;
 
-    postList.setData(data.postList.data);
-    offset = data.postList.limit;
-    loadEnd = offset >= data.postList.count;
+      postList.setData(data.postList.data);
+      offset = data.postList.limit;
+      loadEnd = offset >= data.postList.count;
+    }
+    else {
+      self.personList = null;
+
+      circleOffset = 0;
+      self.circleList = null;
+
+      postList.clearData();
+      offset = 0;
+      loadEnd = false;
+    }
   }
   checkMore() {
     let self = this;
@@ -224,7 +233,10 @@ class Follow extends migi.Component {
     }
     if(el.scrollLeft + el.offsetWidth + 30 > el.scrollWidth) {
       loadingCircle = true;
-      net.postJSON('/h5/follow2/circle', { offset: circleOffset }, function(res) {
+      if(circleAjax) {
+        circleAjax.abort();
+      }
+      circleAjax = net.postJSON('/h5/follow2/circle', { offset: circleOffset }, function(res) {
         if(res.success) {
           let data = res.data;
           self.circleList = self.circleList.concat(data.data);
@@ -242,6 +254,9 @@ class Follow extends migi.Component {
         loadingCircle = false;
       });
     }
+  }
+  refresh() {
+    this.init();
   }
   clickTag(e, vd, tvd) {
     let id = tvd.props.rel;
