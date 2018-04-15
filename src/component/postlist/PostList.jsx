@@ -18,6 +18,15 @@ class PostList extends migi.Component {
     self.exist = {};
     self.on(migi.Event.DOM, function() {
       let $list = $(this.ref.list.element);
+      $list.on('click', '.pic,.name', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+        });
+      });
       $list.on('click', '.circle', function(e) {
         e.preventDefault();
         let $this = $(this);

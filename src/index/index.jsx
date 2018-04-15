@@ -48,7 +48,7 @@ jsBridge.ready(function() {
       topNav.hide();
       if(!find) {
         find = migi.render(
-          <Find visible={ true }/>,
+          <Find/>,
           '#page'
         );
       }
@@ -58,7 +58,7 @@ jsBridge.ready(function() {
       topNav.show();
       if(!circling) {
         circling = migi.render(
-          <Circling visible={ true }/>,
+          <Circling/>,
           '#page'
         );
       }
