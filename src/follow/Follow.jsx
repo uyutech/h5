@@ -251,6 +251,7 @@ class Follow extends migi.Component {
     });
   }
   clickPerson(e, vd, tvd) {
+    e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
     jsBridge.pushWindow(url, {
@@ -259,6 +260,7 @@ class Follow extends migi.Component {
     });
   }
   clickMore(e, vd, tvd) {
+    e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
     jsBridge.pushWindow(url, {
@@ -285,6 +287,7 @@ class Follow extends migi.Component {
             (this.personList || []).map(function(item) {
               return <li>
                 <a class="pic"
+                   title={ item.name || item.nickname }
                    href={ item.isAuthor ? ('/author.html?authorId=' + item.id) : ('/user.html?userId=' + item.id) }>
                   <img src={ util.autoSsl(util.img(item.headUrl, 120, 120, 80)) || '/src/common/head.png' }/>
                 </a>

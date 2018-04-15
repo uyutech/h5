@@ -11,6 +11,6 @@ import Find from '../find/Find.jsx';
 let s = '';
 s += migi.preRender(<TopNav/>);
 s += migi.preRender(<BotNav/>);
-s += migi.preRender(<Find/>);
+s += migi.preRender(<Find visible={ true }/>);
 
 export default s;

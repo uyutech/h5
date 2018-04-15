@@ -18,6 +18,15 @@ class PostList extends migi.Component {
     self.exist = {};
     self.on(migi.Event.DOM, function() {
       let $list = $(this.ref.list.element);
+      $list.on('click', '.circle', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+        });
+      });
       $list.on('click', '.like', function() {
         let $this = $(this);
         let commentId = parseInt($this.attr('rel'));
@@ -197,7 +206,8 @@ class PostList extends migi.Component {
           (item.circle || []).map(function(circle) {
             return <li>
               <a class="circle"
-                 href={ '/circle.html?circleId=' + circle.id }>{ circle.name }</a>
+                 href={ '/circle.html?circleId=' + circle.id }
+                 title={ circle.name + '圈' }>{ circle.name }</a>
             </li>;
           })
         }
