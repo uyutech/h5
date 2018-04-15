@@ -7,11 +7,10 @@
 import net from '../../common/net';
 import util from '../../common/util';
 
-let subLoadHash = {};
-let subSkipHash = {};
 let $last;
-let ajax;
 let exist = {};
+
+const MAX_LEN = 144;
 
 class Comment extends migi.Component {
   constructor(...data) {
@@ -21,8 +20,8 @@ class Comment extends migi.Component {
     self.message = self.props.message;
 
     self.on(migi.Event.DOM, function() {
-      let $root = $(self.element);
-      $root.on('click', '.like', function() {
+      let $list = $(this.ref.list.element);
+      $list.on('click', '.like', function() {
         let $this = $(this);
         let commentId = parseInt($this.attr('rel'));
         let isLike = $this.hasClass('liked');
@@ -47,12 +46,12 @@ class Comment extends migi.Component {
           }
         });
       });
-      $root.on('click', '.sub', function() {
+      $list.on('click', '.sub', function() {
         let $this = $(this);
         let id = $this.attr('rel');
         self.emit('reply', id);
       });
-      $root.on('click', '.fn', function() {
+      $list.on('click', '.fn', function() {
         let $fn = $(this);
         let $like = $fn.closest('li').find('.like');
         let commentID = $like.attr('cid');
@@ -122,7 +121,7 @@ class Comment extends migi.Component {
           },
         });
       });
-      $root.on('click', 'li.author a', function(e) {
+      $list.on('click', 'li.author a', function(e) {
         e.stopImmediatePropagation();
         e.stopPropagation();
         e.preventDefault();
@@ -134,7 +133,7 @@ class Comment extends migi.Component {
           transparentTitle: true,
         });
       });
-      $root.on('click', 'li.user a', function(e) {
+      $list.on('click', 'li.user a', function(e) {
         e.stopImmediatePropagation();
         e.stopPropagation();
         e.preventDefault();
@@ -145,6 +144,10 @@ class Comment extends migi.Component {
           title,
           transparentTitle: true,
         });
+      });
+      $list.on('click', '.more, .less', function() {
+        let $li = $(this).closest('li');
+        $li.find('.snap, .full').toggleClass('fn-hide');
       });
     });
   }
@@ -277,7 +280,7 @@ class Comment extends migi.Component {
         <b class="fn"
            own={ item.IsOwn }/>
       </div>
-      <div class="c">
+      <div class="wrap">
         {
           item.quote
             ? <div class="quote">
@@ -286,14 +289,31 @@ class Comment extends migi.Component {
               </div>
             : ''
         }
-        <pre>{ item.content }<span class="placeholder"/></pre>
+        {
+          item.content.length > MAX_LEN
+            ? <pre class="snap">
+                { item.content.slice(0, MAX_LEN) + '...' }
+                <span class="more">查看全文</span>
+              </pre>
+            : ''
+        }
+        {
+          item.content.length > MAX_LEN
+            ? <pre class="full fn-hide">
+                { item.content }
+                <span class="less">收起全文</span>
+              </pre>
+            : <pre class="full">
+                { item.content }
+                <span class="placeholder"/>
+              </pre>
+        }
         <div class="slide">
           <small class={ 'like' + (item.isLike ? ' liked' : '') }
                  rel={ item.id }>{ item.likeCount || '' }</small>
           <small class="sub"
                  rel={ item.id }/>
         </div>
-        <b class="arrow"/>
       </div>
     </li>;
   }
@@ -305,7 +325,9 @@ class Comment extends migi.Component {
   }
   render() {
     return <div class="cp-comment">
-      <ul class="list" ref="list" dangerouslySetInnerHTML={ this.html }/>
+      <ul class="list"
+          ref="list"
+          dangerouslySetInnerHTML={ this.html }/>
       <p class={ 'empty' + (this.empty ? '' : ' fn-hide') }>这儿空空的，需要你的留言噢(* ॑꒳ ॑* )</p>
       <p class={ 'message' + (this.message ? '' : ' fn-hide') }>{ this.message }</p>
     </div>;

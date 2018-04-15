@@ -18,7 +18,8 @@ class Author extends migi.Component {
     });
   }
   render() {
-    return <ul class="mod-author" onClick={ { dd: this.click } }>
+    return <ul class="mod-author"
+               onClick={ { dd: this.click } }>
       {
         (this.list || []).map(function(arr) {
           return <li>
@@ -28,8 +29,15 @@ class Author extends migi.Component {
                   <dt>{ item.name }</dt>
                   {
                     (item.list || []).map(function(author) {
-                      return <dd authorId={ author.id } title={ author.name }>
-                        <img src={ util.autoSsl(util.img48_48_80(author.headUrl)) || '/src/common/head.png' }/>
+                      if(author.isSettle) {
+                        return <dd authorId={ author.id }
+                                   title={ author.name }>
+                          <img src={ util.img(author.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
+                          <span>{ author.name }</span>
+                        </dd>;
+                      }
+                      return <dd authorId={ author.id }
+                                 title={ author.name }>
                         <span>{ author.name }</span>
                       </dd>;
                     })

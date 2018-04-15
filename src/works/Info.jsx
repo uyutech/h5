@@ -4,7 +4,7 @@
 
 'use strict';
 
-import worksState from './worksState';
+import state from './state';
 
 class Info extends migi.Component {
   constructor(...data) {
@@ -29,7 +29,7 @@ class Info extends migi.Component {
         <h1>{ this.title }</h1>
         <h2 class={ this.subTitle ? '' : 'fn-hide' }>{ this.subTitle }</h2>
       </div>
-      <span class={ 'state s' + this.state }>{ worksState[this.state] }</span>
+      <span class={ 'state s' + this.state }>{ state[this.state] }</span>
     </div>;
   }
 }
