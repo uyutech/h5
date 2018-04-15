@@ -30,7 +30,7 @@ class Circling extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.visible = self.props.visible;
+    self._visible = self.props.visible;
     self.on(migi.Event.DOM, function() {
       self.init();
       // jsBridge.on('resume', function(e) {

@@ -36,7 +36,7 @@ class Follow extends migi.Component {
     super(...data);
     let self = this;
     self.type = 0;
-    self.visible = self.props.visible;
+    self._visible = self.props.visible;
     self.on(migi.Event.DOM, function() {
       self.init();
       // migi.eventBus.on('LOGIN_OUT', function() {

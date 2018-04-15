@@ -4,8 +4,6 @@
 
 let rel = 0;
 
-import util from '../../common/util';
-
 class BotNav extends migi.Component {
   constructor(...data) {
     super(...data);
