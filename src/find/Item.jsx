@@ -11,6 +11,7 @@ import Banner from './Banner.jsx';
 import Works from './Works.jsx';
 import AuthorList from './AuthorList.jsx';
 import WorksList from './WorksList.jsx';
+import Post from './Post.jsx';
 import VideoList from '../component/videolist/VideoList.jsx';
 import Playlist from '../component/playlist/Playlist.jsx';
 import WaterFall from '../component/waterfall/WaterFall.jsx';
@@ -48,7 +49,7 @@ class Item extends migi.Component {
     // TODO: 未知domDiff的bug，先用innerHtml
     let s = '';
     data.list.data.forEach(function(item) {
-      s += self.genItem(item);
+      s += self.genItem(item) || '';
     });
     $(self.ref.con.element).html(s);
     self.message = '';
@@ -65,11 +66,14 @@ class Item extends migi.Component {
     let self = this;
     let s = '';
     data.forEach(function(item) {
-      s += self.genItem(item);
+      s += self.genItem(item) || '';
     });
     $(self.ref.con.element).append(s);
   }
   genItem(item) {
+    if(!item.content) {
+      return;
+    }
     switch(item.type) {
       case 1:
         return <Works data={item}/>;
@@ -83,6 +87,8 @@ class Item extends migi.Component {
         return <AuthorList data={item}/>;
       case 5:
         return <WorksList data={item}/>;
+      case 6:
+        return <Post data={ item }/>;
     }
   }
   checkMore() {
