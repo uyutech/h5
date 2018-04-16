@@ -36,7 +36,10 @@ class Works extends migi.Component {
     cacheKey = 'worksData_' + worksId;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
-        self.setData(cache, 0);
+        try {
+          self.setData(cache, 0);
+        }
+        catch(e) {}
       }
     });
     net.postJSON('/h5/works2/index', { worksId }, function(res) {

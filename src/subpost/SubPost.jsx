@@ -114,11 +114,14 @@ class SubPost extends migi.Component {
   @bind headUrl
   @bind isAuthor
   @bind useAuthor
-  init(data) {
+  init() {
     let self = this;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
-        self.setData(cache, 0);
+        try {
+          self.setData(cache, 0);
+        }
+        catch(e) {}
       }
     });
     net.postJSON('/h5/subpost2/index', function(res) {

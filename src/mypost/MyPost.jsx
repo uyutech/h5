@@ -25,7 +25,10 @@ class MyPost extends migi.Component {
     cacheKey = 'myPost';
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
-        self.setData(cache, 0);
+        try {
+          self.setData(cache, 0);
+        }
+        catch(e) {}
       }
     });
     net.postJSON('/h5/my2/postList', function(res) {

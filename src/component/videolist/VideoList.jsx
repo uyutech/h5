@@ -81,7 +81,7 @@ class VideoList extends migi.Component {
       <a class="pic"
          title={ item.title }
          href={ url }>
-        <img src={ util.autoSsl(util.img750__80(item.work.cover || item.cover)) || '/src/common/blank.png' }/>
+        <img src={ util.img(item.work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
         <div class="num">
           <span class="play">{ util.abbrNum(item.work.views) }次播放</span>
         </div>

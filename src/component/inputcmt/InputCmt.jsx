@@ -9,29 +9,24 @@ class InputCmt extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.hidden = self.props.hidden;
     self.value = self.props.value;
     self.placeholder = self.props.placeholder;
     self.readOnly = self.props.readOnly;
     self.on(migi.Event.DOM, function() {
-      jsBridge.getPreference('loginInfo', function(loginInfo) {
-        if(loginInfo && loginInfo.userInfo) {
-          self.head = loginInfo.userInfo.Head_Url;
+      jsBridge.getCache(['my', 'useAuthor'], function(my, useAuthor) {
+        if(useAuthor) {
+          self.headUrl = my.author[0].headUrl;
+        }
+        else {
+          self.headUrl = my.user.headUrl;
         }
       });
     });
   }
-  @bind hidden
-  @bind head
+  @bind headUrl
   @bind value
   @bind placeholder
   @bind readOnly
-  show() {
-    this.hidden = false;
-  }
-  hide() {
-    this.hidden = true;
-  }
   focus() {
     this.ref.input.element.focus();
   }
@@ -42,8 +37,8 @@ class InputCmt extends migi.Component {
     this.emit('share');
   }
   render() {
-    return <form class={ 'cp-inputcmt' + (this.hidden ? ' fn-hide' : '') }>
-      <img src={ this.head || '/src/common/head.png' }/>
+    return <form class="cp-inputcmt">
+      <img src={ this.headUrl || '/src/common/head.png' }/>
       <input ref="input"
              value={ this.value }
              placeholder={ this.placeholder }

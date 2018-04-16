@@ -56,7 +56,10 @@ class Circling extends migi.Component {
     }
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
-        self.setData(cache, 0);
+        try {
+          self.setData(cache, 0);
+        }
+        catch(e) {}
       }
     });
     ajax = net.postJSON('/h5/circling2/index', function(res) {

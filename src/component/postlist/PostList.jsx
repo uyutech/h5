@@ -179,21 +179,21 @@ class PostList extends migi.Component {
     let videoList = [];
     let audioList = [];
     let imageList = [];
-    if(item.media && item.media.length) {
-      item.media.forEach(function(item) {
-        switch(item.kind) {
-          case 0:
-            imageList.push(item);
-            break;
-          case 1:
-            videoList.push(item);
-            break;
-          case 2:
-            audioList.push(item);
-            break;
-        }
-      });
-    }
+    item.work.forEach((item) => {
+      if(item.kind === 1) {
+        videoList.push(item);
+      }
+      else if(item.kind === 2) {
+        audioList.push(item);
+      }
+    });
+    item.media.forEach((item) => {
+      switch(item.kind) {
+        case 3:
+          imageList.push(item);
+          break;
+      }
+    });
     return <li class={ item.isAuthor ? 'author'  : 'user' }>
       <div class="profile">
         <a class="pic"
@@ -225,50 +225,86 @@ class PostList extends migi.Component {
       <div class="wrap">
         <div class="con" dangerouslySetInnerHTML={ html }/>
         {
-          item.media && item.media.length
-            ? <div class="media">
+          videoList.length
+            ? <ul class="video">
               {
-                videoList.length
-                  ? <ul class="video">
-                    {
-                      videoList.map(function(item) {
-                        return <li>
-                          <b class="play"/>
-                        </li>;
-                      })
-                    }
-                    </ul>
-                  : ''
+                videoList.map(function(item) {
+                  let url = '/works.html?worksId=' + item.id + '&workId=' + item.id;
+                  let author = [];
+                  let hash = {};
+                  (item.author || []).forEach(function(list) {
+                    list.list.forEach(function(at) {
+                      if(!hash[at.id]) {
+                        hash[at.id] = true;
+                        author.push(at.name);
+                      }
+                    });
+                  });
+                  return <li>
+                    <a class="pic"
+                       title={ item.title }
+                       href={ url }>
+                      <img src={ util.img(item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
+                      <div class="num">
+                        <span class="play">{ util.abbrNum(item.views) }次播放</span>
+                      </div>
+                    </a>
+                    <a class="name"
+                       href={ url }
+                       title={ item.title }>{ item.title }</a>
+                    <div class="info">
+                      <p class="author">{ author.join(' ') }</p>
+                    </div>
+                  </li>;
+                })
               }
+              </ul>
+            : ''
+        }
+        {
+          audioList.length
+            ? <ul class="audio">
               {
-                audioList.length
-                  ? <ul class="audio">
-                    {
-                      audioList.map(function(item) {
-                        return <li>
-                          <b class="play"/>
-                        </li>;
-                      })
-                    }
-                    </ul>
-                  : ''
+                audioList.map(function(item) {
+                  let author = [];
+                  let hash = {};
+                  (item.author || []).forEach(function(list) {
+                    list.list.forEach(function(at) {
+                      if(!hash[at.id]) {
+                        hash[at.id] = true;
+                        author.push(at.name);
+                      }
+                    });
+                  });
+                  return <li>
+                    <a class="pic"
+                       title={ item.title }
+                       href={ url }>
+                      <img src={ util.img(item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
+                    </a>
+                    <div class="txt">
+                      <span class="name">{ item.title }</span>
+                      <p class="author">{ author.join(' ') }</p>
+                    </div>
+                  </li>;
+                })
               }
+              </ul>
+            : ''
+        }
+        {
+          imageList.length
+            ? <ul class="image">
               {
-                imageList.length
-                  ? <ul class="image">
-                    {
-                      imageList.map(function(item) {
-                        return <li>
-                          <img src={ self.props.single
-                            ? util.img(item.url, 750, 0, 80)
-                            : util.img(item.url, 200, 200, 80)}/>
-                        </li>;
-                      })
-                    }
-                    </ul>
-                  : ''
+                imageList.map(function(item) {
+                  return <li>
+                    <img src={ self.props.single
+                      ? util.img(item.url, 750, 0, 80)
+                      : util.img(item.url, 200, 200, 80)}/>
+                  </li>;
+                })
               }
-              </div>
+              </ul>
             : ''
         }
       </div>

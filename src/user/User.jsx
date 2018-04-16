@@ -31,7 +31,10 @@ class User extends migi.Component {
     cacheKey = 'userData_' + userId;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
-        self.setData(cache, 0);
+        try {
+          self.setData(cache, 0);
+        }
+        catch(e) {}
       }
     });
     net.postJSON('/h5/user2/index', { userId }, function(res) {

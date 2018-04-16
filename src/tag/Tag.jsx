@@ -65,7 +65,10 @@ class Tag extends migi.Component {
     cacheKey = 'tagName_' + tag;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
-        self.setData(cache, 0);
+        try {
+          self.setData(cache, 0);
+        }
+        catch(e) {}
       }
     });
     ajax = net.postJSON('/h5/tag2/index', { tag }, function(res) {
