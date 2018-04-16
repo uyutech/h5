@@ -120,6 +120,7 @@ class PostList extends migi.Component {
       s += self.genItem(item) || '';
     });
     $(self.ref.list.element).html(s);
+    self.loadRef();
   }
   appendData(data) {
     let self = this;
@@ -320,63 +321,131 @@ class PostList extends migi.Component {
     </li>;
   }
   encode(s, reference) {
-    reference = reference || [];
-    let index = 0;
     return s.replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
-        return `<a href="/tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
+        return `<a class="link2" href="/tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
       })
-      .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(\s|$)/g, function($0, $1, $2, $3, $4) {
-        let data = reference[index];
-        index++;
-        switch($1) {
+      .replace(/@\/\w+\/\d+\/?(\d+)?(\s|$)/g, function($0) {
+        return `<span class="ref">${$0}</span>`;
+      })
+      .replace(/(http(?:s)?:\/\/[\w-]+\.[\w]+\S*)/gi, '<a class="outside" href="$1" target="_blank">$1</a>');
+  }
+  loadRef() {
+    let self = this;
+    let elems = self.ref.list.element.querySelectorAll('span.ref');
+    let worksIdList = [];
+    let workIdList = [];
+    let authorIdList = [];
+    let userIdList = [];
+    let postIdList = [];
+    elems.forEach((item) => {
+      let match = item.innerHTML.match(/@\/(\w+)\/(\d+)\/?(\d+)?(\s|$)/);
+      if(match) {
+        switch(match[1]) {
           case 'works':
-            let worksName = '';
-            if(data) {
-              worksName += '《' + data.Title;
-            }
-            if($3) {
-              if(data) {
-                let sub = ((data.Works_Items || [])[0] || {}).ItemName || '';
-                if(sub) {
-                  worksName += ' ' + sub;
-                }
-                worksName += '》';
-              }
-              worksName += $4;
-              return `<a href="/${$1}.html?worksId=${$2}&workId=${$3}" class="link" transparentTitle="true">${worksName}</a>`;
-            }
-            if(data) {
-              worksName += '》';
-            }
-            worksName += $4;
-            return `<a href="/${$1}.html?worksId=${$2}" class="link" transparentTitle="true">${worksName}</a>`;
-          case 'post':
-            let postName = '';
-            if(data) {
-              postName += data.Content.length > 10 ? (data.Content.slice(0, 10) + '...') : data.Content;
-            }
-            postName += $4;
-            return `<a href="/${$1}.html?postId=${$2}" class="link" title="画圈正文">${postName}</a>`;
+            worksIdList.push(match[2]);
+            break;
+          case 'work':
+            workIdList.push(match[2]);
+            break;
           case 'author':
-            let authorName = '';
-            if(data) {
-              authorName += data.AuthorName;
-            }
-            authorName += $4;
-            return `<a href="/${$1}.html?authorId=${$2}" class="link" transparentTitle="true">${authorName}</a>`;
+            authorIdList.push(match[2]);
+            break;
           case 'user':
-            let userName = '';
-            if(data) {
-              userName += data.NickName;
-            }
-            userName += $4;
-            return `<a href="/${$1}.html?userID=${$2}" class="link" transparentTitle="true">${userName}</a>`;
+            userIdList.push(match[2]);
+            break;
+          case 'post':
+            postIdList.push(match[2]);
+            break;
         }
-        return $0;
-      })
-      .replace(/(http(?:s)?:\/\/[\w-]+\.[\w]+\S*)/gi, '<a href="$1" target="_blank">$1</a>');
+      }
+    });
+    net.postJSON('/h5/post2/refList', {
+      worksIdList, workIdList, authorIdList, userIdList, postIdList
+    }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        let worksHash = {};
+        let workHash = {};
+        let authorHash = {};
+        let userHash = {};
+        let postHash = {};
+        (data.worksList || []).forEach((item) => {
+          if(item) {
+            worksHash[item.id] = item;
+          }
+        });
+        (data.workList || []).forEach((item) => {
+          if(item) {
+            workHash[item.id] = item;
+          }
+        });
+        (data.authorList || []).forEach((item) => {
+          if(item) {
+            authorHash[item.id] = item;
+          }
+        });
+        (data.userList || []).forEach((item) => {
+          if(item) {
+            userHash[item.id] = item;
+          }
+        });
+        (data.postList || []).forEach((item) => {
+          if(item) {
+            postHash[item.id] = item;
+          }
+        });
+        elems.forEach((item) => {
+          let match = item.innerHTML.match(/@\/(\w+)\/(\d+)\/?(\d+)?(\s|$)/);
+          if(match) {
+            let node = document.createElement('a');
+            switch(match[1]) {
+              case 'works':
+                if(!worksHash[match[2]]) {
+                  return;
+                }
+                node.className = 'link';
+                node.textContent = '《' + worksHash[match[2]].title + '》';
+                item.parentNode.replaceChild(node, item);
+                break;
+              case 'work':
+                if(!workHash[match[2]]) {
+                  return;
+                }
+                node.className = 'link';
+                node.textContent = '《' + workHash[match[2]].title + '》';
+                item.parentNode.replaceChild(node, item);
+                break;
+              case 'author':
+                if(!authorHash[match[2]]) {
+                  return;
+                }
+                node.className = 'link';
+                node.textContent = authorHash[match[2]].name;
+                item.parentNode.replaceChild(node, item);
+                break;
+              case 'user':
+                if(!userHash[match[2]]) {
+                  return;
+                }
+                node.className = 'link';
+                node.textContent = userHash[match[2]].nickname;
+                item.parentNode.replaceChild(node, item);
+                break;
+              case 'post':
+                if(!postHash[match[2]]) {
+                  return;
+                }
+                node.className = 'link2';
+                node.textContent = '画圈正文';
+                item.parentNode.replaceChild(node, item);
+                break;
+            }
+          }
+        });
+      }
+    });
   }
   render() {
     return <div class={ 'cp-postlist' + (this.visible ? '' : ' fn-hide') }>
