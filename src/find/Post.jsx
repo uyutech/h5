@@ -11,7 +11,7 @@ class Post extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.data = self.props.data;console.log(self.data);
+    self.data = self.props.data;
   }
   @bind data
   render() {

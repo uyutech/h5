@@ -21,12 +21,11 @@ class Dynamics extends migi.Component {
   }
   @bind visible
   setData(authorId, data) {
-    console.log(data);
     let self = this;
     self.authorId = authorId;
     if(data) {
       offset = data.limit;
-      self.ref.postList.setData(data.data);console.log(offset, data.count);
+      self.ref.postList.setData(data.data);
       if(offset >= data.count) {
         self.ref.postList.message = '已经到底了';
       }

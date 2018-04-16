@@ -4,9 +4,9 @@
 
 'use strict';
 
-import Private from './Private.jsx';
+import MyAddress from './MyAddress.jsx';
 
 let s = '';
-s += migi.preRender(<Private/>);
+s += migi.preRender(<MyAddress/>);
 
 export default s;

@@ -25,7 +25,7 @@ class My extends migi.Component {
     self.on(migi.Event.DOM, function() {
       self.init();
       jsBridge.on('resume', function(e) {
-        if(e.data) {console.log(e.data);
+        if(e.data) {
           if(e.data.loginOut) {
             self.isLogin = false;
             self.setData(null, 1);
@@ -176,6 +176,7 @@ class My extends migi.Component {
         <li>
           <a href="/mall.html" class="mall">圈商城<small>（<b/>圈币：{ this.coins || 0 }）</small></a>
         </li>
+        <li><a href="/myaddress.html" class="address">收货地址</a></li>
       </ul>
       <ul class={ 'list' + (this.isLogin ? '' : ' fn-hide') }
           onClick={ { a: this.clickLink } }>

@@ -320,7 +320,7 @@ class PostList extends migi.Component {
       </ul>
     </li>;
   }
-  encode(s, reference) {
+  encode(s) {
     return s.replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
