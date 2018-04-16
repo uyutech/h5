@@ -10,7 +10,6 @@ import util from '../common/util';
 import Nav from './Nav.jsx';
 import WorksList from './WorksList.jsx';
 import MusicAlbumList from './MusicAlbumList.jsx';
-import HotAuthor from '../component/hotauthor/HotAuthor.jsx';
 import Comments from './Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import Background from '../component/background/Background.jsx';
@@ -67,6 +66,8 @@ class Author extends migi.Component {
     let self = this;
     self.data = data;
     let nav = self.ref.nav;
+    let work = self.ref.work;
+    let dynamics = self.ref.dynamics;
     let comments = self.ref.comments;
 
     nav.setData(data.info, data.aliases, data.fansCount, data.outsides, data.isFollow);
@@ -86,12 +87,17 @@ class Author extends migi.Component {
       self.index = 0;
     }
 
-    if(data.workKindList) {
+    if(data.workKindList && data.workKindList.length) {
       self.showWork = true;
-      self.ref.work.setData(data.workKindList, data.kindWorkList);
+      work.setData(data.workKindList, data.kindWorkList);
       if(self.index === undefined) {
         self.index = 1;
       }
+    }
+
+    if(data.dynamicList && data.dynamicList.count) {
+      self.showDynamic = true;
+      dynamics.setData(self.authorId, data.dynamicList);
     }
 
     comments.setData(self.authorId, data.commentList);

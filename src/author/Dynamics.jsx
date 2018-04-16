@@ -4,15 +4,14 @@
 
 'use strict';
 
-import HotPost from '../component/hotpost/HotPost.jsx';
-import net from "../common/net";
-import util from "../common/util";
+import net from '../common/net';
+import util from '../common/util';
+import PostList from '../component/postlist/PostList.jsx';
 
-let limit = 10;
-let offset = 0;
+let offset;
+let ajax;
 let loading;
 let loadEnd;
-let ajax;
 
 class Dynamics extends migi.Component {
   constructor(...data) {
@@ -21,65 +20,51 @@ class Dynamics extends migi.Component {
     self.visible = self.props.visible;
   }
   @bind visible
-  show() {
-    this.visible = true;
-  }
-  hide() {
-    this.visible = false;
-  }
-  setData(data) {
+  setData(authorId, data) {
+    console.log(data);
     let self = this;
-    offset += limit;
-    self.ref.hotPost.setData(data.data);
-    if(data.count > limit) {
-      let $window = $(window);
-      $window.on('scroll', function() {
-        if(!self.visible) {
-          return;
-        }
-        self.checkMore($window);
-      });
-    }
-    else {
-      self.ref.hotPost.message = '已经到底了';
+    self.authorId = authorId;
+    if(data) {
+      offset = data.limit;
+      self.ref.postList.setData(data.data);console.log(offset, data.count);
+      if(offset >= data.count) {
+        self.ref.postList.message = '已经到底了';
+      }
     }
   }
-  checkMore($window) {
-    if(loading || loadEnd) {
+  listenScroll() {
+    let self = this;
+    window.addEventListener('scroll', function() {
+      self.checkMore();
+    });
+  }
+  checkMore() {
+    let self = this;
+    if(loading || loadEnd || !self.visible) {
       return;
     }
-    let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    let scrollY = $window.scrollTop();
-    let bool;
-    bool = scrollY + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    if(util.isBottom()) {
       self.load();
     }
   }
   load() {
     let self = this;
-    if(loading) {
-      return;
-    }
-    let hotPost = self.ref.hotPost;
-    loading = true;
-    hotPost.message = '正在加载...';
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON('/h5/author/dynamic', { authorId: self.authorId, offset, limit }, function(res) {
+    let postList = self.ref.postList;
+    postList.message = '正在加载...';
+    loading = true;
+    ajax = net.postJSON('/h5/author2/dynamicList', { authorId: self.authorId, offset }, function(res) {
       if(res.success) {
         let data = res.data;
+        if(data.data.length) {
+          postList.appendData(data.data);
+        }
         offset += limit;
-        hotPost.appendData(data.data);
         if(offset >= data.count) {
           loadEnd = true;
-          hotPost.message = '已经到底了';
-        }
-        else {
-          hotPost.message = '';
+          postList.message = '已经到底了';
         }
       }
       else {
@@ -93,7 +78,9 @@ class Dynamics extends migi.Component {
   }
   render() {
     return <div class={ 'dynamic' + (this.visible ? '' : ' fn-hide') }>
-      <HotPost ref="hotPost"/>
+      <PostList ref="postList"
+                message="正在加载..."
+                visible={ true }/>
     </div>;
   }
 }

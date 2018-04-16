@@ -25,7 +25,16 @@ class Comments extends migi.Component {
     if(data) {
       offset = data.limit;
       self.ref.comment.setData(data.data);
+      if(offset >= data.count) {
+        self.ref.comment.message = '已经到底了';
+      }
     }
+  }
+  listenScroll() {
+    let self = this;
+    window.addEventListener('scroll', function() {
+      self.checkMore();
+    });
   }
   checkMore() {
     let self = this;
@@ -36,18 +45,13 @@ class Comments extends migi.Component {
       self.load();
     }
   }
-  listenScroll() {
-    let self = this;
-    window.addEventListener('scroll', function() {
-      self.checkMore();
-    });
-  }
   load() {
     let self = this;
     if(ajax) {
       ajax.abort();
     }
     let comment = self.ref.comment;
+    comment.message = '正在加载...';
     loading = true;
     ajax = net.postJSON('/h5/author2/commentList', { authorId: self.authorId, offset }, function(res) {
       if(res.success) {
@@ -62,12 +66,7 @@ class Comments extends migi.Component {
         }
       }
       else {
-        if(res.code === 1000) {
-          migi.eventBus.emit('NEED_LOGIN');
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
@@ -82,7 +81,7 @@ class Comments extends migi.Component {
     });
   }
   render() {
-    return <div class={ 'comments' + (this.visible ? '' : ' fn-hide') }>
+    return <div class={ 'mod-comments' + (this.visible ? '' : ' fn-hide') }>
       <CommentBar ref="commentBar"/>
       <Comment ref="comment"
                message="正在加载..."
