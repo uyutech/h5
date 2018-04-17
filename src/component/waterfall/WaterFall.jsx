@@ -31,13 +31,12 @@ class WaterFall extends migi.Component {
         let $this = $(this);
         let url = $this.attr('href');
         let title = $this.attr('title');
-        util.openAuthor({
-          url,
+        jsBridge.pushWindow(url, {
           title,
+          transparentTitle: true,
         });
       });
-
-      function like() {
+      $root.on('click', '.like', function() {
         if(!util.isLogin()) {
           migi.eventBus.emit('NEED_LOGIN');
           return;
@@ -47,22 +46,13 @@ class WaterFall extends migi.Component {
           return;
         }
         $b.addClass('loading');
-        let id = $b.attr('itemID');
-        net.postJSON('/h5/works/likeWork', { workID: id }, function(res) {
+        let id = $b.attr('rel');
+        let url = $b.hasClass('liked') ? 'unLike' : 'like';
+        net.postJSON('/h5/works2/' + url, { workId: id }, function(res) {
           if(res.success) {
-            if(res.data.State === 'likeWordsUser') {
-              $b.addClass('has');
-            }
-            else {
-              $b.removeClass('has');
-            }
-            for(let i = 0, len = list.length; i < len; i++) {
-              if(id.toString() === list[i].ItemID.toString()) {
-                list[i].ISLike = res.data.State === 'likeWordsUser';
-                // imageView.list = list;
-                break;
-              }
-            }
+            let data = res.data;
+            data.state ? $b.addClass('liked') : $b.removeClass('liked');
+            $b.text(data.count);
           }
           else if(res.code === 1000) {
             migi.eventBus.emit('NEED_LOGIN');
@@ -75,25 +65,24 @@ class WaterFall extends migi.Component {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
           $b.removeClass('loading');
         });
-      }
-      $root.on('click', '.like', like);
-
-      function favor() {
+      });
+      $root.on('click', '.favor', function() {
+        if(!util.isLogin()) {
+          migi.eventBus.emit('NEED_LOGIN');
+          return;
+        }
         let $b = $(this);
         if($b.hasClass('loading')) {
           return;
         }
         $b.addClass('loading');
-        let id = $b.attr('itemID');
-        let url = $b.hasClass('has') ? '/h5/works/unFavorWork' : '/h5/works/favorWork';
-        net.postJSON(url, { workID: id }, function(res) {
+        let id = $b.attr('rel');
+        let url = $b.hasClass('has') ? 'unFavor' : 'favor';
+        net.postJSON('/h5/works2/' + url, { workId: id }, function(res) {
           if(res.success) {
-            if(url === '/h5/works/favorWork') {
-              $b.addClass('has');
-            }
-            else {
-              $b.removeClass('has');
-            }
+            let data = res.data;
+            data.state ? $b.addClass('liked') : $b.removeClass('liked');
+            $b.text(data.count);
           }
           else if(res.code === 1000) {
             migi.eventBus.emit('NEED_LOGIN');
@@ -106,8 +95,7 @@ class WaterFall extends migi.Component {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
           $b.removeClass('loading');
         });
-      }
-      $root.on('click', '.favor', favor);
+      });
 
       $root.on('click', 'img', function() {
         let $img = $(this);
@@ -148,7 +136,7 @@ class WaterFall extends migi.Component {
       data = [data];
     }
     for(let i = data.length - 1; i >= 0; i--) {
-      let id = data[i].id;
+      let id = data[i].work.id;
       if(self.exist[id]) {
         data.splice(i, 1);
       }
@@ -157,7 +145,7 @@ class WaterFall extends migi.Component {
     if(data.length) {
       //未知高宽的去加载图片获取高宽
       data.forEach(function(item) {
-        if(!item.width || !item.height) {
+        if(!item.work.width || !item.work.height) {
           self.loadImgSize(item, self.checkPool.bind(self), self.uuid);
         }
       });
@@ -170,7 +158,7 @@ class WaterFall extends migi.Component {
     let self = this;
     while(self.pool && self.pool.length) {
       let item = self.pool[0];
-      if(item.width && item.height) {
+      if(item.work.width && item.work.height) {
         self.append(item);
         self.pool.shift();
       }
@@ -184,11 +172,11 @@ class WaterFall extends migi.Component {
     let target;
     if(self.height1 > self.height2) {
       target = self.ref.l2.element;
-      self.height2 += item.height;
+      self.height2 += item.work.height;
     }
     else {
       target = self.ref.l1.element;
-      self.height1 += item.height;
+      self.height1 += item.work.height;
     }
     self.genItem(item).appendTo(target);
   }
@@ -197,12 +185,12 @@ class WaterFall extends migi.Component {
     let author = [];
     let hash = {};
     if(self.props.profession) {
-      (item.profession || []).forEach((item) => {
+      item.work.profession.forEach((item) => {
         author.push(item.name);
       });
     }
     else {
-      (item.author || []).forEach((list) => {
+      item.work.author.forEach((list) => {
         list.list.forEach((at) => {
           if(!hash[at.id]) {
             hash[at.id] = true;
@@ -211,28 +199,30 @@ class WaterFall extends migi.Component {
         });
       });
     }
-    item.preview = util.autoSsl(util.img375__80(item.url));
+    item.work.preview = util.img(item.work.url, 375, 0, 80);
     if(item.width <= self.WIDTH) {
-      return <li id={ 'image_' + item.id }>
+      return <li id={ 'image_' + item.work.id }>
         <img class="pic"
-             src={ util.autoSsl(item.preview) || '/src/common/blank.png' }
+             src={ util.autoSsl(item.work.preview) || '/src/common/blank.png' }
              rel={ self.index++ }
-             height={ item.height / 2 }/>
+             height={ item.work.height / 2 }/>
         <div class="txt">
           <p class={ 'author' + (self.props.profession ? ' profession' : '') }>{ author.join(' ') }</p>
-          <b class={ 'like' }/>
+          <b class={ 'like' + (item.work.isLike ? ' liked' : '') }
+             rel={ item.work.id }>{ item.work.likeCount }</b>
         </div>
       </li>;
     }
-    let height = item.height * self.WIDTH * 2 / item.width;
-    return <li id={ 'image_' + item.id }>
+    let height = item.work.height * self.WIDTH * 2 / item.work.width;
+    return <li id={ 'image_' + item.work.id }>
       <img class="pic"
-           src={ util.autoSsl(item.preview) || '/src/common/blank.png' }
+           src={ util.autoSsl(item.work.preview) || '/src/common/blank.png' }
            rel={ self.index++ }
            height={ height / 2 }/>
       <div class="txt">
         <p class={ 'author' + (self.props.profession ? ' profession' : '') }>{ author.join(' ') }</p>
-        <b class={ 'like' + (item.isLike ? ' liked' : '') }>{ item.likeCount }</b>
+        <b class={ 'like' + (item.work.isLike ? ' liked' : '') }
+           rel={ item.work.id }>{ item.work.likeCount }</b>
       </div>
     </li>;
   }
@@ -243,10 +233,10 @@ class WaterFall extends migi.Component {
     img.style.left = '-9999rem;';
     img.style.top = '-9999rem';
     img.style.visibility = 'hidden';
-    img.src = util.autoSsl(util.img__60(item.url));
+    img.src = util.img(item.work.url, 0, 0, 60);
     img.onload = function() {
-      item.width = img.width;
-      item.height = img.height;
+      item.work.width = img.width;
+      item.work.height = img.height;
       document.body.removeChild(img);
       if(uuid === self.uuid) {
         cb();
@@ -254,8 +244,8 @@ class WaterFall extends migi.Component {
     };
     img.onerror = function() {
       item.url = '//zhuanquan.xin/img/blank.png';
-      item.width = 1;
-      item.height = 100;
+      item.work.width = 1;
+      item.work.height = 100;
       document.body.removeChild(img);
       if(uuid === self.uuid) {
         cb();

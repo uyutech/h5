@@ -52,7 +52,7 @@ class MyFavor extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/my2/favorVideoList', function(res) {
+    net.postJSON('/h5/my2/favorList', { kind: 1 }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -99,7 +99,7 @@ class MyFavor extends migi.Component {
   load() {
     let self = this;
     let kind = self.kind;
-    let url;
+    let url = '/h5/my2/favorList';
     let offset;
     let target;
     if(kind === 1) {
@@ -107,7 +107,6 @@ class MyFavor extends migi.Component {
         return;
       }
       videoLoading = true;
-      url = '/h5/my2/favorVideoList';
       offset = videoOffset;
       target = self.ref.videoList;
     }
@@ -116,7 +115,6 @@ class MyFavor extends migi.Component {
         return;
       }
       audioLoading = true;
-      url = '/h5/my2/favorAudioList';
       offset = audioOffset;
       target = self.ref.playlist;
     }
@@ -125,7 +123,6 @@ class MyFavor extends migi.Component {
         return;
       }
       imageLoading = true;
-      url = '/h5/my2/favorImageList';
       offset = imageOffset;
       target = self.ref.waterFall;
     }
@@ -138,7 +135,7 @@ class MyFavor extends migi.Component {
       offset = postOffset;
       target = self.ref.postList;
     }
-    net.postJSON(url, { offset }, function(res) {
+    net.postJSON(url, { kind, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         target.appendData(data.data);
