@@ -15,6 +15,7 @@ let isStart;
 let WIDTH;
 let mediaService;
 let first = true;
+let firstPlay = true;
 let dragPlaying;
 
 class Media extends migi.Component {
@@ -214,6 +215,7 @@ class Media extends migi.Component {
       self.canControl = false;
       self.lrc = {};
       load.innerHTML = '';
+      firstPlay = true;
       if(ajaxLike) {
         ajaxLike.abort();
       }
@@ -240,9 +242,6 @@ class Media extends migi.Component {
     }
 
     self.data = data;
-    self.duration = 0;
-    self.currentTime = 0;
-    self.canControl = false;
     self.isLike = data.isLike;
     self.likeCount = data.likeCount;
     self.favorCount = data.favorCount;
@@ -253,11 +252,15 @@ class Media extends migi.Component {
       return;
     }
 
+    self.duration = 0;
+    self.currentTime = 0;
+    self.canControl = false;
+    firstPlay = true;
     self.setBarPercent(0);
 
     // 除了第一次，每次设置后除非信息相同，否则停止播放
     if(!first) {
-      self.pause();
+      self.stop();
     }
     first = false;
 
@@ -385,8 +388,10 @@ class Media extends migi.Component {
       self.isPlaying = true;
       self.emit('play', self.data);
     }
-    // TODO:
-    // net.postJSON('/h5/works/addPlayCount', { workID: self.data.workId });
+    if(firstPlay) {
+      firstPlay = false;
+      net.postJSON('/h5/work2/addViews', { id: self.data.id });
+    }
   }
   pause() {
     let self = this;

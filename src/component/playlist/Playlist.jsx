@@ -34,8 +34,28 @@ class Playlist extends migi.Component {
           mediaService = true;
         }
       }
-      let $root = $(this.element);
-      $root.on('click', '.fn', function() {
+      let $list = $(self.ref.list.element);
+      $list.on('click', '.pic', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle: true,
+        });
+      });
+      $list.on('click', '.txt', function() {
+        let id = parseInt($(this).attr('rel'));
+        for(let i = 0, len = self.list.length; i < len; i++) {
+          if(self.list[i].work.id === id) {
+            self.setCur(i);
+            self.emit('change', self.list[i]);
+            break;
+          }
+        }
+      });
+      $list.on('click', '.fn', function() {
         let $fn = $(this);
         let isLike = $fn.attr('isLike') === 'true';
         let isFavor = $fn.attr('isFavor') === 'true';
@@ -151,29 +171,50 @@ class Playlist extends migi.Component {
   }
   @bind message
   @bind visible
-  @bind list
   setData(data) {
     let self = this;
-    self.exist = {};
-    let list = [];
-    (data || []).forEach(function(item) {
+    self.clearData();
+    if(!data) {
+      return;
+    }
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
+    let s = '';
+    data.forEach(function(item) {
       if(self.exist[item.work.id]) {
         return;
       }
       self.exist[item.work.id] = true;
-      list.push(self.genItem(item));
+      self.list.push(item);
+      s += self.genItem(item);
     });
-    self.list = list;
+    $(self.ref.list.element).html(s);
   }
   appendData(data) {
     let self = this;
-    (data || []).forEach(function(item) {
+    if(!data) {
+      return;
+    }
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
+    let s = '';
+    data.forEach(function(item) {
       if(self.exist[item.work.id]) {
         return;
       }
       self.exist[item.work.id] = true;
-      self.list.push(self.genItem(item));
+      self.list.push(item);
+      s += self.genItem(item);
     });
+    $(self.ref.list.element).append(s);
+  }
+  clearData() {
+    let self = this;
+    self.exist = {};
+    self.list = [];
+    $(self.ref.list.element).html('');
   }
   genItem(item) {
     let self = this;
@@ -201,15 +242,18 @@ class Playlist extends migi.Component {
          href={ url }>
         <img src={ util.autoSsl(util.img750__80(item.cover)) || '/src/common/blank.png' }/>
       </a>
-      <div class="txt">
+      <div class="txt" rel={ item.work.id }>
         <span class="name">{ item.work.title }</span>
         <p class="author">{ author.join(' ') }</p>
       </div>
       <b class="fn"/>
     </li>;
   }
-  clearData() {
-    this.list = [];
+  setCur(i) {
+    let self = this;
+    let $list = $(self.ref.list.element);
+    $list.find('.cur').removeClass('cur');
+    $list.find('li').eq(i).addClass('cur');
   }
   clickPic(e, vd, tvd) {
     e.preventDefault();
@@ -288,8 +332,7 @@ class Playlist extends migi.Component {
   }
   render() {
     return <div class={ 'cp-playlist' + (this.visible ? '' : ' fn-hide') }>
-      <ol ref="list"
-          onClick={ { '.pic': this.clickPic } }>{ this.list }</ol>
+      <ol ref="list"/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;
   }

@@ -4,7 +4,7 @@
 
 'use strict';
 
-import util from "../common/util";
+import util from '../common/util';
 
 class List extends migi.Component {
   constructor(...data) {

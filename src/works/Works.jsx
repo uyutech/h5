@@ -45,9 +45,9 @@ class Works extends migi.Component {
     net.postJSON('/h5/works2/index', { worksId }, function(res) {
       if(res.success) {
         let data = res.data;
+        jsBridge.setPreference(cacheKey, data);
         self.setData(data, 1);
         self.ref.comments.listenScroll();
-        jsBridge.setPreference(cacheKey, data);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -107,7 +107,7 @@ class Works extends migi.Component {
     self.setMedia(avList[index]);
 
     self.setColumn(imgList, data.commentList);
-    author.list = data.author;
+    author.list = data.info.author;
     text.list = textList;
     select.id = avList[index].id;
     select.list = avList;
@@ -117,6 +117,9 @@ class Works extends migi.Component {
   }
   setMedia(item) {
     let self = this;
+    item.worksId = self.worksId;
+    item.worksTitle = self.data.info.title;
+    item.worksCover = self.data.info.cover;
     self.ref.media.setData(item || null);
   }
   setColumn(imgList, commentList) {
@@ -142,23 +145,19 @@ class Works extends migi.Component {
     column.list = list;
   }
   mediaPlay(data) {
-    if(data.workType.toString().charAt(0) === '1') {
-      jsBridge.getPreference('playlist', function(res) {
+    if(data.kind === 2) {
+      jsBridge.getPreference('playlist2', function(res) {
         res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
         for(let i = 0, len = res.length; i < len; i++) {
-          if(res[i].workId === data.workId) {
+          if(res[i].id === data.id) {
             res.splice(i, 1);
             break;
           }
         }
-        res.unshift({
-          workId: data.workId,
-        });
-        jsBridge.setPreference('playlist', jsBridge.android ? res : JSON.stringify(res));
+        res.unshift(data);
+        jsBridge.setPreference('playlist2', jsBridge.android ? res : JSON.stringify(res));
       });
-      jsBridge.setPreference('playlistCur', {
-        workId: data.workId,
-      });
+      jsBridge.setPreference('playlistCur2', data.id);
     }
   }
   mediaLike(data) {

@@ -10,13 +10,12 @@ import util from '../common/util';
 import Media from '../works/Media.jsx';
 import Info from '../works/Info.jsx';
 import Column from '../works/Column.jsx';
-import List from './List.jsx';
+import Playlist from '../component/playlist/Playlist.jsx';
 import Author from '../works/Author.jsx';
 import Comments from '../works/Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let avList = [];
 let avHash = {};
 let loadingLike;
 let loadingFavor;
@@ -49,9 +48,9 @@ class Music extends migi.Component {
     net.postJSON('/h5/musicAlbum/index', { albumId }, function(res) {
       if(res.success) {
         let data = res.data;
+        jsBridge.setPreference(cacheKey, data);
         self.setData(data, 1);
         self.ref.comments.listenScroll();
-        jsBridge.setPreference(cacheKey, data);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -68,7 +67,7 @@ class Music extends migi.Component {
 
     let self = this;
     let info = self.ref.info;
-    let list = self.ref.list;
+    let playlist = self.ref.playlist;
     let author = self.ref.author;
     let comments = self.ref.comments;
 
@@ -91,26 +90,20 @@ class Music extends migi.Component {
 
     self.setColumn(data.commentList);
 
-    list.workId = data.collection[index].id;
-    list.list = data.collection;
+    playlist.setData(data.collection);
+    playlist.setCur(index);
 
-    author.list = data.author;
+    author.list = data.info.author;
 
     comments.setData(self.albumId, data.commentList);
   }
   setMedia(item) {
     let self = this;
-    let temp = {};
-    Object.keys(item).forEach((k) => {
-      if(k !== 'works') {
-        temp[k] = item[k];
-      }
-    });
-    temp.worksId = item.works.id;
-    temp.worksTitle = item.works.title;
-    temp.worksSubTitle = item.works.subTitle;
-    temp.worksCover = item.works.cover;
-    self.ref.media.setData(temp);
+    let work = item.work;
+    work.worksId = item.id;
+    work.worksTitle = item.title;
+    work.worksCover = item.cover;
+    self.ref.media.setData(work || null);
   }
   setColumn(commentList) {
     let self = this;
@@ -132,53 +125,13 @@ class Music extends migi.Component {
     self.curColumn = 0;
     column.list = list;
   }
-  mediaLike(data) {
-    jsBridge.getPreference(cacheKey, function(cache) {
-      if(cache) {
-        let collection = cache.collection;
-        for(let i = 0, len = collection.length; i < len; i++) {
-          let item = collection[i];
-          if(item.id === data.id) {
-            item.isLike = data.isLike;
-            item.likeCount = data.likeCount;
-            jsBridge.setPreference(cacheKey, cache);
-            return;
-          }
-        }
-      }
-    });
-  }
-  mediaFavor(data) {
-    jsBridge.getPreference(cacheKey, function(cache) {
-      if(cache) {
-        let collection = cache.collection;
-        for(let i = 0, len = collection.length; i < len; i++) {
-          let item = collection[i];
-          if(item.id === data.id) {
-            item.isFavor = data.isFavor;
-            item.favorCount = data.favorCount;
-            jsBridge.setPreference(cacheKey, cache);
-            return;
-          }
-        }
-      }
-    });
-  }
   changeColumn(id) {
     let self = this;
     self.curColumn = id;
   }
-  change(workId) {
+  change(item) {
     let self = this;
-    let work = avHash[workId];
-    // jsBridge.setTitle(work.ItemName);
-    let authorList = ((work.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
-    let s = (authorList.AuthorInfo || []).map(function(item) {
-      return item.AuthorName;
-    });
-    jsBridge.setSubTitle(s.join('、'));
-    self.setMedia(work);
-    history.replaceState(null, '', '/works.html?worksId=' + self.worksId + '&workId=' + workId);
+    self.setMedia(item);
   }
   fn(workId) {
     let o = avHash[workId];
@@ -282,21 +235,52 @@ class Music extends migi.Component {
     }
   }
   mediaPlay(data) {
-    this.ref.botPlayBar.isPlaying = true;
-    if(data.workType.toString().charAt(0) === '1') {
-      jsBridge.getPreference('playlist', function(res) {
+    if(data.kind === 2) {
+      jsBridge.getPreference('playlist2', function(res) {
         res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
-        for (let i = 0, len = res.length; i < len; i++) {
-          if(res[i] === data.workId) {
+        for(let i = 0, len = res.length; i < len; i++) {
+          if(res[i].id === data.id) {
             res.splice(i, 1);
             break;
           }
         }
-        res.unshift(data.workId);
-        jsBridge.setPreference('playlist', jsBridge.android ? res : JSON.parse(res));
+        res.unshift(data);
+        jsBridge.setPreference('playlist2', jsBridge.android ? res : JSON.stringify(res));
       });
-      jsBridge.setPreference('playlistCur', data.workId);
+      jsBridge.setPreference('playlistCur2', data.id);
     }
+  }
+  mediaLike(data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        let collection = cache.collection;
+        for(let i = 0, len = collection.length; i < len; i++) {
+          let item = collection[i];
+          if(item.id === data.id) {
+            item.isLike = data.isLike;
+            item.likeCount = data.likeCount;
+            jsBridge.setPreference(cacheKey, cache);
+            return;
+          }
+        }
+      }
+    });
+  }
+  mediaFavor(data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        let collection = cache.collection;
+        for(let i = 0, len = collection.length; i < len; i++) {
+          let item = collection[i];
+          if(item.id === data.id) {
+            item.isFavor = data.isFavor;
+            item.favorCount = data.favorCount;
+            jsBridge.setPreference(cacheKey, cache);
+            return;
+          }
+        }
+      }
+    });
   }
   comment() {
     let self = this;
@@ -369,9 +353,9 @@ class Music extends migi.Component {
       <Column ref="column"
               on-change={ this.changeColumn }/>
       <div class={ 'list' + (this.curColumn === 0 ? '' : ' fn-hide') }>
-        <List ref="list"
-              on-change={ this.change }
-              on-fn={ this.fn }/>
+        <Playlist ref="playlist"
+                  visible={ true }
+                  on-change={ this.change }/>
       </div>
       <div class={ 'intro' + (this.curColumn === 1 ? '' : ' fn-hide') }>
         <Author ref="author"/>
