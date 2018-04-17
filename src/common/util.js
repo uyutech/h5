@@ -387,6 +387,20 @@ let util = {
     }
     return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
   },
+  recentPlay(data, cb) {
+    jsBridge.setPreference('playlistCur2', data.id);
+    jsBridge.getPreference('playlist2', function(res) {
+      res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
+      for(let i = 0, len = res.length; i < len; i++) {
+        if(res[i].id === data.id) {
+          res.splice(i, 1);
+          break;
+        }
+      }
+      res.unshift(data);
+      jsBridge.setPreference('playlist2', jsBridge.android ? res : JSON.stringify(res), cb);
+    });
+  },
 };
 
 export default util;

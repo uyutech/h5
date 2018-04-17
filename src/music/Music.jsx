@@ -129,10 +129,6 @@ class Music extends migi.Component {
     let self = this;
     self.curColumn = id;
   }
-  change(item) {
-    let self = this;
-    self.setMedia(item);
-  }
   fn(workId) {
     let o = avHash[workId];
     let media = this.ref.media;
@@ -235,20 +231,7 @@ class Music extends migi.Component {
     }
   }
   mediaPlay(data) {
-    if(data.kind === 2) {
-      jsBridge.getPreference('playlist2', function(res) {
-        res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
-        for(let i = 0, len = res.length; i < len; i++) {
-          if(res[i].id === data.id) {
-            res.splice(i, 1);
-            break;
-          }
-        }
-        res.unshift(data);
-        jsBridge.setPreference('playlist2', jsBridge.android ? res : JSON.stringify(res));
-      });
-      jsBridge.setPreference('playlistCur2', data.id);
-    }
+    util.recentPlay(data);
   }
   mediaLike(data) {
     jsBridge.getPreference(cacheKey, function(cache) {
@@ -281,6 +264,10 @@ class Music extends migi.Component {
         }
       }
     });
+  }
+  change(item) {
+    let self = this;
+    self.setMedia(item);
   }
   comment() {
     let self = this;

@@ -46,12 +46,19 @@ class Item extends migi.Component {
     self.cache = [];
     self.ref.banner.setData(data.banner);
 
-    // TODO: 未知domDiff的bug，先用innerHtml
     let s = '';
+    let list = [];
     data.list.data.forEach(function(item) {
-      s += self.genItem(item) || '';
+      let o = self.genItem(item);
+      if(o) {
+        list.push(o);
+        s += o;
+      }
     });
     $(self.ref.con.element).html(s);
+    list.forEach((item) => {
+      item.emit(migi.Event.DOM);
+    });
     self.message = '';
 
     self.offset = self.limit = data.list.limit;
@@ -65,10 +72,18 @@ class Item extends migi.Component {
   appendData(data) {
     let self = this;
     let s = '';
+    let list = [];
     data.forEach(function(item) {
-      s += self.genItem(item) || '';
+      let o = self.genItem(item);
+      if(o) {
+        list.push(o);
+        s += o;
+      }
     });
     $(self.ref.con.element).append(s);
+    list.forEach((item) => {
+      item.emit(migi.Event.DOM);
+    });
   }
   genItem(item) {
     if(!item.content) {
@@ -171,12 +186,18 @@ class Item extends migi.Component {
       self.loading = false;
     });
   }
+  change(data) {
+    util.recentPlay(data, function() {
+      jsBridge.pushWindow('/playlist.html');
+    });
+  }
   render() {
     return <div class={ 'mod-item' + (this.visible ? '' : ' fn-hide') }>
       <Banner ref="banner"/>
       <div ref="con"/>
       <VideoList ref="videoList"/>
-      <Playlist ref="playlist"/>
+      <Playlist ref="playlist"
+                on-change={ this.change }/>
       <WaterFall ref="waterFall"/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;
