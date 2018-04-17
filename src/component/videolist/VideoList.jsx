@@ -92,7 +92,9 @@ class VideoList extends migi.Component {
       <div class="info">
         <p class="author">{ author.join(' ') }</p>
         <b class={ 'like' + (item.work.isLike ? ' liked' : '') }>{ item.work.likeCount || '' }</b>
-        <b class="comment">{ item.commentCount || '' }</b>
+        <b class="comment"
+           title={ item.title }
+           rel={ item.id }>{ item.commentCount || '' }</b>
         <b class="fn"/>
       </div>
     </li>;
@@ -106,10 +108,22 @@ class VideoList extends migi.Component {
       transparentTitle: true,
     });
   }
+  clickComment(e, vd, tvd) {
+    let id = tvd.props.rel;
+    let url = '/works.html?worksId=' + id + '&comment=1';
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+      transparentTitle: true,
+    });
+  }
   render() {
     return <div class={ 'cp-videolist' + (this.visible ? '' : ' fn-hide') }>
       <ol ref="list"
-          onClick={ { '.pic': this.clickPic } }>{ this.list }</ol>
+          onClick={ {
+            '.pic': this.clickPic,
+            '.comment': this.clickComment,
+          } }>{ this.list }</ol>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;
   }

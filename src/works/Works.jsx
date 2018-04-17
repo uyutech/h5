@@ -19,6 +19,7 @@ import BotFn from '../component/botfn/BotFn.jsx';
 
 let currentPriority = 0;
 let cacheKey;
+let firstCommentColumn;
 
 class Works extends migi.Component {
   constructor(...data) {
@@ -28,12 +29,15 @@ class Works extends migi.Component {
   // @bind workId
   // @bind kind
   @bind curColumn
-  init(worksId, workId) {
+  init(worksId, workId, option) {
     let self = this;
     self.worksId = worksId;
     self.workId = workId;
     self.ref.comments.worksId = worksId;
     cacheKey = 'worksData_' + worksId;
+    if(option.comment) {
+      firstCommentColumn = true;
+    }
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         try {
@@ -141,7 +145,14 @@ class Works extends migi.Component {
       id: 2,
       name: '评论 ' + (commentList ? commentList.count || '' : ''),
     });
-    self.curColumn = 0;
+    if(self.curColumn === undefined) {
+      if(firstCommentColumn) {
+        self.curColumn = column.index = 2;
+      }
+      else {
+        self.curColumn = 0;
+      }
+    }
     column.list = list;
   }
   mediaPlay(data) {
