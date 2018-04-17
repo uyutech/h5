@@ -30,7 +30,6 @@ class WorksList extends migi.Component {
     }
   }
   render() {
-    let data = this.props.data;
     return <div class="mod-workslist">
       <h3>
         { this.data.title }
@@ -43,15 +42,19 @@ class WorksList extends migi.Component {
             <a class="pic"
                href={ '/works.html?worksId=' + item.id }
                title={ item.title }>
-              <img src={ util.autoSsl(util.img170_170_80(item.cover)) || '/src/common/blank.png' }/>
+              <img src={ util.img(item.cover, 170, 170, 80) || '/src/common/blank.png' }/>
               <span>{ item.CommentCount }</span>
             </a>
             <a class="name"
                href={ '/works.html?worksId=' + item.id }
                title={ item.title }>{ item.title }</a>
-            <p class="author">{ (((item.author || [])[0] || {}).list || []).map(function(item) {
-              return item.name;
-            }).join(' ') }</p>
+            {
+              item.author.length
+                ? <p class="author">{ item.author[0].list.map(function(item) {
+                    return item.name;
+                  }).join(' ') }</p>
+                : ''
+            }
           </li>;
         })
       }

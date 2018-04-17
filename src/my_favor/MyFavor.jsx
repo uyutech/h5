@@ -20,15 +20,12 @@ let videoLimit = 0;
 let videoLoading;
 let videoLoadEnd;
 let audioOffset = 0;
-let audioLimit = 0;
 let audioLoading;
 let audioLoadEnd;
 let imageOffset = 0;
-let imageLimit = 0;
 let imageLoading;
 let imageLoadEnd;
 let postOffset = 0;
-let postLimit = 0;
 let postLoading;
 let postLoadEnd;
 
@@ -38,7 +35,9 @@ class MyFavor extends migi.Component {
     let self = this;
     self.kind = 1;
     self.on(migi.Event.DOM, function() {
-      self.ref.waterFall.WIDTH = (screen.availWidth - 30) >> 1;
+      window.addEventListener('scroll', function() {
+        self.checkMore();
+      });
     });
   }
   @bind kind
@@ -53,11 +52,11 @@ class MyFavor extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/my2/favorList', function(res) {
+    net.postJSON('/h5/my2/favorVideoList', function(res) {
       if(res.success) {
         let data = res.data;
-        self.setData(data, 1);
         jsBridge.setPreference(cacheKey, data);
+        self.setData(data, 1);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -73,17 +72,15 @@ class MyFavor extends migi.Component {
     currentPriority = priority;
 
     let self = this;
-    self.data = data;
     let videoList = self.ref.videoList;
     let playlist = self.ref.playlist;
     let waterFall = self.ref.waterFall;
     let postList = self.ref.postList;
 
-    let video = data.videoList;
-    if(video.count) {
-      videoOffset = videoLimit = video.limit;
-      videoList.setData(video.data);
-      if(videoOffset >= video.count) {
+    if(data.count) {
+      videoOffset = videoLimit = data.limit;
+      videoList.setData(data.data);
+      if(videoOffset >= data.count) {
         videoLoadEnd = true;
         videoList.message = '已经到底了';
       }
@@ -92,65 +89,104 @@ class MyFavor extends migi.Component {
       videoList.clearData();
       videoList.message = '暂无收藏视频';
     }
-
-    let audio = data.audioList;
-    if(audio.count) {
-      audioOffset = audioLimit = audio.limit;
-      playlist.setData(audio.data);
-      if(audioOffset >= audio.count) {
-        audioLoadEnd = true;
-        playlist.message = '已经到底了';
+  }
+  checkMore() {
+    let self = this;
+    if(util.isBottom()) {
+      self.load();
+    }
+  }
+  load() {
+    let self = this;
+    let kind = self.kind;
+    let url;
+    let offset;
+    let target;
+    if(kind === 1) {
+      if(videoLoading || videoLoadEnd) {
+        return;
       }
+      videoLoading = true;
+      url = '/h5/my2/favorVideoList';
+      offset = videoOffset;
+      target = self.ref.videoList;
     }
-    else {
-      playlist.clearData();
-      playlist.message = '暂无收藏音频';
-    }
-
-    let image = data.imageList;
-    if(image.count) {
-      imageOffset = imageLimit = image.limit;
-      waterFall.setData(image.data);
-      if(imageOffset >= image.count) {
-        imageLoadEnd = true;
-        waterFall.message = '已经到底了';
+    else if(kind === 2) {
+      if(audioLoading || audioLoadEnd) {
+        return;
       }
+      audioLoading = true;
+      url = '/h5/my2/favorAudioList';
+      offset = audioOffset;
+      target = self.ref.playlist;
     }
-    else {
-      waterFall.clearData();
-      waterFall.message = '暂无收藏图片';
+    else if(kind === 3) {
+      if(imageLoading || imageLoadEnd) {
+        return;
+      }
+      imageLoading = true;
+      url = '/h5/my2/favorImageList';
+      offset = imageOffset;
+      target = self.ref.waterFall;
     }
-
-    let post = data.postList;
-    if(post.count) {
-      postOffset = postLimit = post.limit;
-      postList.setData(post.data);
+    else if(kind === 4) {
+      if(postLoading || postLoadEnd) {
+        return;
+      }
+      postLoading = true;
+      url = '/h5/my2/favorPostList';
+      offset = postOffset;
+      target = self.ref.postList;
     }
-    else {
-      postList.clearData();
-      postList.message = '暂无收藏画圈';
-    }
-
-    return;
-
-    let $window = $(window);
-    if(!loadEnd || !loadEnd2 || !loadEnd3 || !loadEnd4) {
-      $window.on('scroll', function() {
-        self.checkMore($window);
-      });
-      self.checkMore($window);
-    }
+    net.postJSON(url, { offset }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        target.appendData(data.data);
+        if(kind === 1) {
+          videoOffset += data.limit;
+          if(videoOffset >= data.count) {
+            videoLoadEnd = true;
+            target.message = '已经到底了';
+          }
+        }
+        else if(kind === 2) {
+          audioOffset += data.limit;
+          if(audioOffset >= data.count) {
+            audioLoadEnd = true;
+            target.message = '已经到底了';
+          }
+        }
+        else if(kind === 3) {
+          imageOffset += data.limit;
+          if(imageOffset >= data.count) {
+            imageLoadEnd = true;
+            target.message = '已经到底了';
+          }
+        }
+        else if(kind === 4) {
+          postOffset += data.limit;
+          if(postOffset >= data.count) {
+            postLoadEnd = true;
+            target.message = '已经到底了';
+          }
+        }
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
   }
   click(e, vd, tvd) {
     let self = this;
     if(tvd.props.rel === self.kind) {
       return;
     }
-    self.kind = tvd.props.rel;
-    // self.ref.waterFall.pause = self.type !== 2;
-    // if(self.type === 2) {
-    //   self.ref.waterFall.checkPool();
-    // }
+    let kind = self.kind = tvd.props.rel;
+    if(kind === 2 && audioOffset === 0 || kind === 3 && imageOffset === 0 || kind === 4 && postOffset === 0) {
+      self.load();
+    }
   }
   render() {
     return <div class="myfavor">
@@ -170,10 +206,13 @@ class MyFavor extends migi.Component {
                  message="正在加载..."
                  @visible={ this.kind === 1 }/>
       <Playlist ref="playlist"
+                message="正在加载..."
                 @visible={ this.kind === 2 }/>
       <WaterFall ref="waterFall"
+                 message="正在加载..."
                  @visible={ this.kind === 3 }/>
       <PostList ref="postList"
+                message="正在加载..."
                 @visible={ this.kind === 4 }/>
     </div>;
   }

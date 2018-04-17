@@ -22,6 +22,9 @@ class WaterFall extends migi.Component {
     self.height1 = self.height2 = 0;
     self.WIDTH = self.props.WIDTH;
     self.on(migi.Event.DOM, function() {
+      if(!self.WIDTH) {
+        self.WIDTH = (screen.availWidth - 30) >> 1;
+      }
       let $root = $(self.element);
       $root.on('click', '.authors a', function(e) {
         e.preventDefault();

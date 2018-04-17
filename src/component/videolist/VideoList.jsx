@@ -68,8 +68,8 @@ class VideoList extends migi.Component {
       });
     }
     else {
-      (item.work.author || []).forEach(function(list) {
-        list.list.forEach(function(at) {
+      item.work.author.forEach(function(item) {
+        item.list.forEach(function(at) {
           if(!hash[at.id]) {
             hash[at.id] = true;
             author.push(at.name);

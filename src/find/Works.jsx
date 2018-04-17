@@ -42,20 +42,24 @@ class Works extends migi.Component {
         <a href={ url }
            title={ this.data.content.title }
            class="name">{ this.data.content.title }</a>
-        <dl>
-          <dt>{ ((this.data.content.author || [])[0] || {}).name }</dt>
-          {
-            (((this.data.content.author || [])[0] || {}).list || []).map(function(item) {
-              return <dd>
-                <a href={ '/author.html?authorId=' + item.id }
-                   title={ item.name }>
-                  <img src={ util.autoSsl(util.img60_60_80(item.headUrl || '/src/common/head.png')) }/>
-                  <span>{ item.name }</span>
-                </a>
-              </dd>;
-            })
-          }
-        </dl>
+        {
+          this.data.content.author.length
+            ? <dl>
+                <dt>{ this.data.content.author[0].name }</dt>
+                {
+                  this.data.content.author[0].list.map(function(item) {
+                    return <dd>
+                      <a href={ '/author.html?authorId=' + item.id }
+                         title={ item.name }>
+                        <img src={ util.img(item.headUrl, 60, 60, 80) || '/src/common/head.png' }/>
+                        <span>{ item.name }</span>
+                      </a>
+                    </dd>;
+                  })
+                }
+              </dl>
+            : ''
+        }
         <a href={ '/works.html?worksId=' + this.data.content.id }
            title={ this.data.content.title }
            class="intro">

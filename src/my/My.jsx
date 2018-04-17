@@ -65,10 +65,9 @@ class My extends migi.Component {
     ajax = net.postJSON('/h5/my2/index', function(res) {
       if(res.success) {
         let data = res.data;
+        jsBridge.setPreference(cacheKey, data);
         self.setData(data, 1);
         self.isLogin = true;
-
-        jsBridge.setPreference(cacheKey, data);
         $.cookie('isLogin', true);
       }
       else if(res.code === 1000) {
@@ -171,17 +170,17 @@ class My extends migi.Component {
            cacheKey={ cacheKey }/>
       <ul class={ 'list' + (this.isLogin ? '' : ' fn-hide') }
           onClick={ { a: this.clickLink } }>
-        <li><a href="/mymessage.html" class="message">圈消息</a></li>
-        <li><a href="/myrelation.html" class="relation">圈关系</a></li>
+        <li><a href="/my_message.html" class="message">圈消息</a></li>
+        <li><a href="/my_relation.html" class="relation">圈关系</a></li>
         <li>
           <a href="/mall.html" class="mall">圈商城<small>（<b/>圈币：{ this.coins || 0 }）</small></a>
         </li>
-        <li><a href="/myaddress.html" class="address">收货地址</a></li>
+        <li><a href="/my_address.html" class="address">收货地址</a></li>
       </ul>
       <ul class={ 'list' + (this.isLogin ? '' : ' fn-hide') }
           onClick={ { a: this.clickLink } }>
-        <li><a href="/myfavor.html" class="favor">我的收藏</a></li>
-        <li><a href="/mypost.html" class="post">我画的圈</a></li>
+        <li><a href="/my_favor.html" class="favor">我的收藏</a></li>
+        <li><a href="/my_post.html" class="post">我画的圈</a></li>
       </ul>
       <ul class={ 'list' + (this.isLogin ? '' : ' fn-hide') }
           onClick={ { a: this.clickLink } }>

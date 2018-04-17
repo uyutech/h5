@@ -46,9 +46,9 @@ class Author extends migi.Component {
     net.postJSON('/h5/author2/index', { authorId }, function(res) {
       if(res.success) {
         let data = res.data;
+        jsBridge.setPreference(cacheKey, data);
         self.setData(data, 1);
         self.ref.comments.listenScroll();
-        jsBridge.setPreference(cacheKey, data);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -70,7 +70,7 @@ class Author extends migi.Component {
     let dynamics = self.ref.dynamics;
     let comments = self.ref.comments;
 
-    nav.setData(data.info, data.aliases, data.fansCount, data.outsides, data.isFollow);
+    nav.setData(data.info, data.aliases, data.outsides, data.isFollow);
 
     let showHome;
     if(data.mainWorks) {

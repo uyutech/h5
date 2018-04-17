@@ -5,8 +5,6 @@
 import util from "../common/util";
 import net from "../common/net";
 
-let hash = {};
-
 class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -80,14 +78,14 @@ class Nav extends migi.Component {
   @bind settled
   @bind outsides
   @bind isFollow
-  setData(data, aliases, fansCount, outsides, isFollow) {
+  setData(data, aliases, outsides, isFollow) {
     let self = this;
     self.authorId = data.id;
     self.name = data.name;
     self.headUrl = data.headUrl;
     self.sign = data.sign;
+    self.fansCount = data.fansCount;
     self.aliases = aliases;
-    self.fansCount = fansCount;
     self.outsides = outsides;
     self.isFollow = isFollow;
     self.loading = false;
@@ -212,7 +210,7 @@ class Nav extends migi.Component {
             <h3>{ this.name }</h3>
           </div>
           <p class={ 'alias' + (this.aliases ? '' : ' fn-hide') }>别名：{ (this.aliases || []).map(function(item) {
-            return item.alias;
+            return item;
           }).join(' ') }</p>
         </div>
         <button class={ (this.isFollow ? 'un-follow' : 'follow') + (this.loading ? ' loading' : '') }
