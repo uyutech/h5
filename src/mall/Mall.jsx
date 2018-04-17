@@ -6,16 +6,47 @@
 
 import BigNumber from 'bignumber.js';
 import util from '../common/util';
+import net from '../common/net';
+
+let currentPriority = 0;
+let cacheKey;
 
 class Mall extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  @bind hasData
-  setData(data) {
+  @bind list
+  init() {
     let self = this;
-    self.data = data;
-    self.hasData = true;
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        try {
+          self.setData(cache, 0);
+        }
+        catch(e) {}
+      }
+    });
+    net.postJSON('/h5/mall2/index', function(res) {
+      if(res.success) {
+        let data = res.data;
+        self.setData(data, 1);
+        jsBridge.setPreference(cacheKey, data);
+      }
+      else {
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    });
+  }
+  setData(data, priority) {
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
+    let self = this;
+    self.list = data;
   }
   split(list) {
     let res = [];
@@ -25,56 +56,41 @@ class Mall extends migi.Component {
     }
     return res;
   }
-  genDom() {
-    return <div>
-      <ul class="type">
-        <li><a href="/mall.html" class="cur">圈商城</a></li>
-        <li><a href="/mall_new.html">新福利</a></li>
-        <li><a href="/mall_wait.html">等待收货</a></li>
-      </ul>
-      <div class="prod">
-        {
-          this.data.data.length
-            ? this.split(this.data.data || []).map(function(list) {
-              return <div class="line fn-clear">
-                {
-                  list.map(function(item) {
-                    let price = new BigNumber(item.Price).times(item.Discount).ceil();
-                    if(item.Discount < 1) {
-                      return <div class="item">
-                        <img src={ util.img200_200_80(item.ProductCover || '//zhuanquan.xin/img/blank.png') }/>
-                        <span class="name">{ item.ProductName }</span>
-                        <span class="price discount">价格：{ item.Price }<b class="icon"/></span>
-                        <span class="price">折扣价：{ price }<b class="icon"/></span>
-                        <button class="btn">即将上架</button>
-                      </div>;
-                    }
-                    return <div class="item">
-                      <img src={ util.img200_200_80(item.ProductCover || '//zhuanquan.xin/img/blank.png') }/>
-                      <span class="name">{ item.ProductName }</span>
-                      <span class="price">价格：{ item.Price }<b class="icon"/></span>
-                      <button class="btn">即将上架</button>
-                    </div>;
-                  })
-                }
-              </div>;
-            })
-            : '这里空空的，再去转转圈吧~'
-        }
-      </div>
-    </div>;
-  }
   render() {
     return <div class="mall">
+      <ul class="type">
+        <li>圈商城</li>
+        <li><a href="/mall_prize.html">新福利</a></li>
+        <li><a href="/mall_express.html">等待收货</a></li>
+      </ul>
+      <div class="prod">
       {
-        this.hasData
-          ? this.genDom()
-          : <div>
-              <div class="fn-placeholder-tags"/>
-              <div class="fn-placeholder-squares"/>
-              <div class="fn-placeholder"/>
-            </div>
+        this.split(this.list || []).map(function(list) {
+          return <div class="line fn-clear">
+            {
+              list.map(function(item) {
+                let price = new BigNumber(item.price).times(item.discount).ceil();
+                if(item.discount < 1) {
+                  return <div class="item">
+                    <img src={ util.img(item.cover, 200, 200, 80) || '//zhuanquan.xin/img/blank.png' }/>
+                    <span class="name">{ item.name }</span>
+                    <span class="price discount">价格：{ item.price }<b class="icon"/></span>
+                    <span class="price">折扣价：{ price }<b class="icon"/></span>
+                    <button class="btn">即将上架</button>
+                  </div>;
+                }
+                return <div class="item">
+                  <img src={ util.img(item.cover, 200, 200, 80) || '//zhuanquan.xin/img/blank.png' }/>
+                  <span class="name">{ item.name }</span>
+                  <span class="price">价格：{ item.price }<b class="icon"/></span>
+                  <button class="btn">即将上架</button>
+                </div>;
+              })
+            }
+          </div>;
+        })
       }
+      </div>
     </div>;
   }
 }

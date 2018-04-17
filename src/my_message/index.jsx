@@ -4,7 +4,7 @@
 
 'use strict';
 
-import './mymessage.html';
+import './my_message.html';
 import './index.less';
 
 import MyMessage from './MyMessage.jsx';

@@ -4,7 +4,7 @@
 
 'use strict';
 
-import './mypost.html';
+import './my_post.html';
 import './index.less'
 
 import MyPost from './MyPost.jsx';

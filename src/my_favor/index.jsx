@@ -4,7 +4,7 @@
 
 'use strict';
 
-import './myfavor.html';
+import './my_favor.html';
 import './index.less';
 
 import MyFavor from './MyFavor.jsx';

@@ -4,20 +4,20 @@
 
 'use strict';
 
-import './mall.html';
+import './mall_prize.html';
 import './index.less';
 
-import Mall from './Mall.jsx';
+import MallPrize from './MallPrize.jsx';
 
 jsBridge.ready(function() {
-  jsBridge.setTitle('圈商城');
+  jsBridge.setTitle('新福利');
   jsBridge.on('back', function(e) {
     e.preventDefault();
     jsBridge.popWindow();
   });
-  let mall = migi.preExist(
-    <Mall/>,
+  let mallPrize = migi.preExist(
+    <MallPrize/>,
     '#page'
   );
-  mall.init();
+  mallPrize.init();
 });

@@ -4,7 +4,7 @@
 
 'use strict';
 
-import './myaddress.html';
+import './my_address.html';
 import './index.less';
 
 import MyAddress from './MyAddress.jsx';

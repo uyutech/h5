@@ -4,7 +4,7 @@
 
 'use strict';
 
-import './myrelation.html';
+import './my_relation.html';
 import './index.less';
 
 import MyRelation from './MyRelation.jsx';

@@ -4,11 +4,9 @@
 
 'use strict';
 
-import './allcircles.html';
+import './all_circles.html';
 import './index.less';
 
-import net from '../common/net';
-import util from '../common/util';
 import AllCircles from './AllCircles.jsx';
 
 jsBridge.ready(function() {

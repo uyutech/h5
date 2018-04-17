@@ -4,20 +4,20 @@
 
 'use strict';
 
-import './mall.html';
+import './mall_express.html';
 import './index.less';
 
-import Mall from './Mall.jsx';
+import MallExpress from './MallExpress.jsx';
 
 jsBridge.ready(function() {
-  jsBridge.setTitle('圈商城');
+  jsBridge.setTitle('等待收货');
   jsBridge.on('back', function(e) {
     e.preventDefault();
     jsBridge.popWindow();
   });
-  let mall = migi.preExist(
-    <Mall/>,
+  let mallExpress = migi.preExist(
+    <MallExpress/>,
     '#page'
   );
-  mall.init();
+  mallExpress.init();
 });
