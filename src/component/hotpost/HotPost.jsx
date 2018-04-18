@@ -341,7 +341,7 @@ class HotPost extends migi.Component {
               authorName += data.AuthorName;
             }
             authorName += $4;
-            return `<a href="/${$1}.html?authorId=${$2}" class="link" transparentTitle="true">${authorName}</a>`;
+            return `<a href="/${$1}.html?id=${$2}" class="link" transparentTitle="true">${authorName}</a>`;
           case 'user':
             let userName = '';
             if(data) {
@@ -371,7 +371,7 @@ class HotPost extends migi.Component {
     }
     let url = '/post.html?id=' + id;
     let peopleUrl = item.IsAuthor
-      ? ('/author.html?authorId=' + item.AuthorID)
+      ? ('/author.html?id=' + item.AuthorID)
       : ('/user.html?userID=' + item.SendUserID);
     let mediaList = item.CommentMedia || [];
     let imgList = mediaList.filter(function(item) {

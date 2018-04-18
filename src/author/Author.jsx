@@ -24,17 +24,17 @@ class Author extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  // @bind authorId
-  @bind index
+  // @bind id
+  @bind curColumn
   @bind showHome
   @bind showWork
   @bind showDynamic
-  init(authorId) {
+  init(id) {
     let self = this;
-    self.authorId = authorId;
-    self.ref.work.authorId = authorId;
-    self.ref.comments.authorId = authorId;
-    cacheKey = 'authorData_' + authorId;
+    self.id = id;
+    self.ref.work.id = id;
+    self.ref.comments.id = id;
+    cacheKey = 'authorData_' + id;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         try {
@@ -43,7 +43,7 @@ class Author extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/author2/index', { authorId }, function(res) {
+    net.postJSON('/h5/author2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -84,41 +84,41 @@ class Author extends migi.Component {
 
     if(showHome) {
       self.showHome = true;
-      self.index = 0;
+      if(self.curColumn === undefined) {
+        self.curColumn = 0;
+      }
     }
 
     if(data.workKindList && data.workKindList.length) {
       self.showWork = true;
       work.setData(data.workKindList, data.kindWorkList);
-      if(self.index === undefined) {
-        self.index = 1;
+      if(self.curColumn === undefined) {
+        self.curColumn = 1;
       }
     }
 
     if(data.dynamicList && data.dynamicList.count) {
       self.showDynamic = true;
-      dynamics.setData(self.authorId, data.dynamicList);
+      dynamics.setData(self.id, data.dynamicList);
+      if(self.curColumn === undefined) {
+        self.curColumn = 2;
+      }
     }
 
-    comments.setData(self.authorId, data.commentList);
-    // if(data.dynamic && data.dynamic.data && data.dynamic.data.length) {
-    //   self.showDynamic = true;
-    //   self.ref.dynamics.authorId = self.authorId;
-    //   self.ref.dynamics.setData(data.dynamic);
-    //   if(self.index === undefined) {
-    //     self.index = 2;
-    //   }
-    // }
+    comments.setData(self.id, data.commentList);
+    if(self.curColumn === undefined) {
+      self.curColumn = 3;
+    }
   }
   clickType(e, vd ,tvd) {
     let rel = tvd.props.rel;
-    if(rel !== this.index) {
-      this.index = rel;
+    if(rel !== this.curColumn) {
+      this.curColumn = rel;
     }
   }
   comment() {
     let self = this;
-    jsBridge.pushWindow('/subcomment.html?type=1&id=' + self.authorId, {
+    jsBridge.pushWindow('/sub_comment.html?type=1&id=' + self.id, {
       title: '评论',
       optionMenu: '发布',
     });
@@ -129,10 +129,13 @@ class Author extends migi.Component {
       canShare: true,
       canShareWb: true,
       canShareLink: true,
-      clickShareWb: function() {
-        let url = window.ROOT_DOMAIN + '/author/' + self.authorId;
-        let text = self.authorName + ' 来欣赏【' + self.authorName + '】的作品吧~ ';
-        text += ' #转圈circling# ';
+      clickShareWb: function(botFn) {
+        if(!self.data) {
+          return;
+        }
+        let url = window.ROOT_DOMAIN + '/author/' + self.id;
+        let text = '来欣赏【' + self.data.info.name + '】的作品吧~ ';
+        text += '#转圈circling# ';
         text += url;
         jsBridge.shareWb({
           text,
@@ -147,9 +150,14 @@ class Author extends migi.Component {
             jsBridge.toast("分享失败");
           }
         });
+        botFn.cancel();
       },
-      clickShareLink: function() {
-        util.setClipboard(window.ROOT_DOMAIN + '/author/' + self.authorId);
+      clickShareLink: function(botFn) {
+        if(!self.data) {
+          return;
+        }
+        util.setClipboard(window.ROOT_DOMAIN + '/author/' + self.id);
+        botFn.cancel();
       },
     });
   }
@@ -169,29 +177,29 @@ class Author extends migi.Component {
            on-follow={ this.follow }/>
       <ul class="index"
           onClick={ { li: this.clickType } }>
-        <li class={ (this.showHome ? '' : 'fn-hide ') + (this.index === 0 ? 'cur' : '') }
+        <li class={ (this.showHome ? '' : 'fn-hide ') + (this.curColumn === 0 ? 'cur' : '') }
             rel={ 0 }>主页</li>
-        <li class={ (this.showWork ? '' : 'fn-hide ') + (this.index === 1 ? 'cur' : '') }
+        <li class={ (this.showWork ? '' : 'fn-hide ') + (this.curColumn === 1 ? 'cur' : '') }
             rel={ 1 }>作品</li>
-        <li class={ (this.showDynamic ? '' : 'fn-hide ') + (this.index === 2 ? 'cur' : '') }
+        <li class={ (this.showDynamic ? '' : 'fn-hide ') + (this.curColumn === 2 ? 'cur' : '') }
             rel={ 2 }>动态</li>
-        <li class={ (this.index === 3 ? 'cur' : '') }
+        <li class={ (this.curColumn === 3 ? 'cur' : '') }
             rel={ 3 }>留言</li>
       </ul>
-      <div class={ 'home' + (this.index === 0 ? '' : ' fn-hide') }>
+      <div class={ 'home' + (this.curColumn === 0 ? '' : ' fn-hide') }>
         <h4>主打作品</h4>
         <WorksList ref="worksList"/>
         <h4>相关专辑</h4>
         <MusicAlbumList ref="musicAlbumList"/>
       </div>
       <Work ref="work"
-            @visible={ this.index === 1 }/>
+            @visible={ this.curColumn === 1 }/>
       <Dynamics ref="dynamics"
-                @visible={ this.index === 2 }/>
+                @visible={ this.curColumn === 2 }/>
       <Comments ref="comments"
                 on-chooseSubComment={ this.chooseSubComment }
                 on-closeSubComment={ this.closeSubComment }
-                @visible={ this.index === 3 }/>
+                @visible={ this.curColumn === 3 }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }

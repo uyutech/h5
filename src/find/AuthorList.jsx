@@ -38,12 +38,12 @@ class AuthorList extends migi.Component {
         (this.data.content || []).slice(this.index, this.index + 6).map(function(item) {
           return <li>
             <a class="pic"
-               href={ '/author.html?authorId=' + item.id }
+               href={ '/author.html?id=' + item.id }
                title={ item.name }>
               <img src={ util.img(item.headUrl, 120, 120, 80) || '/src/common/head.png' }/>
             </a>
             <a class="name"
-               href={ '/author.html?authorId=' + item.id }
+               href={ '/author.html?id=' + item.id }
                title={ item.name }>{ item.name }</a>
             <p class="fans">{ item.fansCount }</p>
           </li>;

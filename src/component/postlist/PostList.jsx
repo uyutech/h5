@@ -42,18 +42,11 @@ class PostList extends migi.Component {
           canFn: true,
           canReport: true,
           clickReport: function(botFn) {
-            if(!util.isLogin()) {
-              jsBridge.toast('请先登录');
-              return;
-            }
             jsBridge.confirm('确认举报吗？', function(res) {
               if(res) {
-                net.postJSON('/h5/post2/report', { id }, function(res) {
+                net.postJSON('/h5/comment2/report', { id }, function(res) {
                   if(res) {
                     jsBridge.toast('举报成功');
-                  }
-                  else if(res.code === 1000) {
-                    jsBridge.toast('请先登录');
                   }
                   else {
                     jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -206,7 +199,7 @@ class PostList extends migi.Component {
       html = `<p class="snap">${html}</p><p class="full fn-hide">${full}</p>`;
     }
     let peopleUrl = item.isAuthor
-      ? '/author.html?authorId=' + item.aid
+      ? '/author.html?id=' + item.aid
       : '/user.html?userId=' + item.uid;
     let url = '/post.html?id=' + id;
     let videoList = [];

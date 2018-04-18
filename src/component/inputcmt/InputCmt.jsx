@@ -13,7 +13,7 @@ class InputCmt extends migi.Component {
     self.placeholder = self.props.placeholder;
     self.readOnly = self.props.readOnly;
     self.on(migi.Event.DOM, function() {
-      jsBridge.getCache(['my', 'useAuthor'], function(my, useAuthor) {
+      jsBridge.getCache(['my', 'useAuthor'], function([my, useAuthor]) {
         if(useAuthor) {
           self.headUrl = my.author[0].headUrl;
         }

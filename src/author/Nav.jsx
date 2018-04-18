@@ -13,64 +13,64 @@ class Nav extends migi.Component {
       jsBridge.on('optionMenu1', function() {
         migi.eventBus.emit('BOT_FN', {
           canFn: true,
-          canFavor: true,
-          favorText: '关注',
-          favoredText: '已关注',
-          isFavor: self.like,
           canBlock: true,
           canReport: true,
           blockText: '加入黑名单',
-          canShare: true,
-          canShareWb: true,
-          canShareLink: true,
-          clickFavor: function(botFn) {
-            self.follow(function() {
-              botFn.isFavor = self.like;
-            });
-          },
           clickBlock: function(botFn) {
-            self.block(self.authorId, function() {
-              jsBridge.toast('屏蔽成功');
-              botFn.cancel();
+            if(!util.isLogin()) {
+              migi.eventBus.emit('NEED_LOGIN');
+              return;
+            }
+            let id = self.id;
+            jsBridge.confirm('确认加入黑名单吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              net.postJSON('/h5/author2/black', { id }, function(res) {
+                if(res) {
+                  jsBridge.toast('加入黑名单成功');
+                }
+                else if(res.code === 1000) {
+                  migi.eventBus.emit('NEED_LOGIN');
+                }
+                else {
+                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                }
+                botFn.cancel();
+              }, function(res) {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                botFn.cancel();
+              });
             });
           },
           clickReport: function(botFn) {
-            self.report(self.authorId, function() {
-              jsBridge.toast('举报成功');
-              botFn.cancel();
+            let id = self.id;
+            jsBridge.confirm('确认举报吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              net.postJSON('/h5/author2/report', { id }, function(res) {
+                if(res) {
+                  jsBridge.toast('举报成功');
+                }
+                else {
+                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                }
+                botFn.cancel();
+              }, function(res) {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                botFn.cancel();
+              });
             });
-          },
-          clickShareWb: function() {
-            let url = window.ROOT_DOMAIN + '/author/' + self.authorId;
-            let text = self.authorName + ' 来欣赏【' + self.authorName + '】的作品吧~ ';
-            text += ' #转圈circling# ';
-            text += url;
-            jsBridge.shareWb({
-              text,
-            }, function(res) {
-              if(res.success) {
-                jsBridge.toast("分享成功");
-              }
-              else if(res.cancel) {
-                jsBridge.toast("取消分享");
-              }
-              else {
-                jsBridge.toast("分享失败");
-              }
-            });
-          },
-          clickShareLink: function() {
-            util.setClipboard(window.ROOT_DOMAIN + '/author/' + self.authorId);
           },
         });
       });
     });
   }
-  @bind authorId
+  @bind id
   @bind name
   @bind aliases
   @bind sign
-  @bind authorType = []
   @bind headUrl
   @bind fansCount
   @bind like
@@ -80,7 +80,7 @@ class Nav extends migi.Component {
   @bind isFollow
   setData(data, aliases, outsides, isFollow) {
     let self = this;
-    self.authorId = data.id;
+    self.id = data.id;
     self.name = data.name;
     self.headUrl = data.headUrl;
     self.sign = data.sign;
@@ -110,7 +110,7 @@ class Nav extends migi.Component {
           return;
         }
         self.loading = true;
-        net.postJSON('/h5/author2/unFollow', { authorId: self.authorId }, function(res) {
+        net.postJSON('/h5/author2/unFollow', { id: self.id }, function(res) {
           if(res.success) {
             let data = res.data;
             self.isFollow = data.state;
@@ -133,7 +133,7 @@ class Nav extends migi.Component {
     }
     else {
       self.loading = true;
-      net.postJSON('/h5/author2/follow', { authorId: self.authorId } , function(res) {
+      net.postJSON('/h5/author2/follow', { id: self.id } , function(res) {
         if(res.success) {
           let data = res.data;
           self.isFollow = data.state;
@@ -154,46 +154,8 @@ class Nav extends migi.Component {
       });
     }
   }
-  block(id, cb) {
-    if(!util.isLogin()) {
-      migi.eventBus.emit('NEED_LOGIN');
-      return;
-    }
-    jsBridge.confirm('确认屏蔽吗？', function(res) {
-      if(!res) {
-        return;
-      }
-      net.postJSON('/h5/report/index', { reportType: 5, businessId: id }, function(res) {
-        if(res.success) {
-          cb && cb();
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
-    });
-  }
-  report(id, cb) {
-    jsBridge.confirm('确认举报吗？', function(res) {
-      if(!res) {
-        return;
-      }
-      net.postJSON('/h5/report/index', { reportType: 2, businessId: id }, function(res) {
-        if(res.success) {
-          cb && cb();
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
-    });
-  }
   render() {
-    return <div class="nav">
+    return <div class="mod-nav">
       <div class="profile">
         <div class="pic">
           <img src={ util.autoSsl(util.img288_288_80(this.headUrl || '/src/common/head.png')) }/>

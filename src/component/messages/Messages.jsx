@@ -42,7 +42,7 @@ class Messages extends migi.Component {
     let url = '#';
     let title = '';
     if(type === 1) {
-      url = '/author.html?authorId=' + item.urlID;
+      url = '/author.html?id=' + item.urlID;
       title = item.Send_UserName;
     }
     else if(type === 2) {
@@ -54,7 +54,7 @@ class Messages extends migi.Component {
       title = '画圈正文';
     }
     let link = item.Send_UserISAuthor
-      ? ('/author.html?authorId=' + item.Send_UserID)
+      ? ('/author.html?id=' + item.Send_UserID)
       : ('/user.html?userID=' + item.Send_UserID);
     return <li class={ item.Send_UserISAuthor ? 'author' : '' }
                id={ 'message_' + item.NotifyID }>

@@ -141,11 +141,13 @@ let jsBridge = {
     }
   },
   toast: function(s) {
-    if(this.isInApp) {
-      this.call('toast', s);
-    }
-    else {
-      console.log(s);
+    if(s) {
+      if(this.isInApp) {
+        this.call('toast', s.toString());
+      }
+      else {
+        console.log(s);
+      }
     }
   },
   showLoading: function(s) {
@@ -392,7 +394,7 @@ let jsBridge = {
         key.forEach(function(item) {
           res.push(JSON.parse(localStorage[item] || 'null'));
         });
-        cb && cb.apply(null, res);
+        cb && cb(res);
       }
     }
     else {
@@ -527,6 +529,9 @@ let jsBridge = {
   shareWb: function(data, cb) {
     if(this.isInApp) {
       this.call('shareWb', data, cb);
+    }
+    else {
+      console.log(data);
     }
   },
   fullscreen: function(data) {

@@ -19,9 +19,9 @@ class Comments extends migi.Component {
     self.visible = self.props.visible;
   }
   @bind visible
-  setData(authorId, data) {
+  setData(id, data) {
     let self = this;
-    self.authorId = authorId;
+    self.id = id;
     if(data) {
       offset = data.limit;
       self.ref.comment.setData(data.data);
@@ -53,7 +53,7 @@ class Comments extends migi.Component {
     let comment = self.ref.comment;
     comment.message = '正在加载...';
     loading = true;
-    ajax = net.postJSON('/h5/author2/commentList', { authorId: self.authorId, offset }, function(res) {
+    ajax = net.postJSON('/h5/author2/commentList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {
@@ -75,7 +75,7 @@ class Comments extends migi.Component {
     });
   }
   reply(id) {
-    jsBridge.pushWindow('/subcomment.html?type=1&id=' + this.authorId + '&pid=' + id, {
+    jsBridge.pushWindow('/subcomment.html?type=1&id=' + this.id + '&pid=' + id, {
       title: '评论',
       optionMenu: '发布',
     });

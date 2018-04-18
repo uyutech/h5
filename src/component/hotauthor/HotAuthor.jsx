@@ -36,7 +36,7 @@ class HotAuthor extends migi.Component {
             ? <ul class="list">
               {
                 this.list.map(function(item) {
-                  let url = `/author.html?authorId=${item.AuthorID}`;
+                  let url = `/author.html?id=${item.AuthorID}`;
                   return <li>
                     <a href={ url } class="pic" title={ item.AuthorName }>
                       <img src={ util.autoSsl(util.img120_120_80(item.Head_url

@@ -20,9 +20,9 @@ class Dynamics extends migi.Component {
     self.visible = self.props.visible;
   }
   @bind visible
-  setData(authorId, data) {
+  setData(id, data) {
     let self = this;
-    self.authorId = authorId;
+    self.id = id;
     if(data) {
       offset = data.limit;
       self.ref.postList.setData(data.data);
@@ -54,7 +54,7 @@ class Dynamics extends migi.Component {
     let postList = self.ref.postList;
     postList.message = '正在加载...';
     loading = true;
-    ajax = net.postJSON('/h5/author2/dynamicList', { authorId: self.authorId, offset }, function(res) {
+    ajax = net.postJSON('/h5/author2/dynamicList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {

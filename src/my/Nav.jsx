@@ -111,7 +111,7 @@ class Nav extends migi.Component {
     });
   }
   clickAuthor() {
-    jsBridge.pushWindow('/author.html?authorId=' + this.authorId, {
+    jsBridge.pushWindow('/author.html?id=' + this.authorId, {
       transparentTitle: true,
     });
   }

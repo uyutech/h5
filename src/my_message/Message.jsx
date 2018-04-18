@@ -66,14 +66,14 @@ class Message extends migi.Component {
     self.exist[id] = true;
     let comment = item.comment;
     let peopleUrl = comment.isAuthor
-      ? '/author.html?authorId=' + comment.aid
+      ? '/author.html?id=' + comment.aid
       : '/user.html?userId=' + comment.uid;
     let url;
     let action;
     switch(item.type) {
       case 1:
         action = '回复了评论';
-        url = '/author.html?authorId=' + item.refId;
+        url = '/author.html?id=' + item.refId;
         break;
       case 2:
         action = '回复了评论';

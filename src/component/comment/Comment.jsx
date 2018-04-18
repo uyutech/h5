@@ -53,48 +53,52 @@ class Comment extends migi.Component {
       });
       $list.on('click', '.fn', function() {
         let $fn = $(this);
-        let $like = $fn.closest('li').find('.like');
-        let commentID = $like.attr('cid');
+        let id = parseInt($fn.attr('rel'));
         migi.eventBus.emit('BOT_FN', {
           canFn: true,
-          canLike: true,
-          isLike: $like.hasClass('liked'),
           canDel: $fn.attr('own') === 'true',
           canBlock: true,
           canReport: true,
-          clickLike: function(botFn) {
-            net.postJSON(self.props.zanUrl, { commentID }, function(res) {
-              if(res.success) {
-                let data = res.data;
-                botFn.isLike = data.State === 'likeWordsUser';
-                if(data.State === 'likeWordsUser') {
-                  $like.addClass('liked');
+          clickBlock: function(botFn) {
+            if(!util.isLogin()) {
+              migi.eventBus.emit('NEED_LOGIN');
+              return;
+            }
+            jsBridge.confirm('确认屏蔽吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              net.postJSON('/h5/comment2/block', { id }, function(res) {
+                if(res.success) {
+                  jsBridge.toast('屏蔽成功');
                 }
                 else {
-                  $like.removeClass('liked');
+                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
                 }
-                $like.text(data.LikeCount);
-              }
-              else if(res.code === 1000) {
-                migi.eventBus.emit('NEED_LOGIN');
-              }
-              else {
+                botFn.cancel();
+              }, function(res) {
                 jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              }
-            });
-          },
-          clickBlock: function(botFn) {
-            let type = $fn.attr('isAuthor') === 'true' ? 5 : 6;
-            let id = $fn.attr(type === 5 ? 'authorId' : 'userId');
-            self.block(id, type, function() {
-              jsBridge.toast('屏蔽成功');
-              botFn.cancel();
+                botFn.cancel();
+              });
             });
           },
           clickReport: function(botFn) {
-            self.report(commentID, function() {
-              jsBridge.toast('举报成功');
-              botFn.cancel();
+            jsBridge.confirm('确认举报吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              net.postJSON('/h5/comment2/report', { id }, function(res) {
+                if(res) {
+                  jsBridge.toast('举报成功');
+                }
+                else {
+                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                }
+                botFn.cancel();
+              }, function(res) {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                botFn.cancel();
+              });
             });
           },
           clickDel: function(botFn) {
@@ -164,7 +168,7 @@ class Comment extends migi.Component {
       data = [data];
     }
     data.forEach(function(item) {
-      s += self.genComment(item) || '';
+      s += self.genItem(item) || '';
     });
     $(self.ref.list.element).html(s);
     self.empty = !s;
@@ -179,7 +183,7 @@ class Comment extends migi.Component {
       data = [data];
     }
     data.forEach(function(item) {
-      s += self.genComment(item) || '';
+      s += self.genItem(item) || '';
     });
     $(self.ref.list.element).append(s);
     if(s) {
@@ -196,7 +200,7 @@ class Comment extends migi.Component {
       data = [data];
     }
     data.forEach(function(item) {
-      s += self.genComment(item) || '';
+      s += self.genItem(item) || '';
     });
     $(self.ref.list.element).prepend(s);
     if(s) {
@@ -229,31 +233,14 @@ class Comment extends migi.Component {
       });
     });
   }
-  report(id, cb) {
-    jsBridge.confirm('确认举报吗？', function(res) {
-      if(!res) {
-        return;
-      }
-      net.postJSON('/h5/report/index', { reportType: 4, businessId: id }, function(res) {
-        if(res.success) {
-          cb && cb();
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
-    });
-  }
-  genComment(item) {
+  genItem(item) {
     let id = item.id;
     if(exist[id]) {
       return;
     }
     exist[id] = true;
     let url = item.isAuthor
-      ? '/author.html?authorId=' + item.aid
+      ? '/author.html?id=' + item.aid
       : '/user.html?userId=' + item.uid;
     return <li class={ item.isAuthor ? 'author'  : 'user' }>
       <div class="t">
@@ -278,6 +265,7 @@ class Comment extends migi.Component {
           </div>
         </div>
         <b class="fn"
+           rel={ id }
            own={ item.IsOwn }/>
       </div>
       <div class="wrap">
@@ -316,12 +304,6 @@ class Comment extends migi.Component {
         </div>
       </div>
     </li>;
-  }
-  hideLast() {
-    if($last && $last.hasClass('on')) {
-      $last.removeClass('on').find('.list2').css('height', 0).find('li.on').removeClass('on');
-    }
-    $last = null;
   }
   render() {
     return <div class="cp-comment">

@@ -44,7 +44,7 @@ class List extends migi.Component {
   genItem(item) {
     let self = this;
     let url = self.props.isAuthor
-      ? ('/author.html?authorId=' + item.id)
+      ? ('/author.html?id=' + item.id)
       : ('/user.html?userId=' + item.id);
     return <li>
       <a href={ url }

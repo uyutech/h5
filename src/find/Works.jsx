@@ -49,7 +49,7 @@ class Works extends migi.Component {
                 {
                   this.data.content.author[0].list.map(function(item) {
                     return <dd>
-                      <a href={ '/author.html?authorId=' + item.id }
+                      <a href={ '/author.html?id=' + item.id }
                          title={ item.name }>
                         <img src={ util.img(item.headUrl, 60, 60, 80) || '/src/common/head.png' }/>
                         <span>{ item.name }</span>

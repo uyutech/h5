@@ -306,7 +306,7 @@ class Follow extends migi.Component {
               return <li>
                 <a class="pic"
                    title={ item.name || item.nickname }
-                   href={ item.isAuthor ? ('/author.html?authorId=' + item.id) : ('/user.html?userId=' + item.id) }>
+                   href={ item.isAuthor ? ('/author.html?id=' + item.id) : ('/user.html?userId=' + item.id) }>
                   <img src={ util.autoSsl(util.img(item.headUrl, 120, 120, 80)) || '/src/common/head.png' }/>
                 </a>
               </li>;

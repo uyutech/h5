@@ -9,7 +9,6 @@ import util from '../common/util';
 import Playlist from '../component/playlist/Playlist.jsx';
 import VideoList from '../component/videolist/VideoList.jsx';
 import WaterFall from '../component/waterfall/WaterFall.jsx';
-import Select from '../component/select/Select.jsx';
 
 const CACHE = {};
 
@@ -31,7 +30,7 @@ class Work extends migi.Component {
   @bind visible
   @bind kind
   @bind kindList
-  // @bind authorId
+  // @bind id
   setData(kindList, kindWorkList) {
     let self = this;
     self.kindList = kindList;
@@ -44,12 +43,6 @@ class Work extends migi.Component {
       return;
     }
     self.kind = kindList[0].kind;
-    self.ref.select.list = kindList[0].professionList.map(function(item) {
-      return {
-        id: item.id,
-        name: item.name,
-      }
-    });
     let cache = CACHE[self.kind];
     cache.limit = kindWorkList.limit;
     cache.offset += kindWorkList.limit;
@@ -111,7 +104,7 @@ class Work extends migi.Component {
       cache.ajax.abort();
     }
     cache.ajax = net.postJSON('/h5/author2/kindWorkList', {
-      authorId: self.authorId,
+      id: self.id,
       kind,
       offset: cache.offset,
       limit: cache.limit
@@ -194,7 +187,7 @@ class Work extends migi.Component {
     }
   }
   render() {
-    return <div class={ 'work' + (this.visible ? '' : ' fn-hide') }>
+    return <div class={ 'mod-work' + (this.visible ? '' : ' fn-hide') }>
       <ul class={ 'group' + (this.kind ? '' : ' fn-hide') }
           onClick={ { li: this.clickClass } }>
         {
@@ -204,9 +197,6 @@ class Work extends migi.Component {
           }.bind(this))
         }
       </ul>
-      <Select ref="select"
-          on-sort={ this.fnSort }
-          on-type={ this.fnType }/>
       <VideoList ref="videoList"
                  profession={ true }
                  message="正在加载..."

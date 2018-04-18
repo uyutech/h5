@@ -221,6 +221,9 @@ class Works extends migi.Component {
       canShareWb: true,
       canShareLink: true,
       clickShareWb: function(botFn) {
+        if(!self.data) {
+          return;
+        }
         let url = window.ROOT_DOMAIN + '/works/' + self.worksId;
         let text = '【';
         if(self.data.info.title) {
@@ -233,14 +236,14 @@ class Works extends migi.Component {
           text += self.data.info.subTitle;
         }
         text += '】';
-        if(self.data.author && self.data.author[0]) {
-          self.data.author[0].forEach(function(item) {
-            text += item.list.map(function(item2) {
-              return item2.name;
+        if(self.data.info.author[0]) {
+          self.data.info.author[0].forEach((item) => {
+            item.list.forEach((author) => {
+              text += author.name + ' ';
             });
-          })
+          });
         }
-        text += ' #转圈circling# ';
+        text += '#转圈circling# ';
         text += url;
         jsBridge.shareWb({
           text,
@@ -255,16 +258,15 @@ class Works extends migi.Component {
             jsBridge.toast("分享失败");
           }
         });
+        botFn.cancel();
       },
       clickShareLink: function(botFn) {
         if(!self.data) {
           return;
         }
         let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
-        if(self.data.workId) {
-          url += '/' + self.data.workId;
-        }
         util.setClipboard(url);
+        botFn.cancel();
       },
     });
   }
