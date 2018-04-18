@@ -348,7 +348,7 @@ class HotPost extends migi.Component {
               userName += data.NickName;
             }
             userName += $4;
-            return `<a href="/${$1}.html?userID=${$2}" class="link" transparentTitle="true">${userName}</a>`;
+            return `<a href="/${$1}.html?id=${$2}" class="link" transparentTitle="true">${userName}</a>`;
         }
         return $0;
       })
@@ -372,7 +372,7 @@ class HotPost extends migi.Component {
     let url = '/post.html?id=' + id;
     let peopleUrl = item.IsAuthor
       ? ('/author.html?id=' + item.AuthorID)
-      : ('/user.html?userID=' + item.SendUserID);
+      : ('/user.html?id=' + item.SendUserID);
     let mediaList = item.CommentMedia || [];
     let imgList = mediaList.filter(function(item) {
       return item.MediaType === 0 || item.MediaType === 3; // 0为老数据图片，1视频，2音频，3图片

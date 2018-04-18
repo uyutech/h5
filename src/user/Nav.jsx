@@ -24,17 +24,59 @@ class Nav extends migi.Component {
           canFn: true,
           canBlock: true,
           blockText: '加入黑名单',
+          canReport: true,
           clickBlock: function(botFn) {
-            self.block(self.userId, function() {
-              jsBridge.toast('屏蔽成功');
-              botFn.cancel();
+            if(!util.isLogin()) {
+              migi.eventBus.emit('NEED_LOGIN');
+              return;
+            }
+            let id = self.id;
+            jsBridge.confirm('确认加入黑名单吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              net.postJSON('/h5/user2/black', { id }, function(res) {
+                if(res) {
+                  jsBridge.toast('加入黑名单成功');
+                }
+                else if(res.code === 1000) {
+                  migi.eventBus.emit('NEED_LOGIN');
+                }
+                else {
+                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                }
+                botFn.cancel();
+              }, function(res) {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                botFn.cancel();
+              });
+            });
+          },
+          clickReport: function(botFn) {
+            let id = self.id;
+            jsBridge.confirm('确认举报吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              net.postJSON('/h5/user2/report', { id }, function(res) {
+                if(res) {
+                  jsBridge.toast('举报成功');
+                }
+                else {
+                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                }
+                botFn.cancel();
+              }, function(res) {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                botFn.cancel();
+              });
             });
           },
         });
       });
     });
   }
-  @bind userId
+  @bind id
   @bind nickname
   @bind headUrl
   @bind sex
@@ -46,7 +88,7 @@ class Nav extends migi.Component {
   setData(data, followPersonCount, fansCount, isFollow, isFans) {
     data = data || {};
     let self = this;
-    self.userId = data.id;
+    self.id = data.id;
     self.headUrl = data.headUrl;
     self.nickname = data.nickname;
     self.sex = data.sex;
@@ -56,32 +98,7 @@ class Nav extends migi.Component {
     self.isFollow = isFollow;
     self.isFans = isFans;
   }
-  block(id, cb) {
-    let self = this;
-    if(!util.isLogin()) {
-      migi.eventBus.emit('NEED_LOGIN');
-      return;
-    }
-    jsBridge.confirm('确认屏蔽吗？', function(res) {
-      if(!res) {
-        return;
-      }
-      net.postJSON('/h5/user/shield', { userId: id }, function(res) {
-        if(res.success) {
-          cb && cb();
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
-    });
-  }
   clickFollow() {
-    this.follow();
-  }
-  follow(cb) {
     if(!util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
@@ -93,12 +110,11 @@ class Nav extends migi.Component {
           return;
         }
         self.loading = true;
-        net.postJSON('/h5/user2/unFollow', { userId: self.userId }, function(res) {
+        net.postJSON('/h5/user2/unFollow', { id: self.id }, function(res) {
           if(res.success) {
             let data = res.data;
             self.isFollow = data.state;
             self.fansCount = data.count;
-            cb && cb();
             self.emit('follow', data);
           }
           else if(res.code === 1000) {
@@ -116,12 +132,11 @@ class Nav extends migi.Component {
     }
     else {
       self.loading = true;
-      net.postJSON('/h5/user2/follow', { userId: self.userId } , function(res) {
+      net.postJSON('/h5/user2/follow', { id: self.id } , function(res) {
         if(res.success) {
           let data = res.data;
           self.isFollow = data.state;
           self.fansCount = data.count;
-          cb && cb();
           self.emit('follow', data);
         }
         else if(res.code === 1000) {
@@ -147,7 +162,7 @@ class Nav extends migi.Component {
           <div class="n">
             <h3>{ this.nickname }</h3>
           </div>
-          <p>uid: { (this.userId ? this.userId.toString() : '').replace(/^20180*/, '') }</p>
+          <p>uid: { (this.id ? this.id.toString() : '').replace(/^20180*/, '') }</p>
         </div>
         <button class={ 's' + (this.isFollow ? '1' : '0') + (this.isFans ? '1' : '0') + (this.loading ? ' loading' : '') }
                 onClick={ this.clickFollow }>{ FOLLOW_STATE[(this.isFollow ? '1' : '0') + (this.isFans ? '1' : '0')] }</button>

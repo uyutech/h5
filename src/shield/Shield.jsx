@@ -78,10 +78,10 @@ class Shield extends migi.Component {
   }
   genUser(data) {
     return <li>
-      <a href={ '/user.html?userID=' + data.UserID } class="pic" title={ data.UserName }>
+      <a href={ '/user.html?id=' + data.UserID } class="pic" title={ data.UserName }>
         <img src={ util.autoSsl(util.img120_120_80(data.HeadUrl) || '/src/common/head.png') }/>
       </a>
-      <a href={ '/user.html?userID=' + data.UserID } class="txt" title={ data.UserName }>
+      <a href={ '/user.html?id=' + data.UserID } class="txt" title={ data.UserName }>
         <span class="name">{ data.UserName }</span>
       </a>
       <button rel={ data.UserID }>解除屏蔽</button>

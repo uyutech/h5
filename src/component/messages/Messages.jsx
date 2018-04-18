@@ -55,7 +55,7 @@ class Messages extends migi.Component {
     }
     let link = item.Send_UserISAuthor
       ? ('/author.html?id=' + item.Send_UserID)
-      : ('/user.html?userID=' + item.Send_UserID);
+      : ('/user.html?id=' + item.Send_UserID);
     return <li class={ item.Send_UserISAuthor ? 'author' : '' }
                id={ 'message_' + item.NotifyID }>
       <div class="profile fn-clear">

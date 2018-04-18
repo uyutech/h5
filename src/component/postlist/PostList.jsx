@@ -40,7 +40,31 @@ class PostList extends migi.Component {
         let id = $(this).attr('rel');
         migi.eventBus.emit('BOT_FN', {
           canFn: true,
+          canBlock: true,
           canReport: true,
+          clickBlock: function(botFn) {
+            if(!util.isLogin()) {
+              migi.eventBus.emit('NEED_LOGIN');
+              return;
+            }
+            jsBridge.confirm('确认屏蔽吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              net.postJSON('/h5/comment2/block', { id }, function(res) {
+                if(res.success) {
+                  jsBridge.toast('屏蔽成功');
+                }
+                else {
+                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                }
+                botFn.cancel();
+              }, function(res) {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                botFn.cancel();
+              });
+            });
+          },
           clickReport: function(botFn) {
             jsBridge.confirm('确认举报吗？', function(res) {
               if(res) {
@@ -200,7 +224,7 @@ class PostList extends migi.Component {
     }
     let peopleUrl = item.isAuthor
       ? '/author.html?id=' + item.aid
-      : '/user.html?userId=' + item.uid;
+      : '/user.html?id=' + item.uid;
     let url = '/post.html?id=' + id;
     let videoList = [];
     let audioList = [];

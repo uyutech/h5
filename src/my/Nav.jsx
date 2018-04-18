@@ -106,7 +106,7 @@ class Nav extends migi.Component {
     });
   }
   clickPersonal() {
-    jsBridge.pushWindow('/user.html?userId=' + this.userId, {
+    jsBridge.pushWindow('/user.html?id=' + this.userId, {
       transparentTitle: true,
     });
   }

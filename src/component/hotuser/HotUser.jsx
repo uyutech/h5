@@ -31,10 +31,10 @@ class HotAuthor extends migi.Component {
             {
               this.dataList.map(function(item) {
                 return <li>
-                  <a href={ `/user.html?userID=${item.UserID}` } class="pic" title={ item.UserNickName }>
+                  <a href={ `/user.html?id=${item.UserID}` } class="pic" title={ item.UserNickName }>
                     <img src={ util.autoSsl(util.img120_120_80(item.User_HeadUrl || '//zhuanquan.xin/img/head/8fd9055b7f033087e6337e37c8959d3e.png')) }/>
                   </a>
-                  <a href={ `/user.html?userID=${item.UserID}` } class="txt" title={ item.UserNickName }>
+                  <a href={ `/user.html?id=${item.UserID}` } class="txt" title={ item.UserNickName }>
                     <span class="name">{ item.UserNickName }</span>
                   </a>
                   <div class="info">{ item.followMe ? '互相关注' : '' }</div>

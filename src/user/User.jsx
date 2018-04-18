@@ -12,11 +12,11 @@ import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let limit = 0;
 let offset = 0;
 let ajax;
 let loading;
 let loadEnd;
+
 let currentPriority = 0;
 let cacheKey;
 
@@ -24,11 +24,11 @@ class User extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  // @bind userId
-  init(userId) {
+  // @bind id
+  init(id) {
     let self = this;
-    self.userId = userId;
-    cacheKey = 'userData_' + userId;
+    self.id = id;
+    cacheKey = 'userData_' + id;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         try {
@@ -37,10 +37,9 @@ class User extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/user2/index', { userId }, function(res) {
+    net.postJSON('/h5/user2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.setData(data, 1);
         let cache = {};
         Object.keys(data).forEach(function(k) {
           if(k !== 'comment') {
@@ -48,6 +47,11 @@ class User extends migi.Component {
           }
         });
         jsBridge.setPreference(cacheKey, cache);
+        self.setData(data, 1);
+
+        window.addEventListener('scroll', function() {
+          self.checkMore();
+        });
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -70,17 +74,20 @@ class User extends migi.Component {
     nav.setData(data.info, data.followPersonCount, data.fansCount, data.isFollow, data.isFans);
 
     if(data.postList && data.postList.count) {
-      offset = limit = data.postList.limit;
+      offset = data.postList.limit;
       postList.setData(data.postList.data);
-      if(data.postList.count > limit) {
-        window.addEventListener('scroll', function() {
-          self.checkMore();
-        });
-      }
-      else {
+      if(offset >= data.postList.count) {
         loadEnd = true;
         postList.message = '已经到底了';
       }
+      else {
+        loadEnd = false;
+        postList.message = '正在加载...';
+      }
+    }
+    else {
+      loadEnd = true;
+      postList.message = '暂无动态';
     }
 
     // let imageView = self.ref.imageView;
@@ -112,10 +119,10 @@ class User extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    ajax = net.postJSON('/h5/user2/postList', { circleId: self.circleId, offset, limit, }, function(res) {
+    ajax = net.postJSON('/h5/user2/postList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        offset += limit;
+        offset += data.limit;
         if(data.data.length) {
           postList.appendData(data.data);
         }
@@ -124,13 +131,11 @@ class User extends migi.Component {
           postList.message = '已经到底了';
         }
       }
+      else if(res.code === 1000) {
+        migi.eventBus.emit('NEED_LOGIN');
+      }
       else {
-        if(res.code === 1000) {
-          migi.eventBus.emit('NEED_LOGIN');
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
+        jsBridge.toast(res.message || util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {

@@ -241,7 +241,7 @@ class Comment extends migi.Component {
     exist[id] = true;
     let url = item.isAuthor
       ? '/author.html?id=' + item.aid
-      : '/user.html?userId=' + item.uid;
+      : '/user.html?id=' + item.uid;
     return <li class={ item.isAuthor ? 'author'  : 'user' }>
       <div class="t">
         <div class="profile fn-clear">
