@@ -90,7 +90,7 @@ class Media extends migi.Component {
                   return;
                 }
                 net.postJSON('/h5/work2/report', { id }, function(res) {
-                  if(res) {
+                  if(res.success) {
                     jsBridge.toast('举报成功');
                   }
                   else {

@@ -13,8 +13,8 @@ class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  @bind circleId
-  @bind circleName
+  @bind id
+  @bind name
   @bind isFollow
   @bind fansCount
   @bind desc
@@ -22,8 +22,8 @@ class Nav extends migi.Component {
   @bind cover
   setData(data, isFollow, fansCount) {
     let self = this;
-    self.circleId = data.id;
-    self.circleName = data.name;
+    self.id = data.id;
+    self.name = data.name;
     self.desc = data.describe;
     self.banner = data.banner;
     self.cover = data.cover;
@@ -37,7 +37,7 @@ class Nav extends migi.Component {
     let self = this;
     let url = self.isFollow ? '/h5/circle2/unFollow' : '/h5/circle2/follow';
     loading = true;
-    net.postJSON(url, { circleId: self.circleId }, function(res) {
+    net.postJSON(url, { id: self.id }, function(res) {
       if(res.success) {
         let data = res.data;
         self.isFollow = data.state;
@@ -61,10 +61,10 @@ class Nav extends migi.Component {
             || '//zhuanquan.xyz/temp/4ec79947e068b21fbef207a825cb53c0.jpg')) }/>
         </div>
         <div class="txt">
-          <h1>{ this.circleName }</h1>
+          <h1>{ this.name }</h1>
           <div class="rel">
             <span class="count">{ this.fansCount || 0 }</span>
-            <span class={ 'follow' + (this.circleId ? '' : ' fn-hide') + (this.isFollow ? ' followed' : '') }
+            <span class={ 'follow' + (this.id ? '' : ' fn-hide') + (this.isFollow ? ' followed' : '') }
                   onClick={ this.click }>{ this.isFollow ? '已经加入' : '加入圈子' }</span>
           </div>
         </div>

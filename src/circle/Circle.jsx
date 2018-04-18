@@ -27,46 +27,43 @@ class Circle extends migi.Component {
     let self = this;
     self.on(migi.Event.DOM, function() {
       jsBridge.on('optionMenu1', function() {
+        let id = self.id;
         migi.eventBus.emit('BOT_FN', {
           canFn: true,
           canBlock: true,
-          canShare: true,
-          canShareWb: true,
-          canShareLink: true,
           clickBlock: function(botFn) {
-            self.block(self.circleId, function() {
-              jsBridge.toast('屏蔽成功');
-              botFn.cancel();
+            if(!util.isLogin()) {
+              migi.eventBus.emit('NEED_LOGIN');
+              return;
+            }
+            let id = self.id;
+            jsBridge.confirm('确认屏蔽吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              net.postJSON('/h5/circle2/block', { id }, function(res) {
+                if(res.success) {
+                  jsBridge.toast('屏蔽成功');
+                }
+                else if(res.code === 1000) {
+                  migi.eventBus.emit('NEED_LOGIN');
+                }
+                else {
+                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                }
+                botFn.cancel();
+              }, function(res) {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                botFn.cancel();
+              });
             });
-          },
-          clickShareWb: function() {
-            let url = window.ROOT_DOMAIN + '/circle/' + self.circleId;
-            let text = '来转转【' + self.circleName + '】圈吧~ 每天转转圈，玩转每个圈~';
-            text += ' #转圈circling# ';
-            text += url;
-            jsBridge.shareWb({
-              text,
-            }, function(res) {
-              if(res.success) {
-                jsBridge.toast("分享成功");
-              }
-              else if(res.cancel) {
-                jsBridge.toast("取消分享");
-              }
-              else {
-                jsBridge.toast("分享失败");
-              }
-            });
-          },
-          clickShareLink: function() {
-            util.setClipboard(window.ROOT_DOMAIN + '/circle/' + self.circleId);
           },
         });
       });
     });
   }
   // @bind id
-  // @bind circleName
+  // @bind name
   init(id) {
     let self = this;
     self.id = id;
@@ -192,7 +189,7 @@ class Circle extends migi.Component {
       },
       clickShareWb: function() {
         let url = window.ROOT_DOMAIN + '/circle/' + self.circleId;
-        let text = '来转转【' + self.circleName + '】圈吧~ 每天转转圈，玩转每个圈~';
+        let text = '来转转【' + self.name + '】圈吧~ 每天转转圈，玩转每个圈~';
         text += ' #转圈circling# ';
         text += url;
         jsBridge.shareWb({
@@ -222,28 +219,6 @@ class Circle extends migi.Component {
     jsBridge.pushWindow('/sub_post.html?id=' + self.id, {
       title: '画个圈',
       optionMenu: '发布',
-    });
-  }
-  block(id, cb) {
-    let self = this;
-    if(!util.isLogin()) {
-      migi.eventBus.emit('NEED_LOGIN');
-      return;
-    }
-    jsBridge.confirm('确认屏蔽吗？', function(res) {
-      if(!res) {
-        return;
-      }
-      net.postJSON('/h5/circle/shield', { circleID: id }, function(res) {
-        if(res.success) {
-          cb && cb();
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
     });
   }
   favor(id, data) {
