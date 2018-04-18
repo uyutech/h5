@@ -20,13 +20,13 @@ class Works extends migi.Component {
   render() {
     let url;
     if(this.props.type === 3) {
-      url = '/image.html?albumId=' + this.data.content.id;
+      url = '/image_album.html?id=' + this.data.content.id;
     }
     else if(this.props.type === 2) {
-      url = '/music.html?albumId=' + this.data.content.id;
+      url = '/music_album.html?id=' + this.data.content.id;
     }
     else {
-      url = '/works.html?worksId=' + this.data.content.id;
+      url = '/works.html?id=' + this.data.content.id;
     }
     return <div class="mod-works">
       <a class="pic"
@@ -60,7 +60,7 @@ class Works extends migi.Component {
               </dl>
             : ''
         }
-        <a href={ '/works.html?worksId=' + this.data.content.id }
+        <a href={ '/works.html?id=' + this.data.content.id }
            title={ this.data.content.title }
            class="intro">
           <pre>{ this.data.describe }</pre>

@@ -59,7 +59,7 @@ class VideoList extends migi.Component {
   }
   genItem(item) {
     let self = this;
-    let url = '/works.html?worksId=' + item.id + '&workId=' + item.work.id;
+    let url = '/works.html?id=' + item.id + '&workId=' + item.work.id;
     let author = [];
     let hash = {};
     if(self.props.profession) {
@@ -110,7 +110,7 @@ class VideoList extends migi.Component {
   }
   clickComment(e, vd, tvd) {
     let id = tvd.props.rel;
-    let url = '/works.html?worksId=' + id + '&comment=1';
+    let url = '/works.html?id=' + id + '&comment=1';
     let title = tvd.props.title;
     jsBridge.pushWindow(url, {
       title,

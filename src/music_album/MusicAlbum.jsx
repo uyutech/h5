@@ -25,18 +25,18 @@ let ajaxFavor;
 let currentPriority = 0;
 let cacheKey;
 
-class Music extends migi.Component {
+class MusicAlbum extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  // @bind albumId
+  // @bind id
   // @bind workId
   @bind curColumn
-  init(albumId, workId) {
+  init(id, workId) {
     let self = this;
-    self.albumId = albumId;
+    self.id = id;
     self.workId = workId;
-    cacheKey = 'musicAlbumData_' + albumId;
+    cacheKey = 'musicAlbumData_' + id;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         try {
@@ -45,7 +45,7 @@ class Music extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/musicAlbum/index', { albumId }, function(res) {
+    net.postJSON('/h5/musicAlbum2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -72,7 +72,7 @@ class Music extends migi.Component {
     let comments = self.ref.comments;
 
     // 未完成保密
-    if(data.info.state === 2) {
+    if(data.info.state === 3) {
       return;
     }
     info.setData(data.info);
@@ -95,7 +95,7 @@ class Music extends migi.Component {
 
     author.list = data.info.author;
 
-    comments.setData(self.albumId, data.commentList);
+    comments.setData(self.id, data.commentList);
   }
   setMedia(item) {
     let self = this;
@@ -122,113 +122,14 @@ class Music extends migi.Component {
         name: '评论' + (commentList ? commentList.count || '' : ''),
       }
     ];
-    self.curColumn = 0;
+    if(self.curColumn === undefined) {
+      self.curColumn = 0;
+    }
     column.list = list;
   }
   changeColumn(id) {
     let self = this;
     self.curColumn = id;
-  }
-  fn(workId) {
-    let o = avHash[workId];
-    let media = this.ref.media;
-    if(o) {
-      migi.eventBus.emit('BOT_FN', {
-        canFn: true,
-        canLike: true,
-        canFavor: true,
-        isLike: o.ISLike,
-        isFavor: o.ISFavor,
-        clickLike: function(botFn) {
-          if(!util.isLogin()) {
-            migi.eventBus.emit('NEED_LOGIN');
-            return;
-          }
-          if(loadingLike) {
-            return;
-          }
-          loadingLike = true;
-          ajaxLike = net.postJSON('/h5/works/likeWork', { workID: o.ItemID }, function(res) {
-            if(res.success) {
-              botFn.isLike = o.ISLike = res.data.State === 'likeWordsUser';
-              if(media.data && media.data.workId === o.ItemID) {
-                media.isLike = media.data.isLike = o.ISLike;
-                media.likeNum = media.data.likeNum = res.data.LikeCount;
-              }
-            }
-            else if(res.code === 1000) {
-              migi.eventBus.emit('NEED_LOGIN');
-            }
-            else {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
-            }
-            loadingLike = false;
-          }, function(res) {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
-            loadingLike = false;
-          });
-        },
-        clickFavor: function(botFn) {
-          if(!util.isLogin()) {
-            migi.eventBus.emit('NEED_LOGIN');
-            return;
-          }
-          if(loadingFavor) {
-            return;
-          }
-          loadingFavor = true;
-          if(o.ISFavor) {
-            ajaxFavor = net.postJSON('/h5/works/unFavorWork', { workID: o.ItemID }, function (res) {
-              if(res.success) {
-                botFn.isFavor = o.ISFavor = false;
-                if(media.data && media.data.workId === o.ItemID) {
-                  media.isFavor = media.data.isFavor = o.ISFavor;
-                }
-              }
-              else if(res.code === 1000) {
-                migi.eventBus.emit('NEED_LOGIN');
-              }
-              else {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              }
-              loadingFavor = false;
-            }, function(res) {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              loadingFavor = false;
-            });
-          }
-          else {
-            ajaxFavor = net.postJSON('/h5/works/favorWork', { workID: o.ItemID }, function (res) {
-              if(res.success) {
-                botFn.isFavor = o.ISFavor = true;
-                if(media.data && media.data.workId === o.ItemID) {
-                  media.isFavor = media.data.isFavor = o.ISFavor;
-                }
-              }
-              else if(res.code === 1000) {
-                migi.eventBus.emit('NEED_LOGIN');
-              }
-              else {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              }
-              loadingFavor = false;
-            }, function(res) {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              loadingFavor = false;
-            });
-          }
-        },
-        clickCancel: function() {
-          loadingLike = loadingFavor = false;
-          if(ajaxLike) {
-            ajaxLike.abort();
-          }
-          if(ajaxFavor) {
-            ajaxFavor.abort();
-          }
-        },
-      });
-    }
   }
   mediaPlay(data) {
     util.recentPlay(data);
@@ -271,7 +172,7 @@ class Music extends migi.Component {
   }
   comment() {
     let self = this;
-    jsBridge.pushWindow('/sub_comment.html?type=2&id=' + self.albumId, {
+    jsBridge.pushWindow('/sub_comment.html?type=2&id=' + self.id, {
       title: '评论',
       optionMenu: '发布',
     });
@@ -283,26 +184,29 @@ class Music extends migi.Component {
       canShareWb: true,
       canShareLink: true,
       clickShareWb: function(botFn) {
-        let url = window.ROOT_DOMAIN + '/works/' + self.worksId;
-        let text = '【';
-        if(self.worksDetail.Title) {
-          text += self.worksDetail.Title;
+        if(!self.data) {
+          return;
         }
-        if(self.worksDetail.sub_Title) {
-          if(self.worksDetail.Title) {
+        let url = window.ROOT_DOMAIN + '/musicAlbum/' + self.id;
+        let text = '【';
+        if(self.data.info.title) {
+          text += self.data.info.title;
+        }
+        if(self.data.info.subTitle) {
+          if(self.data.info.subTitle) {
             text += ' ';
           }
-          text += self.worksDetail.sub_Title;
+          text += self.data.info.subTitle;
         }
         text += '】';
-        if(self.worksDetail.GroupAuthorTypeHash
-          && self.worksDetail.GroupAuthorTypeHash[0]
-          && self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist
-          && self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist[0].AuthorInfo
-          && self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist[0].AuthorInfo[0]) {
-          text += self.worksDetail.GroupAuthorTypeHash[0].AuthorTypeHashlist[0].AuthorInfo[0].AuthorName;
+        if(self.data.info.author[0]) {
+          self.data.info.author[0].forEach((item) => {
+            item.list.forEach((author) => {
+              text += author.name + ' ';
+            });
+          });
         }
-        text += ' #转圈circling# ';
+        text += '#转圈circling# ';
         text += url;
         jsBridge.shareWb({
           text,
@@ -317,16 +221,15 @@ class Music extends migi.Component {
             jsBridge.toast("分享失败");
           }
         });
+        botFn.cancel();
       },
       clickShareLink: function(botFn) {
         if(!self.data) {
           return;
         }
-        let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
-        if(self.data.workId) {
-          url += '/' + self.data.workId;
-        }
+        let url = window.ROOT_DOMAIN + '/musicAlbum/' + self.data.id;
         util.setClipboard(url);
+        botFn.cancel();
       },
     });
   }
@@ -359,4 +262,4 @@ class Music extends migi.Component {
   }
 }
 
-export default Music;
+export default MusicAlbum;

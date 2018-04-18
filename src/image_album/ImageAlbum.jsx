@@ -8,22 +8,13 @@ import util from '../common/util';
 import net from '../common/net';
 
 import Column from '../works/Column.jsx';
-import Fn from '../component/fn/Fn.jsx';
 import WaterFall from '../component/waterfall/WaterFall.jsx';
 import Author from '../works/Author.jsx';
-import Text from '../works/Text.jsx';
 import Comments from '../works/Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
-import BotList from '../component/botlist/BotList.jsx';
 
-let worksDetail;
-let workList = [];
-let labelList = [];
-let take = 20;
-let skip = 0;
-let sortType = 0;
-let tagName = '';
+let offset = 0;
 let loadEnd;
 let loading;
 let ajax;
@@ -32,16 +23,16 @@ let ajax;
 let currentPriority = 0;
 let cacheKey;
 
-class Image extends migi.Component {
+class ImageAlbum extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  // @bind albumId
+  // @bind id
   @bind curColumn
-  init(albumId) {
+  init(id) {
     let self = this;
-    self.albumId = albumId;
-    cacheKey = 'imageAlbumData_' + albumId;
+    self.id = id;
+    cacheKey = 'imageAlbumData_' + id;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         try {
@@ -50,16 +41,16 @@ class Image extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/imageAlbum/index', { albumId }, function(res) {
+    net.postJSON('/h5/imageAlbum2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
+        jsBridge.setPreference(cacheKey, data);
         self.setData(data, 1);
+
         window.addEventListener('scroll', function() {
           self.checkMore();
         });
-
         self.ref.comments.listenScroll();
-        jsBridge.setPreference(cacheKey, data);
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -67,7 +58,6 @@ class Image extends migi.Component {
     }, function(res) {
       jsBridge.toast(res.message || util.ERROR_MESSAGE);
     });
-    self.load();
   }
   setData(data, priority) {
     if(priority < currentPriority) {
@@ -76,22 +66,32 @@ class Image extends migi.Component {
     currentPriority = priority;
 
     let self = this;
+    self.data = data;
     let waterFall = self.ref.waterFall;
     let author = self.ref.author;
     let comments = self.ref.comments;
 
     // 未完成保密
-    if(data.info.state === 2) {
+    if(data.info.state === 3) {
       return;
     }
 
     self.setColumn(data.commentList);
 
+    offset = data.imageList.limit;
     waterFall.setData(data.imageList.data);
+    if(offset >= data.imageList.count) {
+      loadEnd = true;
+      waterFall.message = '已经到底了';
+    }
+    else {
+      loadEnd = false;
+      waterFall.message = '正在加载...';
+    }
 
-    author.list = data.author;
+    author.list = data.info.author;
 
-    comments.setData(self.albumId, data.commentList);
+    comments.setData(self.id, data.commentList);
   }
   setColumn(commentList) {
     let self = this;
@@ -110,12 +110,14 @@ class Image extends migi.Component {
         name: '评论 ' + (commentList ? commentList.count || '' : ''),
       }
     ];
-    self.curColumn = 0;
+    if(self.curColumn === undefined) {
+      self.curColumn = 0;
+    }
     column.list = list;
   }
   checkMore() {
     let self = this;
-    if(loading || loadEnd || !self.visible) {
+    if(loading || loadEnd || self.curColumn !== 0) {
       return;
     }
     if(util.isBottom()) {
@@ -124,30 +126,16 @@ class Image extends migi.Component {
   }
   load() {
     let self = this;
-    ajax = net.postJSON('/h5/works/photoList', { worksID: self.worksId, skip, take, sortType, tagName }, function(res) {
+    let waterFall = self.ref.waterFall;
+    loading = true;console.log(offset);
+    ajax = net.postJSON('/h5/imageAlbum2/imageList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
-        let waterFall = self.ref.waterFall;
         waterFall.appendData(data.data);
-        waterFall.message = self.loadEnd ? '已经到底了' : '';
-        if(skip >= data.Size) {
+        offset += data.limit;
+        if(offset >= data.count) {
           loadEnd = true;
-        }
-        else {
-          let $window = $(window);
-          let WIN_HEIGHT = $window.height();
-          $window.on('scroll', function() {
-            if(self.curColumn !== 0) {
-              return;
-            }
-            let HEIGHT = $(document.body).height();
-            let bool;
-            bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-            if(bool) {
-              self.loadMore(waterFall);
-            }
-          });
+          waterFall.message = '已经到底了';
         }
       }
       else {
@@ -161,15 +149,69 @@ class Image extends migi.Component {
     let self = this;
     self.curColumn = id;
   }
+  like(id, data) {}
   comment() {
     let self = this;
-    jsBridge.pushWindow('/sub_comment.html?type=2&id=' + self.albumId, {
+    jsBridge.pushWindow('/sub_comment.html?type=2&id=' + self.id, {
       title: '评论',
       optionMenu: '发布',
     });
   }
   share() {
-    migi.eventBus.emit('SHARE', '/works/' + this.worksId);
+    let self = this;
+    migi.eventBus.emit('BOT_FN', {
+      canShare: true,
+      canShareWb: true,
+      canShareLink: true,
+      clickShareWb: function(botFn) {
+        if(!self.data) {
+          return;
+        }
+        let url = window.ROOT_DOMAIN + '/imageAlbum/' + self.id;
+        let text = '【';
+        if(self.data.info.title) {
+          text += self.data.info.title;
+        }
+        if(self.data.info.subTitle) {
+          if(self.data.info.subTitle) {
+            text += ' ';
+          }
+          text += self.data.info.subTitle;
+        }
+        text += '】';
+        if(self.data.info.author[0]) {
+          self.data.info.author[0].forEach((item) => {
+            item.list.forEach((author) => {
+              text += author.name + ' ';
+            });
+          });
+        }
+        text += '#转圈circling# ';
+        text += url;
+        jsBridge.shareWb({
+          text,
+        }, function(res) {
+          if(res.success) {
+            jsBridge.toast("分享成功");
+          }
+          else if(res.cancel) {
+            jsBridge.toast("取消分享");
+          }
+          else {
+            jsBridge.toast("分享失败");
+          }
+        });
+        botFn.cancel();
+      },
+      clickShareLink: function(botFn) {
+        if(!self.data) {
+          return;
+        }
+        let url = window.ROOT_DOMAIN + '/imageAlbum/' + self.data.id;
+        util.setClipboard(url);
+        botFn.cancel();
+      },
+    });
   }
   render() {
     return <div class="image">
@@ -178,7 +220,8 @@ class Image extends migi.Component {
       <div class={ 'album' + (this.curColumn === 0 ? '' : ' fn-hide') }>
         <WaterFall ref="waterFall"
                    message="正在加载..."
-                   visible={ true }/>
+                   visible={ true }
+                   on-like={ this.like }/>
       </div>
       <div class={ 'intro' + (this.curColumn === 1 ? '' : ' fn-hide') }>
         <Author ref="author"/>
@@ -195,4 +238,4 @@ class Image extends migi.Component {
   }
 }
 
-export default Image;
+export default ImageAlbum;

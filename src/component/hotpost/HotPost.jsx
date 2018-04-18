@@ -321,13 +321,13 @@ class HotPost extends migi.Component {
                 worksName += '》';
               }
               worksName += $4;
-              return `<a href="/${$1}.html?worksId=${$2}&workId=${$3}" class="link" transparentTitle="true">${worksName}</a>`;
+              return `<a href="/${$1}.html?id=${$2}&workId=${$3}" class="link" transparentTitle="true">${worksName}</a>`;
             }
             if(data) {
               worksName += '》';
             }
             worksName += $4;
-            return `<a href="/${$1}.html?worksId=${$2}" class="link" transparentTitle="true">${worksName}</a>`;
+            return `<a href="/${$1}.html?id=${$2}" class="link" transparentTitle="true">${worksName}</a>`;
           case 'post':
             let postName = '';
             if(data) {

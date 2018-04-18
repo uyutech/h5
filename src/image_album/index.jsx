@@ -4,20 +4,20 @@
 
 'use strict';
 
-import './image.html';
+import './image_album.html';
 import './index.less';
 
 import qs from 'anima-querystring';
 
-import Image from './Image.jsx';
+import ImageAlbum from './ImageAlbum.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let albumId = parseInt(search.albumId);
+let id = parseInt(search.id);
 
 jsBridge.ready(function() {
-  let image = migi.preExist(
-    <Image/>,
+  let imageAlbum = migi.preExist(
+    <ImageAlbum/>,
     '#page'
   );
-  image.init(albumId);
+  imageAlbum.init(id);
 });

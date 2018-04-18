@@ -4,21 +4,21 @@
 
 'use strict';
 
-import './music.html';
+import './music_album.html';
 import './index.less';
 
 import qs from 'anima-querystring';
 
-import Music from './Music.jsx';
+import MusicAlbum from './MusicAlbum.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let albumId = parseInt(search.albumId);
+let id = parseInt(search.id);
 let workId = parseInt(search.workId) || undefined;
 
 jsBridge.ready(function() {
   let music = migi.preExist(
-    <Music/>,
+    <MusicAlbum/>,
     '#page'
   );
-  music.init(albumId, workId);
+  music.init(id, workId);
 });

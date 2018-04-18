@@ -45,7 +45,7 @@ class WorksList extends migi.Component {
     self.exist = {};
   }
   genItem(item) {
-    let url = '/works.html?worksId=' + item.id;
+    let url = '/works.html?id=' + item.id;
     return <li>
       <a class="pic"
          href={ url }

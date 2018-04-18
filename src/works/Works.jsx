@@ -25,16 +25,16 @@ class Works extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  // @bind worksId
+  // @bind id
   // @bind workId
   // @bind kind
   @bind curColumn
-  init(worksId, workId, option) {
+  init(id, workId, option) {
     let self = this;
-    self.worksId = worksId;
+    self.id = id;
     self.workId = workId;
-    self.ref.comments.worksId = worksId;
-    cacheKey = 'worksData_' + worksId;
+    self.ref.comments.id = id;
+    cacheKey = 'worksData_' + id;
     if(option.comment) {
       firstCommentColumn = true;
     }
@@ -46,7 +46,7 @@ class Works extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/works2/index', { worksId }, function(res) {
+    net.postJSON('/h5/works2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -76,7 +76,7 @@ class Works extends migi.Component {
     let comments = self.ref.comments;
 
     // 未完成保密
-    if(data.info.state === 2) {
+    if(data.info.state === 3) {
       return;
     }
     info.setData(data.info);
@@ -84,11 +84,7 @@ class Works extends migi.Component {
     let imgList = [];
     let textList = [];
     data.collection.forEach(function(item) {
-      item.worksId = self.worksId;
       if([1, 2].indexOf(item.kind) > -1) {
-        item.worksTitle = data.info.title;
-        item.worksSubTitle = data.info.subTitle;
-        item.worksCover = data.info.cover;
         avList.push(item);
       }
       else if(item.kind === 3) {
@@ -117,11 +113,11 @@ class Works extends migi.Component {
     select.list = avList;
     poster.list = imgList;
 
-    comments.setData(self.worksId, data.commentList);
+    comments.setData(self.id, data.commentList);
   }
   setMedia(item) {
     let self = this;
-    item.worksId = self.worksId;
+    item.worksId = self.id;
     item.worksTitle = self.data.info.title;
     item.worksCover = self.data.info.cover;
     self.ref.media.setData(item || null);
@@ -206,10 +202,10 @@ class Works extends migi.Component {
   }
   comment() {
     let self = this;
-    if(!self.worksId) {
+    if(!self.id) {
       return;
     }
-    jsBridge.pushWindow('/sub_comment.html?type=2&id=' + self.worksId, {
+    jsBridge.pushWindow('/sub_comment.html?type=2&id=' + self.id, {
       title: '评论',
       optionMenu: '发布',
     });
@@ -224,7 +220,7 @@ class Works extends migi.Component {
         if(!self.data) {
           return;
         }
-        let url = window.ROOT_DOMAIN + '/works/' + self.worksId;
+        let url = window.ROOT_DOMAIN + '/works/' + self.id;
         let text = '【';
         if(self.data.info.title) {
           text += self.data.info.title;
@@ -264,7 +260,7 @@ class Works extends migi.Component {
         if(!self.data) {
           return;
         }
-        let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
+        let url = window.ROOT_DOMAIN + '/works/' + self.data.id;
         util.setClipboard(url);
         botFn.cancel();
       },

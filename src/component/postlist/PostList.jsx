@@ -308,7 +308,7 @@ class PostList extends migi.Component {
             ? <ul class="video">
               {
                 videoList.map(function(item) {
-                  let url = '/works.html?worksId=' + item.id + '&workId=' + item.id;
+                  let url = '/works.html?id=' + item.id + '&workId=' + item.id;
                   let author = [];
                   let hash = {};
                   (item.author || []).forEach(function(list) {
@@ -405,20 +405,24 @@ class PostList extends migi.Component {
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
         return `<a class="link2" href="/tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
       })
-      .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(\s|$)/g, function($0, $1, $2, $3, $4) {
+      .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(?:\s|$)/g, function($0, $1, $2, $3) {
         let data = refHash[$2];
         if(!data) {
           return $0;
         }
         switch($1) {
           case 'works':
-            return `<a href="/${$1}.html?worksId=${$2}" class="link" transparentTitle="true">《${data.title}》</a>`;
+            let url = `/${$1}.html?id=${$2}`;
+            if($3) {
+              url += '&workId=' + $3;
+            }
+            return `<a href="${url}" class="link" transparentTitle="true">《${data.title}》</a>`;
           case 'author':
-            return `<a href="/${$1}.html?authorId=${$2}" class="link" transparentTitle="true">${data.name}</a>`;
+            return `<a href="/${$1}.html?id=${$2}" class="link" transparentTitle="true">${data.name}</a>`;
           case 'user':
-            return `<a href="/${$1}.html?userID=${$2}" class="link" transparentTitle="true">${data.nickname}</a>`;
+            return `<a href="/${$1}.html?id=${$2}" class="link" transparentTitle="true">${data.nickname}</a>`;
           case 'post':
-            return `<a href="/${$1}.html?postId=${$2}" class="link" title="画圈正文">${$0}</a>`;
+            return `<a href="/${$1}.html?id=${$2}" class="link" title="画圈正文">${$0}</a>`;
         }
         return $0;
       })

@@ -77,7 +77,7 @@ class Message extends migi.Component {
         break;
       case 2:
         action = '回复了评论';
-        url = '/works.html?worksId=' + item.refId;
+        url = '/works.html?id=' + item.refId;
         break;
       case 3:
         action = '回复了评论';

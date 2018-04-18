@@ -27,7 +27,7 @@ class HotWork extends migi.Component {
             ? <ul class="list">
               {
                 this.list.map(function(item) {
-                  let url = `/works.html?worksId=${item.WorksID}`;
+                  let url = `/works.html?id=${item.WorksID}`;
                   return <li>
                     <a href={ url } class="pic" title={ item.Title }>
                       <img src={ util.autoSsl(util.img170_170_80(item.cover_Pic)) || '/src/common/blank.png' }/>

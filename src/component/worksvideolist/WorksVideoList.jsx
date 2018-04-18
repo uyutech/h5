@@ -50,7 +50,7 @@ class WorksVideoList extends migi.Component {
     $list.html('');
   }
   genItem(item) {
-    let url = '/works.html?worksId=' + item.id;
+    let url = '/works.html?id=' + item.id;
     let author = [];
     let hash = {};
     (item.author || []).forEach(function(list) {

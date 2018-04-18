@@ -158,7 +158,7 @@ class Playlist extends migi.Component {
             util.setClipboard(url);
           },
           clickShareIn: function(botFn) {
-            jsBridge.pushWindow('/sub_post.html?worksId=' + worksId
+            jsBridge.pushWindow('/sub_post.html?id=' + worksId
               + '&workId=' + workId
               + '&cover=' + encodeURIComponent(worksCover || ''), {
               title: '画个圈',
@@ -218,7 +218,7 @@ class Playlist extends migi.Component {
   }
   genItem(item) {
     let self = this;
-    let url = '/works.html?worksId=' + item.id + '&workId=' + item.work.id;
+    let url = '/works.html?id=' + item.id + '&workId=' + item.work.id;
     let author = [];
     let hash = {};
     if(self.props.profession) {

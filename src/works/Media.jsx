@@ -624,7 +624,7 @@ class Media extends migi.Component {
         if(!self.data) {
           return;
         }
-        jsBridge.pushWindow('/sub_post.html?worksId=' + self.data.worksId
+        jsBridge.pushWindow('/sub_post.html?id=' + self.data.worksId
           + '&workId=' + self.data.workId
           + '&cover=' + encodeURIComponent(self.data.cover || ''), {
           title: '画个圈',

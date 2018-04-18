@@ -34,9 +34,9 @@ class Comments extends migi.Component {
   }
   @bind isLogin
   @bind visible
-  setData(worksId, data) {
+  setData(id, data) {
     let self = this;
-    self.worksId = worksId;
+    self.id = id;
     if(data) {
       offset = data.limit;
       self.ref.comment.setData(data.data);
@@ -64,7 +64,7 @@ class Comments extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    ajax = net.postJSON('/h5/works2/commentList', { worksId: self.worksId, offset }, function(res) {
+    ajax = net.postJSON('/h5/works2/commentList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {
@@ -91,7 +91,7 @@ class Comments extends migi.Component {
     });
   }
   reply(id) {
-    jsBridge.pushWindow('/sub_comment.html?type=2&id=' + this.worksId + '&pid=' + id, {
+    jsBridge.pushWindow('/sub_comment.html?type=2&id=' + this.id + '&pid=' + id, {
       title: '评论',
       optionMenu: '发布',
     });

@@ -200,7 +200,7 @@ class Banner extends migi.Component {
             let url = '';
             switch(item.type) {
               case 1:
-                url = '/works.html?worksId=' + item.targetId;
+                url = '/works.html?id=' + item.targetId;
                 break;
               case 2:
                 url = '/author.html?id=' + item.targetId;

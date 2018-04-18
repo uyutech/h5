@@ -53,6 +53,7 @@ class WaterFall extends migi.Component {
             let data = res.data;
             data.state ? $b.addClass('liked') : $b.removeClass('liked');
             $b.text(data.count);
+            self.emit('like', data);
           }
           else if(res.code === 1000) {
             migi.eventBus.emit('NEED_LOGIN');
@@ -172,11 +173,21 @@ class WaterFall extends migi.Component {
     let target;
     if(self.height1 > self.height2) {
       target = self.ref.l2.element;
-      self.height2 += item.work.height;
+      if(item.work.width <= self.WIDTH / 2) {
+        self.height2 += item.work.height;
+      }
+      else {
+        self.height2 += item.work.height * self.WIDTH / item.work.width;
+      }
     }
     else {
       target = self.ref.l1.element;
-      self.height1 += item.work.height;
+      if(item.work.width <= self.WIDTH / 2) {
+        self.height1 += item.work.height;
+      }
+      else {
+        self.height1 += item.work.height * self.WIDTH / item.work.width;
+      }
     }
     self.genItem(item).appendTo(target);
   }
@@ -190,8 +201,8 @@ class WaterFall extends migi.Component {
       });
     }
     else {
-      item.work.author.forEach((list) => {
-        list.list.forEach((at) => {
+      item.work.author.forEach((item) => {
+        item.list.forEach((at) => {
           if(!hash[at.id]) {
             hash[at.id] = true;
             author.push(at.name);
@@ -200,7 +211,7 @@ class WaterFall extends migi.Component {
       });
     }
     item.work.preview = util.img(item.work.url, 375, 0, 80);
-    if(item.width <= self.WIDTH) {
+    if(item.work.width <= self.WIDTH / 2) {
       return <li id={ 'image_' + item.work.id }>
         <img class="pic"
              src={ util.autoSsl(item.work.preview) || '/src/common/blank.png' }
@@ -213,12 +224,12 @@ class WaterFall extends migi.Component {
         </div>
       </li>;
     }
-    let height = item.work.height * self.WIDTH * 2 / item.work.width;
+    let height = item.work.height * self.WIDTH / item.work.width;
     return <li id={ 'image_' + item.work.id }>
       <img class="pic"
            src={ util.autoSsl(item.work.preview) || '/src/common/blank.png' }
            rel={ self.index++ }
-           height={ height / 2 }/>
+           height={ height }/>
       <div class="txt">
         <p class={ 'author' + (self.props.profession ? ' profession' : '') }>{ author.join(' ') }</p>
         <b class={ 'like' + (item.work.isLike ? ' liked' : '') }
@@ -256,12 +267,8 @@ class WaterFall extends migi.Component {
   render() {
     return <div class={ 'cp-waterfall' + (this.visible ? '' : ' fn-hide') }>
       <div class="c">
-        <div>
-          <ul ref="l1"/>
-        </div>
-        <div>
-          <ul ref="l2"/>
-        </div>
+        <ul ref="l1"/>
+        <ul ref="l2"/>
       </div>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;

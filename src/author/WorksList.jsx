@@ -30,7 +30,7 @@ class WorksList extends migi.Component {
           ? <ul class="list">
             {
               this.list.map(function(item) {
-                let url = `/works.html?worksId=${item.id}`;
+                let url = `/works.html?id=${item.id}`;
                 return <li>
                   <a class="pic"
                      href={ url }
