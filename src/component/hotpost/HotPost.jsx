@@ -443,12 +443,12 @@ class HotPost extends migi.Component {
             if(item.CirclingList) {
               if(item.CirclingList.length) {
                 return <li>
-                  <a href={ '/circle.html?circleId=' + item.CirclingList[0].CirclingID }
+                  <a href={ '/circle.html?id=' + item.CirclingList[0].CirclingID }
                      title={ item.CirclingList[0].CirclingName + '圈' }>{ item.CirclingList[0].CirclingName }</a></li>;
               }
               return <li><span>{ item.TagName }</span></li>;
             }
-            return <li><a href={ '/circle.html?circleId=' + item.TagID }
+            return <li><a href={ '/circle.html?id=' + item.TagID }
                           title={ item.TagName + '圈' }>{ item.TagName }</a></li>;
           })
         }

@@ -112,7 +112,7 @@ class AllCircles extends migi.Component {
     $(self.ref.list.element).append(s);
   }
   genItem(item) {
-    let url = `/circle.html?circleId=${item.TagID}`;
+    let url = `/circle.html?id=${item.TagID}`;
     return <li>
       <a href={url} class="pic" title={ item.TagName + '圈' }>
         <img src={util.autoSsl(util.img288_288_80(item.TagCover)) || '//zhuanquan.xin/img/blank.png'}/>

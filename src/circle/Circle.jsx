@@ -11,6 +11,7 @@ import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
+import Background from '../component/background/Background.jsx';
 
 let offset = 0;
 let ajax;
@@ -64,12 +65,12 @@ class Circle extends migi.Component {
       });
     });
   }
-  // @bind circleId
+  // @bind id
   // @bind circleName
-  init(circleId) {
+  init(id) {
     let self = this;
-    self.circleId = circleId;
-    cacheKey = 'circleData_' + circleId;
+    self.id = id;
+    cacheKey = 'circleData_' + id;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         try {
@@ -78,7 +79,7 @@ class Circle extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = net.postJSON('/h5/circle2/index', { circleId }, function(res) {
+    ajax = net.postJSON('/h5/circle2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -151,7 +152,7 @@ class Circle extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    ajax = net.postJSON('/h5/circle2/postList', { circleId: self.circleId, offset }, function(res) {
+    ajax = net.postJSON('/h5/circle2/postList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {
@@ -215,10 +216,10 @@ class Circle extends migi.Component {
   }
   comment() {
     let self = this;
-    if(!self.circleId) {
+    if(!self.id) {
       return;
     }
-    jsBridge.pushWindow('/subpost.html?circleId=' + self.circleId, {
+    jsBridge.pushWindow('/sub_post.html?id=' + self.id, {
       title: '画个圈',
       optionMenu: '发布',
     });
@@ -282,6 +283,7 @@ class Circle extends migi.Component {
   }
   render() {
     return <div class="circle">
+      <Background ref="background"/>
       <Nav ref="nav"
            on-follow={ this.follow }/>
       <PostList ref="postList"

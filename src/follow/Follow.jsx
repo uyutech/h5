@@ -96,8 +96,8 @@ class Follow extends migi.Component {
     ajax = net.postJSON('/h5/follow2/index', function(res) {
       if(res.success) {
         let data = res.data;
-        self.setData(data, 1);
         jsBridge.setPreference(cacheKey, data);
+        self.setData(data, 1);
 
         window.addEventListener('scroll', function() {
           if(self.visible) {
@@ -264,8 +264,9 @@ class Follow extends migi.Component {
   clickTag(e, vd, tvd) {
     let id = tvd.props.rel;
     let title = tvd.props.title;
-    jsBridge.pushWindow('/circle.html?circleId=' + id, {
+    jsBridge.pushWindow('/circle.html?id=' + id, {
       title,
+      transparentTitle: true,
     });
   }
   clickPerson(e, vd, tvd) {

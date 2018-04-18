@@ -65,8 +65,8 @@ class Circling extends migi.Component {
     ajax = net.postJSON('/h5/circling2/index', function(res) {
       if(res.success) {
         let data = res.data;
-        self.setData(data, 1);
         jsBridge.setPreference(cacheKey, data);
+        self.setData(data, 1);
 
         window.addEventListener('scroll', function() {
           if(self.visible) {
@@ -166,7 +166,7 @@ class Circling extends migi.Component {
     }
   }
   clickCircle() {
-    jsBridge.pushWindow('/allcircles.html', {
+    jsBridge.pushWindow('/all_circles.html', {
       title: '全部圈子',
     });
   }
@@ -216,7 +216,7 @@ class Circling extends migi.Component {
             item.isFavor = data.state;
             item.favorCount = data.count;
           }
-        })
+        });
         jsBridge.setPreference(cacheKey, cache);
       }
     });
@@ -229,7 +229,7 @@ class Circling extends migi.Component {
             item.isLike = data.state;
             item.likeCount = data.count;
           }
-        })
+        });
         jsBridge.setPreference(cacheKey, cache);
       }
     });

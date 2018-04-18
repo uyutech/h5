@@ -25,6 +25,7 @@ class PostList extends migi.Component {
         let title = $this.attr('title');
         jsBridge.pushWindow(url, {
           title,
+          transparentTitle: true,
         });
       });
       $list.on('click', '.circle', function(e) {
@@ -265,7 +266,7 @@ class PostList extends migi.Component {
           (item.circle || []).map(function(circle) {
             return <li>
               <a class="circle"
-                 href={ '/circle.html?circleId=' + circle.id }
+                 href={ '/circle.html?id=' + circle.id }
                  title={ circle.name + '圈' }>{ circle.name }</a>
             </li>;
           })
