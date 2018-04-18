@@ -192,7 +192,6 @@ class PostList extends migi.Component {
       s += self.genItem(item) || '';
     });
     $(self.ref.list.element).html(s);
-    self.loadRef();
   }
   appendData(data) {
     let self = this;
@@ -239,10 +238,10 @@ class PostList extends migi.Component {
     self.exist[id] = true;
     let len = item.content.length;
     let html = len > MAX_LEN ? (item.content.slice(0, MAX_LEN) + '...') : item.content;
-    html = this.encode(html, item.reference);
+    html = this.encode(html, item.refHash);
     if(len > MAX_LEN) {
       html += '<span class="placeholder"></span><span class="more">查看全文</span>';
-      let full = this.encode(item.content, item.reference) + '<span class="placeholder"></span><span class="less fn-hide">收起全文</span>';
+      let full = this.encode(item.content, item.refHash) + '<span class="placeholder"></span><span class="less fn-hide">收起全文</span>';
       html = `<p class="snap">${html}</p><p class="full fn-hide">${full}</p>`;
     }
     let peopleUrl = item.isAuthor
@@ -399,132 +398,31 @@ class PostList extends migi.Component {
       </ul>
     </li>;
   }
-  encode(s) {
+  encode(s, refHash) {
+    refHash = refHash || {};
     return s.replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
         return `<a class="link2" href="/tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
       })
-      .replace(/@\/\w+\/\d+\/?(\d+)?(\s|$)/g, function($0) {
-        return `<span class="ref">${$0}</span>`;
+      .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(\s|$)/g, function($0, $1, $2, $3, $4) {
+        let data = refHash[$2];
+        if(!data) {
+          return $0;
+        }
+        switch($1) {
+          case 'works':
+            return `<a href="/${$1}.html?worksId=${$2}" class="link" transparentTitle="true">《${data.title}》</a>`;
+          case 'author':
+            return `<a href="/${$1}.html?authorId=${$2}" class="link" transparentTitle="true">${data.name}</a>`;
+          case 'user':
+            return `<a href="/${$1}.html?userID=${$2}" class="link" transparentTitle="true">${data.nickname}</a>`;
+          case 'post':
+            return `<a href="/${$1}.html?postId=${$2}" class="link" title="画圈正文">${$0}</a>`;
+        }
+        return $0;
       })
       .replace(/(http(?:s)?:\/\/[\w-]+\.[\w]+\S*)/gi, '<a class="outside" href="$1" target="_blank">$1</a>');
-  }
-  loadRef() {
-    let self = this;
-    let elems = self.ref.list.element.querySelectorAll('span.ref');
-    let worksIdList = [];
-    let workIdList = [];
-    let authorIdList = [];
-    let userIdList = [];
-    let postIdList = [];
-    elems.forEach((item) => {
-      let match = item.innerHTML.match(/@\/(\w+)\/(\d+)\/?(\d+)?(\s|$)/);
-      if(match) {
-        switch(match[1]) {
-          case 'works':
-            worksIdList.push(match[2]);
-            break;
-          case 'work':
-            workIdList.push(match[2]);
-            break;
-          case 'author':
-            authorIdList.push(match[2]);
-            break;
-          case 'user':
-            userIdList.push(match[2]);
-            break;
-          case 'post':
-            postIdList.push(match[2]);
-            break;
-        }
-      }
-    });
-    net.postJSON('/h5/post2/refList', {
-      worksIdList, workIdList, authorIdList, userIdList, postIdList
-    }, function(res) {
-      if(res.success) {
-        let data = res.data;
-        let worksHash = {};
-        let workHash = {};
-        let authorHash = {};
-        let userHash = {};
-        let postHash = {};
-        (data.worksList || []).forEach((item) => {
-          if(item) {
-            worksHash[item.id] = item;
-          }
-        });
-        (data.workList || []).forEach((item) => {
-          if(item) {
-            workHash[item.id] = item;
-          }
-        });
-        (data.authorList || []).forEach((item) => {
-          if(item) {
-            authorHash[item.id] = item;
-          }
-        });
-        (data.userList || []).forEach((item) => {
-          if(item) {
-            userHash[item.id] = item;
-          }
-        });
-        (data.postList || []).forEach((item) => {
-          if(item) {
-            postHash[item.id] = item;
-          }
-        });
-        elems.forEach((item) => {
-          let match = item.innerHTML.match(/@\/(\w+)\/(\d+)\/?(\d+)?(\s|$)/);
-          if(match) {
-            let node = document.createElement('a');
-            switch(match[1]) {
-              case 'works':
-                if(!worksHash[match[2]]) {
-                  return;
-                }
-                node.className = 'link';
-                node.textContent = '《' + worksHash[match[2]].title + '》';
-                item.parentNode.replaceChild(node, item);
-                break;
-              case 'work':
-                if(!workHash[match[2]]) {
-                  return;
-                }
-                node.className = 'link';
-                node.textContent = '《' + workHash[match[2]].title + '》';
-                item.parentNode.replaceChild(node, item);
-                break;
-              case 'author':
-                if(!authorHash[match[2]]) {
-                  return;
-                }
-                node.className = 'link';
-                node.textContent = authorHash[match[2]].name;
-                item.parentNode.replaceChild(node, item);
-                break;
-              case 'user':
-                if(!userHash[match[2]]) {
-                  return;
-                }
-                node.className = 'link';
-                node.textContent = userHash[match[2]].nickname;
-                item.parentNode.replaceChild(node, item);
-                break;
-              case 'post':
-                if(!postHash[match[2]]) {
-                  return;
-                }
-                node.className = 'link2';
-                node.textContent = '画圈正文';
-                item.parentNode.replaceChild(node, item);
-                break;
-            }
-          }
-        });
-      }
-    });
   }
   render() {
     return <div class={ 'cp-postlist' + (this.visible ? '' : ' fn-hide') }>
