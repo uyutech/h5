@@ -184,7 +184,7 @@ class My extends migi.Component {
       </ul>
       <ul class={ 'list' + (this.isLogin ? '' : ' fn-hide') }
           onClick={ { a: this.clickLink } }>
-        <li><a href="/post.html?postId=91255" class="help">帮助中心</a></li>
+        <li><a href="/post.html?id=91255" class="help">帮助中心</a></li>
         <li><a href="/config.html" class="config">系统设置</a></li>
       </ul>
       <div class={ 'login' + (this.isLogin ? ' fn-hide' : '') }>

@@ -132,7 +132,8 @@ class Nav extends migi.Component {
           </div>
           <p>uid: { (this.userId ? this.userId.toString() : '').replace(/^20180*/, '') }</p>
         </div>
-        <button onClick={ this.clickPersonal }>个人主页</button>
+        <button class={ this.userId ? '' : ' fn-hide' }
+                onClick={ this.clickPersonal }>个人主页</button>
         <button class={ 'author' + (this.authorId ? '' : ' fn-hide') }
                 onClick={ this.clickAuthor }>作者主页</button>
       </div>

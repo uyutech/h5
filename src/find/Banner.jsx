@@ -209,7 +209,7 @@ class Banner extends migi.Component {
                 url = '/user.html?userID=' + item.targetId;
                 break;
               case 4:
-                url = '/post.html?postId=' + item.targetId;
+                url = '/post.html?id=' + item.targetId;
                 break;
             }
             return <li>

@@ -107,7 +107,7 @@ class HotPost extends migi.Component {
         let $this = $(this);
         let id = $this.attr('rel');
         let count = $this.attr('count');
-        let url = count === '0' ? `/subcomment.html?type=1&id=${id}` : `/post.html?postId=${id}`;
+        let url = count === '0' ? `/subcomment.html?type=1&id=${id}` : `/post.html?id=${id}`;
         let title = count === '0' ? '回复画圈' : '画圈正文';
         jsBridge.pushWindow(url, {
           title,
@@ -334,7 +334,7 @@ class HotPost extends migi.Component {
               postName += data.Content.length > 10 ? (data.Content.slice(0, 10) + '...') : data.Content;
             }
             postName += $4;
-            return `<a href="/${$1}.html?postId=${$2}" class="link" title="画圈正文">${postName}</a>`;
+            return `<a href="/${$1}.html?id=${$2}" class="link" title="画圈正文">${postName}</a>`;
           case 'author':
             let authorName = '';
             if(data) {
@@ -369,7 +369,7 @@ class HotPost extends migi.Component {
       let full = this.encode(item.Content, item.reference) + '<span class="placeholder"></span><span class="shrink">收起全文</span>';
       html = `<p class="snap">${html}</p><p class="full">${full}</p>`;
     }
-    let url = '/post.html?postId=' + id;
+    let url = '/post.html?id=' + id;
     let peopleUrl = item.IsAuthor
       ? ('/author.html?authorId=' + item.AuthorID)
       : ('/user.html?userID=' + item.SendUserID);

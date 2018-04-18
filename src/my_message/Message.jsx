@@ -81,11 +81,11 @@ class Message extends migi.Component {
         break;
       case 3:
         action = '回复了评论';
-        url = '/post.html?postId=' + item.refId;
+        url = '/post.html?id=' + item.refId;
         break;
       case 4:
         action = '回复了画圈';
-        url = '/post.html?postId=' + item.refId;
+        url = '/post.html?id=' + item.refId;
         break;
     }
     return <li class={ (comment.isAuthor ? 'author' : 'user') + (item.isRead ? ' read' : '') }>

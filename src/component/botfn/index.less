@@ -11,7 +11,7 @@
     width:100%;
     height:100%;
     background:rgba(0, 0, 0, 0.5);
-    z-index:901;
+    z-index:103;
   }
   &.on:before{
     display:block;
@@ -24,7 +24,7 @@
     width:100%;
     background:#EDF3F7;
     transform:translate3d(0, 100%, 0);
-    z-index:910;
+    z-index:104;
     transition:transform 0.2s;
     .list{
       position:relative;
@@ -97,21 +97,6 @@
             background-image:url(report.png);
           }
         }
-        &.recommend{
-          b{
-            background-image:url(gou.png);
-          }
-        }
-        &.un-recommend{
-          b{
-            background-image:url(cha.png);
-          }
-        }
-        &.clean{
-          b{
-            background-image:url(clean.png);
-          }
-        }
         &.in{
           b{
             background-image:url(share.png);
@@ -144,18 +129,5 @@
   }
   &.on .c{
     transform:translate3d(0, 0, 0);
-  }
-  > .recommend{
-    position:fixed;
-    left:50%;
-    top:50%;
-    padding:0.1rem;
-    background:#FFF;
-    transform:translate(-50%, -50%);
-    z-index:910;
-    span{
-      margin:0 0.1rem;
-      white-space:nowrap;
-    }
   }
 }

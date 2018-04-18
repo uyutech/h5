@@ -25,15 +25,15 @@ class Post extends migi.Component {
     super(...data);
   }
   // @bind hasData
-  // @bind postId
+  // @bind id
   // @bind isLike
   // @bind likeCount
   // @bind isFavor
   // @bind favorCount
-  init(postId) {
+  init(id) {
     let self = this;
-    self.postId = postId;
-    cacheKey = 'postData_' + postId;
+    self.id = id;
+    cacheKey = 'postData_' + id;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         try {
@@ -42,7 +42,7 @@ class Post extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/post2/index', { postId }, function(res) {
+    net.postJSON('/h5/post2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -51,6 +51,7 @@ class Post extends migi.Component {
         window.addEventListener('scroll', function() {
           self.checkMore();
         });
+        self.fn();
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -210,7 +211,7 @@ class Post extends migi.Component {
     }
     let comment = self.ref.comment;
     loading = true;
-    ajax = net.postJSON('/h5/post2/commentList', { postId: self.postId, offset }, function(res) {
+    ajax = net.postJSON('/h5/post2/commentList', { id: self.postId, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {
@@ -259,12 +260,12 @@ class Post extends migi.Component {
     });
   }
   clickDel(e) {
-    let postId = this.postId;
+    let id = this.id;
     jsBridge.confirm('确认删除吗？', function(res) {
       if(!res) {
         return;
       }
-      net.postJSON('/h5/post/del', { postID: postId }, function(res) {
+      net.postJSON('/h5/post/del', { id }, function(res) {
         if(res.success) {
           location.reload(true);
         }
@@ -321,7 +322,7 @@ class Post extends migi.Component {
       canShareWb: true,
       canShareLink: true,
       clickShareWb: function() {
-        let url = window.ROOT_DOMAIN + '/post/' + self.postId;
+        let url = window.ROOT_DOMAIN + '/post/' + self.id;
         let text = '';
         if(self.postData.Content) {
           text += self.postData.Content.length > 30 ? (self.postData.Content.slice(0, 30) + '...') : self.postData.Content;
@@ -343,16 +344,16 @@ class Post extends migi.Component {
         });
       },
       clickShareLink: function() {
-        util.setClipboard(window.ROOT_DOMAIN + '/post/' + self.postId);
+        util.setClipboard(window.ROOT_DOMAIN + '/post/' + self.id);
       },
     });
   }
   comment() {
     let self = this;
-    if(!self.postId) {
+    if(!self.id) {
       return;
     }
-    jsBridge.pushWindow('/subcomment.html?type=1&id=' + self.postId, {
+    jsBridge.pushWindow('/subcomment.html?type=1&id=' + self.id, {
       title: '评论',
       optionMenu: '发布',
     });
@@ -371,9 +372,75 @@ class Post extends migi.Component {
     });
   }
   reply(id) {
-    jsBridge.pushWindow('/subcomment.html?type=3&id=' + this.postId + '&pid=' + id, {
+    jsBridge.pushWindow('/subcomment.html?type=3&id=' + this.id + '&pid=' + id, {
       title: '评论',
       optionMenu: '发布',
+    });
+  }
+  fn() {
+    let self = this;
+    jsBridge.on('optionMenu1', function() {
+      migi.eventBus.emit('BOT_FN', {
+        canFn: true,
+        canLike: true,
+        canFavor: true,
+        isLike: self.isLike,
+        isFavor: self.isFavor,
+        canBlock: true,
+        canReport: true,
+        canShare: true,
+        canShareWb: true,
+        canShareLink: true,
+        clickLike: function(botFn) {
+          self.like(function() {
+            botFn.isLike = self.isLike;
+          });
+        },
+        clickFavor: function(botFn) {
+          self.favor(function() {
+            botFn.isFavor = self.isFavor;
+          });
+        },
+        clickBlock: function(botFn) {
+          let id = self.postData.SendUserID;
+          let type = self.postData.isAuthor ? 5 : 6;
+          self.block(id, type, function() {
+            jsBridge.toast('屏蔽成功');
+            botFn.cancel();
+          });
+        },
+        clickReport: function(botFn) {
+          self.report(self.postId, function() {
+            jsBridge.toast('举报成功');
+            botFn.cancel();
+          });
+        },
+        clickShareWb: function() {
+          let url = window.ROOT_DOMAIN + '/post/' + self.postId;
+          let text = '';
+          if(self.postData.Content) {
+            text += self.postData.Content.length > 30 ? (self.postData.Content.slice(0, 30) + '...') : self.postData.Content;
+          }
+          text += ' #转圈circling# ';
+          text += url;
+          jsBridge.shareWb({
+            text,
+          }, function(res) {
+            if(res.success) {
+              jsBridge.toast("分享成功");
+            }
+            else if(res.cancel) {
+              jsBridge.toast("取消分享");
+            }
+            else {
+              jsBridge.toast("分享失败");
+            }
+          });
+        },
+        clickShareLink: function() {
+          util.setClipboard(window.ROOT_DOMAIN + '/post/' + self.postId);
+        },
+      });
     });
   }
   render() {
