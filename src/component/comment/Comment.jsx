@@ -23,10 +23,10 @@ class Comment extends migi.Component {
       let $list = $(this.ref.list.element);
       $list.on('click', '.like', function() {
         let $this = $(this);
-        let commentId = parseInt($this.attr('rel'));
+        let id = parseInt($this.attr('rel'));
         let isLike = $this.hasClass('liked');
         let url = isLike ? '/h5/comment2/unLike' : '/h5/comment2/like';
-        net.postJSON(url, { commentId }, function(res) {
+        net.postJSON(url, { id }, function(res) {
           if(res.success) {
             let data = res.data;
             if(data.state) {
@@ -36,7 +36,7 @@ class Comment extends migi.Component {
               $this.removeClass('liked');
             }
             $this.text(data.count || '');
-            self.emit('like', commentId, data);
+            self.emit('like', id, data);
           }
           else if(res.code === 1000) {
             migi.eventBus.emit('NEED_LOGIN');
@@ -56,32 +56,32 @@ class Comment extends migi.Component {
         let id = parseInt($fn.attr('rel'));
         migi.eventBus.emit('BOT_FN', {
           canFn: true,
-          canDel: $fn.attr('own') === 'true',
-          canBlock: true,
+          // canBlock: true,
           canReport: true,
-          clickBlock: function(botFn) {
-            if(!util.isLogin()) {
-              migi.eventBus.emit('NEED_LOGIN');
-              return;
-            }
-            jsBridge.confirm('确认屏蔽吗？', function(res) {
-              if(!res) {
-                return;
-              }
-              net.postJSON('/h5/comment2/block', { id }, function(res) {
-                if(res.success) {
-                  jsBridge.toast('屏蔽成功');
-                }
-                else {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
-                }
-                botFn.cancel();
-              }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
-                botFn.cancel();
-              });
-            });
-          },
+          canDel: $fn.attr('own') === 'true',
+          // clickBlock: function(botFn) {
+          //   if(!util.isLogin()) {
+          //     migi.eventBus.emit('NEED_LOGIN');
+          //     return;
+          //   }
+          //   jsBridge.confirm('确认屏蔽吗？', function(res) {
+          //     if(!res) {
+          //       return;
+          //     }
+          //     net.postJSON('/h5/comment2/block', { id }, function(res) {
+          //       if(res.success) {
+          //         jsBridge.toast('屏蔽成功');
+          //       }
+          //       else {
+          //         jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          //       }
+          //       botFn.cancel();
+          //     }, function(res) {
+          //       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          //       botFn.cancel();
+          //     });
+          //   });
+          // },
           clickReport: function(botFn) {
             jsBridge.confirm('确认举报吗？', function(res) {
               if(!res) {
@@ -102,18 +102,16 @@ class Comment extends migi.Component {
             });
           },
           clickDel: function(botFn) {
-            jsBridge.confirm('会删除子留言哦，确定要删除吗？', function(res) {
+            jsBridge.confirm('确定要删除吗？', function(res) {
               if(!res) {
                 return;
               }
-              net.postJSON(self.props.delUrl, { commentID }, function(res) {
+              net.postJSON('/h5/comment2/del', { id }, function(res) {
                 if(res.success) {
                   $fn.closest('li').remove();
                   self.empty = !$(self.ref.list.element).children('li').length;
                   botFn.cancel();
-                }
-                else if(res.code === 1000) {
-                  migi.eventBus.emit('NEED_LOGIN');
+                  self.emit('del', id);
                 }
                 else {
                   jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -266,7 +264,7 @@ class Comment extends migi.Component {
         </div>
         <b class="fn"
            rel={ id }
-           own={ item.IsOwn }/>
+           own={ item.isOwn }/>
       </div>
       <div class="wrap">
         {

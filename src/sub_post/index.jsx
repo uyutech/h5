@@ -4,7 +4,7 @@
 
 'use strict';
 
-import './subpost.html';
+import './sub_post.html';
 import './index.less';
 
 import qs from 'anima-querystring';

@@ -201,7 +201,7 @@ class Playlist extends migi.Component {
       });
       botPlayBar.on('comment', function() {
         if(media.data) {
-          jsBridge.pushWindow('/subcomment.html?type=3&id='
+          jsBridge.pushWindow('/sub_comment.html?type=3&id='
             + media.data.worksId + '&sid=' + media.data.workId, {
             title: '评论',
             optionMenu: '发布',

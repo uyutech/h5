@@ -197,8 +197,6 @@ class Author extends migi.Component {
       <Dynamics ref="dynamics"
                 @visible={ this.curColumn === 2 }/>
       <Comments ref="comments"
-                on-chooseSubComment={ this.chooseSubComment }
-                on-closeSubComment={ this.closeSubComment }
                 @visible={ this.curColumn === 3 }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }

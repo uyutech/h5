@@ -234,6 +234,18 @@ class Circling extends migi.Component {
       }
     });
   }
+  del(id) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.postList.data.forEach(function(item, i) {
+          if(item.id === id) {
+            cache.postList.data.splice(i, 1);
+          }
+        });
+        jsBridge.setPreference(cacheKey, cache);
+      }
+    });
+  }
   render() {
     return <div class={ 'circling' + (this.visible ? '' : ' fn-hide') }>
       <Banner ref="banner"/>
@@ -252,7 +264,8 @@ class Circling extends migi.Component {
                 visible={ true }
                 message="正在加载..."
                 on-favor={ this.favor }
-                on-like={ this.like }/>
+                on-like={ this.like }
+                on-del={ this.del }/>
     </div>;
   }
 }

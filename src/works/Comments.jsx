@@ -26,7 +26,7 @@ class Comments extends migi.Component {
       self.isLogin = util.isLogin();
       jsBridge.on('resume', function(e) {
         let data = e.data;
-        if(data && data.type && data.type === 'subComment') {
+        if(data && data.type && data.type === 'sub_comment') {
           self.ref.comment.prependData(data.data);
         }
       });
@@ -91,7 +91,7 @@ class Comments extends migi.Component {
     });
   }
   reply(id) {
-    jsBridge.pushWindow('/subcomment.html?type=2&id=' + this.worksId + '&pid=' + id, {
+    jsBridge.pushWindow('/sub_comment.html?type=2&id=' + this.worksId + '&pid=' + id, {
       title: '评论',
       optionMenu: '发布',
     });

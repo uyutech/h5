@@ -107,7 +107,7 @@ class HotPost extends migi.Component {
         let $this = $(this);
         let id = $this.attr('rel');
         let count = $this.attr('count');
-        let url = count === '0' ? `/subcomment.html?type=1&id=${id}` : `/post.html?id=${id}`;
+        let url = count === '0' ? `/sub_comment.html?type=1&id=${id}` : `/post.html?id=${id}`;
         let title = count === '0' ? '回复画圈' : '画圈正文';
         jsBridge.pushWindow(url, {
           title,

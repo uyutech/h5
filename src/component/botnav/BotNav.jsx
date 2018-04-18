@@ -28,7 +28,7 @@ class BotNav extends migi.Component {
   @bind followUpdate
   click(e, vd, tvd) {
     if(tvd.props.class === 'new') {
-      jsBridge.pushWindow('/subpost.html', {
+      jsBridge.pushWindow('/sub_post.html', {
         title: '画圈',
         showOptionMenu: 'true',
         optionMenu: '发布',

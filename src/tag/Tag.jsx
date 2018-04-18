@@ -145,7 +145,7 @@ class Tag extends migi.Component {
     });
   }
   comment() {
-    jsBridge.pushWindow('/subpost.html?tag=' + encodeURIComponent(this.tag), {
+    jsBridge.pushWindow('/sub_post.html?tag=' + encodeURIComponent(this.tag), {
       title: '画个圈',
       showOptionMenu: 'true',
       optionMenu: '发布',

@@ -38,34 +38,36 @@ class PostList extends migi.Component {
         });
       });
       $list.on('click', '.fn', function() {
-        let id = $(this).attr('rel');
+        let $fn = $(this);
+        let id = parseInt($fn.attr('rel'));
         migi.eventBus.emit('BOT_FN', {
           canFn: true,
-          canBlock: true,
+          // canBlock: true,
           canReport: true,
-          clickBlock: function(botFn) {
-            if(!util.isLogin()) {
-              migi.eventBus.emit('NEED_LOGIN');
-              return;
-            }
-            jsBridge.confirm('确认屏蔽吗？', function(res) {
-              if(!res) {
-                return;
-              }
-              net.postJSON('/h5/comment2/block', { id }, function(res) {
-                if(res.success) {
-                  jsBridge.toast('屏蔽成功');
-                }
-                else {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
-                }
-                botFn.cancel();
-              }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
-                botFn.cancel();
-              });
-            });
-          },
+          canDel: $fn.attr('own') === 'true',
+          // clickBlock: function(botFn) {
+          //   if(!util.isLogin()) {
+          //     migi.eventBus.emit('NEED_LOGIN');
+          //     return;
+          //   }
+          //   jsBridge.confirm('确认屏蔽吗？', function(res) {
+          //     if(!res) {
+          //       return;
+          //     }
+          //     net.postJSON('/h5/comment2/block', { id }, function(res) {
+          //       if(res.success) {
+          //         jsBridge.toast('屏蔽成功');
+          //       }
+          //       else {
+          //         jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          //       }
+          //       botFn.cancel();
+          //     }, function(res) {
+          //       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          //       botFn.cancel();
+          //     });
+          //   });
+          // },
           clickReport: function(botFn) {
             jsBridge.confirm('确认举报吗？', function(res) {
               if(res) {
@@ -84,14 +86,34 @@ class PostList extends migi.Component {
               }
             });
           },
+          clickDel: function(botFn) {
+            jsBridge.confirm('确定要删除吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              net.postJSON('/h5/comment2/del', { id }, function(res) {
+                if(res.success) {
+                  $fn.closest('li').remove();
+                  self.empty = !$(self.ref.list.element).children('li').length;
+                  botFn.cancel();
+                  self.emit('del', id);
+                }
+                else {
+                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                }
+              }, function(res) {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              });
+            });
+          },
         });
       });
       $list.on('click', '.like', function() {
         let $this = $(this);
-        let commentId = parseInt($this.attr('rel'));
+        let id = parseInt($this.attr('rel'));
         let isLike = $this.hasClass('liked');
         let url = isLike ? '/h5/comment2/unLike' : '/h5/comment2/like';
-        net.postJSON(url, { commentId }, function(res) {
+        net.postJSON(url, { id }, function(res) {
           if(res.success) {
             let data = res.data;
             if(data.state) {
@@ -101,7 +123,7 @@ class PostList extends migi.Component {
               $this.removeClass('liked');
             }
             $this.text(data.count || '点赞');
-            self.emit('like', commentId, data);
+            self.emit('like', id, data);
           }
           else if(res.code === 1000) {
             migi.eventBus.emit('NEED_LOGIN');
@@ -113,10 +135,10 @@ class PostList extends migi.Component {
       });
       $list.on('click', '.favor', function() {
         let $this = $(this);
-        let commentId = parseInt($this.attr('rel'));
+        let id = parseInt($this.attr('rel'));
         let isFavor = $this.hasClass('favored');
         let url = isFavor ? '/h5/comment2/unFavor' : '/h5/comment2/favor';
-        net.postJSON(url, { commentId }, function(res) {
+        net.postJSON(url, { id }, function(res) {
           if(res.success) {
             let data = res.data;
             if(data.state) {
@@ -126,7 +148,7 @@ class PostList extends migi.Component {
               $this.removeClass('favored');
             }
             $this.text(data.count || '收藏');
-            self.emit('favor', commentId, data);
+            self.emit('favor', id, data);
           }
           else if(res.code === 1000) {
             migi.eventBus.emit('NEED_LOGIN');
@@ -138,8 +160,8 @@ class PostList extends migi.Component {
       });
       $list.on('click', '.comment', function() {
         let $this = $(this);
-        let commentId = parseInt($this.attr('rel'));
-        self.emit('reply', commentId);
+        let id = parseInt($this.attr('rel'));
+        self.emit('reply', id);
       });
       $list.on('click', '.time', function(e) {
         e.preventDefault();
@@ -276,7 +298,8 @@ class PostList extends migi.Component {
           self.props.single
             ? ''
             : <b class="fn"
-                 rel={ id }/>
+                 rel={ id }
+                 own={ item.isOwn }/>
         }
       </div>
       <div class="wrap">

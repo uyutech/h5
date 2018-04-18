@@ -9,7 +9,7 @@ import util from '../common/util';
 
 const MAX_TEXT_LENGTH = 2048;
 
-class SubComment extends migi.Component {
+class sub_comment extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
@@ -137,7 +137,7 @@ class SubComment extends migi.Component {
         jsBridge.hideLoading();
         if(res.success) {
           jsBridge.setPreference(self.getContentKey(), null);
-          jsBridge.popWindow({ type: 'subComment', data: res.data });
+          jsBridge.popWindow({ type: 'sub_comment', data: res.data });
         }
         else {
           jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -179,4 +179,4 @@ class SubComment extends migi.Component {
   }
 }
 
-export default SubComment;
+export default sub_comment;

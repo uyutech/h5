@@ -209,7 +209,7 @@ class Works extends migi.Component {
     if(!self.worksId) {
       return;
     }
-    jsBridge.pushWindow('/subcomment.html?type=2&id=' + self.worksId, {
+    jsBridge.pushWindow('/sub_comment.html?type=2&id=' + self.worksId, {
       title: '评论',
       optionMenu: '发布',
     });

@@ -4,14 +4,12 @@
 
 'use strict';
 
-import './subcomment.html';
+import './sub_comment.html';
 import './index.less';
 
 import qs from 'anima-querystring';
 
-import net from '../common/net';
-import util from '../common/util';
-import SubComment from './SubComment.jsx';
+import subComment from './subComment.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
 let id = search.id;
@@ -21,7 +19,7 @@ let pid = search.pid;
 jsBridge.ready(function() {
   jsBridge.refreshState(false);
   let subComment = migi.preExist(
-    <SubComment/>,
+    <subComment/>,
     '#page'
   );
   subComment.init({ id, type, pid });

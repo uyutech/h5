@@ -158,7 +158,7 @@ class Playlist extends migi.Component {
             util.setClipboard(url);
           },
           clickShareIn: function(botFn) {
-            jsBridge.pushWindow('/subpost.html?worksId=' + worksId
+            jsBridge.pushWindow('/sub_post.html?worksId=' + worksId
               + '&workId=' + workId
               + '&cover=' + encodeURIComponent(worksCover || ''), {
               title: '画个圈',

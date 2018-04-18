@@ -75,7 +75,7 @@ class Comments extends migi.Component {
     });
   }
   reply(id) {
-    jsBridge.pushWindow('/subcomment.html?type=1&id=' + this.id + '&pid=' + id, {
+    jsBridge.pushWindow('/sub_comment.html?type=1&id=' + this.id + '&pid=' + id, {
       title: '评论',
       optionMenu: '发布',
     });

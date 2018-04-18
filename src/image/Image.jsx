@@ -163,7 +163,7 @@ class Image extends migi.Component {
   }
   comment() {
     let self = this;
-    jsBridge.pushWindow('/subcomment.html?type=2&id=' + self.albumId, {
+    jsBridge.pushWindow('/sub_comment.html?type=2&id=' + self.albumId, {
       title: '评论',
       optionMenu: '发布',
     });
