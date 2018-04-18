@@ -35,6 +35,7 @@ class PostList extends migi.Component {
         let title = $this.attr('title');
         jsBridge.pushWindow(url, {
           title,
+          transparentTitle: true,
         });
       });
       $list.on('click', '.fn', function() {

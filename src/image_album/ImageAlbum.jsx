@@ -149,7 +149,23 @@ class ImageAlbum extends migi.Component {
     let self = this;
     self.curColumn = id;
   }
-  like(id, data) {}
+  like(id, data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        let has;
+        cache.imageList.data.forEach((item) => {
+          if(item.work.id === id) {
+            has = true;
+            item.work.isLike = data.state;
+            item.work.likeCount = data.count;
+          }
+        });
+        if(has) {
+          jsBridge.setPreference(cacheKey, cache);
+        }
+      }
+    });
+  }
   comment() {
     let self = this;
     jsBridge.pushWindow('/sub_comment.html?type=2&id=' + self.id, {
