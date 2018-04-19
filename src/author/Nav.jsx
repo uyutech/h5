@@ -70,23 +70,23 @@ class Nav extends migi.Component {
   @bind id
   @bind name
   @bind aliases
-  @bind sign
+  @bind skill
   @bind headUrl
   @bind fansCount
   @bind like
   @bind loading
   @bind settled
-  @bind outsides
+  @bind outside
   @bind isFollow
-  setData(data, aliases, outsides, isFollow) {
+  setData(data, aliases, skill, outside, isFollow) {
     let self = this;
     self.id = data.id;
     self.name = data.name;
     self.headUrl = data.headUrl;
-    self.sign = data.sign;
     self.fansCount = data.fansCount;
     self.aliases = aliases;
-    self.outsides = outsides;
+    self.skill = skill;
+    self.outside = outside;
     self.isFollow = isFollow;
     self.loading = false;
   }
@@ -170,8 +170,16 @@ class Nav extends migi.Component {
         <div class="txt">
           <div class="n">
             <h3>{ this.name }</h3>
+            <ul class="skill">
+            {
+              (this.skill || []).map((item) => {
+                return <li class={ 's' + item.id }
+                           rel={ item.point }>{ item.name }</li>;
+              })
+            }
+            </ul>
           </div>
-          <p class={ 'alias' + (this.aliases ? '' : ' fn-hide') }>别名：{ (this.aliases || []).map(function(item) {
+          <p class={ 'aliases' + (this.aliases && this.aliases.length ? '' : ' fn-hide') }>别名：{ (this.aliases || []).map(function(item) {
             return item;
           }).join(' ') }</p>
         </div>
@@ -180,11 +188,14 @@ class Nav extends migi.Component {
       </div>
       <ul class="plus">
         <li class="fans">粉丝<strong>{ this.fansCount || '0' }</strong></li>
-        <li class="outsides" onClick={ { a: this.clickOut } }>
+        <li class="outside"
+            onClick={ { a: this.clickOut } }>
           <span>外站</span>
           {
-            (this.outsides || []).map(function(item) {
-              return <a target="_blank" href={ item.url } class={ 't' + item.type }/>;
+            (this.outside || []).map(function(item) {
+              return <a class={ 't' + item.type }
+                        target="_blank"
+                        href={ item.url }/>;
             })
           }
         </li>

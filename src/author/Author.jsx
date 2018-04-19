@@ -70,7 +70,7 @@ class Author extends migi.Component {
     let dynamics = self.ref.dynamics;
     let comments = self.ref.comments;
 
-    nav.setData(data.info, data.aliases, data.outsides, data.isFollow);
+    nav.setData(data.info, data.aliases, data.skill, data.outside, data.isFollow);
 
     let showHome;
     if(data.mainWorks) {

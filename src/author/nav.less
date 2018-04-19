@@ -67,12 +67,44 @@
           font-size:0.19rem;
           color:#5D99C4;
         }
-        .sex{
-          width:0.18rem;
-          height:0.18rem;
+        .skill{
+          display:flex;
+          li{
+            width:0.24rem;
+            height:0.24rem;
+            text-indent:9999rem;
+            overflow:hidden;
+            background-repeat:no-repeat;
+            background-position:center;
+            background-size:contain;
+            &.s1{
+              background-image:url(ge.png);
+            }
+            &.s2{
+              background-image:url(ce.png);
+            }
+            &.s3{
+              background-image:url(yue.png);
+            }
+            &.s4{
+              background-image:url(cv.png);
+            }
+            &.s5{
+              background-image:url(cos.png);
+            }
+            &.s6{
+              background-image:url(hun.png);
+            }
+            &.s7{
+              background-image:url(qu.png);
+            }
+            &.s8{
+              background-image:url(wen.png);
+            }
+          }
         }
       }
-      .alias{
+      .aliases{
         margin-top:0.02rem;
         color:#B6B6B6;
       }
@@ -136,7 +168,7 @@
     .fans{
       min-width:1rem;
     }
-    .outsides{
+    .outside{
       display:flex;
       align-items:center;
       span{
