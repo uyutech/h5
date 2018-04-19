@@ -5,7 +5,7 @@
 'use strict';
 
 import util from '../common/util';
-import net from '../common/net';
+
 
 import Column from '../works/Column.jsx';
 import WaterFall from '../component/waterfall/WaterFall.jsx';
@@ -41,7 +41,7 @@ class ImageAlbum extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/imageAlbum2/index', { id }, function(res) {
+    $net.postJSON('/h5/imageAlbum2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -128,7 +128,7 @@ class ImageAlbum extends migi.Component {
     let self = this;
     let waterFall = self.ref.waterFall;
     loading = true;console.log(offset);
-    ajax = net.postJSON('/h5/imageAlbum2/imageList', { id: self.id, offset }, function(res) {
+    ajax = $net.postJSON('/h5/imageAlbum2/imageList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         waterFall.appendData(data.data);

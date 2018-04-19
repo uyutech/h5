@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 
 class List extends migi.Component {

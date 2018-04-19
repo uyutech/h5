@@ -4,7 +4,6 @@
 
 'use strict';
 
-import net from '../common/net';
 import util from '../common/util';
 import PostList from '../component/postlist/PostList.jsx';
 
@@ -54,7 +53,7 @@ class Dynamics extends migi.Component {
     let postList = self.ref.postList;
     postList.message = '正在加载...';
     loading = true;
-    ajax = net.postJSON('/h5/author2/dynamicList', { id: self.id, offset }, function(res) {
+    ajax = $net.postJSON('/h5/author2/dynamicList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {

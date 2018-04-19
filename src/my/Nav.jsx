@@ -5,7 +5,7 @@
 'use strict';
 
 import util from '../common/util';
-import net from "../common/net";
+
 
 class Nav extends migi.Component {
   constructor(...data) {
@@ -56,7 +56,7 @@ class Nav extends migi.Component {
           return;
         }
         if(nickname !== self.nickname) {
-          net.postJSON('/h5/my2/nickname', { value: nickname }, function(res) {
+          $net.postJSON('/h5/my2/nickname', { value: nickname }, function(res) {
             if(res.success) {
               self.nickname = nickname;
               jsBridge.getPreference(self.props.cacheKey, function(info) {
@@ -85,7 +85,7 @@ class Nav extends migi.Component {
           return;
         }
         if(sign !== self.sign) {
-          net.postJSON('/h5/my2/sign', { value: sign }, function(res) {
+          $net.postJSON('/h5/my2/sign', { value: sign }, function(res) {
             if(res.success) {
               self.sign = sign;
               jsBridge.getPreference(self.props.cacheKey, function(data) {

@@ -2,7 +2,7 @@
  * Created by army on 2017/5/18.
  */
 
-import net from '../common/net';
+
 import util from '../common/util';
 
 let authorId;
@@ -15,7 +15,7 @@ class Step0 extends migi.Component {
     authorId = self.props.authorId;
     // if(self.isShow) {
     //   self.on(migi.Event.DOM, function() {
-    //     net.postJSON('/h5/my/authorRelevant', function(res) {
+    //     $net.postJSON('/h5/my/authorRelevant', function(res) {
     //       if(res.success) {
     //         let s = '';
     //         let data = res.data;
@@ -65,7 +65,7 @@ class Step0 extends migi.Component {
       return;
     }
     self.sending = true;
-    net.postJSON('h5/my2/settle', {
+    $net.postJSON('h5/my2/settle', {
       authorId,
       type: 1,
     }, function(res) {
@@ -87,7 +87,7 @@ class Step0 extends migi.Component {
       return;
     }
     self.sending = true;
-    net.postJSON('h5/my2/settle', {
+    $net.postJSON('h5/my2/settle', {
       authorId,
       type: 2,
     }, function(res) {
@@ -109,7 +109,7 @@ class Step0 extends migi.Component {
       return;
     }
     self.sending = true;
-    net.postJSON('h5/my2/settle', {
+    $net.postJSON('h5/my2/settle', {
       authorId,
       type: 3,
     }, function(res) {

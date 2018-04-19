@@ -5,7 +5,7 @@
 'use strict';
 
 import util from '../common/util';
-import net from '../common/net';
+
 
 let loading;
 
@@ -37,7 +37,7 @@ class Nav extends migi.Component {
     let self = this;
     let url = self.isFollow ? '/h5/circle2/unFollow' : '/h5/circle2/follow';
     loading = true;
-    net.postJSON(url, { id: self.id }, function(res) {
+    $net.postJSON(url, { id: self.id }, function(res) {
       if(res.success) {
         let data = res.data;
         self.isFollow = data.state;

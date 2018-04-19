@@ -282,7 +282,7 @@ let jsBridge = {
     }
     else {
       url = window.ROOT_DOMAIN + '/' + url.replace(/^\//, '');
-      $.ajax2(url, data, cb, cb, 'POST');
+      $.AJAX(url, data, cb, cb, 'POST');
     }
   },
   loginOut: function(cb) {

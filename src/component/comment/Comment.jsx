@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../../common/net';
+
 import util from '../../common/util';
 
 let $last;
@@ -26,7 +26,7 @@ class Comment extends migi.Component {
         let id = parseInt($this.attr('rel'));
         let isLike = $this.hasClass('liked');
         let url = isLike ? '/h5/comment2/unLike' : '/h5/comment2/like';
-        net.postJSON(url, { id }, function(res) {
+        $net.postJSON(url, { id }, function(res) {
           if(res.success) {
             let data = res.data;
             if(data.state) {
@@ -68,7 +68,7 @@ class Comment extends migi.Component {
           //     if(!res) {
           //       return;
           //     }
-          //     net.postJSON('/h5/comment2/block', { id }, function(res) {
+          //     $net.postJSON('/h5/comment2/block', { id }, function(res) {
           //       if(res.success) {
           //         jsBridge.toast('屏蔽成功');
           //       }
@@ -87,7 +87,7 @@ class Comment extends migi.Component {
               if(!res) {
                 return;
               }
-              net.postJSON('/h5/comment2/report', { id }, function(res) {
+              $net.postJSON('/h5/comment2/report', { id }, function(res) {
                 if(res) {
                   jsBridge.toast('举报成功');
                 }
@@ -106,7 +106,7 @@ class Comment extends migi.Component {
               if(!res) {
                 return;
               }
-              net.postJSON('/h5/comment2/del', { id }, function(res) {
+              $net.postJSON('/h5/comment2/del', { id }, function(res) {
                 if(res.success) {
                   $fn.closest('li').remove();
                   self.empty = !$(self.ref.list.element).children('li').length;
@@ -219,7 +219,7 @@ class Comment extends migi.Component {
       if(!res) {
         return;
       }
-      net.postJSON('/h5/report/index', { reportType: type, businessId: id }, function(res) {
+      $net.postJSON('/h5/report/index', { reportType: type, businessId: id }, function(res) {
         if(res.success) {
           cb && cb();
         }

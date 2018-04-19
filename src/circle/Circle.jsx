@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import Nav from './Nav.jsx';
 import PostList from '../component/postlist/PostList.jsx';
@@ -41,7 +41,7 @@ class Circle extends migi.Component {
               if(!res) {
                 return;
               }
-              net.postJSON('/h5/circle2/block', { id }, function(res) {
+              $net.postJSON('/h5/circle2/block', { id }, function(res) {
                 if(res.success) {
                   jsBridge.toast('屏蔽成功');
                 }
@@ -76,7 +76,7 @@ class Circle extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = net.postJSON('/h5/circle2/index', { id }, function(res) {
+    ajax = $net.postJSON('/h5/circle2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -149,7 +149,7 @@ class Circle extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    ajax = net.postJSON('/h5/circle2/postList', { id: self.id, offset }, function(res) {
+    ajax = $net.postJSON('/h5/circle2/postList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {

@@ -7,7 +7,7 @@
 import './more_tag.html';
 import './index.less';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import MoreTag from './MoreTag.jsx';
 
@@ -16,7 +16,7 @@ jsBridge.ready(function() {
     <MoreTag/>,
     '#page'
   );
-  net.postJSON('/h5/subpost/moreTag', function(res) {
+  $net.postJSON('/h5/subpost/moreTag', function(res) {
     if(res.success) {
       moreTag.setData(res.data.tags);
     }

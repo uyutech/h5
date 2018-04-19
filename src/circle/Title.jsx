@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 
 let loading;
@@ -30,7 +30,7 @@ class Title extends migi.Component {
       return;
     }
     loading = true;
-    net.postJSON('/h5/circle/join', { circleID: self.id, state: self.joined }, function(res) {
+    $net.postJSON('/h5/circle/join', { circleID: self.id, state: self.joined }, function(res) {
       if(res.success) {
         self.joined = !!res.data.ISLike;
         self.count = res.data.FansNumber;

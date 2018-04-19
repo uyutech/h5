@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import PostList from '../component/postlist/PostList.jsx';
 
@@ -93,7 +93,7 @@ class Follow extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = net.postJSON('/h5/follow2/index', function(res) {
+    ajax = $net.postJSON('/h5/follow2/index', function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -110,7 +110,7 @@ class Follow extends migi.Component {
           if(isPause) {
             return;
           }
-          net.postJSON('/h5/follow/postList', { skip: 0, take: 1 }, function(res) {
+          $net.postJSON('/h5/follow/postList', { skip: 0, take: 1 }, function(res) {
             if(res.success) {
               if((res.data.data[0] || {}).ID !== lastId) {
                 migi.eventBus.emit('FOLLOW_UPDATE');
@@ -183,7 +183,7 @@ class Follow extends migi.Component {
     }
     let postList = self.ref.postList;
     loading = true;
-    ajax = net.postJSON('/h5/follow2/postList', { offset }, function(res) {
+    ajax = $net.postJSON('/h5/follow2/postList', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
         postList.appendData(data.data);
@@ -209,7 +209,7 @@ class Follow extends migi.Component {
     }
     let postList = self.ref.postList2;
     loading2 = true;
-    ajax = net.postJSON('/h5/follow2/friendPostList', { offset: offset2 }, function(res) {
+    ajax = $net.postJSON('/h5/follow2/friendPostList', { offset: offset2 }, function(res) {
       if(res.success) {
         let data = res.data;
         postList.appendData(data.data);
@@ -239,7 +239,7 @@ class Follow extends migi.Component {
       if(circleAjax) {
         circleAjax.abort();
       }
-      circleAjax = net.postJSON('/h5/follow2/circle', { offset: circleOffset }, function(res) {
+      circleAjax = $net.postJSON('/h5/follow2/circle', { offset: circleOffset }, function(res) {
         if(res.success) {
           let data = res.data;
           self.circleList = self.circleList.concat(data.data);

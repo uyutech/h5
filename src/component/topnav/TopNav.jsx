@@ -2,7 +2,7 @@
  * Created by army8735 on 2017/9/19.
  */
 
-import net from '../../common/net';
+
 import util from '../../common/util';
 import Background from '../background/Background.jsx';
 

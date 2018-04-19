@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import Media from './Media.jsx';
 import Info from './Info.jsx';
@@ -46,7 +46,7 @@ class Works extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/works2/index', { id }, function(res) {
+    $net.postJSON('/h5/works2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);

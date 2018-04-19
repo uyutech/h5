@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
@@ -71,7 +71,7 @@ class Tag extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = net.postJSON('/h5/tag2/index', { tag }, function(res) {
+    ajax = $net.postJSON('/h5/tag2/index', { tag }, function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -123,7 +123,7 @@ class Tag extends migi.Component {
     }
     let postList = self.ref.postList;
     loading = true;
-    ajax = net.postJSON('/h5/tag2/postList', { tag: self.tag, offset }, function(res) {
+    ajax = $net.postJSON('/h5/tag2/postList', { tag: self.tag, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {

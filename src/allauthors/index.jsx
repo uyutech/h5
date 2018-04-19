@@ -7,7 +7,7 @@
 import './allauthors.html';
 import './index.less';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import AllAuthors from './AllAuthors.jsx';
 

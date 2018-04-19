@@ -5,7 +5,7 @@
 'use strict';
 
 import util from '../common/util';
-import net from '../common/net';
+
 
 let interval;
 
@@ -54,7 +54,7 @@ class Phone extends migi.Component {
         clearInterval(interval);
       }
     }, 1000);
-    net.postJSON('/h5/passport2/bindCode', { phone: self.phone }, function(res) {
+    $net.postJSON('/h5/passport2/bindCode', { phone: self.phone }, function(res) {
       if(res.success) {
         jsBridge.toast('验证码已发送，10分钟内有效~');
       }
@@ -97,7 +97,7 @@ class Phone extends migi.Component {
     self.loading = true;
     let phone = self.phone;
     let password = self.password;
-    net.postJSON('/h5/passport2/bindPhone', {
+    $net.postJSON('/h5/passport2/bindPhone', {
       phone,
       pw: password,
       code: self.code,
@@ -129,7 +129,7 @@ class Phone extends migi.Component {
   //       return;
   //     }
   //     self.loading = true;
-  //     net.postJSON('/h5/passport/merge', {
+  //     $net.postJSON('/h5/passport/merge', {
   //       phone,
   //       password,
   //       type: 1,
@@ -162,7 +162,7 @@ class Phone extends migi.Component {
   //       return;
   //     }
   //     self.loading = true;
-  //     net.postJSON('/h5/passport/merge', {
+  //     $net.postJSON('/h5/passport/merge', {
   //       phone,
   //       password,
   //       type: 2,

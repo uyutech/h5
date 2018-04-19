@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 
 let loadingUser;
@@ -23,7 +23,7 @@ class Shield extends migi.Component {
       $user.on('click', 'button', function() {
         let $button = $(this);
         let id = $button.attr('rel');
-        net.postJSON('/h5/user/unShield', { userId: id }, function(res) {
+        $net.postJSON('/h5/user/unShield', { userId: id }, function(res) {
           if(res.success) {
             jsBridge.toast('解除成功');
             $button.closest('li').remove();
@@ -38,7 +38,7 @@ class Shield extends migi.Component {
       $circle.on('click', 'button', function() {
         let $button = $(this);
         let id = $button.attr('rel');
-        net.postJSON('/h5/circle/unShield', { circleID: id }, function(res) {
+        $net.postJSON('/h5/circle/unShield', { circleID: id }, function(res) {
           if(res.success) {
             jsBridge.toast('解除成功');
             $button.closest('li').remove();
@@ -57,7 +57,7 @@ class Shield extends migi.Component {
   @bind message2
   init() {
     let self = this;
-    net.postJSON('/h5/my/shield', function(res) {
+    $net.postJSON('/h5/my/shield', function(res) {
       if(res.success) {
         let data = res.data;
         self.addUser(data.user);

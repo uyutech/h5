@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../../common/net';
+
 import util from '../../common/util';
 
 class VideoList extends migi.Component {
@@ -38,7 +38,7 @@ class VideoList extends migi.Component {
           let item = self.list[i];
           if(item.work.id === id) {
             let url = $this.hasClass('liked') ? 'unLike' : 'like';
-            net.postJSON('/h5/works2/' + url, {
+            $net.postJSON('/h5/works2/' + url, {
               workId: id, id: item.id,
             }, function(res) {
               if(res.success) {

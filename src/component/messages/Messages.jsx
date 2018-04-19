@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../../common/net';
+
 import util from '../../common/util';
 
 class Messages extends migi.Component {

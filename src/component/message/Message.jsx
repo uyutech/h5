@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../../common/net';
+
 import util from '../../common/util';
 
 class Message extends migi.Component {
@@ -17,7 +17,7 @@ class Message extends migi.Component {
         res = res || 0;
         let now = Date.now();
         if(util.isLogin() && now - res > 10000) {
-          net.postJSON('/h5/my/message', function(res) {
+          $net.postJSON('/h5/my/message', function(res) {
             if(res.success) {
               let data = res.data;
               self.num = data.Count;
@@ -41,7 +41,7 @@ class Message extends migi.Component {
         });
         let data = e.data;
         if(data && data.message) {
-          net.postJSON('/h5/my/message', function(res) {
+          $net.postJSON('/h5/my/message', function(res) {
             if(res.success) {
               let data = res.data;
               self.num = data.Count;

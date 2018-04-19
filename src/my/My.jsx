@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import Nav from './Nav.jsx';
 import Background from '../component/background/Background.jsx';
@@ -62,7 +62,7 @@ class My extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = net.postJSON('/h5/my2/index', function(res) {
+    ajax = $net.postJSON('/h5/my2/index', function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);

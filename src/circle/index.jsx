@@ -9,7 +9,7 @@ import './index.less';
 
 import qs from 'anima-querystring';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import Circle from './Circle.jsx';
 

@@ -5,7 +5,6 @@
 
 'use strict';
 
-import net from '../common/net';
 import util from '../common/util';
 import Nav from './Nav.jsx';
 import WorksList from './WorksList.jsx';
@@ -43,7 +42,7 @@ class Author extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/author2/index', { id }, function(res) {
+    $net.postJSON('/h5/author2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);

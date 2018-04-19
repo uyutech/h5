@@ -5,7 +5,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import Media from '../works/Media.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
@@ -71,7 +71,7 @@ class Record extends migi.Component {
     }
     loading = true;
     let playlist = self.ref.playlist;
-    net.postJSON('/h5/my2/favorList', { offset, kind: 2 }, function(res) {
+    $net.postJSON('/h5/my2/favorList', { offset, kind: 2 }, function(res) {
       if(res.success) {
         let data = res.data;
         playlist.appendData(data.data);

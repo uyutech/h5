@@ -5,7 +5,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import Nav from './Nav.jsx';
 import Item from './Item.jsx';
@@ -51,7 +51,7 @@ class Find extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = net.postJSON('/h5/find2/index', function(res) {
+    ajax = $net.postJSON('/h5/find2/index', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);

@@ -5,7 +5,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import VideoList from '../component/videolist/VideoList.jsx';
 import Playlist from '../component/playlist/Playlist.jsx';
@@ -52,7 +52,7 @@ class MyFavor extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/my2/favorList', { kind: 1 }, function(res) {
+    $net.postJSON('/h5/my2/favorList', { kind: 1 }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -135,7 +135,7 @@ class MyFavor extends migi.Component {
       offset = postOffset;
       target = self.ref.postList;
     }
-    net.postJSON(url, { kind, offset }, function(res) {
+    $net.postJSON(url, { kind, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         target.appendData(data.data);

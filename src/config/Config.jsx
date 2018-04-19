@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 
 let bindName;
@@ -44,7 +44,7 @@ class Config extends migi.Component {
         self.setData(cache, 0);
       }
     });
-    ajax = net.postJSON('/h5/passport2/bindList', function(res) {
+    ajax = $net.postJSON('/h5/passport2/bindList', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -95,7 +95,7 @@ class Config extends migi.Component {
         jsBridge.showLoading('正在绑定...');
         let openId = res.openId || res.openID;
         let token = res.token;
-        net.postJSON('/h5/passport2/bindWeibo', { openId, token }, function(res) {
+        $net.postJSON('/h5/passport2/bindWeibo', { openId, token }, function(res) {
           if(res.success) {
             self.weibo = res.data;
             self.init();
@@ -121,7 +121,7 @@ class Config extends migi.Component {
   //       return;
   //     }
   //     jsBridge.showLoading();
-  //     net.postJSON('/h5/passport/mergeOauth', {
+  //     $net.postJSON('/h5/passport/mergeOauth', {
   //       code: bindUuid,
   //       type: 1,
   //     }, function(res) {
@@ -147,7 +147,7 @@ class Config extends migi.Component {
   //       return;
   //     }
   //     jsBridge.showLoading();
-  //     net.postJSON('/h5/passport/mergeOauth', {
+  //     $net.postJSON('/h5/passport/mergeOauth', {
   //       code: bindUuid,
   //       type: 2,
   //     }, function(res) {
@@ -189,7 +189,7 @@ class Config extends migi.Component {
   }
   clickOut() {
     let self = this;
-    net.postJSON('/h5/passport2/loginOut', function() {
+    $net.postJSON('/h5/passport2/loginOut', function() {
       $.cookie('isLogin', null);
       jsBridge.loginOut();
       jsBridge.delPreference('my', function() {

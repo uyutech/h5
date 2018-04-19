@@ -4,7 +4,6 @@
 
 'use strict';
 
-import net from '../common/net';
 import util from '../common/util';
 import Playlist from '../component/playlist/Playlist.jsx';
 import VideoList from '../component/videolist/VideoList.jsx';
@@ -103,7 +102,7 @@ class Work extends migi.Component {
     if(cache.ajax) {
       cache.ajax.abort();
     }
-    cache.ajax = net.postJSON('/h5/author2/kindWorkList', {
+    cache.ajax = $net.postJSON('/h5/author2/kindWorkList', {
       id: self.id,
       kind,
       offset: cache.offset,

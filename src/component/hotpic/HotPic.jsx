@@ -5,7 +5,7 @@
 'use strict';
 
 import util from "../../common/util";
-import net from "../../common/net";
+
 
 let pool = [];
 let list = [];
@@ -28,7 +28,7 @@ class HotPic extends migi.Component {
         }
         $b.addClass('loading');
         let id = $b.attr('itemID');
-        net.postJSON('/h5/works/likeWork', { workID: id }, function(res) {
+        $net.postJSON('/h5/works/likeWork', { workID: id }, function(res) {
           if(res.success) {
             if(res.data === 211 || res.data.State === 'likeWordsUser') {
               $b.addClass('has');
@@ -57,7 +57,7 @@ class HotPic extends migi.Component {
         $b.addClass('loading');
         let id = $b.attr('itemID');
         let url = $b.hasClass('has') ? '/h5/works/unFavorWork' : '/h5/works/favorWork';
-        net.postJSON(url, { workID: id }, function(res) {
+        $net.postJSON(url, { workID: id }, function(res) {
           if(res.success) {
             if(url === '/h5/works/favorWork') {
               $b.addClass('has');

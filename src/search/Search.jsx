@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import AuthorList from '../component/authorlist/AuthorList.jsx';
 import UserList from '../component/userlist/UserList.jsx';
@@ -163,7 +163,7 @@ class Search extends migi.Component {
     }
 
     loading = true;
-    ajax = net.postJSON(url, { keyword, offset }, function(res) {
+    ajax = $net.postJSON(url, { keyword, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         switch(type) {

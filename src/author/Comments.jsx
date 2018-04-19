@@ -3,7 +3,6 @@
  */
 
 import util from '../common/util';
-import net from '../common/net';
 import CommentBar from '../component/commentbar/CommentBar.jsx';
 import Comment from '../component/comment/Comment.jsx';
 
@@ -53,7 +52,7 @@ class Comments extends migi.Component {
     let comment = self.ref.comment;
     comment.message = '正在加载...';
     loading = true;
-    ajax = net.postJSON('/h5/author2/commentList', { id: self.id, offset }, function(res) {
+    ajax = $net.postJSON('/h5/author2/commentList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {

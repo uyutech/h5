@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import Spark from 'spark-md5';
 
@@ -129,7 +129,7 @@ class SubPost extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/subPost2/index', function(res) {
+    $net.postJSON('/h5/subPost2/index', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -229,7 +229,7 @@ class SubPost extends migi.Component {
       if(self.useAuthor && self.myInfo && self.myInfo.author && self.myInfo.author.length) {
         authorId = self.myInfo.author[0].id;
       }
-      net.postJSON('/h5/subPost2/sub', {
+      $net.postJSON('/h5/subPost2/sub', {
         content: self.value,
         image: JSON.stringify(image),
         circleId: circleId.join(','),
@@ -333,7 +333,7 @@ class SubPost extends migi.Component {
             document.body.removeChild(node);
           };
           document.body.appendChild(node);
-          net.postJSON('/h5/my/sts', { name: md5 + suffix }, function(res) {
+          $net.postJSON('/h5/my/sts', { name: md5 + suffix }, function(res) {
             if(res.success) {
               let data = res.data;
               if(data.exist) {

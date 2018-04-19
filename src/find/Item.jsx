@@ -6,7 +6,7 @@
 'use strict';
 
 import util from '../common/util';
-import net from '../common/net';
+
 import Banner from './Banner.jsx';
 import Works from './Works.jsx';
 import AuthorList from './AuthorList.jsx';
@@ -121,7 +121,7 @@ class Item extends migi.Component {
       self.ajax.abort();
     }
     self.loading = true;
-    self.ajax = net.postJSON('/h5/find2/tag',
+    self.ajax = $net.postJSON('/h5/find2/tag',
       { tag: self.tag, kind: self.kind, offset: self.offset, }, function(res) {
       if(res.success) {
         let data = res.data;

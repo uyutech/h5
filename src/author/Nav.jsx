@@ -2,8 +2,7 @@
  * Created by army on 2017/6/16.
  */
 
-import util from "../common/util";
-import net from "../common/net";
+import util from '../common/util';
 
 class Nav extends migi.Component {
   constructor(...data) {
@@ -26,7 +25,7 @@ class Nav extends migi.Component {
               if(!res) {
                 return;
               }
-              net.postJSON('/h5/author2/black', { id }, function(res) {
+              $net.postJSON('/h5/author2/black', { id }, function(res) {
                 if(res.success) {
                   jsBridge.toast('加入黑名单成功');
                 }
@@ -49,7 +48,7 @@ class Nav extends migi.Component {
               if(!res) {
                 return;
               }
-              net.postJSON('/h5/author2/report', { id }, function(res) {
+              $net.postJSON('/h5/author2/report', { id }, function(res) {
                 if(res.success) {
                   jsBridge.toast('举报成功');
                 }
@@ -110,7 +109,7 @@ class Nav extends migi.Component {
           return;
         }
         self.loading = true;
-        net.postJSON('/h5/author2/unFollow', { id: self.id }, function(res) {
+        $net.postJSON('/h5/author2/unFollow', { id: self.id }, function(res) {
           if(res.success) {
             let data = res.data;
             self.isFollow = data.state;
@@ -133,7 +132,7 @@ class Nav extends migi.Component {
     }
     else {
       self.loading = true;
-      net.postJSON('/h5/author2/follow', { id: self.id } , function(res) {
+      $net.postJSON('/h5/author2/follow', { id: self.id } , function(res) {
         if(res.success) {
           let data = res.data;
           self.isFollow = data.state;
@@ -158,7 +157,7 @@ class Nav extends migi.Component {
     return <div class="mod-nav">
       <div class="profile">
         <div class="pic">
-          <img src={ util.autoSsl(util.img288_288_80(this.headUrl || '/src/common/head.png')) }/>
+          <img src={ util.img(this.headUrl, 288, 288, 80) || '/src/common/head.png' }/>
           {
             this.isSettle
               ? <b class="settled"

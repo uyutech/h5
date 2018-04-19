@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../../common/net';
+
 import util from '../../common/util';
 import ImageView from '../imageview/ImageView.jsx';
 // import QuickVideo from '../quickVideo/QuickVideo.jsx';
@@ -70,7 +70,7 @@ class HotPost extends migi.Component {
         if($li.hasClass('has')) {
           url = '/h5/post/unFavor';
         }
-        net.postJSON(url, { postID }, function(res) {
+        $net.postJSON(url, { postID }, function(res) {
           if(res.success) {
             let data = res.data;
             if(data.State === 'favorWork') {
@@ -120,7 +120,7 @@ class HotPost extends migi.Component {
           if(!res) {
             return;
           }
-          net.postJSON('/h5/post/del', { postID }, function(res) {
+          $net.postJSON('/h5/post/del', { postID }, function(res) {
             if(res.success) {
               $li.remove();
             }
@@ -178,7 +178,7 @@ class HotPost extends migi.Component {
           canClean,
           clickRecommend: function(botFn, n) {
             jsBridge.showLoading();
-            net.postJSON('/h5/post/recommend', { postId: id, value: n }, function(res) {
+            $net.postJSON('/h5/post/recommend', { postId: id, value: n }, function(res) {
               jsBridge.hideLoading();
               if(res.success) {
                 botFn.cancel();
@@ -193,7 +193,7 @@ class HotPost extends migi.Component {
           },
           clickUnRecommend: function(botFn) {
             jsBridge.showLoading();
-            net.postJSON('/h5/post/unRecommend', { postId: id }, function(res) {
+            $net.postJSON('/h5/post/unRecommend', { postId: id }, function(res) {
               jsBridge.hideLoading();
               if(res.success) {
                 botFn.cancel();
@@ -216,7 +216,7 @@ class HotPost extends migi.Component {
                 return;
               }
               jsBridge.showLoading();
-              net.postJSON('/h5/post/del', { postID: id }, function(res) {
+              $net.postJSON('/h5/post/del', { postID: id }, function(res) {
                 jsBridge.hideLoading();
                 if(res.success) {
                   botFn.cancel();
@@ -233,7 +233,7 @@ class HotPost extends migi.Component {
           },
           clickClean: function(botFn) {
             jsBridge.showLoading();
-            net.postJSON('/h5/post/clean', { postID: id }, function(res) {
+            $net.postJSON('/h5/post/clean', { postID: id }, function(res) {
               jsBridge.hideLoading();
               if(res.success) {
                 botFn.cancel();
@@ -269,7 +269,7 @@ class HotPost extends migi.Component {
   }
   like(postID, cb) {
     let $li = $('#post_' + postID).find('.like');
-    net.postJSON('/h5/post/like', { postID }, function(res) {
+    $net.postJSON('/h5/post/like', { postID }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.ISLike || data.State === 'likeWordsUser') {

@@ -6,7 +6,7 @@
 
 import BigNumber from 'bignumber.js';
 import util from '../common/util';
-import net from '../common/net';
+
 
 let currentPriority = 0;
 let cacheKey;
@@ -26,7 +26,7 @@ class Mall extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/mall2/index', function(res) {
+    $net.postJSON('/h5/mall2/index', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);

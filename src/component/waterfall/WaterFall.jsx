@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../../common/net';
+
 import util from '../../common/util';
 
 let uuid = 0;
@@ -48,7 +48,7 @@ class WaterFall extends migi.Component {
         $b.addClass('loading');
         let id = $b.attr('rel');
         let url = $b.hasClass('liked') ? 'unLike' : 'like';
-        net.postJSON('/h5/works2/' + url, { workId: id }, function(res) {
+        $net.postJSON('/h5/works2/' + url, { workId: id }, function(res) {
           if(res.success) {
             let data = res.data;
             data.state ? $b.addClass('liked') : $b.removeClass('liked');
@@ -79,7 +79,7 @@ class WaterFall extends migi.Component {
         $b.addClass('loading');
         let id = $b.attr('rel');
         let url = $b.hasClass('has') ? 'unFavor' : 'favor';
-        net.postJSON('/h5/works2/' + url, { workId: id }, function(res) {
+        $net.postJSON('/h5/works2/' + url, { workId: id }, function(res) {
           if(res.success) {
             let data = res.data;
             data.state ? $b.addClass('liked') : $b.removeClass('liked');

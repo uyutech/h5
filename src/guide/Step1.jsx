@@ -2,7 +2,7 @@
  * Created by army on 2017/4/18.
  */
 
-import net from '../common/net';
+
 import util from '../common/util';
 
 class Step1 extends migi.Component {
@@ -35,7 +35,7 @@ class Step1 extends migi.Component {
       return;
     }
     self.sending = true;
-    net.postJSON('h5/my2/guideNameAndSex', {
+    $net.postJSON('h5/my2/guideNameAndSex', {
       nickname: self.nickname,
       sex: self.sex,
     }, function(res) {

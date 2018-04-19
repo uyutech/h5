@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 
 let take = 30;
@@ -17,7 +17,7 @@ class AllAlbums extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      net.postJSON('/h5/find/allAlbums', { skip, take }, function(res) {
+      $net.postJSON('/h5/find/allAlbums', { skip, take }, function(res) {
         if(res.success) {
           skip += take;
           self.setData(res.data);
@@ -81,7 +81,7 @@ class AllAlbums extends migi.Component {
     }
     loading = true;
     self.message = '正在加载...';
-    net.postJSON('/h5/find/allAlbums', { skip, take }, function(res) {
+    $net.postJSON('/h5/find/allAlbums', { skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;

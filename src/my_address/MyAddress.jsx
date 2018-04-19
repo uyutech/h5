@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 
 let ajax;
@@ -26,7 +26,7 @@ class MyAddress extends migi.Component {
           if(res.success) {
             let value = res.value.trim();
             if(value && value !== name) {
-              net.postJSON('/h5/my2/updateAddressName', { id, value }, function(res) {
+              $net.postJSON('/h5/my2/updateAddressName', { id, value }, function(res) {
                 if(res.success) {
                   $prev.text(value);
                 }
@@ -53,7 +53,7 @@ class MyAddress extends migi.Component {
               return;
             }
             if(value && value !== phone) {
-              net.postJSON('/h5/my2/updateAddressPhone', { id, value }, function(res) {
+              $net.postJSON('/h5/my2/updateAddressPhone', { id, value }, function(res) {
                 if(res.success) {
                   $prev.text(value);
                 }
@@ -76,7 +76,7 @@ class MyAddress extends migi.Component {
           if(res.success) {
             let value = res.value.trim();
             if(value && value !== address) {
-              net.postJSON('/h5/my2/updateAddress', { id, value }, function(res) {
+              $net.postJSON('/h5/my2/updateAddress', { id, value }, function(res) {
                 if(res.success) {
                   $prev.text(value);
                 }
@@ -106,7 +106,7 @@ class MyAddress extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = net.postJSON('/h5/my2/address', function(res) {
+    ajax = $net.postJSON('/h5/my2/address', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);

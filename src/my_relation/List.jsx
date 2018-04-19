@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 
 class List extends migi.Component {
@@ -69,7 +69,7 @@ class List extends migi.Component {
       self.ajax.abort();
     }
     self.loading = true;
-    self.ajax = net.postJSON(self.url, { offset: self.offset, limit: self.limit, }, function(res) {
+    self.ajax = $net.postJSON(self.url, { offset: self.offset, limit: self.limit, }, function(res) {
       if(res.success) {
         let data = res.data;
         self.offset += self.limit;

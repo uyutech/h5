@@ -7,7 +7,7 @@
 import './allworks.html';
 import './index.less';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import AllWorks from './AllWorks.jsx';
 

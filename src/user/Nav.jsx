@@ -5,7 +5,7 @@
 'use strict';
 
 import util from '../common/util';
-import net from '../common/net';
+
 
 const FOLLOW_STATE = {
   '01': '未关注',
@@ -35,7 +35,7 @@ class Nav extends migi.Component {
               if(!res) {
                 return;
               }
-              net.postJSON('/h5/user2/black', { id }, function(res) {
+              $net.postJSON('/h5/user2/black', { id }, function(res) {
                 if(res.success) {
                   jsBridge.toast('加入黑名单成功');
                 }
@@ -58,7 +58,7 @@ class Nav extends migi.Component {
               if(!res) {
                 return;
               }
-              net.postJSON('/h5/user2/report', { id }, function(res) {
+              $net.postJSON('/h5/user2/report', { id }, function(res) {
                 if(res.success) {
                   jsBridge.toast('举报成功');
                 }
@@ -110,7 +110,7 @@ class Nav extends migi.Component {
           return;
         }
         self.loading = true;
-        net.postJSON('/h5/user2/unFollow', { id: self.id }, function(res) {
+        $net.postJSON('/h5/user2/unFollow', { id: self.id }, function(res) {
           if(res.success) {
             let data = res.data;
             self.isFollow = data.state;
@@ -132,7 +132,7 @@ class Nav extends migi.Component {
     }
     else {
       self.loading = true;
-      net.postJSON('/h5/user2/follow', { id: self.id } , function(res) {
+      $net.postJSON('/h5/user2/follow', { id: self.id } , function(res) {
         if(res.success) {
           let data = res.data;
           self.isFollow = data.state;
@@ -156,7 +156,7 @@ class Nav extends migi.Component {
     return <div class="mod-nav">
       <div class="profile">
         <div class="pic">
-          <img src={ util.autoSsl(util.img200_200_80(this.headUrl)) || '/src/common/head.png' }/>
+          <img src={ util.img(this.headUrl, 288, 288, 80) || '/src/common/head.png' }/>
         </div>
         <div class="txt">
           <div class="n">
@@ -173,7 +173,7 @@ class Nav extends migi.Component {
       </ul>
       <div class="sign">
         <label>签名</label>
-        <span>{ this.sign || '""' }</span>
+        <span>{ this.sign || '' }</span>
       </div>
     </div>;
   }

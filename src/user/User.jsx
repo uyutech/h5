@@ -4,7 +4,7 @@
 
 'use strict';
 
-import net from '../common/net';
+
 import util from '../common/util';
 import Nav from './Nav.jsx';
 import Background from '../component/background/Background.jsx';
@@ -37,7 +37,7 @@ class User extends migi.Component {
         catch(e) {}
       }
     });
-    net.postJSON('/h5/user2/index', { id }, function(res) {
+    $net.postJSON('/h5/user2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         let cache = {};
@@ -119,7 +119,7 @@ class User extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    ajax = net.postJSON('/h5/user2/postList', { id: self.id, offset }, function(res) {
+    ajax = $net.postJSON('/h5/user2/postList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         offset += data.limit;

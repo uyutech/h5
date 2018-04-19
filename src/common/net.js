@@ -21,7 +21,7 @@ let net = {
       timeout = error;
       error = function() {};
     }
-    return $.ajax2(url, data, success, error, 'GET', timeout);
+    return $.AJAX(url, data, success, error, 'GET', timeout);
   },
   postJSON: function(url, data, success, error, type, timeout) {
     if(typeof data === 'function') {
@@ -39,7 +39,7 @@ let net = {
       timeout = error;
       error = function() {};
     }
-    return $.ajax2(url, data, success, error, 'POST', timeout);
+    return $.AJAX(url, data, success, error, 'POST', timeout);
   },
 };
 

@@ -2,7 +2,7 @@
  * Created by army on 2017/4/21.
  */
 
-import net from '../common/net';
+
 import util from '../common/util';
 
 class Step2 extends migi.Component {
@@ -47,7 +47,7 @@ class Step2 extends migi.Component {
       ids.push($(o).attr('rel'));
     });
     ids = ids.join(',');
-    net.postJSON('/h5/my2/guideCircle', { ids }, function(res) {
+    $net.postJSON('/h5/my2/guideCircle', { ids }, function(res) {
       if(res.success) {
         self.emit('next');
       }
@@ -71,7 +71,7 @@ class Step2 extends migi.Component {
     if(!self.isShow) {
       return;
     }
-    net.postJSON('/h5/circle2/all', function(res) {
+    $net.postJSON('/h5/circle2/all', function(res) {
       if(res.success) {
         let data = res.data;
         let s = '';

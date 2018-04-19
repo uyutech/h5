@@ -5,7 +5,7 @@
 'use strict';
 
 import util from '../../common/util';
-import net from '../../common/net';
+
 
 const MAX_LEN = 144;
 
@@ -55,7 +55,7 @@ class PostList extends migi.Component {
           //     if(!res) {
           //       return;
           //     }
-          //     net.postJSON('/h5/comment2/block', { id }, function(res) {
+          //     $net.postJSON('/h5/comment2/block', { id }, function(res) {
           //       if(res.success) {
           //         jsBridge.toast('屏蔽成功');
           //       }
@@ -72,7 +72,7 @@ class PostList extends migi.Component {
           clickReport: function(botFn) {
             jsBridge.confirm('确认举报吗？', function(res) {
               if(res) {
-                net.postJSON('/h5/comment2/report', { id }, function(res) {
+                $net.postJSON('/h5/comment2/report', { id }, function(res) {
                   if(res) {
                     jsBridge.toast('举报成功');
                   }
@@ -92,7 +92,7 @@ class PostList extends migi.Component {
               if(!res) {
                 return;
               }
-              net.postJSON('/h5/comment2/del', { id }, function(res) {
+              $net.postJSON('/h5/comment2/del', { id }, function(res) {
                 if(res.success) {
                   $fn.closest('li').remove();
                   self.empty = !$(self.ref.list.element).children('li').length;
@@ -117,7 +117,7 @@ class PostList extends migi.Component {
         $this.addClass('loading');
         let id = parseInt($this.attr('rel'));
         let url = $this.hasClass('liked') ? '/h5/comment2/unLike' : '/h5/comment2/like';
-        net.postJSON(url, { id }, function(res) {
+        $net.postJSON(url, { id }, function(res) {
           if(res.success) {
             let data = res.data;
             if(data.state) {
@@ -149,7 +149,7 @@ class PostList extends migi.Component {
         $this.addClass('loading');
         let id = parseInt($this.attr('rel'));
         let url = $this.hasClass('favored') ? '/h5/comment2/unFavor' : '/h5/comment2/favor';
-        net.postJSON(url, { id }, function(res) {
+        $net.postJSON(url, { id }, function(res) {
           if(res.success) {
             let data = res.data;
             if(data.state) {

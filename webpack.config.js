@@ -26,7 +26,7 @@ module.exports = {
     mall_prize: './src/mall_prize/index.jsx',
     mall_express: './src/mall_express/index.jsx',
     tag: './src/tag/index.jsx',
-    more_tag: './src/more_tag/index.jsx',
+    // more_tag: './src/more_tag/index.jsx',
     passport: './src/passport/index.jsx',
     phone: './src/phone/index.jsx',
     guide: './src/guide/index.jsx',
@@ -35,7 +35,7 @@ module.exports = {
     music_album: './src/music_album/index.jsx',
     image_album: './src/image_album/index.jsx',
     config: './src/config/index.jsx',
-    shield: './src/shield/index.jsx',
+    // shield: './src/shield/index.jsx',
   },
   output: {
     path: __dirname + '/www',

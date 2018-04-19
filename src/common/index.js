@@ -8,6 +8,7 @@ import 'migi';
 import './bridge';
 import $ from 'anima-yocto-ajax';
 import env from './production';
+import net from './net';
 import './global.jsx';
 
 import './index.less';
@@ -74,5 +75,6 @@ window.requestAnimationFrame = function() {
     };
 }();
 
-$.ajax2 = env.ajax;
+$.AJAX = env.ajax;
 window.$ = $;
+window.$net = net;
