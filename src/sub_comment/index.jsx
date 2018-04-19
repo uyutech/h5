@@ -9,7 +9,7 @@ import './index.less';
 
 import qs from 'anima-querystring';
 
-import subComment from './subComment.jsx';
+import SubComment from './SubComment.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
 let id = search.id;
@@ -19,7 +19,7 @@ let pid = search.pid;
 jsBridge.ready(function() {
   jsBridge.refreshState(false);
   let subComment = migi.preExist(
-    <subComment/>,
+    <SubComment/>,
     '#page'
   );
   subComment.init({ id, type, pid });
