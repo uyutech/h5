@@ -111,9 +111,12 @@ class PostList extends migi.Component {
       });
       $list.on('click', '.like', function() {
         let $this = $(this);
+        if($this.hasClass('loading')) {
+          return;
+        }
+        $this.addClass('loading');
         let id = parseInt($this.attr('rel'));
-        let isLike = $this.hasClass('liked');
-        let url = isLike ? '/h5/comment2/unLike' : '/h5/comment2/like';
+        let url = $this.hasClass('liked') ? '/h5/comment2/unLike' : '/h5/comment2/like';
         net.postJSON(url, { id }, function(res) {
           if(res.success) {
             let data = res.data;
@@ -132,13 +135,20 @@ class PostList extends migi.Component {
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
           }
+          $this.removeClass('loading');
+        }, function(res) {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          $this.removeClass('loading');
         });
       });
       $list.on('click', '.favor', function() {
         let $this = $(this);
+        if($this.hasClass('loading')) {
+          return;
+        }
+        $this.addClass('loading');
         let id = parseInt($this.attr('rel'));
-        let isFavor = $this.hasClass('favored');
-        let url = isFavor ? '/h5/comment2/unFavor' : '/h5/comment2/favor';
+        let url = $this.hasClass('favored') ? '/h5/comment2/unFavor' : '/h5/comment2/favor';
         net.postJSON(url, { id }, function(res) {
           if(res.success) {
             let data = res.data;
@@ -157,6 +167,10 @@ class PostList extends migi.Component {
           else {
             jsBridge.toast(res.message || util.ERROR_MESSAGE);
           }
+          $this.removeClass('loading');
+        }, function(res) {
+          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          $this.removeClass('loading');
         });
       });
       $list.on('click', '.comment', function() {

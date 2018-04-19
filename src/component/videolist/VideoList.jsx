@@ -15,28 +15,148 @@ class VideoList extends migi.Component {
     self.visible = self.props.visible;
     self.list = [];
     self.exist = {};
+    self.on(migi.Event.DOM, function() {
+      let $list = $(self.ref.list.element);
+      $list.on('click', '.pic,.name', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle: true,
+        });
+      });
+      $list.on('click', '.like', function() {
+        let $this = $(this);
+        if($this.hasClass('loading')) {
+          return;
+        }
+        $this.addClass('loading');
+        let id = parseInt($this.attr('rel'));
+        for(let i = 0; i < self.list.length; i++) {
+          let item = self.list[i];
+          if(item.work.id === id) {
+            let url = $this.hasClass('liked') ? 'unLike' : 'like';
+            net.postJSON('/h5/works2/' + url, {
+              workId: id, id: item.id,
+            }, function(res) {
+              if(res.success) {
+                let data = res.data;
+                if(data.state) {
+                  $this.addClass('liked');
+                }
+                else {
+                  $this.removeClass('liked');
+                }
+                $this.text(data.count || '');
+                self.emit('like', item);
+              }
+              else if(res.code === 1000) {
+                migi.eventBus.emit('NEED_LOGIN');
+              }
+              else {
+                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              }
+              $this.removeClass('loading');
+            }, function(res) {
+              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              $this.removeClass('loading');
+            });
+            break;
+          }
+        }
+      });
+      $list.on('click', '.comment', function() {
+        let id = parseInt($(this).attr('rel'));
+        let url = '/works.html?id=' + id + '&comment=1';
+        let title = tvd.props.title;
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle: true,
+        });
+      });
+      $list.on('click', '.fn', function() {
+        let id = parseInt($(this).attr('rel'));
+        for(let i = 0, len = self.list.length; i < len; i++) {
+          let item = self.list[i];
+          if(item.work.id === id) {
+            migi.eventBus.emit('BOT_FN', {
+              canShare: true,
+              canShareIn: true,
+              canShareWb: true,
+              canShareLink: true,
+              clickShareIn: function(botFn) {
+                jsBridge.pushWindow('/sub_post.html?worksId=' + item.id
+                  + '&workId=' + id
+                  + '&cover=' + encodeURIComponent(item.work.cover || item.cover || ''), {
+                  title: '画个圈',
+                  optionMenu: '发布',
+                });
+                botFn.cancel();
+              },
+              clickShareWb: function(botFn) {
+                let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
+                let text = '【' + item.work.title;
+                if(item.work.subTitle) {
+                  text += ' ' + item.work.subTitle;
+                }
+                text += '】';
+                item.work.author.forEach((item) => {
+                  item.list.forEach((author) => {
+                    text += author.name + ' ';
+                  });
+                });
+                text += ' #转圈circling# ';
+                text += url;
+                jsBridge.shareWb({
+                  text,
+                }, function(res) {
+                  if(res.success) {
+                    jsBridge.toast("分享成功");
+                  }
+                  else if(res.cancel) {
+                    jsBridge.toast("取消分享");
+                  }
+                  else {
+                    jsBridge.toast("分享失败");
+                  }
+                });
+                botFn.cancel();
+              },
+              clickShareLink: function(botFn) {
+                let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
+                util.setClipboard(url);
+                botFn.cancel();
+              },
+            });
+            break;
+          }
+        }
+      });
+    });
   }
   @bind message
   @bind visible
-  @bind list
   setData(data) {
     let self = this;
-    self.exist = {};
-    let list = [];
+    self.clearData();
     if(!data) {
       return;
     }
     if(!Array.isArray(data)) {
       data = [data];
     }
+    let s = '';
     data.forEach(function(item) {
       if(self.exist[item.work.id]) {
         return;
       }
       self.exist[item.work.id] = true;
-      list.push(self.genItem(item));
+      self.list.push(item);
+      s += self.genItem(item);
     });
-    self.list = list;
+    $(self.ref.list.element).html(s);
   }
   appendData(data) {
     let self = this;
@@ -46,16 +166,22 @@ class VideoList extends migi.Component {
     if(!Array.isArray(data)) {
       data = [data];
     }
+    let s = '';
     data.forEach(function(item) {
       if(self.exist[item.work.id]) {
         return;
       }
       self.exist[item.work.id] = true;
-      self.list.push(self.genItem(item));
+      self.list.push(item);
+      s += self.genItem(item);
     });
+    $(self.ref.list.element).append(s);
   }
   clearData() {
-    this.list = [];
+    let self = this;
+    self.exist = {};
+    self.list = [];
+    $(self.ref.list.element).html('');
   }
   genItem(item) {
     let self = this;
@@ -63,7 +189,7 @@ class VideoList extends migi.Component {
     let author = [];
     let hash = {};
     if(self.props.profession) {
-      (item.work.profession || []).forEach((item) => {
+      item.work.profession.forEach((item) => {
         author.push(item.name);
       });
     }
@@ -91,39 +217,19 @@ class VideoList extends migi.Component {
          title={ item.title }>{ item.work.title }</a>
       <div class="info">
         <p class="author">{ author.join(' ') }</p>
-        <b class={ 'like' + (item.work.isLike ? ' liked' : '') }>{ item.work.likeCount || '' }</b>
+        <b class={ 'like' + (item.work.isLike ? ' liked' : '') }
+           rel={ item.work.id }>{ item.work.likeCount || '' }</b>
         <b class="comment"
            title={ item.title }
            rel={ item.id }>{ item.commentCount || '' }</b>
-        <b class="fn"/>
+        <b class="fn"
+           rel={ item.work.id }/>
       </div>
     </li>;
   }
-  clickPic(e, vd, tvd) {
-    e.preventDefault();
-    let url = tvd.props.href;
-    let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-      transparentTitle: true,
-    });
-  }
-  clickComment(e, vd, tvd) {
-    let id = tvd.props.rel;
-    let url = '/works.html?id=' + id + '&comment=1';
-    let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-      transparentTitle: true,
-    });
-  }
   render() {
     return <div class={ 'cp-videolist' + (this.visible ? '' : ' fn-hide') }>
-      <ol ref="list"
-          onClick={ {
-            '.pic': this.clickPic,
-            '.comment': this.clickComment,
-          } }>{ this.list }</ol>
+      <ol ref="list"/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;
   }

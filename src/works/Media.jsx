@@ -506,7 +506,7 @@ class Media extends migi.Component {
     let item = self.data;
     let url = self.isLike ? 'unLike' : 'like';
     ajaxLike = net.postJSON('/h5/works2/' + url, {
-      workId: item.id, worksId: item.worksId,
+      workId: item.id, id: item.worksId,
     }, function(res) {
       if(res.success) {
         let data = res.data;
@@ -546,7 +546,7 @@ class Media extends migi.Component {
     let item = self.data;
     let url = self.isFavor ? 'unFavor' : 'favor';
     ajaxFavor = net.postJSON('/h5/works2/' + url, {
-      workId: item.id, worksId: item.worksId,
+      workId: item.id, id: item.worksId,
     }, function(res) {
       if(res.success) {
         let data = res.data;
@@ -626,7 +626,7 @@ class Media extends migi.Component {
         }
         jsBridge.pushWindow('/sub_post.html?worksId=' + self.data.worksId
           + '&workId=' + self.data.id
-          + '&cover=' + encodeURIComponent(self.data.cover || ''), {
+          + '&cover=' + encodeURIComponent(self.data.cover || self.data.worksCover || ''), {
           title: '画个圈',
           optionMenu: '发布',
         });
@@ -637,24 +637,16 @@ class Media extends migi.Component {
           return;
         }
         let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId + '/' + self.data.id;
-        let text = '【';
-        if(self.data.worksTitle) {
-          text += self.data.worksTitle;
-        }
-        if(self.data.worksSubTitle) {
-          if(self.data.worksTitle) {
-            text += ' ';
-          }
-          text += self.data.worksSubTitle;
+        let text = '【' + self.data.title;
+        if(self.data.subTitle) {
+          text += ' ' + self.data.subTitle;
         }
         text += '】';
-        if(self.data.author && self.data.author[0]) {
-          self.data.author[0].forEach((item) => {
-            item.list.forEach((author) => {
-              text += author.name + ' ';
-            });
+        self.data.author.forEach((item) => {
+          item.list.forEach((author) => {
+            text += author.name + ' ';
           });
-        }
+        });
         text += '#转圈circling# ';
         text += url;
         jsBridge.shareWb({

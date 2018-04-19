@@ -7,13 +7,6 @@
 import net from '../../common/net';
 import util from '../../common/util';
 
-let loadingFavor;
-let loadingLike;
-let ajaxFavor;
-let ajaxLike;
-let last;
-let lastId;
-let isPlaying;
 let mediaService;
 
 class Playlist extends migi.Component {
@@ -56,116 +49,62 @@ class Playlist extends migi.Component {
         }
       });
       $list.on('click', '.fn', function() {
-        let $fn = $(this);
-        let isLike = $fn.attr('isLike') === 'true';
-        let isFavor = $fn.attr('isFavor') === 'true';
-        let worksId = $fn.attr('worksId');
-        let workId = $fn.attr('workId');
-        let worksTitle = $fn.attr('worksTitle');
-        let worksCover = $fn.attr('worksCover');
-        let workCover = $fn.attr('workCover');
-        let authorStr = $fn.attr('authorStr');
-        migi.eventBus.emit('BOT_FN', {
-          canFn: true,
-          canLike: true,
-          canFavor: true,
-          canShare: true,
-          canShareIn: true,
-          canShareWb: true,
-          canShareLink: true,
-          isLike,
-          isFavor,
-          clickFavor: function(botFn) {
-            if(loadingFavor) {
-              return;
-            }
-            loadingFavor = true;
-            ajaxFavor = net.postJSON(isFavor ? '/h5/works/unFavorWork' : '/h5/works/favorWork', { workID: $fn.attr('workId') }, function(res) {
-              if(res.success) {
-                let data = res.data;
-                $fn.attr('isFavor', isFavor = botFn.isFavor = data.State === 'favorWork');
-              }
-              else {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              }
-              loadingFavor = false;
-            }, function(res) {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              loadingFavor = false;
+        let id = parseInt($(this).attr('rel'));
+        for(let i = 0, len = self.list.length; i < len; i++) {
+          let item = self.list[i];
+          if(item.work.id === id) {
+            migi.eventBus.emit('BOT_FN', {
+              canShare: true,
+              canShareIn: true,
+              canShareWb: true,
+              canShareLink: true,
+              clickShareIn: function(botFn) {
+                jsBridge.pushWindow('/sub_post.html?worksId=' + item.id
+                  + '&workId=' + id
+                  + '&cover=' + encodeURIComponent(item.work.cover || item.cover || ''), {
+                  title: '画个圈',
+                  optionMenu: '发布',
+                });
+                botFn.cancel();
+              },
+              clickShareWb: function(botFn) {
+                let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
+                let text = '【' + item.work.title;
+                if(item.work.subTitle) {
+                  text += ' ' + item.work.subTitle;
+                }
+                text += '】';
+                item.work.author.forEach((item) => {
+                  item.list.forEach((author) => {
+                    text += author.name + ' ';
+                  });
+                });
+                text += ' #转圈circling# ';
+                text += url;
+                jsBridge.shareWb({
+                  text,
+                }, function(res) {
+                  if(res.success) {
+                    jsBridge.toast("分享成功");
+                  }
+                  else if(res.cancel) {
+                    jsBridge.toast("取消分享");
+                  }
+                  else {
+                    jsBridge.toast("分享失败");
+                  }
+                });
+                botFn.cancel();
+              },
+              clickShareLink: function(botFn) {
+                let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
+                util.setClipboard(url);
+                botFn.cancel();
+              },
             });
-          },
-          clickLike: function(botFn) {
-            if(loadingLike) {
-              return;
-            }
-            loadingLike = true;
-            ajaxLike = net.postJSON('/h5/works/likeWork', { workID: $fn.attr('workId') }, function(res) {
-              if(res.success) {
-                let data = res.data;
-                $fn.attr('isLike', isLike = botFn.isLike = data.State === 'likeWordsUser');
-              }
-              else {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              }
-              loadingLike = false;
-            }, function(res) {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              loadingLike = false;
-            });
-          },
-          clickCancel: function() {
-            if(ajaxFavor) {
-              ajaxFavor.abort();
-            }
-            if(ajaxLike) {
-              ajaxLike.abort();
-            }
-            loadingFavor = false;
-            loadingLike = false;
-          },
-          clickShareWb: function() {
-            let url = window.ROOT_DOMAIN + '/works/' + worksId;
-            if(workId) {
-              url += '/' + workId;
-            }
-            let text = '【';
-            if(worksTitle) {
-              text += worksTitle;
-            }
-            text += '】';
-            text += authorStr;
-            text += ' #转圈circling# ';
-            text += url;
-            jsBridge.shareWb({
-              text,
-            }, function(res) {
-              if(res.success) {
-                jsBridge.toast("分享成功");
-              }
-              else if(res.cancel) {
-                jsBridge.toast("取消分享");
-              }
-              else {
-                jsBridge.toast("分享失败");
-              }
-            });
-          },
-          clickShareLink: function() {
-            let url = window.ROOT_DOMAIN + '/works/' + worksId;
-            if(workId) {
-              url += '/' + workId;
-            }
-            util.setClipboard(url);
-          },
-          clickShareIn: function(botFn) {
-            jsBridge.pushWindow('/sub_post.html?id=' + worksId
-              + '&workId=' + workId
-              + '&cover=' + encodeURIComponent(worksCover || ''), {
-              title: '画个圈',
-              optionMenu: '发布',
-            });
-          },
-        });
+            break;
+          }
+        }
       });
     });
   }
@@ -222,12 +161,12 @@ class Playlist extends migi.Component {
     let author = [];
     let hash = {};
     if(self.props.profession) {
-      (item.work.profession || []).forEach((item) => {
+      item.work.profession.forEach((item) => {
         author.push(item.name);
       });
     }
     else {
-      (item.work.author || []).forEach(function(list) {
+      item.work.author.forEach(function(list) {
         list.list.forEach(function(at) {
           if(!hash[at.id]) {
             hash[at.id] = true;
@@ -240,13 +179,15 @@ class Playlist extends migi.Component {
       <a class="pic"
          title={ item.title }
          href={ url }>
-        <img src={ util.autoSsl(util.img750__80(item.cover)) || '/src/common/blank.png' }/>
+        <img src={ util.img(item.cover, 80, 80, 80) || '/src/common/blank.png' }/>
       </a>
-      <div class="txt" rel={ item.work.id }>
+      <div class="txt"
+           rel={ item.work.id }>
         <span class="name">{ item.work.title }</span>
         <p class="author">{ author.join(' ') }</p>
       </div>
-      <b class="fn"/>
+      <b class="fn"
+         rel={ item.work.id }/>
     </li>;
   }
   setCur(i) {
@@ -254,81 +195,6 @@ class Playlist extends migi.Component {
     let $list = $(self.ref.list.element);
     $list.find('.cur').removeClass('cur');
     $list.find('li').eq(i).addClass('cur');
-  }
-  clickPic(e, vd, tvd) {
-    e.preventDefault();
-    let url = tvd.props.href;
-    let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-      transparentTitle: true,
-    });
-  }
-  click(e, vd, tvd) {
-    e.preventDefault();
-    let self = this;
-    if(self.props.playInline) {
-      let li = tvd.closest('li');
-      let audio = li.find('audio');
-      if(li.element.classList.contains('cur')) {
-        if(mediaService) {
-          jsBridge.media({
-            key: isPlaying ? 'pause' : 'play',
-          });
-        }
-        else {
-          isPlaying ? audio.element.pause() : audio.element.play();
-        }
-        isPlaying = !isPlaying;
-        return;
-      }
-      self.clearLast();
-      li.element.classList.add('cur');
-      last = li;
-      let item = tvd.props.item;
-      lastId = item.ItemID;
-      if(mediaService) {
-        jsBridge.media({
-          key: 'info',
-          value: {
-            id: item.ItemID,
-            url: location.protocol + util.autoSsl(item.FileUrl),
-            name: item.workId,
-          },
-        });
-        jsBridge.media({
-          key: 'play',
-        });
-        jsBridge.getPreference('playlist', function(res) {
-          res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
-          for (let i = 0, len = res.length; i < len; i++) {
-            if(res[i].workId === item.ItemID) {
-              res.splice(i, 1);
-              break;
-            }
-          }
-          res.unshift({
-            workId: item.ItemID,
-          });
-          jsBridge.setPreference('playlist', jsBridge.android ? res : JSON.parse(res));
-        });
-        jsBridge.setPreference('playlistCur', {
-          workId: item.ItemID,
-        });
-      }
-      else {
-        audio.element.src = item.FileUrl;
-        audio.element.play();
-        isPlaying = true;
-      }
-      return;
-    }
-    let url = tvd.props.href;
-    let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-      transparentTitle: true,
-    });
   }
   render() {
     return <div class={ 'cp-playlist' + (this.visible ? '' : ' fn-hide') }>
