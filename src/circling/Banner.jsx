@@ -4,8 +4,6 @@
 
 'use strict';
 
-import util from "../common/util";
-
 let WIDTH;
 let isStart;
 let isMove;
@@ -177,7 +175,7 @@ class Banner extends migi.Component {
                  target="_blank"
                  title={ item.title }
                  transparentTitle={ item.transparentTitle }>
-                <img src={ util.autoSsl(util.img750__80(item.cover)) || '/src/common/blank.png' }/>
+                <img src={ $util.img(item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
               </a>
             </li>;
           }.bind(this))

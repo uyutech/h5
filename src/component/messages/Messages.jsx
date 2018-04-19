@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../../common/util';
-
 class Messages extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -60,14 +57,14 @@ class Messages extends migi.Component {
                id={ 'message_' + item.NotifyID }>
       <div class="profile fn-clear">
         <img class="pic"
-             src={ util.autoSsl(util.img96_96_80(item.Send_UserHeadUrl || '/src/common/head.png')) }/>
+             src={ $util.img(item.Send_UserHeadUrl, 96, 96, 80) || '/src/common/head.png' }/>
         <div class="txt">
           <a href={ link }
              class="name"
              title={ item.Send_UserName }>{ item.Send_UserName }</a>
           <a class="time"
              href={ url }
-             title={ title }>{ util.formatDate(item.Send_Time) }</a>
+             title={ title }>{ $util.formatDate(item.Send_Time) }</a>
         </div>
       </div>
       <div class="wrap">

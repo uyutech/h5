@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../../common/util';
-
 let uuid = 0;
 
 class WaterFall extends migi.Component {
@@ -37,7 +34,7 @@ class WaterFall extends migi.Component {
         });
       });
       $root.on('click', '.like', function() {
-        if(!util.isLogin()) {
+        if(!$util.isLogin()) {
           migi.eventBus.emit('NEED_LOGIN');
           return;
         }
@@ -59,16 +56,16 @@ class WaterFall extends migi.Component {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
           $b.removeClass('loading');
         }, function (res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           $b.removeClass('loading');
         });
       });
       $root.on('click', '.favor', function() {
-        if(!util.isLogin()) {
+        if(!$util.isLogin()) {
           migi.eventBus.emit('NEED_LOGIN');
           return;
         }
@@ -89,11 +86,11 @@ class WaterFall extends migi.Component {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
           $b.removeClass('loading');
         }, function (res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           $b.removeClass('loading');
         });
       });
@@ -210,11 +207,11 @@ class WaterFall extends migi.Component {
         });
       });
     }
-    item.work.preview = util.img(item.work.url, 375, 0, 80);
+    item.work.preview = $util.img(item.work.url, 375, 0, 80);
     if(item.work.width <= self.WIDTH / 2) {
       return <li id={ 'image_' + item.work.id }>
         <img class="pic"
-             src={ util.autoSsl(item.work.preview) || '/src/common/blank.png' }
+             src={ $util.autoSsl(item.work.preview) || '/src/common/blank.png' }
              rel={ self.index++ }
              height={ item.work.height / 2 }/>
         <div class="txt">
@@ -227,7 +224,7 @@ class WaterFall extends migi.Component {
     let height = item.work.height * self.WIDTH / item.work.width;
     return <li id={ 'image_' + item.work.id }>
       <img class="pic"
-           src={ util.autoSsl(item.work.preview) || '/src/common/blank.png' }
+           src={ $util.autoSsl(item.work.preview) || '/src/common/blank.png' }
            rel={ self.index++ }
            height={ height }/>
       <div class="txt">
@@ -244,7 +241,7 @@ class WaterFall extends migi.Component {
     img.style.left = '-9999rem;';
     img.style.top = '-9999rem';
     img.style.visibility = 'hidden';
-    img.src = util.img(item.work.url, 0, 0, 60);
+    img.src = $util.img(item.work.url, 0, 0, 60);
     img.onload = function() {
       item.work.width = img.width;
       item.work.height = img.height;

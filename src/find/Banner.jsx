@@ -4,8 +4,6 @@
 
 'use strict';
 
-import util from '../common/util';
-
 let WIDTH;
 let isStart;
 let isMove;
@@ -82,9 +80,9 @@ class Banner extends migi.Component {
         });
         break;
       case 'author':
-        util.openAuthor({
-          url,
+        jsBridge.pushWindow(url, {
           title,
+          transparentTitle: true,
         });
         break;
       default:
@@ -215,7 +213,7 @@ class Banner extends migi.Component {
             return <li>
               <a href={ url }
                  title={ item.title }>
-                <img src={ util.autoSsl(util.img750__80(item.pic)) || '/src/common/blank.png' }/>
+                <img src={ $util.img(item.pic, 750, 0, 80) || '/src/common/blank.png' }/>
               </a>
             </li>;
           })

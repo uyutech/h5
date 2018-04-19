@@ -4,8 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import Nav from './Nav.jsx';
 import Background from '../component/background/Background.jsx';
 import PostList from '../component/postlist/PostList.jsx';
@@ -54,10 +52,10 @@ class User extends migi.Component {
         });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -108,7 +106,7 @@ class User extends migi.Component {
     if(loading || loadEnd) {
       return;
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -135,11 +133,11 @@ class User extends migi.Component {
         migi.eventBus.emit('NEED_LOGIN');
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }

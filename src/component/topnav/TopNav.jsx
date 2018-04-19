@@ -2,11 +2,7 @@
  * Created by army8735 on 2017/9/19.
  */
 
-
-import util from '../../common/util';
 import Background from '../background/Background.jsx';
-
-let loading;
 
 class TopNav extends migi.Component {
   constructor(...data) {

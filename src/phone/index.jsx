@@ -7,8 +7,6 @@
 import './phone.html';
 import './index.less';
 
-
-import util from '../common/util';
 import Phone from './Phone.jsx';
 
 jsBridge.ready(function() {

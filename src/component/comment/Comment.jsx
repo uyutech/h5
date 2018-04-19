@@ -4,10 +4,6 @@
 
 'use strict';
 
-
-import util from '../../common/util';
-
-let $last;
 let exist = {};
 
 const MAX_LEN = 144;
@@ -42,7 +38,7 @@ class Comment extends migi.Component {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
         });
       });
@@ -60,7 +56,7 @@ class Comment extends migi.Component {
           canReport: true,
           canDel: $fn.attr('own') === 'true',
           // clickBlock: function(botFn) {
-          //   if(!util.isLogin()) {
+          //   if(!$util.isLogin()) {
           //     migi.eventBus.emit('NEED_LOGIN');
           //     return;
           //   }
@@ -73,11 +69,11 @@ class Comment extends migi.Component {
           //         jsBridge.toast('屏蔽成功');
           //       }
           //       else {
-          //         jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          //         jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           //       }
           //       botFn.cancel();
           //     }, function(res) {
-          //       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          //       jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           //       botFn.cancel();
           //     });
           //   });
@@ -92,11 +88,11 @@ class Comment extends migi.Component {
                   jsBridge.toast('举报成功');
                 }
                 else {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 }
                 botFn.cancel();
               }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 botFn.cancel();
               });
             });
@@ -114,10 +110,10 @@ class Comment extends migi.Component {
                   self.emit('del', id);
                 }
                 else {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 }
               }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
               });
             });
           },
@@ -211,7 +207,7 @@ class Comment extends migi.Component {
     $(self.ref.list.element).html('');
   }
   block(id, type, cb) {
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -224,10 +220,10 @@ class Comment extends migi.Component {
           cb && cb();
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
       }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       });
     });
   }
@@ -247,8 +243,7 @@ class Comment extends migi.Component {
              href={ url }
              title={ item.isAuthor ? item.name : item.nickname }>
             <img class="pic"
-                 src={ util.autoSsl(util.img60_60_80(item.headUrl
-                   || '/src/common/head.png')) }/>
+                 src={ $util.img(item.headUrl, 60, 60, 80) || '/src/common/head.png' }/>
           </a>
           <div class="txt">
             <a class="name"
@@ -259,7 +254,7 @@ class Comment extends migi.Component {
               ? item.name
               : item.nickname }</a>
             <small class="time"
-                   rel={ item.createTime }>{ util.formatDate(item.createTime) }</small>
+                   rel={ item.createTime }>{ $util.formatDate(item.createTime) }</small>
           </div>
         </div>
         <b class="fn"

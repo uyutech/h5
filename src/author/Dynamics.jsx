@@ -4,7 +4,6 @@
 
 'use strict';
 
-import util from '../common/util';
 import PostList from '../component/postlist/PostList.jsx';
 
 let offset;
@@ -41,7 +40,7 @@ class Dynamics extends migi.Component {
     if(loading || loadEnd || !self.visible) {
       return;
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -66,11 +65,11 @@ class Dynamics extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }

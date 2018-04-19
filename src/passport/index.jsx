@@ -7,8 +7,6 @@
 import './passport.html';
 import './index.less';
 
-
-import util from '../common/util';
 import Passport from './Passport.jsx';
 
 jsBridge.ready(function() {

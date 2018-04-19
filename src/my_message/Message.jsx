@@ -4,8 +4,6 @@
 
 'use strict';
 
-import util from '../common/util';
-
 class Message extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -93,8 +91,7 @@ class Message extends migi.Component {
         <a class="pic"
            href={ peopleUrl }
            title={ comment.name || comment.nickname }>
-          <img src={ util.autoSsl(util.img208_208_80(comment.headUrl
-            || '/src/common/head.png')) }/>
+          <img src={ $util.img(comment.headUrl, 208, 208, 80) || '/src/common/head.png' }/>
         </a>
         <div class="txt">
           <a class="name"
@@ -102,7 +99,7 @@ class Message extends migi.Component {
              title={ comment.name || comment.nickname }>{ comment.name || comment.nickname }</a>
           <a class="time"
              title={ item.createTime }
-             href={ url }>{ util.formatDate(comment.createTime)}</a>
+             href={ url }>{ $util.formatDate(comment.createTime)}</a>
         </div>
       </div>
       <div class="wrap">

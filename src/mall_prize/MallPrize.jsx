@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 let currentPriority = 0;
 let cacheKey = 'mallPrize';
 
@@ -32,10 +29,10 @@ class MallPrize extends migi.Component {
         jsBridge.setPreference(cacheKey, data);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -61,11 +58,11 @@ class MallPrize extends migi.Component {
         jsBridge.delPreference(cacheKey);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       tvd.element.classList.remove('loading');
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       tvd.element.classList.remove('loading');
     });
   }

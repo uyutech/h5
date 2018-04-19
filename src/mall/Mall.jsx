@@ -4,10 +4,6 @@
 
 'use strict';
 
-import BigNumber from 'bignumber.js';
-import util from '../common/util';
-
-
 let currentPriority = 0;
 let cacheKey;
 
@@ -33,10 +29,10 @@ class Mall extends migi.Component {
         jsBridge.setPreference(cacheKey, data);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -72,7 +68,7 @@ class Mall extends migi.Component {
                 let price = new BigNumber(item.price).times(item.discount).ceil();
                 if(item.discount < 1) {
                   return <div class="item">
-                    <img src={ util.img(item.cover, 200, 200, 80) || '//zhuanquan.xin/img/blank.png' }/>
+                    <img src={ $util.img(item.cover, 200, 200, 80) || '//zhuanquan.xin/img/blank.png' }/>
                     <span class="name">{ item.name }</span>
                     <span class="price discount">价格：{ item.price }<b class="icon"/></span>
                     <span class="price">折扣价：{ price }<b class="icon"/></span>
@@ -80,7 +76,7 @@ class Mall extends migi.Component {
                   </div>;
                 }
                 return <div class="item">
-                  <img src={ util.img(item.cover, 200, 200, 80) || '//zhuanquan.xin/img/blank.png' }/>
+                  <img src={ $util.img(item.cover, 200, 200, 80) || '//zhuanquan.xin/img/blank.png' }/>
                   <span class="name">{ item.name }</span>
                   <span class="price">价格：{ item.price }<b class="icon"/></span>
                   <button class="btn">即将上架</button>

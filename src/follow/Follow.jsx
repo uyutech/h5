@@ -4,8 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import PostList from '../component/postlist/PostList.jsx';
 
 let scrollY = 0;
@@ -62,8 +60,8 @@ class Follow extends migi.Component {
   @bind
   set visible(v) {
     this._visible = v;
-    util.scrollY(scrollY);
-    if(v && !util.isLogin()) {
+    $util.scrollY(scrollY);
+    if(v && !$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
     }
   }
@@ -72,7 +70,7 @@ class Follow extends migi.Component {
   @bind circleList
   init() {
     let self = this;
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -102,7 +100,7 @@ class Follow extends migi.Component {
         window.addEventListener('scroll', function() {
           if(self.visible) {
             self.checkMore();
-            scrollY = util.scrollY();
+            scrollY = $util.scrollY();
           }
         });
         return;
@@ -123,10 +121,10 @@ class Follow extends migi.Component {
         migi.eventBus.emit('NEED_LOGIN');
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -172,7 +170,7 @@ class Follow extends migi.Component {
         return;
       }
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.type === 0 ? self.load() : self.load2();
     }
   }
@@ -194,11 +192,11 @@ class Follow extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }
@@ -220,11 +218,11 @@ class Follow extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading2 = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading2 = false;
     });
   }
@@ -249,11 +247,11 @@ class Follow extends migi.Component {
           }
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
         loadingCircle = false;
       }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         loadingCircle = false;
       });
     }
@@ -308,7 +306,7 @@ class Follow extends migi.Component {
                 <a class="pic"
                    title={ item.name || item.nickname }
                    href={ item.isAuthor ? ('/author.html?id=' + item.id) : ('/user.html?id=' + item.id) }>
-                  <img src={ util.autoSsl(util.img(item.headUrl, 120, 120, 80)) || '/src/common/head.png' }/>
+                  <img src={ $util.img(item.headUrl, 120, 120, 80) || '/src/common/head.png' }/>
                 </a>
               </li>;
             })

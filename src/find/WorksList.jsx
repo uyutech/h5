@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from "../common/util";
-
 class WorksList extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -42,7 +39,7 @@ class WorksList extends migi.Component {
             <a class="pic"
                href={ '/works.html?id=' + item.id }
                title={ item.title }>
-              <img src={ util.img(item.cover, 170, 170, 80) || '/src/common/blank.png' }/>
+              <img src={ $util.img(item.cover, 170, 170, 80) || '/src/common/blank.png' }/>
               <span>{ item.CommentCount }</span>
             </a>
             <a class="name"

@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../../common/util';
-
 class Message extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -16,7 +13,7 @@ class Message extends migi.Component {
       jsBridge.getPreference('message-time', function(res) {
         res = res || 0;
         let now = Date.now();
-        if(util.isLogin() && now - res > 10000) {
+        if($util.isLogin() && now - res > 10000) {
           $net.postJSON('/h5/my/message', function(res) {
             if(res.success) {
               let data = res.data;

@@ -4,8 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import Nav from './Nav.jsx';
 import Background from '../component/background/Background.jsx';
 
@@ -45,7 +43,7 @@ class My extends migi.Component {
   @bind
   set visible(v) {
     this._visible = v;
-    util.scrollY(scrollY);
+    $util.scrollY(scrollY);
   }
   @bind isLogin
   @bind coins
@@ -78,10 +76,10 @@ class My extends migi.Component {
         $.cookie('isLogin', null);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -142,7 +140,7 @@ class My extends migi.Component {
         });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     });
   }

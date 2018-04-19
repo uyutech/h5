@@ -4,8 +4,6 @@
 
 'use strict';
 
-import util from "../../common/util";
-
 class UserList extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -61,7 +59,7 @@ class UserList extends migi.Component {
     return <li>
       <a href={ '/author.html?' + item.id }
          title={ item.name }>
-        <img src={ util.autoSsl(util.img120_120(item.headUrl)) || '/src/common/head.png' }/>
+        <img src={ $util.img(item.headUrl, 120, 120, 80) || '/src/common/head.png' }/>
         <span>{ item.name }</span>
       </a>
     </li>;

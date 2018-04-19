@@ -4,8 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import Spark from 'spark-md5';
 
 const STATE = {
@@ -136,10 +134,10 @@ class SubPost extends migi.Component {
         jsBridge.setPreference(cacheKey, data);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -198,7 +196,7 @@ class SubPost extends migi.Component {
   }
   submit(e) {
     e && e.preventDefault();
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -253,18 +251,18 @@ class SubPost extends migi.Component {
           jsBridge.popWindow({ data: res.data, type: 'subPost' });
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
         self.sending = false;
       }, function(res) {
         jsBridge.hideLoading();
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         self.sending = false;
       });
     }
   }
   clickFile(e) {
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       e.preventDefault();
       migi.eventBus.emit('NEED_LOGIN');
     }
@@ -274,7 +272,7 @@ class SubPost extends migi.Component {
     if(self.uploading) {
       return;
     }
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -377,10 +375,10 @@ class SubPost extends migi.Component {
               xhr.send(form);
             }
             else {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              jsBridge.toast(res.message || $util.ERROR_MESSAGE);
             }
           }, function(res) {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           });
         };
         fileReader.readAsDataURL(file);
@@ -500,7 +498,7 @@ class SubPost extends migi.Component {
           <strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }
           <div class={ 'alt' + (this.isAuthor ? '' : ' fn-hide') + (this.useAuthor ? ' author' : '') }
                onClick={ this.clickAlt }>
-            <img src={ util.img(this.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
+            <img src={ $util.img(this.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
             <span>{ this.name }</span>
           </div>
         </div>
@@ -510,13 +508,13 @@ class SubPost extends migi.Component {
       {
         this.workId && this.worksId
           ? <li class="share"
-                style={ 'background-image:url(' + (util.img(this.cover, 120, 120, 80) || '/src/common/blank.png') + ')' }/>
+                style={ 'background-image:url(' + ($util.img(this.cover, 120, 120, 80) || '/src/common/blank.png') + ')' }/>
           : ''
       }
       {
         (this.list || []).map(function(item, i) {
           return <li class={ 's' + item.state } idx={ i } rel={ item.url }
-                     style={ 'background-image:url(' + util.img(item.url, 120, 120, 80) + ')' }>
+                     style={ 'background-image:url(' + $util.img(item.url, 120, 120, 80) + ')' }>
             <span>{ TEXT[item.state] }</span>
           </li>;
         })

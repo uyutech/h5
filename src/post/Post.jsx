@@ -5,8 +5,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import PostList from '../component/postlist/PostList.jsx';
 import CommentBar from '../component/commentbar/CommentBar.jsx';
 import Comment from '../component/comment/Comment.jsx';
@@ -39,11 +37,11 @@ class Post extends migi.Component {
                     jsBridge.toast('举报成功');
                   }
                   else {
-                    jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                   }
                   botFn.cancel();
                 }, function(res) {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                   botFn.cancel();
                 });
               }
@@ -57,11 +55,11 @@ class Post extends migi.Component {
                     jsBridge.toast('删除成功');
                   }
                   else {
-                    jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                   }
                   botFn.cancel();
                 }, function(res) {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                   botFn.cancel();
                 });
               }
@@ -94,10 +92,10 @@ class Post extends migi.Component {
         });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -125,7 +123,7 @@ class Post extends migi.Component {
     if(loading || loadEnd) {
       return;
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -152,11 +150,11 @@ class Post extends migi.Component {
         if(res.code === 1000) {
           migi.eventBus.emit('NEED_LOGIN');
         }
-        comment.message = res.message || util.ERROR_MESSAGE;
+        comment.message = res.message || $util.ERROR_MESSAGE;
       }
       loading = false;
     }, function(res) {
-      comment.message = res.message || util.ERROR_MESSAGE;
+      comment.message = res.message || $util.ERROR_MESSAGE;
       loading = false;
     });
   }
@@ -195,10 +193,10 @@ class Post extends migi.Component {
           location.reload(true);
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
       }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       });
     });
   }

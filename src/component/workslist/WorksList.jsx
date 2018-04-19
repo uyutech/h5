@@ -4,8 +4,6 @@
 
 'use strict';
 
-import util from "../../common/util";
-
 class WorksList extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -50,9 +48,9 @@ class WorksList extends migi.Component {
       <a class="pic"
          href={ url }
          title={ item.title }>
-        <img src={ util.autoSsl(util.img170_170_80(item.cover)) || '/src/common/blank.png' }/>
+        <img src={ $util.img(item.cover, 170, 170, 80) || '/src/common/blank.png' }/>
         <span class="type">{ item.typeName }</span>
-        <span class="num">{ util.abbrNum(item.popular) }</span>
+        <span class="num">{ $util.abbrNum(item.popular) }</span>
       </a>
       <a class="txt"
          href={ url }

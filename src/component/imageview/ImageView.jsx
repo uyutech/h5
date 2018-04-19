@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../../common/util';
-
 let WIDTH;
 let isStart;
 let isMove;
@@ -78,7 +75,7 @@ class ImageView extends migi.Component {
     let self = this;
     let list = self.list;
     let data = list[index];
-    let url = util.autoSsl(data.FileUrl);
+    let url = $util.autoSsl(data.FileUrl);
     if(data.loaded || !data.preview) {
       ++uuid;
       self.$i2.find('img').attr('src', url || '/src/common/blank.png');
@@ -257,7 +254,7 @@ class ImageView extends migi.Component {
   }
   clickDownload(e, vd) {
     e.stopPropagation();
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -265,7 +262,7 @@ class ImageView extends migi.Component {
     if(url && /^\/\//.test(url)) {
       url = location.protocol + url;
     }
-    url = util.img(url);
+    url = $util.img(url);
     let name = url.replace(/^.*\//, '');
     jsBridge.download({
       url,

@@ -1,14 +1,9 @@
-import util from "../common/util";
-
-
 /**
  * Created by army on 2017/4/22.
  */
 
 let loading;
 let loadEnd;
-let skip = 0;
-let take = 20;
 
 class Step3 extends migi.Component {
   constructor(...data) {
@@ -68,11 +63,11 @@ class Step3 extends migi.Component {
         self.emit('next');
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       self.sending = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       self.sending = false;
     });
   }
@@ -94,23 +89,23 @@ class Step3 extends migi.Component {
         self.message = '';
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }
   genItem(item) {
     return <li rel={ item.id }>
-      <img src={ util.img120_120_80(item.headUrl) || '/src/common/head.png' }/>
+      <img src={ $util.img120_120_80(item.headUrl) || '/src/common/head.png' }/>
       <span>{ item.name }</span>
     </li>;
   }
   genItem2(item) {
     return <li rel={ item.id }>
-      <img src={ util.img120_120_80(item.headUrl) || '/src/common/head.png' }/>
+      <img src={ $util.img120_120_80(item.headUrl) || '/src/common/head.png' }/>
     </li>;
   }
   render() {

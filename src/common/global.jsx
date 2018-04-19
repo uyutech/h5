@@ -5,7 +5,6 @@
 'use strict';
 
 import MLogin from '../component/mlogin/MLogin.jsx';
-import Share from '../component/share/Share.jsx';
 import Message from '../component/message/Message.jsx';
 import uuidv4 from 'uuid/v4';
 
@@ -27,28 +26,6 @@ migi.eventBus.on('NEED_LOGIN', function() {
     );
   }
   mlogin.show();
-});
-
-let share;
-migi.eventBus.on('SHARE', function(data) {
-  let url;
-  if(isString(data)) {
-    url = data;
-  }
-  else {
-    url = data.url;
-  }
-  if(url.charAt(0) === '/') {
-    url = window.ROOT_DOMAIN + url;
-  }
-  if(!share) {
-    share = migi.render(
-      <Share/>,
-      document.body
-    );
-  }
-  share.url = url;
-  share.show();
 });
 
 jsBridge.ready(function() {

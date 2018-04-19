@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../../common/util';
-
 class VideoList extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -56,11 +53,11 @@ class VideoList extends migi.Component {
                 migi.eventBus.emit('NEED_LOGIN');
               }
               else {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
               }
               $this.removeClass('loading');
             }, function(res) {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              jsBridge.toast(res.message || $util.ERROR_MESSAGE);
               $this.removeClass('loading');
             });
             break;
@@ -126,7 +123,7 @@ class VideoList extends migi.Component {
               },
               clickShareLink: function(botFn) {
                 let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
-                util.setClipboard(url);
+                $util.setClipboard(url);
                 botFn.cancel();
               },
             });
@@ -207,9 +204,9 @@ class VideoList extends migi.Component {
       <a class="pic"
          title={ item.title }
          href={ url }>
-        <img src={ util.img(item.work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
+        <img src={ $util.img(item.work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
         <div class="num">
-          <span class="play">{ util.abbrNum(item.work.views) }次播放</span>
+          <span class="play">{ $util.abbrNum(item.work.views) }次播放</span>
         </div>
       </a>
       <a class="name"

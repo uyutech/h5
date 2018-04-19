@@ -4,9 +4,6 @@
 
 'use strict';
 
-import util from '../common/util';
-
-
 class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -40,7 +37,7 @@ class Nav extends migi.Component {
     }
   }
   clickPic(e) {
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       e.preventDefault();
     }
   }
@@ -65,10 +62,10 @@ class Nav extends migi.Component {
               });
             }
             else {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              jsBridge.toast(res.message || $util.ERROR_MESSAGE);
             }
           }, function(res) {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           });
         }
       }
@@ -96,10 +93,10 @@ class Nav extends migi.Component {
               });
             }
             else {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              jsBridge.toast(res.message || $util.ERROR_MESSAGE);
             }
           }, function(res) {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           });
         }
       }
@@ -119,7 +116,7 @@ class Nav extends migi.Component {
     return <div class="nav">
       <div class="profile">
         <div class="pic">
-          <img src={ util.autoSsl(util.img200_200_80(this.headUrl || '/src/common/head.png')) }/>
+          <img src={ $util.img(this.headUrl, 200, 200, 80) || '/src/common/head.png' }/>
           <input type="file"
                  onClick={ this.clickPic }
                  onChange={ this.change }/>

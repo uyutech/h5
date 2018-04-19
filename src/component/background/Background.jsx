@@ -4,8 +4,6 @@
 
 'use strict';
 
-import util from "../../common/util";
-
 function setHeight($b, percent) {
   $b.css('height', Math.floor(percent) + '%');
 }
@@ -62,7 +60,7 @@ class Background extends migi.Component {
                     key: 'info',
                     value: {
                       id: playlistCur.workId,
-                      url: location.protocol + util.autoSsl(playlistCur.url),
+                      url: location.protocol + $util.autoSsl(playlistCur.url),
                       name: playlistCur.workId,
                     },
                   });
@@ -77,7 +75,7 @@ class Background extends migi.Component {
               jsBridge.media({
                 key: 'info',
                 value: {
-                  url: location.protocol + util.autoSsl(playlistCur.url),
+                  url: location.protocol + $util.autoSsl(playlistCur.url),
                   name: playlistCur.workId,
                 },
               });

@@ -2,9 +2,6 @@
  * Created by army on 2017/4/18.
  */
 
-
-import util from '../common/util';
-
 class Step1 extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -43,11 +40,11 @@ class Step1 extends migi.Component {
         self.emit('next');
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       self.sending = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       self.sending = false;
     });
   }

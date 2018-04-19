@@ -2,8 +2,6 @@
  * Created by army8735 on 2017/9/21.
  */
 
-import util from '../common/util';
-
 class Author extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -13,8 +11,9 @@ class Author extends migi.Component {
     e.preventDefault();
     let authorId = tvd.props.authorId;
     let title = tvd.props.title;
-    util.openAuthor(authorId, {
+    jsBridge.pushWindow('/author.html?id=' + authorId, {
       title,
+      transparentTitle: true,
     });
   }
   render() {
@@ -32,7 +31,7 @@ class Author extends migi.Component {
                       if(author.isSettle) {
                         return <dd authorId={ author.id }
                                    title={ author.name }>
-                          <img src={ util.img(author.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
+                          <img src={ $util.img(author.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
                           <span>{ author.name }</span>
                         </dd>;
                       }

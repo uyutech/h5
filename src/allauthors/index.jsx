@@ -7,8 +7,6 @@
 import './allauthors.html';
 import './index.less';
 
-
-import util from '../common/util';
 import AllAuthors from './AllAuthors.jsx';
 
 jsBridge.ready(function() {

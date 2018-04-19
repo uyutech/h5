@@ -5,7 +5,6 @@
 'use strict';
 
 
-import util from '../common/util';
 import Nav from './Nav.jsx';
 import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
@@ -32,7 +31,7 @@ class Circle extends migi.Component {
           canFn: true,
           canBlock: true,
           clickBlock: function(botFn) {
-            if(!util.isLogin()) {
+            if(!$util.isLogin()) {
               migi.eventBus.emit('NEED_LOGIN');
               return;
             }
@@ -49,11 +48,11 @@ class Circle extends migi.Component {
                   migi.eventBus.emit('NEED_LOGIN');
                 }
                 else {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 }
                 botFn.cancel();
               }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 botFn.cancel();
               });
             });
@@ -87,10 +86,10 @@ class Circle extends migi.Component {
         });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -138,7 +137,7 @@ class Circle extends migi.Component {
     if(loading || loadEnd) {
       return;
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -166,12 +165,12 @@ class Circle extends migi.Component {
           migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }
@@ -202,7 +201,7 @@ class Circle extends migi.Component {
         botFn.cancel();
       },
       clickShareLink: function(botFn) {
-        util.setClipboard(window.ROOT_DOMAIN + '/circle/' + self.id);
+        $util.setClipboard(window.ROOT_DOMAIN + '/circle/' + self.id);
         botFn.cancel();
       },
     });

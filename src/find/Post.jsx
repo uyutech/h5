@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 class Post extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -19,7 +16,7 @@ class Post extends migi.Component {
       <a class="pic"
          href={ '/post.html?id=' + this.data }
          title={ this.data.title }>
-        <img src={ util.img(this.data.cover, 750, 0, 80) || '/src/common/blank.png' }/>
+        <img src={ $util.img(this.data.cover, 750, 0, 80) || '/src/common/blank.png' }/>
       </a>
       <div class="txt">
         <span>{ this.data.title }</span>

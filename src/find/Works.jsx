@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 class Works extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -32,7 +29,7 @@ class Works extends migi.Component {
       <a class="pic"
          href={ url }
          title={ this.data.content.title }>
-        <img src={ util.autoSsl(util.img250_250_80(this.data.content.cover))
+        <img src={ $util.img(this.data.content.cover, 250, 250, 80)
           || '/src/common/blank.png' }/>
         <div class={ this.data.title ? '' : 'fn-hide' }>
           <span>{ this.data.title }</span>
@@ -51,7 +48,7 @@ class Works extends migi.Component {
                     return <dd>
                       <a href={ '/author.html?id=' + item.id }
                          title={ item.name }>
-                        <img src={ util.img(item.headUrl, 60, 60, 80) || '/src/common/head.png' }/>
+                        <img src={ $util.img(item.headUrl, 60, 60, 80) || '/src/common/head.png' }/>
                         <span>{ item.name }</span>
                       </a>
                     </dd>;

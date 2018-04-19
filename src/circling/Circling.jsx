@@ -5,8 +5,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import Banner from '../find/Banner.jsx';
 import PostList from '../component/postlist/PostList.jsx';
 
@@ -46,7 +44,7 @@ class Circling extends migi.Component {
   @bind
   set visible(v) {
     this._visible = v;
-    util.scrollY(scrollY);
+    $util.scrollY(scrollY);
   }
   @bind circleList
   init() {
@@ -71,15 +69,15 @@ class Circling extends migi.Component {
         window.addEventListener('scroll', function() {
           if(self.visible) {
             self.checkMore();
-            scrollY = util.scrollY();
+            scrollY = $util.scrollY();
           }
         });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -105,7 +103,7 @@ class Circling extends migi.Component {
     if(loading || loadEnd) {
       return;
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -130,11 +128,11 @@ class Circling extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }
@@ -156,11 +154,11 @@ class Circling extends migi.Component {
           }
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
         loadingCircle = false;
       }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         loadingCircle = false;
       });
     }

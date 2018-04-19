@@ -9,6 +9,9 @@ const path = require('path');
 
 const glob = require('glob');
 const migi = require('migi');
+const util = require('./src/common/util');
+
+global.$util = util;
 
 const config = require('./webpack.pre');
 

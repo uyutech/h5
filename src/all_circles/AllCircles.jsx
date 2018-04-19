@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 let take = 30;
 let skip = 0;
 let loading;
@@ -23,10 +20,10 @@ class AllCircles extends migi.Component {
           self.setData(res.data);
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
       }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       });
     });
   }
@@ -95,11 +92,11 @@ class AllCircles extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }
@@ -115,12 +112,12 @@ class AllCircles extends migi.Component {
     let url = `/circle.html?id=${item.TagID}`;
     return <li>
       <a href={url} class="pic" title={ item.TagName + '圈' }>
-        <img src={util.autoSsl(util.img288_288_80(item.TagCover)) || '//zhuanquan.xin/img/blank.png'}/>
+        <img src={$util.img(item.TagCover, 288, 288, 80) || '//zhuanquan.xin/img/blank.png'}/>
       </a>
       <a href={url} class="txt" title={ item.TagName + '圈' }>
         <span class="name">{ item.TagName }</span>
-        <span class="fans">成员{ util.abbrNum(item.FansNumber) }</span>
-        <span class="comment">画圈{ util.abbrNum(item.Popular) }</span>
+        <span class="fans">成员{ $util.abbrNum(item.FansNumber) }</span>
+        <span class="comment">画圈{ $util.abbrNum(item.Popular) }</span>
       </a>
     </li>;
   }

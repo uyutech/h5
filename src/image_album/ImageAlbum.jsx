@@ -4,9 +4,6 @@
 
 'use strict';
 
-import util from '../common/util';
-
-
 import Column from '../works/Column.jsx';
 import WaterFall from '../component/waterfall/WaterFall.jsx';
 import Author from '../works/Author.jsx';
@@ -53,10 +50,10 @@ class ImageAlbum extends migi.Component {
         self.ref.comments.listenScroll();
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -120,7 +117,7 @@ class ImageAlbum extends migi.Component {
     if(loading || loadEnd || self.curColumn !== 0) {
       return;
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -139,10 +136,10 @@ class ImageAlbum extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   changeColumn(id) {
@@ -224,7 +221,7 @@ class ImageAlbum extends migi.Component {
           return;
         }
         let url = window.ROOT_DOMAIN + '/imageAlbum/' + self.data.id;
-        util.setClipboard(url);
+        $util.setClipboard(url);
         botFn.cancel();
       },
     });

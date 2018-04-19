@@ -4,8 +4,6 @@
 
 'use strict';
 
-import util from '../common/util';
-
 class Poster extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -23,8 +21,8 @@ class Poster extends migi.Component {
         {
           (this.list || []).map(function(item) {
             return <li>
-              <a href={ util.autoSsl(item.url) || '/src/common/blank.png' }>
-                <img src={ util.autoSsl(util.img720__80(item.url)) || '/src/common/blank.png' }/>
+              <a href={ item.url }>
+                <img src={ $util.img(item.url, 720, 0, 80) || '/src/common/blank.png' }/>
               </a>
             </li>;
           })

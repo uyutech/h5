@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 let ajax;
 let currentPriority = 0;
 let cacheKey = 'address';
@@ -31,10 +28,10 @@ class MyAddress extends migi.Component {
                   $prev.text(value);
                 }
                 else {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 }
               }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
               });
             }
           }
@@ -58,10 +55,10 @@ class MyAddress extends migi.Component {
                   $prev.text(value);
                 }
                 else {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 }
               }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
               });
             }
           }
@@ -81,10 +78,10 @@ class MyAddress extends migi.Component {
                   $prev.text(value);
                 }
                 else {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 }
               }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
               });
             }
           }
@@ -113,10 +110,10 @@ class MyAddress extends migi.Component {
         jsBridge.setPreference(cacheKey, data);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {

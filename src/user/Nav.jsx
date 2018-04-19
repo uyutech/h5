@@ -4,9 +4,6 @@
 
 'use strict';
 
-import util from '../common/util';
-
-
 const FOLLOW_STATE = {
   '01': '未关注',
   '00': '未关注',
@@ -26,7 +23,7 @@ class Nav extends migi.Component {
           blockText: '加入黑名单',
           canReport: true,
           clickBlock: function(botFn) {
-            if(!util.isLogin()) {
+            if(!$util.isLogin()) {
               migi.eventBus.emit('NEED_LOGIN');
               return;
             }
@@ -43,11 +40,11 @@ class Nav extends migi.Component {
                   migi.eventBus.emit('NEED_LOGIN');
                 }
                 else {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 }
                 botFn.cancel();
               }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 botFn.cancel();
               });
             });
@@ -63,11 +60,11 @@ class Nav extends migi.Component {
                   jsBridge.toast('举报成功');
                 }
                 else {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 }
                 botFn.cancel();
               }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 botFn.cancel();
               });
             });
@@ -99,7 +96,7 @@ class Nav extends migi.Component {
     self.isFans = isFans;
   }
   clickFollow() {
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -121,11 +118,11 @@ class Nav extends migi.Component {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
           self.loading = false;
         }, function(res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           self.loading = false;
         });
       });
@@ -143,11 +140,11 @@ class Nav extends migi.Component {
           migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
         self.loading = false;
       }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         self.loading = false;
       });
     }
@@ -156,7 +153,7 @@ class Nav extends migi.Component {
     return <div class="mod-nav">
       <div class="profile">
         <div class="pic">
-          <img src={ util.img(this.headUrl, 288, 288, 80) || '/src/common/head.png' }/>
+          <img src={ $util.img(this.headUrl, 288, 288, 80) || '/src/common/head.png' }/>
         </div>
         <div class="txt">
           <div class="n">

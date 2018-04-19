@@ -4,12 +4,7 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 let bindName;
-let bindUuid;
-let openId;
 
 let cacheKey = 'bind';
 let ajax;
@@ -52,10 +47,10 @@ class Config extends migi.Component {
         jsBridge.setPreference(cacheKey, data);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -101,16 +96,16 @@ class Config extends migi.Component {
             self.init();
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
           jsBridge.hideLoading();
         }, function(res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           jsBridge.hideLoading();
         });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     });
   }
@@ -135,7 +130,7 @@ class Config extends migi.Component {
   //       }
   //       jsBridge.hideLoading();
   //     }, function(res) {
-  //       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+  //       jsBridge.toast(res.message || $util.ERROR_MESSAGE);
   //       jsBridge.hideLoading();
   //     });
   //   });
@@ -161,7 +156,7 @@ class Config extends migi.Component {
   //       }
   //       jsBridge.hideLoading();
   //     }, function(res) {
-  //       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+  //       jsBridge.toast(res.message || $util.ERROR_MESSAGE);
   //       jsBridge.hideLoading();
   //     });
   //   });
@@ -198,7 +193,7 @@ class Config extends migi.Component {
         });
       });
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   render() {

@@ -9,8 +9,6 @@ import './index.less';
 
 import qs from 'anima-querystring';
 
-
-import util from '../common/util';
 import Tag from './Tag.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));

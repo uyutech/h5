@@ -4,9 +4,6 @@
 
 'use strict';
 
-import util from '../../common/util';
-
-
 const MAX_LEN = 144;
 
 class PostList extends migi.Component {
@@ -47,7 +44,7 @@ class PostList extends migi.Component {
           canReport: true,
           canDel: $fn.attr('own') === 'true',
           // clickBlock: function(botFn) {
-          //   if(!util.isLogin()) {
+          //   if(!$util.isLogin()) {
           //     migi.eventBus.emit('NEED_LOGIN');
           //     return;
           //   }
@@ -60,11 +57,11 @@ class PostList extends migi.Component {
           //         jsBridge.toast('屏蔽成功');
           //       }
           //       else {
-          //         jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          //         jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           //       }
           //       botFn.cancel();
           //     }, function(res) {
-          //       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          //       jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           //       botFn.cancel();
           //     });
           //   });
@@ -77,11 +74,11 @@ class PostList extends migi.Component {
                     jsBridge.toast('举报成功');
                   }
                   else {
-                    jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                   }
                   botFn.cancel();
                 }, function(res) {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                   botFn.cancel();
                 });
               }
@@ -100,10 +97,10 @@ class PostList extends migi.Component {
                   self.emit('del', id);
                 }
                 else {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 }
               }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
               });
             });
           },
@@ -133,11 +130,11 @@ class PostList extends migi.Component {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
           $this.removeClass('loading');
         }, function(res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           $this.removeClass('loading');
         });
       });
@@ -165,11 +162,11 @@ class PostList extends migi.Component {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
           $this.removeClass('loading');
         }, function(res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           $this.removeClass('loading');
         });
       });
@@ -286,8 +283,7 @@ class PostList extends migi.Component {
         <a class="pic"
            href={ peopleUrl }
            title={ item.name || item.nickname }>
-          <img src={ util.autoSsl(util.img208_208_80(item.headUrl
-            || '/src/common/head.png')) }/>
+          <img src={ $util.img(item.headUrl, 208, 208, 80) || '/src/common/head.png' }/>
         </a>
         <div class="txt">
           <a class="name"
@@ -295,7 +291,7 @@ class PostList extends migi.Component {
              title={ item.name || item.nickname }>{ item.name || item.nickname }</a>
           <a class="time"
              title={ item.createTime }
-             href={ url }>{ util.formatDate(item.createTime)}</a>
+             href={ url }>{ $util.formatDate(item.createTime)}</a>
         </div>
         <ul class="circle">
         {
@@ -338,9 +334,9 @@ class PostList extends migi.Component {
                     <a class="pic"
                        title={ item.title }
                        href={ url }>
-                      <img src={ util.img(item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
+                      <img src={ $util.img(item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
                       <div class="num">
-                        <span class="play">{ util.abbrNum(item.views) }次播放</span>
+                        <span class="play">{ $util.abbrNum(item.views) }次播放</span>
                       </div>
                     </a>
                     <a class="name"
@@ -374,7 +370,7 @@ class PostList extends migi.Component {
                     <a class="pic"
                        title={ item.title }
                        href={ url }>
-                      <img src={ util.img(item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
+                      <img src={ $util.img(item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
                     </a>
                     <div class="txt">
                       <span class="name">{ item.title }</span>
@@ -393,8 +389,8 @@ class PostList extends migi.Component {
                 imageList.map(function(item) {
                   return <li>
                     <img src={ self.props.single
-                      ? util.img(item.url, 750, 0, 80)
-                      : util.img(item.url, 200, 200, 80)}/>
+                      ? $util.img(item.url, 750, 0, 80)
+                      : $util.img(item.url, 200, 200, 80)}/>
                   </li>;
                 })
               }

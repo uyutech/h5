@@ -5,8 +5,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import VideoList from '../component/videolist/VideoList.jsx';
 import Playlist from '../component/playlist/Playlist.jsx';
 import WaterFall from '../component/waterfall/WaterFall.jsx';
@@ -59,10 +57,10 @@ class MyFavor extends migi.Component {
         self.setData(data, 1);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -92,7 +90,7 @@ class MyFavor extends migi.Component {
   }
   checkMore() {
     let self = this;
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -169,10 +167,10 @@ class MyFavor extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   click(e, vd, tvd) {

@@ -5,8 +5,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import Media from '../works/Media.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
@@ -44,7 +42,7 @@ class Record extends migi.Component {
         list.message = '暂无记录';
       }
     });
-    if(util.isLogin()) {
+    if($util.isLogin()) {
       self.load();
       window.addEventListener('scroll', function() {
         self.checkMore();
@@ -60,7 +58,7 @@ class Record extends migi.Component {
     if(loadEnd || loading || self.curColum !== 1) {
       return;
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -82,11 +80,11 @@ class Record extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }

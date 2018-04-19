@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 class List extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -49,7 +46,7 @@ class List extends migi.Component {
     return <li>
       <a href={ url }
          title={ item.name || item.nickname }>
-        <img src={ util.autoSsl(util.img120_120(item.headUrl)) || '/src/common/head.png' }/>
+        <img src={ $util.img(item.headUrl, 120, 120, 80) || '/src/common/head.png' }/>
         <span>{ item.name || item.nickname }</span>
       </a>
     </li>;
@@ -59,7 +56,7 @@ class List extends migi.Component {
     if(self.loading || self.loadEnd) {
       return;
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -92,12 +89,12 @@ class List extends migi.Component {
           migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
       }
       self.loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       self.loading = false;
     });
   }

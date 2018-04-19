@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 import Media from '../works/Media.jsx';
 import Info from '../works/Info.jsx';
 import Column from '../works/Column.jsx';
@@ -15,12 +12,6 @@ import Author from '../works/Author.jsx';
 import Comments from '../works/Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
-
-let avHash = {};
-let loadingLike;
-let loadingFavor;
-let ajaxLike;
-let ajaxFavor;
 
 let currentPriority = 0;
 let cacheKey;
@@ -53,10 +44,10 @@ class MusicAlbum extends migi.Component {
         self.ref.comments.listenScroll();
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -132,7 +123,7 @@ class MusicAlbum extends migi.Component {
     self.curColumn = id;
   }
   mediaPlay(data) {
-    util.recordPlay(data);
+    $util.recordPlay(data);
   }
   mediaLike(data) {
     jsBridge.getPreference(cacheKey, function(cache) {
@@ -228,7 +219,7 @@ class MusicAlbum extends migi.Component {
           return;
         }
         let url = window.ROOT_DOMAIN + '/musicAlbum/' + self.data.id;
-        util.setClipboard(url);
+        $util.setClipboard(url);
         botFn.cancel();
       },
     });

@@ -7,8 +7,6 @@
 import './more_tag.html';
 import './index.less';
 
-
-import util from '../common/util';
 import MoreTag from './MoreTag.jsx';
 
 jsBridge.ready(function() {
@@ -21,9 +19,9 @@ jsBridge.ready(function() {
       moreTag.setData(res.data.tags);
     }
     else {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     }
   }, function(res) {
-    jsBridge.toast(res.message || util.ERROR_MESSAGE);
+    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
   });
 });

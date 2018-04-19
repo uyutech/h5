@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 let interval;
 
 class Login extends migi.Component {
@@ -68,10 +65,10 @@ class Login extends migi.Component {
         jsBridge.toast('验证码已发送，10分钟内有效~');
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   clickCode2() {
@@ -98,10 +95,10 @@ class Login extends migi.Component {
         jsBridge.toast('验证码已发送，10分钟内有效~');
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   clickLogin() {
@@ -133,7 +130,7 @@ class Login extends migi.Component {
       if(res.success) {
         let data = res.data;
         jsBridge.toast('登录成功');
-        util.setUserInfo(data.user, data.author);
+        $util.setUserInfo(data.user, data.author);
         $.cookie('isLogin', true);
 
         setTimeout(function() {
@@ -143,7 +140,7 @@ class Login extends migi.Component {
         }, 10);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         self.loading = false;
       }
     });
@@ -201,17 +198,17 @@ class Login extends migi.Component {
             });
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
             self.loading = false;
           }
         });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         self.loading = false;
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       self.loading = false;
     });
   }
@@ -257,11 +254,11 @@ class Login extends migi.Component {
         self.loading = false;
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         self.loading = false;
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       self.loading = false;
     });
   }

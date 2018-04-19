@@ -4,8 +4,6 @@
 
 'use strict';
 
-import util from '../common/util';
-
 import CommentBar from '../component/commentbar/CommentBar.jsx';
 import Comment from '../component/comment/Comment.jsx';
 
@@ -23,7 +21,7 @@ class Comments extends migi.Component {
       $body.on('click', function() {
         self.showSort = false;
       });
-      self.isLogin = util.isLogin();
+      self.isLogin = $util.isLogin();
       jsBridge.on('resume', function(e) {
         let data = e.data;
         if(data && data.type && data.type === 'sub_comment') {
@@ -53,7 +51,7 @@ class Comments extends migi.Component {
     if(loading || loadEnd || !self.visible) {
       return;
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -81,12 +79,12 @@ class Comments extends migi.Component {
           migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }

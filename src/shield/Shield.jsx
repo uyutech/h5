@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 let loadingUser;
 let loadEndUser;
 let loadingCircle;
@@ -29,10 +26,10 @@ class Shield extends migi.Component {
             $button.closest('li').remove();
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
         }, function(res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         });
       });
       $circle.on('click', 'button', function() {
@@ -44,10 +41,10 @@ class Shield extends migi.Component {
             $button.closest('li').remove();
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
         }, function(res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         });
       });
     });
@@ -65,7 +62,7 @@ class Shield extends migi.Component {
       }
       else {}
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   addUser(data) {
@@ -79,7 +76,7 @@ class Shield extends migi.Component {
   genUser(data) {
     return <li>
       <a href={ '/user.html?id=' + data.UserID } class="pic" title={ data.UserName }>
-        <img src={ util.autoSsl(util.img120_120_80(data.HeadUrl) || '/src/common/head.png') }/>
+        <img src={ $util.img(data.HeadUrl, 120, 120, 80) || '/src/common/head.png' }/>
       </a>
       <a href={ '/user.html?id=' + data.UserID } class="txt" title={ data.UserName }>
         <span class="name">{ data.UserName }</span>
@@ -98,7 +95,7 @@ class Shield extends migi.Component {
   genCircle(data) {
     return <li>
       <a href={ '/circle.html?id=' + data.CirclingID } class="pic" title={ data.CirclingName }>
-        <img src={ util.autoSsl(util.img120_120_80(data.HeadUrl) || '/src/common/head.png') }/>
+        <img src={ $util.img(data.HeadUrl, 120, 120, 80) || '/src/common/head.png' }/>
       </a>
       <a href={ '/circle.html?id=' + data.CirclingID } class="txt" title={ data.CirclingName }>
         <span class="name">{ data.CirclingName }</span>

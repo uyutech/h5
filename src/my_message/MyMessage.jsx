@@ -4,8 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import Message from './Message.jsx';
 import SubCmt from '../component/subcmt/SubCmt.jsx';
 
@@ -52,10 +50,10 @@ class MyMessage extends migi.Component {
         });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
     // jsBridge.on('refresh', function(e) {
     //   e.preventDefault();
@@ -91,7 +89,7 @@ class MyMessage extends migi.Component {
     if(loading || loadEnd) {
       return;
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -113,11 +111,11 @@ class MyMessage extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }
@@ -148,11 +146,11 @@ class MyMessage extends migi.Component {
         subCmt.value = '';
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
       jsBridge.hideLoading();
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   render() {

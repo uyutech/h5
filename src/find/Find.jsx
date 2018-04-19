@@ -5,8 +5,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import Nav from './Nav.jsx';
 import Item from './Item.jsx';
 
@@ -36,7 +34,7 @@ class Find extends migi.Component {
   @bind
   set visible(v) {
     this._visible = v;
-    util.scrollY(scrollY);
+    $util.scrollY(scrollY);
   }
   init() {
     let self = this;
@@ -63,15 +61,15 @@ class Find extends migi.Component {
                 self.ref.item[i].checkMore();
               }
             }
-            scrollY = util.scrollY();
+            scrollY = $util.scrollY();
           }
         });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {

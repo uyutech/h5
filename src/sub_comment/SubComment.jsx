@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 const MAX_TEXT_LENGTH = 2048;
 
 class sub_comment extends migi.Component {
@@ -115,7 +112,7 @@ class sub_comment extends migi.Component {
   }
   submit(e) {
     e && e.preventDefault();
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -140,12 +137,12 @@ class sub_comment extends migi.Component {
           jsBridge.popWindow({ type: 'sub_comment', data: res.data });
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
         self.sending = false;
       }, function(res) {
         jsBridge.hideLoading();
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         self.sending = false;
       });
     }
@@ -170,7 +167,7 @@ class sub_comment extends migi.Component {
                  disabled={ this.invalid }/>
           <div class={ 'alt' + (this.isAuthor ? '' : ' fn-hide') + (this.useAuthor ? ' author' : '') }
                onClick={ this.clickAlt }>
-            <img src={ util.img(this.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
+            <img src={ $util.img(this.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
             <span>{ this.name }</span>
           </div>
         </div>

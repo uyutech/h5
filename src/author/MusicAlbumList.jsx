@@ -4,8 +4,6 @@
 
 'use strict';
 
-import util from '../common/util';
-
 class MusicAlbumList extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -24,8 +22,8 @@ class MusicAlbumList extends migi.Component {
                     return <li>
                       <b class="bg"/>
                       <a href={ url } class="pic" title={ item.title }>
-                        <img src={ util.autoSsl(util.img170_170_80(item.cover)) || '/src/common/blank.png' }/>
-                        <span class="num">{ util.abbrNum(item.popular) }</span>
+                        <img src={ $util.img(item.cover, 170, 170, 80) || '/src/common/blank.png' }/>
+                        <span class="num">{ $util.abbrNum(item.popular) }</span>
                       </a>
                       <a href={ url } class="txt" title={ item.title }>
                         <span>{ item.title }</span>

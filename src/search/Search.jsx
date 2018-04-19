@@ -4,8 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import AuthorList from '../component/authorlist/AuthorList.jsx';
 import UserList from '../component/userlist/UserList.jsx';
 import WorksList from '../component/workslist/WorksList.jsx';
@@ -73,7 +71,7 @@ class Search extends migi.Component {
   }
   checkMore() {
     let self = this;
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       switch (self.type) {
         case 0:
           if(!loading && !authorLoadEnd) {
@@ -226,11 +224,11 @@ class Search extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }

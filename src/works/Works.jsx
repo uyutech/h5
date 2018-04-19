@@ -4,8 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import Media from './Media.jsx';
 import Info from './Info.jsx';
 import Select from './Select.jsx';
@@ -54,10 +52,10 @@ class Works extends migi.Component {
         self.ref.comments.listenScroll();
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -152,7 +150,7 @@ class Works extends migi.Component {
     column.list = list;
   }
   mediaPlay(data) {
-    util.recordPlay(data);
+    $util.recordPlay(data);
   }
   mediaLike(data) {
     jsBridge.getPreference(cacheKey, function(cache) {
@@ -261,7 +259,7 @@ class Works extends migi.Component {
           return;
         }
         let url = window.ROOT_DOMAIN + '/works/' + self.data.id;
-        util.setClipboard(url);
+        $util.setClipboard(url);
         botFn.cancel();
       },
     });

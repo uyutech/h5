@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 class List extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -157,7 +154,7 @@ class List extends migi.Component {
       <a class="pic"
          title={ item.worksTitle }
          href={ url }>
-        <img src={ util.img(item.worksCover, 80, 80, 80) || '/src/common/blank.png' }/>
+        <img src={ $util.img(item.worksCover, 80, 80, 80) || '/src/common/blank.png' }/>
       </a>
       <div class="txt"
            rel={ item.id }>

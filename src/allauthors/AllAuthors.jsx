@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
-
 let take = 30;
 let skip = 0;
 let loading;
@@ -23,10 +20,10 @@ class AllAuthors extends migi.Component {
           self.setData(res.data);
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
       }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       });
     });
   }
@@ -43,9 +40,9 @@ class AllAuthors extends migi.Component {
       let $this = $(this);
       let url = $this.attr('href');
       let title = $this.attr('title');
-      util.openAuthor({
-        url,
+      jsBridge.pushWindow(url, {
         title,
+        transparentTitle: true,
       });
     });
 
@@ -93,11 +90,11 @@ class AllAuthors extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }
@@ -112,8 +109,7 @@ class AllAuthors extends migi.Component {
   genItem(item) {
     return <li>
       <a href={ `/author.html?id=${item.AuthorID}` } class="pic" title={ item.AuthorName }>
-        <img src={ util.autoSsl(util.img120_120_80(item.Head_url
-          || '/src/common/head.png')) }/>
+        <img src={ $util.img(item.Head_url || '/src/common/head.png' }/>
       </a>
       <a href={ `/author.html?id=${item.AuthorID}` } class="txt" title={ item.AuthorName }>
         <span class="name">{ item.AuthorName }</span>

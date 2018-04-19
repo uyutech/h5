@@ -4,8 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import List from './List.jsx';
 
 let currentPriority = 0;
@@ -37,10 +35,10 @@ class MyRelation extends migi.Component {
         jsBridge.setPreference(cacheKey, data);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {

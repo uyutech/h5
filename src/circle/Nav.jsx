@@ -4,9 +4,6 @@
 
 'use strict';
 
-import util from '../common/util';
-
-
 let loading;
 
 class Nav extends migi.Component {
@@ -45,11 +42,11 @@ class Nav extends migi.Component {
         self.emit('follow', data);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }
@@ -57,8 +54,8 @@ class Nav extends migi.Component {
     return <div class="mod-nav">
       <div class="profile">
         <div class="pic">
-          <img src={ util.autoSsl(util.img200_200_80(this.cover
-            || '//zhuanquan.xyz/temp/4ec79947e068b21fbef207a825cb53c0.jpg')) }/>
+          <img src={ $util.img(this.cover, 200, 200, 80)
+            || '//zhuanquan.xyz/temp/4ec79947e068b21fbef207a825cb53c0.jpg' }/>
         </div>
         <div class="txt">
           <h1>{ this.name }</h1>

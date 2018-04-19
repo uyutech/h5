@@ -4,9 +4,6 @@
 
 'use strict';
 
-
-import util from '../../common/util';
-
 let mediaService;
 
 class Playlist extends migi.Component {
@@ -102,7 +99,7 @@ class Playlist extends migi.Component {
               },
               clickShareLink: function(botFn) {
                 let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
-                util.setClipboard(url);
+                $util.setClipboard(url);
                 botFn.cancel();
               },
             });
@@ -183,7 +180,7 @@ class Playlist extends migi.Component {
       <a class="pic"
          title={ item.title }
          href={ url }>
-        <img src={ util.img(item.cover, 80, 80, 80) || '/src/common/blank.png' }/>
+        <img src={ $util.img(item.cover, 80, 80, 80) || '/src/common/blank.png' }/>
       </a>
       <div class="txt"
            rel={ item.work.id }>

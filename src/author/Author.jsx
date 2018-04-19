@@ -5,7 +5,6 @@
 
 'use strict';
 
-import util from '../common/util';
 import Nav from './Nav.jsx';
 import WorksList from './WorksList.jsx';
 import MusicAlbumList from './MusicAlbumList.jsx';
@@ -50,10 +49,10 @@ class Author extends migi.Component {
         self.ref.comments.listenScroll();
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -155,7 +154,7 @@ class Author extends migi.Component {
         if(!self.data) {
           return;
         }
-        util.setClipboard(window.ROOT_DOMAIN + '/author/' + self.id);
+        $util.setClipboard(window.ROOT_DOMAIN + '/author/' + self.id);
         botFn.cancel();
       },
     });

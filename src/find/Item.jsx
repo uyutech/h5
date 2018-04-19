@@ -5,8 +5,6 @@
 
 'use strict';
 
-import util from '../common/util';
-
 import Banner from './Banner.jsx';
 import Works from './Works.jsx';
 import AuthorList from './AuthorList.jsx';
@@ -111,7 +109,7 @@ class Item extends migi.Component {
     if(self.loading || self.loadEnd || !self.visible) {
       return;
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -177,12 +175,12 @@ class Item extends migi.Component {
           migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
       }
       self.loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       self.loading = false;
     });
   }
@@ -194,7 +192,7 @@ class Item extends migi.Component {
     work.worksId = data.id;
     work.worksTitle = data.title;
     work.worksCover = data.cover;
-    util.recordPlay(work, function() {
+    $util.recordPlay(work, function() {
       jsBridge.pushWindow('/record.html');
     });
   }

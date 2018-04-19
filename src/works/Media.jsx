@@ -2,8 +2,6 @@
  * Created by army8735 on 2017/9/1.
  */
 
-import util from '../common/util';
-
 import lrcParser from './lrcParser';
 
 let loadingLike;
@@ -95,11 +93,11 @@ class Media extends migi.Component {
                     jsBridge.toast('举报成功');
                   }
                   else {
-                    jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                   }
                   botFn.cancel();
                 }, function(res) {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                   botFn.cancel();
                 });
               });
@@ -226,7 +224,7 @@ class Media extends migi.Component {
         key: 'info',
         value: {
           id: self.data.id,
-          url: location.protocol + util.autoSsl(self.data.url),
+          url: location.protocol + $util.autoSsl(self.data.url),
         },
       }, function(res) {
         load.innerHTML = '';
@@ -493,7 +491,7 @@ class Media extends migi.Component {
   }
   like(cb) {
     let self = this;
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -520,11 +518,11 @@ class Media extends migi.Component {
         migi.eventBus.emit('NEED_LOGIN');
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loadingLike = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loadingLike = false;
     });
   }
@@ -533,7 +531,7 @@ class Media extends migi.Component {
   }
   favor(cb) {
     let self = this;
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -560,17 +558,17 @@ class Media extends migi.Component {
         migi.eventBus.emit('NEED_LOGIN');
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loadingFavor = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loadingFavor = false;
     });
   }
   clickDownload() {
     let self = this;
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -674,7 +672,7 @@ class Media extends migi.Component {
           return;
         }
         let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId + '/' + self.data.id;
-        util.setClipboard(url);
+        $util.setClipboard(url);
         botFn.cancel();
       },
     });
@@ -684,9 +682,8 @@ class Media extends migi.Component {
       <div class={ 'c'  + (this.isVideo ? ' is-video' : '') + (this.isPlaying ? ' is-playing' : '') }>
         <div class="cover">
           <img class={ this.lrcMode && this.lrc.data ? 'blur' : '' }
-               src={ util.autoSsl(util.img750_750_80(this.data
-                 ? (this.data.cover || this.data.worksCover) : null))
-               || '/src/common/blank.png' }/>
+               src={ $util.img((this.data || {}).cover || (this.data || {}).worksCover, 750, 750, 80)
+                 || '/src/common/blank.png' }/>
         </div>
         <video ref="video"
                poster="/src/common/blank.png"
@@ -736,8 +733,8 @@ class Media extends migi.Component {
         </div>
         <b class={ 'start' + (this.isPlaying ? ' fn-hide' : '') } onClick={ this.play }/>
         <div class="time">
-          <span class="now">{ util.formatTime(this.currentTime) }</span>
-          <span class="total">{ util.formatTime(this.duration) }</span>
+          <span class="now">{ $util.formatTime(this.currentTime) }</span>
+          <span class="total">{ $util.formatTime(this.duration) }</span>
         </div>
         <div class={ 'progress' + (this.canControl ? ' can' : '') }>
           <div class="load"

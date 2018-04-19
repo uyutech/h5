@@ -4,8 +4,6 @@
 
 'use strict';
 
-
-import util from '../common/util';
 import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
@@ -52,7 +50,7 @@ class Tag extends migi.Component {
             });
           },
           clickShareLink: function() {
-            util.setClipboard(window.ROOT_DOMAIN + '/tag/' + encodeURIComponent(self.tag));
+            $util.setClipboard(window.ROOT_DOMAIN + '/tag/' + encodeURIComponent(self.tag));
           },
         });
       });
@@ -82,10 +80,10 @@ class Tag extends migi.Component {
         });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   setData(data, priority) {
@@ -112,7 +110,7 @@ class Tag extends migi.Component {
     if(loading || loadEnd || !self.visible) {
       return;
     }
-    if(util.isBottom()) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -136,11 +134,11 @@ class Tag extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }

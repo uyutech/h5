@@ -2,9 +2,6 @@
  * Created by army on 2017/5/18.
  */
 
-
-import util from '../common/util';
-
 let authorId;
 
 class Step0 extends migi.Component {
@@ -73,11 +70,11 @@ class Step0 extends migi.Component {
         self.emit('next', 1);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       self.sending = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       self.sending = false;
     });
   }
@@ -95,11 +92,11 @@ class Step0 extends migi.Component {
         self.emit('next', 2);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       self.sending = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       self.sending = false;
     });
   }
@@ -117,11 +114,11 @@ class Step0 extends migi.Component {
         self.emit('next', 3);
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       self.sending = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       self.sending = false;
     });
   }

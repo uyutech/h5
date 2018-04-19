@@ -4,9 +4,6 @@
 
 'use strict';
 
-import util from '../common/util';
-
-
 let interval;
 
 class Phone extends migi.Component {
@@ -59,10 +56,10 @@ class Phone extends migi.Component {
         jsBridge.toast('验证码已发送，10分钟内有效~');
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   clickOk() {
@@ -109,11 +106,11 @@ class Phone extends migi.Component {
         });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         self.loading = false;
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       self.loading = false;
     });
   }
@@ -145,7 +142,7 @@ class Phone extends migi.Component {
   //       }
   //       self.loading = false;
   //     }, function(res) {
-  //       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+  //       jsBridge.toast(res.message || $util.ERROR_MESSAGE);
   //       self.loading = false;
   //     });
   //   });
@@ -178,7 +175,7 @@ class Phone extends migi.Component {
   //       }
   //       self.loading = false;
   //     }, function(res) {
-  //       jsBridge.toast(res.message || util.ERROR_MESSAGE);
+  //       jsBridge.toast(res.message || $util.ERROR_MESSAGE);
   //       self.loading = false;
   //     });
   //   });
