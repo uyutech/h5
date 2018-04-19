@@ -4,7 +4,7 @@
 
 'use strict';
 
-import ImageAlbum from './Image.jsx';
+import ImageAlbum from './ImageAlbum.jsx';
 
 let s = '';
 s += migi.preRender(<ImageAlbum/>);

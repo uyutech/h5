@@ -4,7 +4,7 @@
 
 'use strict';
 
-import MusicAlbum from './Music.jsx';
+import MusicAlbum from './MusicAlbum.jsx';
 
 let s = '';
 s += migi.preRender(<MusicAlbum/>);

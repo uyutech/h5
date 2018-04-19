@@ -4,9 +4,9 @@
 
 'use strict';
 
-import sub_comment from './sub_comment.jsx';
+import SubComment from './SubComment.jsx';
 
 let s = '';
-s += migi.preRender(<sub_comment/>);
+s += migi.preRender(<SubComment/>);
 
 export default s;

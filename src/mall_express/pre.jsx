@@ -4,7 +4,7 @@
 
 'use strict';
 
-import MallExpress from './MallWait.jsx';
+import MallExpress from './MallExpress.jsx';
 
 let s = '';
 s += migi.preRender(<MallExpress/>);

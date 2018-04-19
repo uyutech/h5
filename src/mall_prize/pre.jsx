@@ -4,9 +4,9 @@
 
 'use strict';
 
-import MallNew from './MallNew.jsx';
+import MallPrize from './MallPrize.jsx';
 
 let s = '';
-s += migi.preRender(<MallNew/>);
+s += migi.preRender(<MallPrize/>);
 
 export default s;
