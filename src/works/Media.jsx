@@ -49,6 +49,7 @@ class Media extends migi.Component {
                 self.currentTime = e.data.currentTime * 0.001;
                 self.updateLrc();
                 self.setBarPercent(self.currentTime / self.duration);
+                self.emit('timeupdate', self.currentTime);
               }
             }
           });

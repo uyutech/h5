@@ -20,21 +20,6 @@ let loadEnd;
 class Record extends migi.Component {
   constructor(...data) {
     super(...data);
-    let self = this;
-    self.on(migi.Event.DOM, function() {
-      let media = self.ref.media;
-      let botPlayBar = self.ref.botPlayBar;
-      jsBridge.on('mediaEnd', function(e) {
-        if(e.data) {
-          if(botPlayBar.mode === 'repeat') {
-            media.play();
-          }
-          else if(botPlayBar.mode === 'loop') {
-            self.next();
-          }
-        }
-      });
-    });
   }
   @bind curColum
   init() {
@@ -143,10 +128,14 @@ class Record extends migi.Component {
   mediaPause() {
     this.ref.botPlayBar.isPlaying = false;
   }
+  mediaTimeupdate() {
+    this.mediaPlay();
+  }
   mediaEnd() {
     let self = this;
     let botPlayBar = self.ref.botPlayBar;
     let media = self.ref.media;
+    self.mediaPause();
     if(botPlayBar.mode === 'repeat') {
       media.play();
     }
@@ -172,7 +161,7 @@ class Record extends migi.Component {
     this.play();
   }
   next() {
-    let data = this.ref.list.next();
+    let data = this.ref.list.next();console.log(111,data);
     this.setMedia(data);
     this.play();
   }
@@ -190,6 +179,7 @@ class Record extends migi.Component {
       <Media ref="media"
              on-play={ this.mediaPlay }
              on-pause={ this.mediaPause }
+             on-timeupdate={ this.mediaTimeupdate }
              on-end={ this.mediaEnd }
              on-like={ this.mediaLike }
              on-favor={ this.mediaFavor }/>
