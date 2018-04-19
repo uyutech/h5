@@ -12,12 +12,11 @@ import qs from 'anima-querystring';
 import SubPost from './SubPost.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let circleId = search.circleId;
+let circleId = parseInt(search.circleId);
 let tag = search.tag;
-let worksId = search.worksId;
-let workId = search.workId;
+let worksId = parseInt(search.worksId);
+let workId = parseInt(search.workId);
 let cover = search.cover;
-let kind = search.kind;
 
 jsBridge.ready(function() {
   jsBridge.refreshState(false);
@@ -31,6 +30,5 @@ jsBridge.ready(function() {
     worksId,
     workId,
     cover,
-    kind,
   });
 });

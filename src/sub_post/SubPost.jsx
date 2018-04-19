@@ -101,11 +101,12 @@ class SubPost extends migi.Component {
   }
   @bind circleList
   @bind tagList
-  @bind workData
   @bind value
   @bind invalid
   @bind num
   @bind uploading
+  @bind worksId
+  @bind workId
   @bind list
   @bind imgNum
   @bind warnLength
@@ -114,8 +115,12 @@ class SubPost extends migi.Component {
   @bind headUrl
   @bind isAuthor
   @bind useAuthor
-  init() {
+  init(data) {
     let self = this;
+    self.cover = data.cover;
+    self.worksId = data.worksId;
+    self.workId = data.workId;
+    self.circleId = data.circleId;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         try {
@@ -229,7 +234,8 @@ class SubPost extends migi.Component {
         image: JSON.stringify(image),
         circleId: circleId.join(','),
         authorId,
-        // workId: self.workData && self.workData.workId,
+        worksId: self.worksId,
+        workId: self.workId,
       }, function(res) {
         jsBridge.hideLoading();
         if(res.success) {
@@ -425,7 +431,7 @@ class SubPost extends migi.Component {
     let self = this;
     let i = tvd.props.idx;
     if(tvd.props.class === 'share') {
-      self.workData = null;
+      self.workId = self.worksId = self.cover = null;
     }
     else if(self.list[i].state === STATE.LOADED || self.list[i].state === STATE.ERROR) {
       self.delCache(tvd.props.rel);
@@ -468,7 +474,7 @@ class SubPost extends migi.Component {
         <ul onClick={ { li: this.clickCircle } }>
         {
           (this.circleList || []).map((item) => {
-            return <li class={ item.id === this.props.circleId ? 'on' : '' }
+            return <li class={ item.id === this.circleId ? 'on' : '' }
                        rel={ item.id }>{ item.name }</li>;
           })
         }
@@ -499,17 +505,18 @@ class SubPost extends migi.Component {
           </div>
         </div>
       </div>
-      <ul class="list" onClick={ { li: this.clickImg } }>
+      <ul class="list"
+          onClick={ { li: this.clickImg } }>
       {
-        this.workData
+        this.workId && this.worksId
           ? <li class="share"
-                style={ 'background-image:url(' + this.workData.cover || '/src/common/blank.png' + ')' }/>
+                style={ 'background-image:url(' + (util.img(this.cover, 120, 120, 80) || '/src/common/blank.png') + ')' }/>
           : ''
       }
       {
         (this.list || []).map(function(item, i) {
           return <li class={ 's' + item.state } idx={ i } rel={ item.url }
-                     style={ 'background-image:url(' + util.autoSsl(util.img120_120_80(item.url)) + ')' }>
+                     style={ 'background-image:url(' + util.img(item.url, 120, 120, 80) + ')' }>
             <span>{ TEXT[item.state] }</span>
           </li>;
         })
@@ -517,7 +524,8 @@ class SubPost extends migi.Component {
       </ul>
       <ul class="btn">
         <li class="tip">
-          <div ref="tip" class="fn-hide"/>
+          <div ref="tip"
+               class="fn-hide"/>
         </li>
         <li class="pic"
             onClick={ this.album }>

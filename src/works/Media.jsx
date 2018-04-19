@@ -624,8 +624,8 @@ class Media extends migi.Component {
         if(!self.data) {
           return;
         }
-        jsBridge.pushWindow('/sub_post.html?id=' + self.data.worksId
-          + '&workId=' + self.data.workId
+        jsBridge.pushWindow('/sub_post.html?worksId=' + self.data.worksId
+          + '&workId=' + self.data.id
           + '&cover=' + encodeURIComponent(self.data.cover || ''), {
           title: '画个圈',
           optionMenu: '发布',
@@ -637,9 +637,6 @@ class Media extends migi.Component {
           return;
         }
         let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId + '/' + self.data.id;
-        if(self.data.workId) {
-          url += '/' + self.data.workId;
-        }
         let text = '【';
         if(self.data.worksTitle) {
           text += self.data.worksTitle;

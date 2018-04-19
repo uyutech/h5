@@ -181,14 +181,8 @@ class Circle extends migi.Component {
       canShare: true,
       canShareWb: true,
       canShareLink: true,
-      clickBlock: function(botFn) {
-        self.block(self.circleId, function() {
-          jsBridge.toast('屏蔽成功');
-          botFn.cancel();
-        });
-      },
-      clickShareWb: function() {
-        let url = window.ROOT_DOMAIN + '/circle/' + self.circleId;
+      clickShareWb: function(botFn) {
+        let url = window.ROOT_DOMAIN + '/circle/' + self.id;
         let text = '来转转【' + self.name + '】圈吧~ 每天转转圈，玩转每个圈~';
         text += ' #转圈circling# ';
         text += url;
@@ -205,9 +199,11 @@ class Circle extends migi.Component {
             jsBridge.toast("分享失败");
           }
         });
+        botFn.cancel();
       },
-      clickShareLink: function() {
-        util.setClipboard(window.ROOT_DOMAIN + '/circle/' + self.circleId);
+      clickShareLink: function(botFn) {
+        util.setClipboard(window.ROOT_DOMAIN + '/circle/' + self.id);
+        botFn.cancel();
       },
     });
   }
@@ -216,7 +212,7 @@ class Circle extends migi.Component {
     if(!self.id) {
       return;
     }
-    jsBridge.pushWindow('/sub_post.html?id=' + self.id, {
+    jsBridge.pushWindow('/sub_post.html?circleId=' + self.id, {
       title: '画个圈',
       optionMenu: '发布',
     });
