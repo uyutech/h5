@@ -132,7 +132,7 @@ class MusicAlbum extends migi.Component {
     self.curColumn = id;
   }
   mediaPlay(data) {
-    util.recentPlay(data);
+    util.recordPlay(data);
   }
   mediaLike(data) {
     jsBridge.getPreference(cacheKey, function(cache) {

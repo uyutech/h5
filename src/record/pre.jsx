@@ -4,9 +4,9 @@
 
 'use strict';
 
-import Playlist from './Playlist.jsx';
+import Record from './Record.jsx';
 
 let s = '';
-s += migi.preRender(<Playlist/>);
+s += migi.preRender(<Record/>);
 
 export default s;

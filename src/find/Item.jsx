@@ -187,8 +187,15 @@ class Item extends migi.Component {
     });
   }
   change(data) {
-    util.recentPlay(data, function() {
-      jsBridge.pushWindow('/playlist.html');
+    let work = {};
+    Object.keys(data.work).forEach((key) => {
+      work[key] = data.work[key];
+    });
+    work.worksId = data.id;
+    work.worksTitle = data.title;
+    work.worksCover = data.cover;
+    util.recordPlay(work, function() {
+      jsBridge.pushWindow('/record.html');
     });
   }
   render() {

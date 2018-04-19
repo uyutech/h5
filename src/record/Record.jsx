@@ -2,6 +2,7 @@
  * Created by army8735 on 2018/1/17.
  */
 
+
 'use strict';
 
 import net from '../common/net';
@@ -9,23 +10,21 @@ import util from '../common/util';
 import Media from '../works/Media.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
+import Playlist from '../component/playlist/Playlist.jsx';
 import List from './List.jsx';
 
 let playlistCur;
 let playlistCache;
 
-let take = 20;
-let skip = 0;
+let offset = 0;
 let loading;
 let loadEnd;
-let hasLoadedFavor;
 let hasLoadedHis;
 let curTag = 0;
 let curPlayTag = 0;
 let hisList = [];
-let favorList = [];
 
-class Playlist extends migi.Component {
+class Record extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
@@ -121,7 +120,7 @@ class Playlist extends migi.Component {
           media.isPlaying = botPlayBar.isPlaying = true;
         }
       });
-
+return;
       list.on('choose', function(data) {
         jsBridge.setTitle(data.workName);
         curPlayTag = curTag;
@@ -243,112 +242,46 @@ class Playlist extends migi.Component {
       });
     });
   }
-  clickTag(e, vd, tvd) {
+  @bind curColum
+  init() {
     let self = this;
-    let $li = $(tvd.element);
-    if($li.hasClass('cur')) {
-      return;
-    }
-    let $vd = $(vd.element);
-    $vd.find('.cur').removeClass('cur');
-    $li.addClass('cur');
     let list = self.ref.list;
-    if(curTag === 1 && !util.isLogin()) {
-      migi.eventBus.emit('NEED_LOGIN');
-      $vd.find('.cur').removeClass('cur');
-      $vd.find('li').eq(0).addClass('cur');
-      return;
-    }
-    list.curTag = curTag = tvd.props.rel;
-    switch(curTag) {
-      case 0:
-        list.setData(hisList);
-        if(curPlayTag === 0) {
-          jsBridge.getPreference('playlistCur', function(res) {
-            playlistCur = res;
-            for(let i = 0, len = hisList.length; i < len; i++) {
-              let item = hisList[i];
-              if(playlistCur && item.workId === playlistCur.workId) {
-                list.setCurIndex(i);
-                return;
-              }
-            }
-          });
-        }
-        break;
-      case 1:
-        list.setData(favorList);
-        if(curPlayTag === 1) {
-          jsBridge.getPreference('playlistCur', function(res) {
-            playlistCur = res;
-            for(let i = 0, len = favorList.length; i < len; i++) {
-              let item = favorList[i];
-              if(playlistCur && item.workId === playlistCur.workId) {
-                list.setCurIndex(i);
-                return;
-              }
-            }
-          });
-        }
-        if(loading || loadEnd || hasLoadedFavor) {
-          return;
-        }
-        loading = true;
-        net.postJSON('/h5/my/favorMV', { skip, take }, function(res) {
-          if(res.success) {
-            let data = res.data;
-            (data.data || []).forEach(function(item) {
-              let works = item.Works_Items_Works[0];
-              favorList.push({
-                worksId: works.WorksID,
-                workId: item.ItemID,
-                workName: item.ItemName,
-                workType: item.ItemType,
-                isLike: item.ISLike,
-                isFavor: item.ISFavor,
-                likeNum: item.LikeHis,
-                url: item.FileUrl,
-                lrc: item.lrc,
-                worksCover: works.WorksCoverPic,
-              });
-            });
-            // 加载完可能切回最近播放
-            if(curTag === 1) {
-              list.setData(favorList);
-            }
-            hasLoadedFavor = true;
-            skip += take;
-            if(skip >= data.Size) {
-              loadEnd = true;
+    self.curColum = 0;
+    jsBridge.getCache(['record', 'recordCur'], function([record, recordCur]) {
+      if(record && record.length) {
+        list.setData(record);
+        if(recordCur) {
+          for(let i = 0, len = record.length; i < len; i++) {
+            let item = record[i];
+            if(item.id === recordCur) {
+              self.setMedia(item);
+              list.setCur(i);
+              break;
             }
           }
-          else if(res.code === 1000) {
-            migi.eventBus.emit('NEED_LOGIN');
-            $vd.find('.cur').removeClass('cur');
-            $vd.find('li').eq(0).addClass('cur');
-            list.curTag = curTag = 0;
-          }
-          else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
-          }
-          loading = false;
-        }, function(res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-          loading = false;
-        });
-        break;
+        }
+      }
+      else {
+        list.message = '暂无记录';
+      }
+    });
+    if(util.isLogin()) {
+      self.load();
+      window.addEventListener('scroll', function() {
+        self.checkMore();
+      });
     }
   }
-  checkMore($window) {
-    if(curTag !== 1 || loading || loadEnd || !hasLoadedFavor) {
+  setMedia(item) {
+    let self = this;
+    self.ref.media.setData(item || null);
+  }
+  checkMore() {
+    let self = this;
+    if(loadEnd || loading || self.curColum !== 1) {
       return;
     }
-    let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    let bool;
-    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    if(util.isBottom()) {
       self.load();
     }
   }
@@ -358,38 +291,16 @@ class Playlist extends migi.Component {
       return;
     }
     loading = true;
-    let list = self.ref.list;
-    net.postJSON('/h5/my/favorMV', { skip, take }, function(res) {
+    let playlist = self.ref.playlist;
+    net.postJSON('/h5/my2/favorList', { offset, kind: 2 }, function(res) {
       if(res.success) {
         let data = res.data;
-        let temp = [];
-        (data.data || []).forEach(function(item) {
-          let works = item.Works_Items_Works[0];
-          temp.push({
-            worksId: works.WorksID,
-            workId: item.ItemID,
-            workName: item.ItemName,
-            isLike: item.ISLike,
-            isFavor: item.ISFavor,
-            likeNum: item.LikeHis,
-            url: item.FileUrl,
-            lrc: item.lrc,
-            worksCover: works.WorksCoverPic,
-          });
-        });
-        favorList = favorList.concat(temp);
-        // 加载完可能切回最近播放
-        if(curTag === 1) {
-          list.appendData(temp);
-        }
-        hasLoadedFavor = true;
-        skip += take;
-        if(skip >= data.Size) {
+        playlist.appendData(data.data);
+        offset += data.limit;
+        if(offset >= data.count) {
           loadEnd = true;
+          playlist.message = '已经到底了';
         }
-      }
-      else if(res.code === 1000) {
-        migi.eventBus.emit('NEED_LOGIN');
       }
       else {
         jsBridge.toast(res.message || util.ERROR_MESSAGE);
@@ -400,18 +311,86 @@ class Playlist extends migi.Component {
       loading = false;
     });
   }
+  clickTag(e, vd, tvd) {
+    let self = this;
+    if(self.curColum === tvd.props.rel) {
+      return;
+    }
+    self.curColum = tvd.props.rel;
+  }
+  change(data) {
+    this.setMedia(data || null);
+  }
+  change2(data) {
+    let self = this;
+    let work = {};
+    Object.keys(data.work).forEach((key) => {
+      work[key] = data.work[key];
+    });
+    work.worksId = data.id;
+    work.worksTitle = data.title;
+    work.worksCover = data.cover;
+    self.setMedia(work);
+    self.ref.media.play();
+    util.recordPlay(work, function(record) {
+      self.ref.list.setData(record);
+      self.ref.list.setCur(0);
+      self.curColum = 0;
+    });
+  }
+  mediaLike(data) {
+    jsBridge.getPreference('record', function(record) {
+      if(record) {
+        for(let i = 0, len = record.length; i < len; i++) {
+          let item = record[i];
+          if(item.id === data.id) {
+            item.isLike = data.isLike;
+            item.likeCount = data.likeCount;
+            jsBridge.setPreference('record', record);
+            return;
+          }
+        }
+      }
+    });
+  }
+  mediaFavor(data) {
+    jsBridge.getPreference('record', function(record) {
+      if(record) {
+        for(let i = 0, len = record.length; i < len; i++) {
+          let item = record[i];
+          if(item.id === data.id) {
+            item.isFavor = data.isFavor;
+            item.favorCount = data.favorCount;
+            jsBridge.setPreference('record', record);
+            return;
+          }
+        }
+      }
+    });
+  }
   render() {
-    return <div class="playlist">
-      <Media ref="media"/>
-      <ul class="tag" onClick={ this.clickTag }>
-        <li class="cur" rel={ 0 }>最近播放</li>
-        <li rel={ 1 }>收藏列表</li>
+    return <div class="record">
+      <Media ref="media"
+             on-like={ this.mediaLike }
+             on-favor={ this.mediaFavor }/>
+      <ul class="tag"
+          onClick={ this.clickTag }>
+        <li class={ this.curColum === 0 ? 'cur' : '' }
+            rel={ 0 }>最近播放</li>
+        <li class={ this.curColum === 1 ? 'cur' : '' }
+            rel={ 1 }>收藏列表</li>
       </ul>
-      <List ref="list"/>
+      <List ref="list"
+            on-change={ this.change }
+            @visible={ this.curColum === 0 }/>
+      <Playlist ref="playlist"
+                message="正在加载..."
+                on-change={ this.change2 }
+                @visible={ this.curColum === 1 }/>
       <BotPlayBar ref="botPlayBar"/>
       <BotFn ref="botFn"/>
     </div>;
   }
 }
 
-export default Playlist;
+export default Record;

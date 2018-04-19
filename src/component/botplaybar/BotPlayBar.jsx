@@ -10,7 +10,7 @@ class BotPlayBar extends migi.Component {
     let self = this;
     self.hidden = self.props.hidden;
     self.on(migi.Event.DOM, function() {
-      jsBridge.getPreference('playlist_mode', function(res) {
+      jsBridge.getPreference('playMode', function(res) {
         res = res || 'loop';
         self.mode = res;
       });
@@ -37,7 +37,7 @@ class BotPlayBar extends migi.Component {
       return;
     }
     self.emit('mode', self.mode);
-    jsBridge.setPreference('playlist_mode', self.mode);
+    jsBridge.setPreference('playMode', self.mode);
   }
   clickPrev() {
     this.emit('prev');

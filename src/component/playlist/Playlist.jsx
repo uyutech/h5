@@ -74,9 +74,13 @@ class Playlist extends migi.Component {
                   text += ' ' + item.work.subTitle;
                 }
                 text += '】';
+                let hash = {};
                 item.work.author.forEach((item) => {
                   item.list.forEach((author) => {
-                    text += author.name + ' ';
+                    if(!hash[author.id]) {
+                      hash[author.id] = true;
+                      text += author.name + ' ';
+                    }
                   });
                 });
                 text += ' #转圈circling# ';
@@ -194,7 +198,9 @@ class Playlist extends migi.Component {
     let self = this;
     let $list = $(self.ref.list.element);
     $list.find('.cur').removeClass('cur');
-    $list.find('li').eq(i).addClass('cur');
+    if(i !== undefined && i !== null) {
+      $list.find('li').eq(i).addClass('cur');
+    }
   }
   render() {
     return <div class={ 'cp-playlist' + (this.visible ? '' : ' fn-hide') }>

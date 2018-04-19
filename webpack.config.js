@@ -30,7 +30,7 @@ module.exports = {
     passport: './src/passport/index.jsx',
     phone: './src/phone/index.jsx',
     guide: './src/guide/index.jsx',
-    playlist: './src/playlist/index.jsx',
+    record: './src/record/index.jsx',
     search: './src/search/index.jsx',
     music_album: './src/music_album/index.jsx',
     image_album: './src/image_album/index.jsx',

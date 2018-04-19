@@ -387,9 +387,12 @@ let util = {
     }
     return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
   },
-  recentPlay(data, cb) {
-    jsBridge.setPreference('playlistCur2', data.id);
-    jsBridge.getPreference('playlist2', function(res) {
+  recordPlay(data, cb) {
+    if(data.kind !== 2) {
+      return;
+    }
+    jsBridge.setPreference('recordCur', data.id);
+    jsBridge.getPreference('record', function(res) {
       res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
       for(let i = 0, len = res.length; i < len; i++) {
         if(res[i].id === data.id) {
@@ -398,7 +401,14 @@ let util = {
         }
       }
       res.unshift(data);
-      jsBridge.setPreference('playlist2', jsBridge.android ? res : JSON.stringify(res), cb);
+      if(res.length > 20) {
+        res.splice(20);
+      }
+      jsBridge.setPreference('record', jsBridge.android ? res : JSON.stringify(res), function() {
+        if(cb) {
+          cb(res, data.id);
+        }
+      });
     });
   },
 };

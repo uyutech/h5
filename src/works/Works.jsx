@@ -152,7 +152,7 @@ class Works extends migi.Component {
     column.list = list;
   }
   mediaPlay(data) {
-    util.recentPlay(data);
+    util.recordPlay(data);
   }
   mediaLike(data) {
     jsBridge.getPreference(cacheKey, function(cache) {

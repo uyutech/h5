@@ -26,7 +26,7 @@ module.exports = {
     more_tag: './src/more_tag/pre.jsx',
     passport: './src/passport/pre.jsx',
     phone: './src/phone/pre.jsx',
-    playlist: './src/playlist/pre.jsx',
+    record: './src/record/pre.jsx',
     search: './src/search/pre.jsx',
     music_album: './src/music_album/pre.jsx',
     image_album: './src/image_album/pre.jsx',

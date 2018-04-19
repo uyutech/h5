@@ -642,9 +642,13 @@ class Media extends migi.Component {
           text += ' ' + self.data.subTitle;
         }
         text += '】';
+        let hash = {};
         self.data.author.forEach((item) => {
           item.list.forEach((author) => {
-            text += author.name + ' ';
+            if(!hash[author.id]) {
+              hash[author.id] = true;
+              text += author.name + ' ';
+            }
           });
         });
         text += '#转圈circling# ';
