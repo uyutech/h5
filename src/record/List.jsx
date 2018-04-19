@@ -32,6 +32,7 @@ class List extends migi.Component {
         for(let i = 0, len = self.list.length; i < len; i++) {
           if(self.list[i].id === id) {
             self.setCur(i);
+            jsBridge.setPreference('recordCur', id);
             self.emit('change', self.list[i]);
             break;
           }
@@ -51,14 +52,15 @@ class List extends migi.Component {
                 return;
               }
               $li.remove();
+              botFn.cancel();
               for(let i = 0, len = self.list.length; i < len; i++) {
                 if(self.list[i].id === id) {
-                  self.list.splice(i, 1);
+                  let data = self.list.splice(i, 1);
+                  self.emit('del', data[0]);
                   jsBridge.setPreference('record', self.list);
                   return;
                 }
               }
-              botFn.cancel();
             });
           },
         });
@@ -106,6 +108,31 @@ class List extends migi.Component {
     });
     $(self.ref.list.element).append(s);
   }
+  prependData(data) {
+    let self = this;
+    if(!data) {
+      return;
+    }
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
+    let s = '';
+    let $list = $(self.ref.list.element);
+    data.forEach(function(item) {
+      $list.find('#list_' + item.id).remove();
+      self.exist[item.id] = true;
+      for(let i = 0, len = self.list.length; i < len; i++) {
+        if(self.list[i].id === item.id) {
+          self.list.splice(i, 1);
+          break;
+        }
+      }
+      self.list.unshift(item);
+      s += self.genItem(item);
+    });
+    $(self.ref.list.element).prepend(s);
+    jsBridge.setPreference('record', self.list);
+  }
   clearData() {
     let self = this;
     self.exist = {};
@@ -125,7 +152,8 @@ class List extends migi.Component {
         }
       });
     });
-    return <li>
+    return <li id={ 'list_' + item.id }
+               rel={ item.id }>
       <a class="pic"
          title={ item.worksTitle }
          href={ url }>
@@ -144,7 +172,74 @@ class List extends migi.Component {
     let self = this;
     let $list = $(self.ref.list.element);
     $list.find('.cur').removeClass('cur');
-    $list.find('li').eq(i).addClass('cur');
+    if(i !== null && i !== undefined) {
+      jsBridge.setPreference('recordCur', self.list[i].id);
+      $list.find('li').eq(i).addClass('cur');
+    }
+  }
+  prev() {
+    let self = this;
+    if(self.list.length < 2) {
+      return;
+    }
+    let $list = $(self.ref.list.element);
+    let $cur = $list.find('li.cur');
+    let $prev = $cur.prev();
+    if(!$prev[0]) {
+      $prev = $list.find('li:last-child');
+    }
+    let id = parseInt($prev.attr('rel'));
+    for(let i = 0, len = self.list.length; i < len; i++) {
+      let item = self.list[i];
+      if(item.id === id) {
+        self.setCur(i);
+        return item;
+      }
+    }
+  }
+  next() {
+    let self = this;
+    if(self.list.length < 2) {
+      return;
+    }
+    let $list = $(self.ref.list.element);
+    let $cur = $list.find('li.cur');
+    let $next = $cur.next();
+    if(!$next[0]) {
+      $next = $list.find('li:first-child');
+    }
+    let id = parseInt($next.attr('rel'));
+    for(let i = 0, len = self.list.length; i < len; i++) {
+      let item = self.list[i];
+      if(item.id === id) {
+        self.setCur(i);
+        return item;
+      }
+    }
+  }
+  like(data) {
+    let self = this;
+    for(let i = 0, len = self.list.length; i < len; i++) {
+      let item = self.list[i];
+      if(item.id === data.id) {
+        item.isLike = data.isLike;
+        item.likeCount = data.likeCount;
+        jsBridge.setPreference('record', self.list);
+        return;
+      }
+    }
+  }
+  favor(data) {
+    let self = this;
+    for(let i = 0, len = self.list.length; i < len; i++) {
+      let item = self.list[i];
+      if(item.id === data.id) {
+        item.isFavor = data.isFavor;
+        item.favorCount = data.favorCount;
+        jsBridge.setPreference('record', self.list);
+        return;
+      }
+    }
   }
   render() {
     return <div class={ 'cp-playlist mod-list' + (this.visible ? '' : ' fn-hide') }>

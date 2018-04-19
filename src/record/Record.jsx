@@ -13,232 +13,26 @@ import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
 import Playlist from '../component/playlist/Playlist.jsx';
 import List from './List.jsx';
 
-let playlistCur;
-let playlistCache;
-
 let offset = 0;
 let loading;
 let loadEnd;
-let hasLoadedHis;
-let curTag = 0;
-let curPlayTag = 0;
-let hisList = [];
 
 class Record extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      let list = self.ref.list;
       let media = self.ref.media;
       let botPlayBar = self.ref.botPlayBar;
-      let count = 0;
-      function fin() {
-        if(count >= 2) {
-          let workIds = playlistCache.filter(function(item) {
-            return !!item.workId;
-          }).map(function(item) {
-            return item.workId;
-          });
-          if(!workIds.length) {
-            return;
-          }
-          net.postJSON('/h5/playlist/index', { workIDs: workIds.join(',') }, function(res) {
-            if(res.success) {
-              let data = res.data;
-              let format = data.data.map(function(item) {
-                let works = item.Works_Items_Works[0];
-                return {
-                  worksId: works.WorksID,
-                  workId: item.ItemID,
-                  worksCover: works.WorksCoverPic,
-                  workName: item.ItemName,
-                  workType: item.ItemType,
-                  isLike: item.ISLike,
-                  likeNum: item.LikeHis,
-                  isFavor: item.ISFavor,
-                  lrc: item.lrc,
-                  url: item.FileUrl,
-                };
-              });
-              hisList = format;
-              hasLoadedHis = true;
-              if(curTag !== 0) {
-                return;
-              }
-              list.setData(format);
-              for(let i = 0, len = format.length; i < len; i++) {
-                let item = format[i];
-                if(playlistCur && item.workId === playlistCur.workId) {
-                  jsBridge.setTitle(item.workName);
-                  media.setData(item);
-                  list.setCurIndex(i);
-                  return;
-                }
-              }
-              // 找不到默认展示第一个
-              let item = format[0];
-              if(item) {
-                jsBridge.setTitle(item.workName);
-                media.setData(item);
-                list.setCurIndex(0);
-              }
-            }
-            else {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
-            }
-          }, function(res) {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
-          });
-        }
-      }
-      jsBridge.getPreference('playlist', function(res) {
-        playlistCache = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
-        count++;
-        fin();
-      });
-      jsBridge.getPreference('playlistCur', function(res) {
-        playlistCur = res;
-        count++;
-        fin();
-      });
       jsBridge.on('mediaEnd', function(e) {
         if(e.data) {
           if(botPlayBar.mode === 'repeat') {
-            media.repeat();
+            media.play();
           }
           else if(botPlayBar.mode === 'loop') {
-            list.nextLoop();
+            self.next();
           }
         }
-      });
-      jsBridge.on('optionMenu2', function() {
-        list.currentFn();
-      });
-      jsBridge.on('mediaTimeupdate', function(e) {
-        if(e.data && media.data && e.data.id.toString() === media.data.workId.toString()) {
-          media.isPlaying = botPlayBar.isPlaying = true;
-        }
-      });
-return;
-      list.on('choose', function(data) {
-        jsBridge.setTitle(data.workName);
-        curPlayTag = curTag;
-        if(media.data && media.data.workId === data.workId) {
-          media.play();
-          return;
-        }
-        media.stop();
-        media.setData(data);
-        media.play();
-        jsBridge.setPreference('playlistCur', data);
-        for(let i = 0, len = hisList.length; i < len; i++) {
-          let item = hisList[i];
-          if(item.workId.toString() === data.workId.toString()) {
-            return;
-          }
-        }
-        hisList.unshift(data);
-        let res = hisList.map(function(item) {
-          return {
-            worksId: item.worksId,
-            workId: item.workId,
-          };
-        });
-        jsBridge.setPreference('playlist', jsBridge.android ? res : JSON.stringify(res));
-      });
-      list.on('change', function(res) {
-        let data = res.data;
-        jsBridge.setTitle(data.workName);
-        curPlayTag = curTag;
-        // 只有一首或者播放中切换到另外一个列表，结束时假如当前列表进行切换的和正在播放的相同，直接从0开始重新播放
-        if(media.data && media.data.workId === data.workId) {
-          media.repeat();
-          list.setCurIndex(res.index);
-          return;
-        }
-        media.setData(data);
-        media.play();
-        jsBridge.setPreference('playlistCur', data);
-        for(let i = 0, len = hisList.length; i < len; i++) {
-          let item = hisList[i];
-          if(item.workId.toString() === data.workId.toString()) {
-            return;
-          }
-        }
-        hisList.unshift(data);
-        let res2 = hisList.map(function(item) {
-          return {
-            worksId: item.worksId,
-            workId: item.workId,
-          };
-        });
-        jsBridge.setPreference('playlist', jsBridge.android ? res2 : JSON.stringify(res2));
-      });
-
-      media.on('play', function() {
-        botPlayBar.isPlaying = true;
-      });
-      media.on('pause', function() {
-        botPlayBar.isPlaying = false;
-      });
-      media.on('stop', function() {
-        botPlayBar.isPlaying = false;
-      });
-
-      botPlayBar.on('prev', function() {
-        list.prevLoop();
-      });
-      botPlayBar.on('next', function() {
-        list.nextLoop();
-      });
-      botPlayBar.on('play', function() {
-        media.play();
-      });
-      botPlayBar.on('pause', function() {
-        media.pause();
-      });
-      botPlayBar.on('comment', function() {
-        if(media.data) {
-          jsBridge.pushWindow('/sub_comment.html?type=3&id='
-            + media.data.worksId + '&sid=' + media.data.workId, {
-            title: '评论',
-            optionMenu: '发布',
-          });
-        }
-      });
-
-      list.on('del', function(res) {
-        let data = res.data;
-        for(let i = 0, len = hisList.length; i < len; i++) {
-          let item = hisList[i];
-          if(item.workId.toString() === data.workId.toString()) {
-            hisList.splice(i, 1);
-            let res2 = hisList.map(function(item) {
-              return {
-                worksId: item.worksId,
-                workId: item.workId,
-              };
-            });
-            jsBridge.setPreference('playlist', jsBridge.android ? res2 : JSON.stringify(res2));
-            return;
-          }
-        }
-        if(res.isCur) {
-          jsBridge.setTitle(hisList[0].workName);
-          media.setData({
-            worksId: hisList[0].worksId,
-            workId: hisList[0].workId,
-          });
-          media.play();
-          list.setCurIndex(0);
-          jsBridge.setPreference('playlistCur', hisList[0]);
-        }
-      });
-
-      let $window = $(window);
-      $window.on('scroll', function() {
-        self.checkMore($window);
       });
     });
   }
@@ -332,45 +126,71 @@ return;
     work.worksCover = data.cover;
     self.setMedia(work);
     self.ref.media.play();
-    util.recordPlay(work, function(record) {
-      self.ref.list.setData(record);
-      self.ref.list.setCur(0);
-      self.curColum = 0;
-    });
+    self.ref.list.prependData(work);
+    self.ref.list.setCur(0);
+    self.curColum = 0;
+  }
+  del(data) {
+    let self = this;
+    if(self.ref.media.data && self.ref.media.data.id === data.id) {
+      self.ref.media.setData(null);
+      self.ref.media.stop();
+    }
+  }
+  mediaPlay() {
+    this.ref.botPlayBar.isPlaying = true;
+  }
+  mediaPause() {
+    this.ref.botPlayBar.isPlaying = false;
+  }
+  mediaEnd() {
+    let self = this;
+    let botPlayBar = self.ref.botPlayBar;
+    let media = self.ref.media;
+    if(botPlayBar.mode === 'repeat') {
+      media.play();
+    }
+    else if(botPlayBar.mode === 'loop') {
+      self.next();
+    }
   }
   mediaLike(data) {
-    jsBridge.getPreference('record', function(record) {
-      if(record) {
-        for(let i = 0, len = record.length; i < len; i++) {
-          let item = record[i];
-          if(item.id === data.id) {
-            item.isLike = data.isLike;
-            item.likeCount = data.likeCount;
-            jsBridge.setPreference('record', record);
-            return;
-          }
-        }
-      }
-    });
+    this.ref.list.like(data);
   }
   mediaFavor(data) {
-    jsBridge.getPreference('record', function(record) {
-      if(record) {
-        for(let i = 0, len = record.length; i < len; i++) {
-          let item = record[i];
-          if(item.id === data.id) {
-            item.isFavor = data.isFavor;
-            item.favorCount = data.favorCount;
-            jsBridge.setPreference('record', record);
-            return;
-          }
-        }
-      }
-    });
+    this.ref.list.favor(data);
+  }
+  play() {
+    this.ref.media.play();
+  }
+  pause() {
+    this.ref.media.pause();
+  }
+  prev() {
+    let data = this.ref.list.prev();
+    this.setMedia(data);
+    this.play();
+  }
+  next() {
+    let data = this.ref.list.next();
+    this.setMedia(data);
+    this.play();
+  }
+  comment() {
+    let data = this.ref.media.data;
+    if(data) {
+      jsBridge.pushWindow('/sub_post.html?type=2&id=' + data.id, {
+        title: '评论',
+        optionMenu: '发布',
+      });
+    }
   }
   render() {
     return <div class="record">
       <Media ref="media"
+             on-play={ this.mediaPlay }
+             on-pause={ this.mediaPause }
+             on-end={ this.mediaEnd }
              on-like={ this.mediaLike }
              on-favor={ this.mediaFavor }/>
       <ul class="tag"
@@ -382,12 +202,18 @@ return;
       </ul>
       <List ref="list"
             on-change={ this.change }
+            on-del={ this.del }
             @visible={ this.curColum === 0 }/>
       <Playlist ref="playlist"
                 message="正在加载..."
                 on-change={ this.change2 }
                 @visible={ this.curColum === 1 }/>
-      <BotPlayBar ref="botPlayBar"/>
+      <BotPlayBar ref="botPlayBar"
+                  on-play={ this.play }
+                  on-pause={ this.pause }
+                  on-prev={ this.prev }
+                  on-next={ this.next }
+                  on-comment={ this.comment }/>
       <BotFn ref="botFn"/>
     </div>;
   }
