@@ -4,8 +4,6 @@
 
 'use strict';
 
-import Spark from 'spark-md5';
-
 const STATE = {
   LOADING: 0,
   SENDING: 1,
@@ -22,7 +20,8 @@ const MAX_IMG_NUM = 9;
 const MAX_TEXT_LENGTH = 4096;
 
 let currentPriority = 0;
-let cacheKey = 'subpost';
+let cacheKey = 'subPost';
+let uploading;
 
 class SubPost extends migi.Component {
   constructor(...data) {
@@ -102,7 +101,6 @@ class SubPost extends migi.Component {
   @bind value
   @bind invalid
   @bind num
-  @bind uploading
   @bind worksId
   @bind workId
   @bind list
@@ -201,7 +199,7 @@ class SubPost extends migi.Component {
       return;
     }
     let self = this;
-    if(!self.sending && !self.invalid && !self.uploading) {
+    if(!self.sending && !self.invalid && !uploading) {
       let image = [];
       self.list.forEach(function(item) {
         if(item.state === STATE.LOADED) {
@@ -269,10 +267,11 @@ class SubPost extends migi.Component {
   }
   change(e) {
     let self = this;
-    if(self.uploading) {
+    if(uploading) {
       return;
     }
     if(!$util.isLogin()) {
+      e.preventDefault();
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -280,7 +279,7 @@ class SubPost extends migi.Component {
       jsBridge('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
       return;
     }
-    self.uploading = true;
+    uploading = true;
     let files = e.target.files;
     let count = 0;
     for(let i = 0, len = files.length; i < len; i++) {
@@ -298,10 +297,10 @@ class SubPost extends migi.Component {
           suffix = '.jpg';
           break;
       }
-      if(size && size !== 0 && size <= 10485760) {
+      if(size && size <= 10485760) {
         let fileReader = new FileReader();
         fileReader.onload = function() {
-          let spark = new Spark();
+          let spark = new SparkMd5();
           spark.append(fileReader.result);
           let md5 = spark.end();
           let has;
@@ -331,7 +330,7 @@ class SubPost extends migi.Component {
             document.body.removeChild(node);
           };
           document.body.appendChild(node);
-          $net.postJSON('/h5/my/sts', { name: md5 + suffix }, function(res) {
+          $net.postJSON('/h5/my2/sts', { name: md5 + suffix }, function(res) {
             if(res.success) {
               let data = res.data;
               if(data.exist) {
@@ -340,7 +339,7 @@ class SubPost extends migi.Component {
                 self.list = self.list;
                 count++;
                 if(count === len) {
-                  self.uploading = false;
+                  uploading = false;
                   self.imgNum = self.list.length;
                 }
                 return;
@@ -367,7 +366,7 @@ class SubPost extends migi.Component {
                   self.list = self.list;
                   count++;
                   if(count === len) {
-                    self.uploading = false;
+                    uploading = false;
                     self.imgNum = self.list.length;
                   }
                 }

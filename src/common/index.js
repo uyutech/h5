@@ -7,6 +7,7 @@ import 'migi-es6-shim';
 import 'migi';
 import './bridge';
 import BigNumber from 'bignumber.js';
+import SparkMd5 from 'spark-md5';
 import $ from 'anima-yocto-ajax';
 import env from './production';
 import net from './net';
@@ -79,6 +80,7 @@ window.requestAnimationFrame = function() {
 
 $.AJAX = env.ajax;
 window.BigNumber = BigNumber;
+window.SparkMd5 = SparkMd5;
 window.$ = $;
 window.$net = net;
 window.$util = util;
