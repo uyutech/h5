@@ -71,12 +71,12 @@ class Author extends migi.Component {
     nav.setData(data.info, data.aliases, data.skill, data.outside, data.isFollow);
 
     let showHome;
-    if(data.mainWorks) {
-      self.ref.worksList.list = data.mainWorks.data;
+    if(data.mainWorksList) {
+      self.ref.worksList.list = data.mainWorksList.data;
       showHome = true;
     }
-    if(data.musicAlbum) {
-      self.ref.musicAlbumList.list = data.musicAlbum.data;
+    if(data.mainMusicAlbumList) {
+      self.ref.musicAlbumList.list = data.mainMusicAlbumList.data;
       showHome = true;
     }
 

@@ -18,15 +18,19 @@ class MusicAlbumList extends migi.Component {
             ? <ul class="list">
                 {
                   this.list.map(function(item) {
-                    let url = `/musicalbum.html?musicAlbumId=${item.id}`;
+                    let url = `/music_album.html?id=${item.id}`;
                     return <li>
                       <b class="bg"/>
                       <a href={ url } class="pic" title={ item.title }>
                         <img src={ $util.img(item.cover, 170, 170, 80) || '/src/common/blank.png' }/>
+                        <span class="type">{ item.typeName }</span>
                         <span class="num">{ $util.abbrNum(item.popular) }</span>
                       </a>
                       <a href={ url } class="txt" title={ item.title }>
                         <span>{ item.title }</span>
+                        <span class="profession">{ (item.profession || []).map((item) => {
+                          return item.name;
+                        }).join(' ') }</span>
                       </a>
                     </li>;
                   })
