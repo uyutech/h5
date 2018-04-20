@@ -10,7 +10,7 @@ import Column from '../works/Column.jsx';
 import Playlist from '../component/playlist/Playlist.jsx';
 import Author from '../works/Author.jsx';
 import Comments from '../works/Comments.jsx';
-import InputCmt from '../component/inputcmt/InputCmt.jsx';
+import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
 let currentPriority = 0;
@@ -136,6 +136,25 @@ class MusicAlbum extends migi.Component {
   }
   mediaPlay(data) {
     $util.recordPlay(data);
+    this.ref.botPlayBar.isPlaying = true;
+  }
+  mediaPause() {
+    this.ref.botPlayBar.isPlaying = false;
+  }
+  mediaTimeupdate() {
+    this.mediaPlay();
+  }
+  mediaEnd() {
+    let self = this;
+    let botPlayBar = self.ref.botPlayBar;
+    let media = self.ref.media;
+    self.mediaPause();
+    if(botPlayBar.mode === 'repeat') {
+      media.play();
+    }
+    else if(botPlayBar.mode === 'loop') {
+      self.next();
+    }
   }
   mediaLike(data) {
     jsBridge.getPreference(cacheKey, function(cache) {
@@ -174,6 +193,22 @@ class MusicAlbum extends migi.Component {
     self.setMedia(item);
     self.ref.media.play();
   }
+  play() {
+    this.ref.media.play();
+  }
+  pause() {
+    this.ref.media.pause();
+  }
+  prev() {
+    let data = this.ref.playlist.prev();
+    this.setMedia(data);
+    this.play();
+  }
+  next() {
+    let data = this.ref.playlist.next();
+    this.setMedia(data);
+    this.play();
+  }
   comment() {
     let self = this;
     jsBridge.pushWindow('/sub_comment.html?type=2&id=' + self.id, {
@@ -181,66 +216,69 @@ class MusicAlbum extends migi.Component {
       optionMenu: '发布',
     });
   }
-  share() {
-    let self = this;
-    migi.eventBus.emit('BOT_FN', {
-      canShare: true,
-      canShareWb: true,
-      canShareLink: true,
-      clickShareWb: function(botFn) {
-        if(!self.data) {
-          return;
-        }
-        let url = window.ROOT_DOMAIN + '/musicAlbum/' + self.id;
-        let text = '【';
-        if(self.data.info.title) {
-          text += self.data.info.title;
-        }
-        if(self.data.info.subTitle) {
-          if(self.data.info.subTitle) {
-            text += ' ';
-          }
-          text += self.data.info.subTitle;
-        }
-        text += '】';
-        if(self.data.info.author[0]) {
-          self.data.info.author[0].forEach((item) => {
-            item.list.forEach((author) => {
-              text += author.name + ' ';
-            });
-          });
-        }
-        text += '#转圈circling# ';
-        text += url;
-        jsBridge.shareWb({
-          text,
-        }, function(res) {
-          if(res.success) {
-            jsBridge.toast("分享成功");
-          }
-          else if(res.cancel) {
-            jsBridge.toast("取消分享");
-          }
-          else {
-            jsBridge.toast("分享失败");
-          }
-        });
-        botFn.cancel();
-      },
-      clickShareLink: function(botFn) {
-        if(!self.data) {
-          return;
-        }
-        let url = window.ROOT_DOMAIN + '/musicAlbum/' + self.data.id;
-        $util.setClipboard(url);
-        botFn.cancel();
-      },
-    });
-  }
+  // share() {
+  //   let self = this;
+  //   migi.eventBus.emit('BOT_FN', {
+  //     canShare: true,
+  //     canShareWb: true,
+  //     canShareLink: true,
+  //     clickShareWb: function(botFn) {
+  //       if(!self.data) {
+  //         return;
+  //       }
+  //       let url = window.ROOT_DOMAIN + '/musicAlbum/' + self.id;
+  //       let text = '【';
+  //       if(self.data.info.title) {
+  //         text += self.data.info.title;
+  //       }
+  //       if(self.data.info.subTitle) {
+  //         if(self.data.info.subTitle) {
+  //           text += ' ';
+  //         }
+  //         text += self.data.info.subTitle;
+  //       }
+  //       text += '】';
+  //       if(self.data.info.author[0]) {
+  //         self.data.info.author[0].forEach((item) => {
+  //           item.list.forEach((author) => {
+  //             text += author.name + ' ';
+  //           });
+  //         });
+  //       }
+  //       text += '#转圈circling# ';
+  //       text += url;
+  //       jsBridge.shareWb({
+  //         text,
+  //       }, function(res) {
+  //         if(res.success) {
+  //           jsBridge.toast("分享成功");
+  //         }
+  //         else if(res.cancel) {
+  //           jsBridge.toast("取消分享");
+  //         }
+  //         else {
+  //           jsBridge.toast("分享失败");
+  //         }
+  //       });
+  //       botFn.cancel();
+  //     },
+  //     clickShareLink: function(botFn) {
+  //       if(!self.data) {
+  //         return;
+  //       }
+  //       let url = window.ROOT_DOMAIN + '/musicAlbum/' + self.data.id;
+  //       $util.setClipboard(url);
+  //       botFn.cancel();
+  //     },
+  //   });
+  // }
   render() {
     return <div class="music">
       <Media ref="media"
              on-play={ this.mediaPlay }
+             on-pause={ this.mediaPause }
+             on-timeupdate={ this.mediaTimeupdate }
+             on-end={ this.mediaEnd }
              on-like={ this.mediaLike }
              on-favor={ this.mediaFavor }/>
       <Info ref="info"/>
@@ -256,11 +294,12 @@ class MusicAlbum extends migi.Component {
       </div>
       <Comments ref="comments"
                 @visible={ this.curColumn === 2 }/>
-      <InputCmt ref="inputCmt"
-                placeholder={ '发表评论...' }
-                readOnly={ true }
-                on-click={ this.comment }
-                on-share={ this.share }/>
+      <BotPlayBar ref="botPlayBar"
+                  on-play={ this.play }
+                  on-pause={ this.pause }
+                  on-prev={ this.prev }
+                  on-next={ this.next }
+                  on-comment={ this.comment }/>
       <BotFn ref="botFn"/>
     </div>;
   }

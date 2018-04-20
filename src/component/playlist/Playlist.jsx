@@ -176,7 +176,7 @@ class Playlist extends migi.Component {
         });
       });
     }
-    return <li>
+    return <li rel={ item.id }>
       <a class="pic"
          title={ item.title }
          href={ url }>
@@ -197,6 +197,46 @@ class Playlist extends migi.Component {
     $list.find('.cur').removeClass('cur');
     if(i !== undefined && i !== null) {
       $list.find('li').eq(i).addClass('cur');
+    }
+  }
+  prev() {
+    let self = this;
+    if(self.list.length < 2) {
+      return;
+    }
+    let $list = $(self.ref.list.element);
+    let $cur = $list.find('li.cur');
+    let $prev = $cur.prev();
+    if(!$prev[0]) {
+      $prev = $list.find('li:last-child');
+    }
+    let id = parseInt($prev.attr('rel'));
+    for(let i = 0, len = self.list.length; i < len; i++) {
+      let item = self.list[i];
+      if(item.id === id) {
+        self.setCur(i);
+        return item;
+      }
+    }
+  }
+  next() {
+    let self = this;
+    if(self.list.length < 2) {
+      return;
+    }
+    let $list = $(self.ref.list.element);
+    let $cur = $list.find('li.cur');
+    let $next = $cur.next();
+    if(!$next[0]) {
+      $next = $list.find('li:first-child');
+    }
+    let id = parseInt($next.attr('rel'));
+    for(let i = 0, len = self.list.length; i < len; i++) {
+      let item = self.list[i];
+      if(item.id === id) {
+        self.setCur(i);
+        return item;
+      }
     }
   }
   render() {

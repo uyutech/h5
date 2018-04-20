@@ -159,7 +159,7 @@ class Record extends migi.Component {
     this.play();
   }
   next() {
-    let data = this.ref.list.next();console.log(111,data);
+    let data = this.ref.list.next();
     this.setMedia(data);
     this.play();
   }
