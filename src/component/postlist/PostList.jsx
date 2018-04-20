@@ -303,10 +303,10 @@ class PostList extends migi.Component {
     let audioList = [];
     let imageList = [];
     item.work.forEach((item) => {
-      if(item.kind === 1) {
+      if(item.work.kind === 1) {
         videoList.push(item);
       }
-      else if(item.kind === 2) {
+      else if(item.work.kind === 2) {
         audioList.push(item);
       }
     });
@@ -358,11 +358,11 @@ class PostList extends migi.Component {
             ? <ul class="video">
               {
                 videoList.map(function(item) {
-                  let url = '/works.html?id=' + item.id + '&workId=' + item.id;
+                  let url = '/works.html?id=' + item.id + '&workId=' + item.work.id;
                   let author = [];
                   let hash = {};
-                  (item.author || []).forEach(function(list) {
-                    list.list.forEach(function(at) {
+                  item.work.author.forEach(function(item) {
+                    item.list.forEach(function(at) {
                       if(!hash[at.id]) {
                         hash[at.id] = true;
                         author.push(at.name);
@@ -373,14 +373,14 @@ class PostList extends migi.Component {
                     <a class="pic"
                        title={ item.title }
                        href={ url }>
-                      <img src={ $util.img(item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
+                      <img src={ $util.img(item.work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
                       <div class="num">
-                        <span class="play">{ $util.abbrNum(item.views) }次播放</span>
+                        <span class="play">{ $util.abbrNum(item.work.views) }次播放</span>
                       </div>
                     </a>
                     <a class="name"
                        href={ url }
-                       title={ item.title }>{ item.title }</a>
+                       title={ item.title }>{ item.work.title }</a>
                     <div class="info">
                       <p class="author">{ author.join(' ') }</p>
                     </div>
@@ -395,10 +395,11 @@ class PostList extends migi.Component {
             ? <ul class="audio">
               {
                 audioList.map(function(item) {
+                  let url = '/works.html?id=' + item.id + '&workId=' + item.work.id;
                   let author = [];
                   let hash = {};
-                  (item.author || []).forEach(function(list) {
-                    list.list.forEach(function(at) {
+                  item.work.author.forEach(function(item) {
+                    item.list.forEach(function(at) {
                       if(!hash[at.id]) {
                         hash[at.id] = true;
                         author.push(at.name);
@@ -409,10 +410,10 @@ class PostList extends migi.Component {
                     <a class="pic"
                        title={ item.title }
                        href={ url }>
-                      <img src={ $util.img(item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
+                      <img src={ $util.img(item.work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
                     </a>
                     <div class="txt">
-                      <span class="name">{ item.title }</span>
+                      <span class="name">{ item.work.title }</span>
                       <p class="author">{ author.join(' ') }</p>
                     </div>
                   </li>;
