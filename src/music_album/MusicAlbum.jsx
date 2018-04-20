@@ -12,6 +12,7 @@ import Author from '../works/Author.jsx';
 import Comments from '../works/Comments.jsx';
 import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
+import Background from '../component/background/Background.jsx';
 
 let currentPriority = 0;
 let cacheKey;
@@ -274,6 +275,7 @@ class MusicAlbum extends migi.Component {
   // }
   render() {
     return <div class="music">
+      <Background ref="background"/>
       <Media ref="media"
              on-play={ this.mediaPlay }
              on-pause={ this.mediaPause }

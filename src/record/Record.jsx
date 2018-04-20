@@ -10,6 +10,7 @@ import BotFn from '../component/botfn/BotFn.jsx';
 import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
 import Playlist from '../component/playlist/Playlist.jsx';
 import List from './List.jsx';
+import Background from '../component/background/Background.jsx';
 
 let offset = 0;
 let loading;
@@ -52,6 +53,18 @@ class Record extends migi.Component {
   setMedia(item) {
     let self = this;
     self.ref.media.setData(item || null);
+    jsBridge.setTitle(item.title);
+    let author = [];
+    let hash = {};
+    item.author.forEach(function(item) {
+      item.list.forEach(function(at) {
+        if(!hash[at.id]) {
+          hash[at.id] = true;
+          author.push(at.name);
+        }
+      });
+    });
+    jsBridge.setSubTitle(author.join(' '));
   }
   checkMore() {
     let self = this;
@@ -97,6 +110,7 @@ class Record extends migi.Component {
   }
   change(data) {
     this.setMedia(data || null);
+    this.play();
   }
   change2(data) {
     let self = this;
@@ -174,6 +188,9 @@ class Record extends migi.Component {
   }
   render() {
     return <div class="record">
+      <Background ref="background"
+                  disableEvent={ true }
+                  disableClick={ true }/>
       <Media ref="media"
              on-play={ this.mediaPlay }
              on-pause={ this.mediaPause }

@@ -32,7 +32,7 @@ class TopNav extends migi.Component {
              placeholder="搜索音乐、图片、视频、帖子..."
              readonly="true"
              onClick={ this.click }/>
-      <Background duplicate={ true }/>
+      <Background disableEvent={ true }/>
     </div>;
   }
 }
