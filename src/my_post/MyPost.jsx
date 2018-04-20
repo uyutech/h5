@@ -2,10 +2,12 @@
  * Created by army8735 on 2017/12/5.
  */
 
+
 'use strict';
 
 import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
+import BotFn from '../component/botfn/BotFn.jsx';
 
 let offset = 0;
 let ajax;
@@ -155,6 +157,7 @@ class MyPost extends migi.Component {
                 on-favor={ this.commentFavor }
                 on-like={ this.commentLike }/>
       <ImageView ref="imageView"/>
+      <BotFn/>
     </div>;
   }
 }

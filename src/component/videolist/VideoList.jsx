@@ -65,13 +65,22 @@ class VideoList extends migi.Component {
         }
       });
       $list.on('click', '.comment', function() {
-        let id = parseInt($(this).attr('rel'));
-        let url = '/works.html?id=' + id + '&comment=1';
-        let title = tvd.props.title;
-        jsBridge.pushWindow(url, {
-          title,
-          transparentTitle: true,
-        });
+        let $this = $(this);
+        let id = parseInt($this.attr('rel'));
+        if($this.text()) {
+          jsBridge.pushWindow('/sub_comment.html?type=2&id=' + id, {
+            title: '评论',
+            optionMenu: '发布',
+          });
+        }
+        else {
+          let url = '/works.html?id=' + id + '&comment=1';
+          let title = tvd.props.title;
+          jsBridge.pushWindow(url, {
+            title,
+            transparentTitle: true,
+          });
+        }
       });
       $list.on('click', '.fn', function() {
         let id = parseInt($(this).attr('rel'));

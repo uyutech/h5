@@ -7,7 +7,8 @@
 
 import Nav from './Nav.jsx';
 import WorksList from './WorksList.jsx';
-import MusicAlbumList from './MusicAlbumList.jsx';
+import MusicAlbum from './MusicAlbumList.jsx';
+import Cooperation from './Cooperation.jsx';
 import Comments from './Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import Background from '../component/background/Background.jsx';
@@ -67,17 +68,32 @@ class Author extends migi.Component {
     let work = self.ref.work;
     let dynamics = self.ref.dynamics;
     let comments = self.ref.comments;
+    let worksList = self.ref.worksList;
+    let musicAlbumList = self.ref.musicAlbumList;
+    let cooperation = self.ref.cooperation;
 
     nav.setData(data.info, data.aliases, data.skill, data.outside, data.isFollow);
 
-    let showHome;
-    if(data.mainWorksList) {
-      self.ref.worksList.list = data.mainWorksList.data;
+    let showHome = true;
+    if(data.mainWorksList && data.mainWorksList.count) {
+      worksList.list = data.mainWorksList.data;
       showHome = true;
     }
-    if(data.mainMusicAlbumList) {
-      self.ref.musicAlbumList.list = data.mainMusicAlbumList.data;
+    else {
+      worksList.list = null;
+    }
+    if(data.mainMusicAlbumList && data.mainMusicAlbumList.count) {
+      musicAlbumList.list = data.mainMusicAlbumList.data;
       showHome = true;
+    }
+    else {
+      musicAlbumList.list = null;
+    }
+    if(data.cooperationList) {
+      cooperation.list = data.cooperationList.data;
+    }
+    else {
+      cooperation.list = null;
     }
 
     if(showHome) {
@@ -188,7 +204,9 @@ class Author extends migi.Component {
         <h4>主打作品</h4>
         <WorksList ref="worksList"/>
         <h4>相关专辑</h4>
-        <MusicAlbumList ref="musicAlbumList"/>
+        <MusicAlbum ref="musicAlbumList"/>
+        <h4>合作关系</h4>
+        <Cooperation ref="cooperation"/>
       </div>
       <Work ref="work"
             @visible={ this.curColumn === 1 }/>

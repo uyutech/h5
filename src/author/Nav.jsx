@@ -92,8 +92,13 @@ class Nav extends migi.Component {
   }
   clickOut(e, vd, tvd) {
     e.preventDefault();
-    let url = tvd.props.href;
-    jsBridge.openUri(url);
+    jsBridge.confirm('即将前往站外链接，确定吗？', function(res) {
+      if(!res) {
+        return;
+      }
+      let url = tvd.props.href;
+      jsBridge.openUri(url);
+    });
   }
   follow(cb) {
     if(!$util.isLogin()) {
@@ -170,7 +175,7 @@ class Nav extends migi.Component {
             <ul class="skill">
             {
               (this.skill || []).map((item) => {
-                return <li class={ 's' + item.id }
+                return <li class={ item.code }
                            rel={ item.point }>{ item.name }</li>;
               })
             }

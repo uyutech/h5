@@ -106,6 +106,27 @@ class PostList extends migi.Component {
           },
         });
       });
+      $list.on('click', '.link', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        let transparentTitle = $this.attr('transparentTitle') === 'true';
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle,
+        });
+      });
+      $list.on('click', '.outside', function(e) {
+        e.preventDefault();
+        jsBridge.confirm('即将前往站外链接，确定吗？', function(res) {
+          if(!res) {
+            return;
+          }
+          let url = $this.attr('href');
+          jsBridge.openUri(url);
+        });
+      });
       $list.on('click', '.like', function() {
         let $this = $(this);
         if($this.hasClass('loading')) {
@@ -414,7 +435,7 @@ class PostList extends migi.Component {
     return s.replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
-        return `<a class="link2" href="/tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
+        return `<a class="link" href="/tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
       })
       .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(?:\s|$)/g, function($0, $1, $2, $3) {
         let data = refHash[$2];
@@ -427,11 +448,11 @@ class PostList extends migi.Component {
             if($3) {
               url += '&workId=' + $3;
             }
-            return `<a href="${url}" class="link" transparentTitle="true">《${data.title}》</a>`;
+            return `<a href="${url}" class="link" transparentTitle="true" title="${data.title}">《${data.title}》</a>`;
           case 'author':
-            return `<a href="/${$1}.html?id=${$2}" class="link" transparentTitle="true">${data.name}</a>`;
+            return `<a href="/${$1}.html?id=${$2}" class="link" transparentTitle="true" title="${data.name}">${data.name}</a>`;
           case 'user':
-            return `<a href="/${$1}.html?id=${$2}" class="link" transparentTitle="true">${data.nickname}</a>`;
+            return `<a href="/${$1}.html?id=${$2}" class="link" transparentTitle="true" title="${data.nickname}">${data.nickname}</a>`;
           case 'post':
             return `<a href="/${$1}.html?id=${$2}" class="link" title="画圈正文">${$0}</a>`;
         }
