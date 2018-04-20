@@ -271,10 +271,10 @@ class PostList extends migi.Component {
     self.exist[id] = true;
     let len = item.content.length;
     let html = len > MAX_LEN ? (item.content.slice(0, MAX_LEN) + '...') : item.content;
-    html = this.encode(html, item.refHash);
+    html = this.encode(html, item.refHash, item.tagCircleHash);
     if(len > MAX_LEN) {
       html += '<span class="placeholder"></span><span class="more">查看全文</span>';
-      let full = this.encode(item.content, item.refHash) + '<span class="placeholder"></span><span class="less fn-hide">收起全文</span>';
+      let full = this.encode(item.content, item.refHash, item.tagCircleHash) + '<span class="placeholder"></span><span class="less fn-hide">收起全文</span>';
       html = `<p class="snap">${html}</p><p class="full fn-hide">${full}</p>`;
     }
     let peopleUrl = item.isAuthor
@@ -430,11 +430,16 @@ class PostList extends migi.Component {
       </ul>
     </li>;
   }
-  encode(s, refHash) {
+  encode(s, refHash, tagCircleHash) {
     refHash = refHash || {};
+    tagCircleHash = tagCircleHash || {};
     return s.replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
+        let id = tagCircleHash[$1];
+        if(id) {
+          return `<a class="link" href="/circle.html?id=${id}" title="${$1}圈" transparentTitle="true">#${$1}#</a>`;
+        }
         return `<a class="link" href="/tag.html?tag=${encodeURIComponent($1)}" title="话题-${$1}">#${$1}#</a>`;
       })
       .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(?:\s|$)/g, function($0, $1, $2, $3) {
