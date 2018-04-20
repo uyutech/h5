@@ -89,7 +89,7 @@ class Nav extends migi.Component {
                 if(res.success) {
                   jsBridge.getPreference(self.props.cacheKey, function(data) {
                     if(data) {
-                      data.headUrl = self.headUrl;
+                      data.user.headUrl = self.headUrl;
                       jsBridge.setPreference(self.props.cacheKey, data);
                     }
                   });
@@ -125,7 +125,7 @@ class Nav extends migi.Component {
                   if(res.success) {
                     jsBridge.getPreference(self.props.cacheKey, function(data) {
                       if(data) {
-                        data.headUrl = self.headUrl;
+                        data.user.headUrl = self.headUrl;
                         jsBridge.setPreference(self.props.cacheKey, data);
                       }
                     });
