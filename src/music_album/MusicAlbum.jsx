@@ -95,6 +95,18 @@ class MusicAlbum extends migi.Component {
     work.worksTitle = item.title;
     work.worksCover = item.cover;
     self.ref.media.setData(work || null);
+    jsBridge.setTitle(item.title);
+    let author = [];
+    let hash = {};
+    work.author.forEach(function(item) {
+      item.list.forEach(function(at) {
+        if(!hash[at.id]) {
+          hash[at.id] = true;
+          author.push(at.name);
+        }
+      });
+    });
+    jsBridge.setSubTitle(author.join(' '));
   }
   setColumn(commentList) {
     let self = this;
@@ -160,6 +172,7 @@ class MusicAlbum extends migi.Component {
   change(item) {
     let self = this;
     self.setMedia(item);
+    self.ref.media.play();
   }
   comment() {
     let self = this;

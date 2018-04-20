@@ -14,6 +14,7 @@ import Poster from './Poster.jsx';
 import Comments from './Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
+import Background from '../component/background/Background.jsx';
 
 let currentPriority = 0;
 let cacheKey;
@@ -119,6 +120,18 @@ class Works extends migi.Component {
     item.worksTitle = self.data.info.title;
     item.worksCover = self.data.info.cover;
     self.ref.media.setData(item || null);
+    jsBridge.setTitle(item.title);
+    let author = [];
+    let hash = {};
+    item.author.forEach(function(item) {
+      item.list.forEach(function(at) {
+        if(!hash[at.id]) {
+          hash[at.id] = true;
+          author.push(at.name);
+        }
+      });
+    });
+    jsBridge.setSubTitle(author.join(' '));
   }
   setColumn(imgList, commentList) {
     let self = this;
@@ -266,6 +279,7 @@ class Works extends migi.Component {
   }
   render() {
     return <div class="works">
+      <Background ref="background"/>
       <Media ref="media"
              on-play={ this.mediaPlay }
              on-like={ this.mediaLike }

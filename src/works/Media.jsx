@@ -284,6 +284,7 @@ class Media extends migi.Component {
   onPlaying(e) {
     this.isPlaying = true;
     this.duration = e.target.duration;
+    this.emit('playing', this.duration);
   }
   play() {
     let self = this;
