@@ -194,7 +194,25 @@ class PostList extends migi.Component {
       $list.on('click', '.comment', function() {
         let $this = $(this);
         let id = parseInt($this.attr('rel'));
-        self.emit('reply', id);
+        if(self.props.single) {
+          jsBridge.pushWindow('/sub_comment.html?type=3&id=' + id + '&pid=' + id, {
+            title: '评论',
+            optionMenu: '发布',
+          });
+        }
+        else {
+          if(parseInt($this.text())) {
+            jsBridge.pushWindow('/post.html?id=' + id, {
+              title: '画圈详情',
+            });
+          }
+          else {
+            jsBridge.pushWindow('/sub_comment.html?type=3&id=' + id + '&pid=' + id, {
+              title: '评论',
+              optionMenu: '发布',
+            });
+          }
+        }
       });
       $list.on('click', '.time', function(e) {
         e.preventDefault();

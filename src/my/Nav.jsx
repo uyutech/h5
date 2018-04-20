@@ -112,6 +112,16 @@ class Nav extends migi.Component {
       transparentTitle: true,
     });
   }
+  clickFollow() {
+    jsBridge.pushWindow('/my_relation.html?tag=' + 1, {
+      transparentTitle: true,
+    });
+  }
+  clickFans() {
+    jsBridge.pushWindow('/my_relation.html?tag=' + 2, {
+      transparentTitle: true,
+    });
+  }
   render() {
     return <div class="nav">
       <div class="profile">
@@ -135,8 +145,8 @@ class Nav extends migi.Component {
                 onClick={ this.clickAuthor }>作者主页</button>
       </div>
       <ul class="num">
-        <li>关注<strong>{ this.followPersonCount || 0 }</strong></li>
-        <li>粉丝<strong>{ this.fansCount || 0 }</strong></li>
+        <li onClick={ this.clickFollow }>关注<strong>{ this.followPersonCount || 0 }</strong></li>
+        <li onClick={ this.clickFans }>粉丝<strong>{ this.fansCount || 0 }</strong></li>
       </ul>
       <div class="sign">
         <label>签名</label>

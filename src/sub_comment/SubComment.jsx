@@ -18,7 +18,7 @@ class sub_comment extends migi.Component {
       if(!jsBridge.isInApp) {
         document.querySelector('input.submit.fn-hide').classList.remove('fn-hide');
       }
-      jsBridge.getCache(['my', 'useAuthor'], (data, useAuthor) => {
+      jsBridge.getCache(['my', 'useAuthor'], ([data, useAuthor]) => {
         if(data) {
           self.myInfo = data;
           self.isAuthor = data.author && data.author.length;

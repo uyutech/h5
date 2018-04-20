@@ -223,20 +223,13 @@ class Post extends migi.Component {
       }
     });
   }
-  reply(id) {
-    jsBridge.pushWindow('/sub_comment.html?type=3&id=' + this.id + '&pid=' + id, {
-      title: '评论',
-      optionMenu: '发布',
-    });
-  }
   render() {
     return <div class="post">
       <PostList ref="postList"
                 visible={ true }
                 single={ true }
                 on-like={ this.like }
-                on-favor={ this.favor }
-                on-reply={ this.comment }/>
+                on-favor={ this.favor }/>
       <CommentBar ref="commentBar"/>
       <Comment ref="comment"
                message="正在加载..."

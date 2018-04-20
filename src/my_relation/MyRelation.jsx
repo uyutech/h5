@@ -17,8 +17,9 @@ class MyRelation extends migi.Component {
     self.tag = 0;
   }
   @bind tag
-  init() {
+  init(tag) {
     let self = this;
+    self.tag = tag;
     cacheKey = 'relation';
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {

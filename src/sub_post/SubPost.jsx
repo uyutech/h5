@@ -38,7 +38,7 @@ class SubPost extends migi.Component {
       if(!jsBridge.isInApp) {
         document.querySelector('li.submit.fn-hide').classList.remove('fn-hide');
       }
-      jsBridge.getCache(['my', 'useAuthor'], (data, useAuthor) => {
+      jsBridge.getCache(['my', 'useAuthor'], ([data, useAuthor]) => {
         if(data) {
           self.myInfo = data;
           self.isAuthor = data.author && data.author.length;
@@ -488,20 +488,20 @@ class SubPost extends migi.Component {
         }
         </ul>
       </div>
+      <div class={ 'limit' + (this.warnLength ? ' warn' : '') }>
+        <strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }
+        <div class={ 'alt' + (this.isAuthor ? '' : ' fn-hide') + (this.useAuthor ? ' author' : '') }
+             onClick={ this.clickAlt }>
+          <img src={ $util.img(this.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
+          <span>{ this.name }</span>
+        </div>
+      </div>
       <div class="c">
         <textarea class="text"
                   ref="input"
                   placeholder="在转圈画个圈吧"
                   onInput={ this.input }
                   maxLength={ MAX_TEXT_LENGTH }>{ this.value }</textarea>
-        <div class={ 'limit' + (this.warnLength ? ' warn' : '') }>
-          <strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }
-          <div class={ 'alt' + (this.isAuthor ? '' : ' fn-hide') + (this.useAuthor ? ' author' : '') }
-               onClick={ this.clickAlt }>
-            <img src={ $util.img(this.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
-            <span>{ this.name }</span>
-          </div>
-        </div>
       </div>
       <ul class="list"
           onClick={ { li: this.clickImg } }>
