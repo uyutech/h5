@@ -86,7 +86,15 @@ class Nav extends migi.Component {
             if(data.exist) {
               self.headUrl = '//zhuanquan.xyz/pic/' + md5 + suffix;
               $net.postJSON('/h5/my2/headUrl', { value: self.headUrl }, function(res) {
-                if(!res.success) {
+                if(res.success) {
+                  jsBridge.getPreference(self.props.cacheKey, function(data) {
+                    if(data) {
+                      data.headUrl = self.headUrl;
+                      jsBridge.setPreference(self.props.cacheKey, data);
+                    }
+                  });
+                }
+                else {
                   jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 }
                 uploading = false;
@@ -114,7 +122,15 @@ class Nav extends migi.Component {
               if(xhr.status === 200) {
                 self.headUrl = '//zhuanquan.xyz/pic/' + md5 + suffix;
                 $net.postJSON('/h5/my2/headUrl', { value: self.headUrl }, function(res) {
-                  if(!res.success) {
+                  if(res.success) {
+                    jsBridge.getPreference(self.props.cacheKey, function(data) {
+                      if(data) {
+                        data.headUrl = self.headUrl;
+                        jsBridge.setPreference(self.props.cacheKey, data);
+                      }
+                    });
+                  }
+                  else {
                     jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                   }
                   uploading = false;
@@ -152,9 +168,11 @@ class Nav extends migi.Component {
           $net.postJSON('/h5/my2/nickname', { value: nickname }, function(res) {
             if(res.success) {
               self.nickname = nickname;
-              jsBridge.getPreference(self.props.cacheKey, function(info) {
-                info.nickname = nickname;
-                jsBridge.setPreference(self.props.cacheKey, info);
+              jsBridge.getPreference(self.props.cacheKey, function(data) {
+                if(data) {
+                  data.nickname = nickname;
+                  jsBridge.setPreference(self.props.cacheKey, data);
+                }
               });
             }
             else {
