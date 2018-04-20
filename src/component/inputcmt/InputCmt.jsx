@@ -4,7 +4,6 @@
 
 'use strict';
 
-
 class InputCmt extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -38,7 +37,7 @@ class InputCmt extends migi.Component {
   }
   render() {
     return <form class="cp-inputcmt">
-      <img src={ this.headUrl || '/src/common/head.png' }/>
+      <img src={ $util.img(this.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
       <input ref="input"
              value={ this.value }
              placeholder={ this.placeholder }
