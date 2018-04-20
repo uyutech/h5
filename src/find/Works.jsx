@@ -40,11 +40,12 @@ class Works extends migi.Component {
            title={ this.data.content.title }
            class="name">{ this.data.content.title }</a>
         {
-          this.data.content.author.length
-            ? <dl>
-                <dt>{ this.data.content.author[0].name }</dt>
+          this.data.content.author.map((item) => {
+            return <dl>
+              <dt>{ item.name }</dt>
+              <dd>
                 {
-                  this.data.content.author[0].list.map(function(item) {
+                  item.list.map((item) => {
                     return <dd>
                       <a href={ '/author.html?id=' + item.id }
                          title={ item.name }>
@@ -54,8 +55,9 @@ class Works extends migi.Component {
                     </dd>;
                   })
                 }
-              </dl>
-            : ''
+              </dd>
+            </dl>
+          })
         }
         <a href={ '/works.html?id=' + this.data.content.id }
            title={ this.data.content.title }
