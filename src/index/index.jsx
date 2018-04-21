@@ -13,6 +13,7 @@ import Follow from '../follow/Follow.jsx';
 import My from '../my/My.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 import First from './First.jsx';
+import ImageView from '../component/imageview/ImageView.jsx';
 
 jsBridge.ready(function() {
   jsBridge.on('refresh', function(e) {
@@ -82,6 +83,7 @@ jsBridge.ready(function() {
     migi.eventBus.emit('REFRESH_MESSAGE');
   });
   migi.render(<BotFn/>, '#page');
+  migi.render(<ImageView/>, '#page');
 
   let old = false;
   if(jsBridge.appVersion) {

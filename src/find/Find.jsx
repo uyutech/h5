@@ -7,7 +7,6 @@
 
 import Nav from './Nav.jsx';
 import Item from './Item.jsx';
-import ImageView from '../component/imageview/ImageView.jsx';
 
 let scrollY = 0;
 
@@ -122,7 +121,6 @@ class Find extends migi.Component {
           return cache;
         })
       }
-      <ImageView/>
     </div>;
   }
 }

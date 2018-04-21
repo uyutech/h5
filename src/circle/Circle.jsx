@@ -266,7 +266,7 @@ class Circle extends migi.Component {
                 readOnly={ true }
                 on-click={ this.comment }
                 on-share={ this.share }/>
-      <ImageView ref="imageView"/>
+      <ImageView/>
       <BotFn ref="botFn"/>
     </div>;
   }
