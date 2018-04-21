@@ -72,7 +72,7 @@ class Nav extends migi.Component {
   @bind fansCount
   @bind like
   @bind loading
-  @bind settled
+  @bind isSettle
   @bind outside
   @bind isFollow
   setData(data, aliases, skill, outside, isFollow) {
@@ -81,6 +81,7 @@ class Nav extends migi.Component {
     self.name = data.name;
     self.headUrl = data.headUrl;
     self.fansCount = data.fansCount;
+    self.isSettle = data.isSettle;
     self.aliases = aliases;
     self.skill = skill;
     self.outside = outside;
@@ -163,7 +164,7 @@ class Nav extends migi.Component {
           <img src={ $util.img(this.headUrl, 288, 288, 80) || '/src/common/head.png' }/>
           {
             this.isSettle
-              ? <b class="settled"
+              ? <b class="settle"
                    title="已入驻"
                    onClick={ function() { jsBridge.toast('已入驻') } }/>
               : ''
