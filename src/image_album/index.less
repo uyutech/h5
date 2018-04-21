@@ -12,10 +12,18 @@
 @import '../component/inputcmt/index';
 @import '../component/botfn/index';
 @import '../component/botlist/index';
+@import '../component/background/index';
+@import '../component/imageview/index';
 
 #page > .image{
-  .mod-column:before{
-    display:none;
-    content:'';
+  .cp-background{
+    right:0;
+  }
+  .mod-column{
+    margin-top:0.64rem;
+    &:before{
+      display:none;
+      content:'';
+    }
   }
 }

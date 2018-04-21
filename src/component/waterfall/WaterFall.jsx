@@ -45,7 +45,7 @@ class WaterFall extends migi.Component {
         $b.addClass('loading');
         let id = $b.attr('rel');
         let url = $b.hasClass('liked') ? 'unLike' : 'like';
-        $net.postJSON('/h5/works2/' + url, { workId: id }, function(res) {
+        $net.postJSON('/h5/works2/' + url, { worksId: $b.attr('worksId'), workId: id }, function(res) {
           if(res.success) {
             let data = res.data;
             data.state ? $b.addClass('liked') : $b.removeClass('liked');
@@ -76,7 +76,7 @@ class WaterFall extends migi.Component {
         $b.addClass('loading');
         let id = $b.attr('rel');
         let url = $b.hasClass('has') ? 'unFavor' : 'favor';
-        $net.postJSON('/h5/works2/' + url, { workId: id }, function(res) {
+        $net.postJSON('/h5/works2/' + url, { worksId: 1, workId: id }, function(res) {
           if(res.success) {
             let data = res.data;
             data.state ? $b.addClass('liked') : $b.removeClass('liked');
@@ -94,11 +94,42 @@ class WaterFall extends migi.Component {
           $b.removeClass('loading');
         });
       });
-
       $root.on('click', 'img', function() {
         let $img = $(this);
-        let index = $img.attr('rel');
-        // imageView.setData(list, index);
+        let index = parseInt($img.attr('rel'));
+        let copy = self.list.map((item) => {
+          return {
+            worksId: item.id,
+            id: item.work.id,
+            url: item.work.url,
+            width: item.work.width,
+            height: item.work.height,
+            preview: item.work.preview,
+            isLike: item.work.isLike,
+            likeCount: item.work.likeCount,
+            isFavor: item.work.isFavor,
+            favorCount: item.work.favorCount,
+          };
+        });
+        migi.eventBus.emit('IMAGE_VIEW', copy, index);
+      });
+      migi.eventBus.on('IMAGE_VIEW_LIKE', function(id, data) {
+        let $b = $root.find('#image_' + id + ' .like');
+        $b.text(data.count);
+        if(data.state) {
+          $b.addClass('liked');
+        }
+        else {
+          $b.removeClass('liked');
+        }
+        for(let i = 0, len = self.list.length; i < len; i++) {
+          let item = self.list[i];
+          if(item.work.id === id) {
+            item.work.isLike = data.state;
+            item.work.likeCount = data.count;
+            break;
+          }
+        }
       });
     });
   }
@@ -217,6 +248,7 @@ class WaterFall extends migi.Component {
         <div class="txt">
           <p class={ 'author' + (self.props.profession ? ' profession' : '') }>{ author.join(' ') }</p>
           <b class={ 'like' + (item.work.isLike ? ' liked' : '') }
+             worksId={ item.id }
              rel={ item.work.id }>{ item.work.likeCount }</b>
         </div>
       </li>;
@@ -230,6 +262,7 @@ class WaterFall extends migi.Component {
       <div class="txt">
         <p class={ 'author' + (self.props.profession ? ' profession' : '') }>{ author.join(' ') }</p>
         <b class={ 'like' + (item.work.isLike ? ' liked' : '') }
+           worksId={ item.id }
            rel={ item.work.id }>{ item.work.likeCount }</b>
       </div>
     </li>;

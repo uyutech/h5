@@ -2,6 +2,7 @@
  * Created by army8735 on 2018/2/4.
  */
 
+
 'use strict';
 
 import Column from '../works/Column.jsx';
@@ -10,6 +11,8 @@ import Author from '../works/Author.jsx';
 import Comments from '../works/Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
+import Background from '../component/background/Background.jsx';
+import ImageView from '../component/imageview/ImageView.jsx';
 
 let offset = 0;
 let loadEnd;
@@ -228,10 +231,12 @@ class ImageAlbum extends migi.Component {
   }
   render() {
     return <div class="image">
+      <Background ref="background"/>
       <Column ref="column"
               on-change={ this.changeColumn }/>
       <div class={ 'album' + (this.curColumn === 0 ? '' : ' fn-hide') }>
         <WaterFall ref="waterFall"
+                   work={ true }
                    message="正在加载..."
                    visible={ true }
                    on-like={ this.like }/>
@@ -247,6 +252,7 @@ class ImageAlbum extends migi.Component {
                 on-click={ this.comment }
                 on-share={ this.share }/>
       <BotFn ref="botFn"/>
+      <ImageView/>
     </div>;
   }
 }

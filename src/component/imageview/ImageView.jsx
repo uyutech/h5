@@ -29,45 +29,39 @@ class ImageView extends migi.Component {
     let self = this;
     self.list = self.props.list || [];
     self.index = self.props.index || 0;
+    self.visible = self.props.visible;
     self.on(migi.Event.DOM, function() {
-      WIDTH = $(window).width();
+      WIDTH = screen.availWidth;
       self.$c = $(self.ref.c.element);
       self.$i1 = $(self.ref.i1.element);
       self.$i2 = $(self.ref.i2.element);
       self.$i3 = $(self.ref.i3.element);
+      migi.eventBus.on('IMAGE_VIEW', function(list, index) {
+        self.setData(list, index);
+      });
       jsBridge.on('back', function(e) {
-        if(!$(self.element).hasClass('fn-hide')) {
+        if(self.visible) {
           e.preventDefault();
-          self.hide();
+          self.visible = false;
         }
       });
     });
   }
-  @bind list = []
+  @bind visible
+  @bind list
   @bind index
-  show() {
-    $(this.element).removeClass('fn-hide');
-    jsBridge.refreshState(false);
-  }
-  hide() {
-    document.body.classList.remove('pop');
-    window.scrollTo(0, this.bodyTop);
-    $(this.element).addClass('fn-hide');
-    jsBridge.refreshState(true);
-  }
-  isHide() {
-    return  $(this.element).hasClass('fn-hide');
-  }
+  @bind isWork
   setData(list, index) {
     let self = this;
     list = list || [];
     index = parseInt(index) || 0;
     self.list = list;
     self.index = index;
-    let y = self.bodyTop = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    let y = $util.scrollY();
     document.body.style.top = -y + 'px';
     document.body.classList.add('pop');
-    self.show();
+    self.visible = true;
+    self.isWork = list[0] && list[0].id;
     // 优先预览图
     self.setImg(index);
   }
@@ -75,7 +69,7 @@ class ImageView extends migi.Component {
     let self = this;
     let list = self.list;
     let data = list[index];
-    let url = $util.autoSsl(data.FileUrl);
+    let url = $util.autoSsl(data.url);
     if(data.loaded || !data.preview) {
       ++uuid;
       self.$i2.find('img').attr('src', url || '/src/common/blank.png');
@@ -92,7 +86,7 @@ class ImageView extends migi.Component {
     }
     if(index) {
       if(list[index - 1].loaded || !list[index - 1].preview) {
-        self.$i1.find('img').attr('src', list[index - 1].FileUrl || '/src/common/blank.png');
+        self.$i1.find('img').attr('src', list[index - 1].url || '/src/common/blank.png');
       }
       else {
         self.$i1.find('img').attr('src', list[index - 1].preview);
@@ -103,7 +97,7 @@ class ImageView extends migi.Component {
     }
     if(index < list.length - 1) {
       if(list[index + 1].loaded || !list[index + 1].preview) {
-        self.$i3.find('img').attr('src', list[index + 1].FileUrl || '/src/common/blank.png');
+        self.$i3.find('img').attr('src', list[index + 1].url || '/src/common/blank.png');
       }
       else {
         self.$i3.find('img').attr('src', list[index + 1].preview);
@@ -135,7 +129,7 @@ class ImageView extends migi.Component {
   }
   click(e) {
     e.stopPropagation();
-    this.hide();
+    this.visible = false;
   }
   start(e) {
     if(!loading && e.touches.length === 1) {
@@ -270,11 +264,38 @@ class ImageView extends migi.Component {
     });
   }
   clickLike(e) {
+    let self = this;
     e.stopPropagation();
-    this.emit('like', this.list, this.index);
+    let item = self.list[self.index];
+    if(item.liking) {
+      return;
+    }
+    item.liking = true;
+    let url = item.isLike ? 'unLike' : 'like';
+    $net.postJSON('/h5/works2/' + url, {
+      worksId: item.worksId, workId: item.id
+    }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        item.isLike = data.state;
+        item.likeCount = data.count;
+        self.index = self.index;
+        migi.eventBus.emit('IMAGE_VIEW_LIKE', item.id, data);
+      }
+      else if(res.code === 1000) {
+        migi.eventBus.emit('NEED_LOGIN');
+      }
+      else {
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      }
+      item.liking = false;
+    }, function (res) {
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      item.liking = false;
+    });
   }
   render() {
-    return <div class="cp-imageview fn-hide">
+    return <div class={ 'cp-imageview' + (this.visible ? '' : ' fn-hide') }>
       <div class="c"
            ref="c"
            onClick={ this.click }
@@ -282,22 +303,26 @@ class ImageView extends migi.Component {
            onTouchMove={ this.move }
            onTouchEnd={ this.end }
            onTouchCancel={ this.end }>
-        <div class="i1" ref="i1">
-          <img src="/src/common/blank.png" test="1"/>
-        </div>
-        <div class="i2" ref="i2">
+        <div class="i1"
+             ref="i1">
           <img src="/src/common/blank.png"/>
         </div>
-        <div class="i3" ref="i3">
+        <div class="i2"
+             ref="i2">
+          <img src="/src/common/blank.png"/>
+        </div>
+        <div class="i3"
+             ref="i3">
           <img src="/src/common/blank.png"/>
         </div>
       </div>
       <label>{ ((this.index || 0) + 1) + '/' + this.list.length }</label>
-      <b class="download"
-         rel={ this.list[this.index] && this.list[this.index].FileUrl }
-         onClick={ this.clickDownload }/>
-      <b class={ 'like' + (this.list[this.index] && this.list[this.index].ISLike ? ' has' : '') }
+      <b class={ 'like' + (this.list[this.index] && this.list[this.index].isLike ? ' liked' : '')
+           + (this.isWork ? '' : ' fn-hide') }
          onClick={ this.clickLike }/>
+      <b class="download"
+         rel={ this.list[this.index] && this.list[this.index].url }
+         onClick={ this.clickDownload }/>
     </div>;
   }
 }
