@@ -228,12 +228,12 @@ class Nav extends migi.Component {
   }
   clickFollow() {
     jsBridge.pushWindow('/my_relation.html?tag=' + 1, {
-      transparentTitle: true,
+      title: '圈关系',
     });
   }
   clickFans() {
     jsBridge.pushWindow('/my_relation.html?tag=' + 2, {
-      transparentTitle: true,
+      title: '圈关系',
     });
   }
   render() {
