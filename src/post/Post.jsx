@@ -10,6 +10,7 @@ import CommentBar from '../component/commentbar/CommentBar.jsx';
 import Comment from '../component/comment/Comment.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
+import ImageView from '../component/imageview/ImageView.jsx';
 
 let offset;
 let ajax;
@@ -241,6 +242,7 @@ class Post extends migi.Component {
                 on-click={ this.comment }
                 on-share={ this.share }/>
       <BotFn ref="botFn"/>
+      <ImageView/>
     </div>;
   }
 }

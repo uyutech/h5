@@ -156,8 +156,8 @@ class MyPost extends migi.Component {
                 message={ '正在加载...' }
                 on-favor={ this.commentFavor }
                 on-like={ this.commentLike }/>
-      <ImageView ref="imageView"/>
       <BotFn/>
+      <ImageView/>
     </div>;
   }
 }

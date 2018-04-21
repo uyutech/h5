@@ -225,6 +225,21 @@ class PostList extends migi.Component {
         let $li = $(this).closest('li');
         $li.find('.snap, .full, .more, .less').toggleClass('fn-hide');
       });
+      $list.on('click', '.image img', function() {
+        let list = [];
+        let $this = $(this);
+        let index = parseInt($this.attr('i'));
+        let $image = $this.closest('ul');
+        $image.find('img').each(function(i, o) {
+          list.push({
+            url: $util.img(o.src),
+            preview: o.src,
+            width: parseInt(o.getAttribute('w')),
+            height: parseInt(o.getAttribute('h')),
+          });
+        });
+        migi.eventBus.emit('IMAGE_VIEW', list, index);
+      });
     });
   }
   @bind message
@@ -352,7 +367,8 @@ class PostList extends migi.Component {
         }
       </div>
       <div class="wrap">
-        <div class="con" dangerouslySetInnerHTML={ html }/>
+        <div class="con"
+             dangerouslySetInnerHTML={ html }/>
         {
           videoList.length
             ? <ul class="video">
@@ -426,11 +442,14 @@ class PostList extends migi.Component {
           imageList.length
             ? <ul class="image">
               {
-                imageList.map(function(item) {
+                imageList.map(function(item, i) {
                   return <li>
                     <img src={ self.props.single
                       ? $util.img(item.url, 750, 0, 80)
-                      : $util.img(item.url, 200, 200, 80)}/>
+                      : $util.img(item.url, 200, 200, 80)}
+                         i={ i }
+                         w={ item.width }
+                         h={ item.height }/>
                   </li>;
                 })
               }

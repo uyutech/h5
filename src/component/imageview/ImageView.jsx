@@ -13,6 +13,7 @@ let dx;
 let loading;
 let pos;
 let uuid = 0;
+let y = 0;
 
 function setTransform(dx) {
   this.$c.css('-webkit-transform', `translate3d(${dx},0,0)`);
@@ -43,6 +44,8 @@ class ImageView extends migi.Component {
         if(self.visible) {
           e.preventDefault();
           self.visible = false;
+          document.body.classList.remove('no-scroll');
+          $util.scrollY(y);
         }
       });
     });
@@ -57,10 +60,9 @@ class ImageView extends migi.Component {
     index = parseInt(index) || 0;
     self.list = list;
     self.index = index;
-    let y = $util.scrollY();
-    document.body.style.top = -y + 'px';
-    document.body.classList.add('pop');
     self.visible = true;
+    y = $util.scrollY();
+    document.body.classList.add('no-scroll');
     self.isWork = list[0] && list[0].id;
     // 优先预览图
     self.setImg(index);
@@ -130,6 +132,8 @@ class ImageView extends migi.Component {
   click(e) {
     e.stopPropagation();
     this.visible = false;
+    document.body.classList.remove('no-scroll');
+    $util.scrollY(y);
   }
   start(e) {
     if(!loading && e.touches.length === 1) {

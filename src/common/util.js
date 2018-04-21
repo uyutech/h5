@@ -19,7 +19,7 @@ let util = {
       return url;
     }
     url = url.replace(/\.(\w+)-\d*_\d*_\d*/, '.$1');
-    if(w === undefined) {
+    if(w === undefined && h === undefined && q === undefined) {
       return url;
     }
     url += '-' + (w ? w : '') + '_' + (h ? h : '') + '_' + (q ? q : '');
@@ -129,9 +129,9 @@ let util = {
   },
   scrollY: function(v) {
     if(v !== undefined) {
-      window.scrollY = document.documentElement.scrollTop = document.body.scrollTop = v;
+      window.scroll(0, v);
     }
-    return window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+    return document.documentElement.scrollTop || window.pageYOffset || window.scrollY || 0;
   },
   recordPlay(data, cb) {
     if(data.kind !== 2) {
