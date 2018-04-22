@@ -28,10 +28,16 @@ class PostList extends migi.Component {
       });
       $list.on('click', '.profile .time', function(e) {
         e.preventDefault();
-        let url = $(this).attr('href');
-        jsBridge.pushWindow(url, {
-          title: '画圈详情',
-        });
+        let $this = $(this);
+        if(self.props.single) {
+          jsBridge.toast($this.attr('title'));
+        }
+        else {
+          let url = $this.attr('href');
+          jsBridge.pushWindow(url, {
+            title: '画圈详情',
+          });
+        }
       });
       $list.on('click', '.circle', function(e) {
         e.preventDefault();
