@@ -23,6 +23,7 @@ let offset = 0;
 
 let currentPriority = 0;
 let cacheKey = 'circling';
+let scroll;
 
 class Circling extends migi.Component {
   constructor(...data) {
@@ -31,11 +32,6 @@ class Circling extends migi.Component {
     self._visible = self.props.visible;
     self.on(migi.Event.DOM, function() {
       self.init();
-      // jsBridge.on('resume', function(e) {
-      //   if(e.data && e.data.type === 'subPost') {
-      //     self.ref.hotPost.prependData(e.data.data);
-      //   }
-      // });
     });
   }
   get visible() {
@@ -66,12 +62,15 @@ class Circling extends migi.Component {
         jsBridge.setPreference(cacheKey, data);
         self.setData(data, 1);
 
-        window.addEventListener('scroll', function() {
-          if(self.visible) {
-            self.checkMore();
-            scrollY = $util.scrollY();
-          }
-        });
+        if(!scroll) {
+          scroll = true;
+          window.addEventListener('scroll', function() {
+            if(self.visible) {
+              self.checkMore();
+              scrollY = $util.scrollY();
+            }
+          });
+        }
       }
       else {
         jsBridge.toast(res.message || $util.ERROR_MESSAGE);
@@ -162,6 +161,9 @@ class Circling extends migi.Component {
         loadingCircle = false;
       });
     }
+  }
+  refresh() {
+    this.init();
   }
   clickCircle() {
     jsBridge.pushWindow('/all_circles.html', {

@@ -29,6 +29,7 @@ let lastId;
 
 let currentPriority = 0;
 let cacheKey = 'follow';
+let scroll;
 
 class Follow extends migi.Component {
   constructor(...data) {
@@ -97,25 +98,15 @@ class Follow extends migi.Component {
         jsBridge.setPreference(cacheKey, data);
         self.setData(data, 1);
 
-        window.addEventListener('scroll', function() {
-          if(self.visible) {
-            self.checkMore();
-            scrollY = $util.scrollY();
-          }
-        });
-        return;
-        interval = setInterval(function() {
-          if(isPause) {
-            return;
-          }
-          $net.postJSON('/h5/follow/postList', { skip: 0, take: 1 }, function(res) {
-            if(res.success) {
-              if((res.data.data[0] || {}).ID !== lastId) {
-                migi.eventBus.emit('FOLLOW_UPDATE');
-              }
+        if(!scroll) {
+          scroll = true;
+          window.addEventListener('scroll', function() {
+            if(self.visible) {
+              self.checkMore();
+              scrollY = $util.scrollY();
             }
           });
-        }, 10000);
+        }
       }
       else if(res.code === 1000) {
         migi.eventBus.emit('NEED_LOGIN');

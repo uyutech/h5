@@ -14,6 +14,7 @@ let ajax;
 
 let currentPriority = 0;
 let cacheKey = 'find';
+let scroll;
 
 let hash = {};
 let first = {};
@@ -52,18 +53,22 @@ class Find extends migi.Component {
     ajax = $net.postJSON('/h5/find2/index', function(res) {
       if(res.success) {
         let data = res.data;
-        self.setData(data, 1);
         jsBridge.setPreference(cacheKey, data);
-        window.addEventListener('scroll', function() {
-          if(self.visible) {
-            for(let i = 0; i < self.ref.item.length; i++) {
-              if(self.ref.item[i].visible) {
-                self.ref.item[i].checkMore();
+        self.setData(data, 1);
+
+        if(!scroll) {
+          scroll = true;
+          window.addEventListener('scroll', function() {
+            if(self.visible) {
+              for (let i = 0; i < self.ref.item.length; i++) {
+                if(self.ref.item[i].visible) {
+                  self.ref.item[i].checkMore();
+                }
               }
+              scrollY = $util.scrollY();
             }
-            scrollY = $util.scrollY();
-          }
-        });
+          });
+        }
       }
       else {
         jsBridge.toast(res.message || $util.ERROR_MESSAGE);
@@ -86,6 +91,9 @@ class Find extends migi.Component {
     self.ref.nav.setData(data.tag);
     self.list = data.tag;
     self.ref.item[0].setData(data);
+  }
+  refresh() {
+    this.init();
   }
   change(tag) {
     let self = this;
