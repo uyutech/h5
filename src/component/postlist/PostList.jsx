@@ -259,6 +259,17 @@ class PostList extends migi.Component {
         });
         migi.eventBus.emit('IMAGE_VIEW', list, index);
       });
+      jsBridge.on('resume', function(e) {
+        let data = e.data;
+        if(data && data.type && data.type === 'subComment') {
+          let id = data.data.rid;
+          let $comment = $('#post_' + id).find('.btn .comment');
+          if($comment[0]) {
+            let n = parseInt($comment.text()) || 0;
+            $comment.text(n + 1);
+          }
+        }
+      });
     });
   }
   @bind message
@@ -351,7 +362,8 @@ class PostList extends migi.Component {
           break;
       }
     });
-    return <li class={ item.isAuthor ? 'author'  : 'user' }>
+    return <li id={ 'post_' + id }
+               class={ item.isAuthor ? 'author'  : 'user' }>
       <div class="profile">
         <a class="pic"
            href={ peopleUrl }
