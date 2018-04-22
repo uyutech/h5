@@ -516,7 +516,7 @@ let jsBridge = {
       this.call('media', data, cb);
     }
     else {
-      cb();
+      cb && cb();
     }
   },
   setBack: function(data) {

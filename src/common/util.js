@@ -134,14 +134,11 @@ let util = {
     return document.documentElement.scrollTop || window.pageYOffset || window.scrollY || 0;
   },
   recordPlay(data, cb) {
-    if(data.kind !== 2) {
-      return;
-    }
     jsBridge.setPreference('recordCur', data.id);
     jsBridge.getPreference('record', function(res) {
       res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
       for(let i = 0, len = res.length; i < len; i++) {
-        if(res[i].id === data.id) {
+        if(res[i].id === data.id && res[i].worksId === data.worksId) {
           res.splice(i, 1);
           break;
         }

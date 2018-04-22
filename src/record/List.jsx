@@ -53,7 +53,7 @@ class List extends migi.Component {
               for(let i = 0, len = self.list.length; i < len; i++) {
                 if(self.list[i].id === id) {
                   let data = self.list.splice(i, 1);
-                  self.emit('del', data[0]);
+                  self.emit('del', data[0], self.list);
                   jsBridge.setPreference('record', self.list);
                   return;
                 }

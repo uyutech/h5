@@ -125,13 +125,19 @@ class Record extends migi.Component {
     self.ref.media.play();
     self.ref.list.prependData(work);
     self.ref.list.setCur(0);
+    self.ref.list.message = '';
     self.curColum = 0;
   }
-  del(data) {
+  del(data, list) {
     let self = this;
     if(self.ref.media.data && self.ref.media.data.id === data.id) {
       self.ref.media.setData(null);
       self.ref.media.stop();
+      jsBridge.setTitle('最近播放');
+      jsBridge.setSubTitle('');
+      if(!list.length) {
+        self.ref.list.message = '暂无记录';
+      }
     }
   }
   mediaPlay() {

@@ -16,7 +16,7 @@ class PostList extends migi.Component {
     self.list = [];
     self.on(migi.Event.DOM, function() {
       let $list = $(this.ref.list.element);
-      $list.on('click', '.name', function(e) {
+      $list.on('click', '.video .name, .audio .name', function(e) {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
@@ -246,29 +246,93 @@ class PostList extends migi.Component {
         $li.find('.snap, .full, .more, .less').toggleClass('fn-hide');
       });
       $list.on('click', '.video .pic', function() {
+        let $this = $(this);
         let video = this.querySelector('video');
-        if(video.classList.contains('loading')) {
-          //
+        if($this.hasClass('first')) {
+          $this.removeClass('first');
+          let workId = parseInt($this.attr('workId'));
+          let worksId = parseInt($this.attr('worksId'));
+          outer:
+          for(let i = 0, len = self.list.length; i < len; i++) {
+            let item = self.list[i].work;
+            for(let j = 0; j < item.length; j++) {
+              let av = item[j];
+              if(av.id === worksId && av.work.id === workId) {
+                let o = av.work;
+                o.worksId = worksId;
+                o.worksCover = av.cover;
+                o.worksTitle = av.title;
+                $util.recordPlay(o);
+                $net.postJSON('/h5/work2/addViews', { id: workId });
+                break outer;
+              }
+            }
+          }
         }
-        else if(video.classList.contains('fn-hide')) {
-          $list.find('video').addClass('fn-hide').each(function(i, o) {
+        if($this.hasClass('play')) {
+          $this.removeClass('play');
+          video.pause();
+        }
+        else {
+          $list.find('.video .play,.audio .play').removeClass('play');
+          $this.addClass('play');
+          $list.find('video').each(function(i, o) {
             o.pause();
           });
-          video.classList.remove('fn-hide');
-          video.classList.add('loading');
           jsBridge.media({
             key: 'pause',
-          }, function() {
-            video.play();
-            video.classList.remove('loading');
+          });
+          $this.addClass('play');
+          video.play();
+        }
+      });
+      $list.on('click', '.audio .pic', function() {
+        let $this = $(this);
+        if($this.hasClass('first')) {
+          $this.removeClass('first');
+          let workId = parseInt($this.attr('workId'));
+          let worksId = parseInt($this.attr('worksId'));
+          outer:
+          for(let i = 0, len = self.list.length; i < len; i++) {
+            let item = self.list[i].work;
+            for(let j = 0; j < item.length; j++) {
+              let av = item[j];
+              if(av.id === worksId && av.work.id === workId) {
+                let o = av.work;
+                o.worksId = worksId;
+                o.worksCover = av.cover;
+                o.worksTitle = av.title;
+                $util.recordPlay(o);
+                $net.postJSON('/h5/work2/addViews', { id: workId });
+                break outer;
+              }
+            }
+          }
+        }
+        if($this.hasClass('play')) {
+          $this.removeClass('play');
+          jsBridge.media({
+            key: 'pause',
           });
         }
         else {
-          video.classList.add('fn-hide');
-          video.pause();
+          $list.find('.video .play,.audio .play').removeClass('play');
+          $this.addClass('play');
+          $list.find('video').each(function(i, o) {
+            o.pause();
+          });
+          jsBridge.media({
+            key: 'info',
+            value: {
+              id: $this.attr('workId'),
+              url: location.protocol + $util.autoSsl($this.attr('url')),
+            },
+          });
+          jsBridge.media({
+            key: 'play',
+          });
         }
       });
-      $list.on('click', '.audio', function() {});
       $list.on('click', '.image img', function() {
         let list = [];
         let $this = $(this);
@@ -455,14 +519,14 @@ class PostList extends migi.Component {
                     });
                   });
                   return <li>
-                    <div class="pic">
+                    <div class="pic first"
+                         worksId={ item.id }
+                         workId={ item.work.id }>
                       <img src={ $util.img(item.work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
                       <div class="num">
                         <span class="play">{ $util.abbrNum(item.work.views) }次播放</span>
                       </div>
-                      <b/>
-                      <video class="fn-hide"
-                             poster="/src/common/blank.png"
+                      <video poster="/src/common/blank.png"
                              src={ item.work.url }
                              preload="meta"
                              playsinline="true"
@@ -497,13 +561,16 @@ class PostList extends migi.Component {
                     });
                   });
                   return <li>
-                    <a class="pic"
-                       title={ item.title }
-                       href={ url }>
+                    <div class="pic first"
+                         worksId={ item.id }
+                         workId={ item.work.id }
+                         url={ item.work.url }>
                       <img src={ $util.img(item.work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
-                    </a>
+                    </div>
                     <div class="txt">
-                      <span class="name">{ item.work.title }</span>
+                      <a class="name"
+                         title={ item.title }
+                         href={ url }>{ item.work.title }</a>
                       <p class="author">{ author.join(' ') }</p>
                     </div>
                   </li>;
