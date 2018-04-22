@@ -136,7 +136,7 @@ class Post extends migi.Component {
     }
     let comment = self.ref.comment;
     loading = true;
-    ajax = $net.postJSON('/h5/post2/commentList', { id: self.postId, offset }, function(res) {
+    ajax = $net.postJSON('/h5/post2/commentList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {
@@ -176,12 +176,6 @@ class Post extends migi.Component {
         cache.info.favorCount = data.count;
         jsBridge.setPreference(cacheKey, cache);
       }
-    });
-  }
-  comment(id) {
-    jsBridge.pushWindow('/sub_comment.html?type=1&id=' + id, {
-      title: '评论',
-      optionMenu: '发布',
     });
   }
   clickDel(e) {
