@@ -42,7 +42,7 @@ class Comment extends migi.Component {
           }
         });
       });
-      $list.on('click', '.sub', function() {
+      $list.on('click', '.reply', function() {
         let $this = $(this);
         let id = $this.attr('rel');
         self.emit('reply', id);
@@ -292,7 +292,7 @@ class Comment extends migi.Component {
         <div class="slide">
           <small class={ 'like' + (item.isLike ? ' liked' : '') }
                  rel={ item.id }>{ item.likeCount || '' }</small>
-          <small class="sub"
+          <small class="reply"
                  rel={ item.id }/>
         </div>
       </div>

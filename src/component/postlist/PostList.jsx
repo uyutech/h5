@@ -43,6 +43,8 @@ class PostList extends migi.Component {
           // canBlock: true,
           canReport: true,
           canDel: $fn.attr('own') === 'true',
+          canShare: true,
+          canShareLink: true,
           // clickBlock: function(botFn) {
           //   if(!$util.isLogin()) {
           //     migi.eventBus.emit('NEED_LOGIN');
@@ -104,6 +106,11 @@ class PostList extends migi.Component {
               });
             });
           },
+          clickShareLink: function(botFn) {
+            let url = window.ROOT_DOMAIN + '/post/' + id;
+            $util.setClipboard(url);
+            botFn.cancel();
+          },
         });
       });
       $list.on('click', '.link', function(e) {
@@ -125,6 +132,18 @@ class PostList extends migi.Component {
           }
           let url = $this.attr('href');
           jsBridge.openUri(url);
+        });
+      });
+      $list.on('click', '.share', function() {
+        let id = parseInt($(this).attr('rel'));
+        migi.eventBus.emit('BOT_FN', {
+          canShare: true,
+          canShareLink: true,
+          clickShareLink: function(botFn) {
+            let url = window.ROOT_DOMAIN + '/post/' + id;
+            $util.setClipboard(url);
+            botFn.cancel();
+          },
         });
       });
       $list.on('click', '.like', function() {
@@ -458,7 +477,8 @@ class PostList extends migi.Component {
         }
       </div>
       <ul class="btn">
-        <li class="share">分享</li>
+        <li class="share"
+            rel={ id }>分享</li>
         <li class={ 'favor' + (item.isFavor ? ' favored' : '') }
             rel={ id }>{ item.favorCount || '收藏' }</li>
         <li class={ 'like' + (item.isLike ? ' liked' : '') }
@@ -482,7 +502,7 @@ class PostList extends migi.Component {
       })
       .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(?:\s|$)/g, function($0, $1, $2, $3) {
         let data = refHash[$2];
-        if(!data) {
+        if(!data && $1 !== 'post') {
           return $0;
         }
         switch($1) {

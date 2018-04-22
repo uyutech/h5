@@ -29,7 +29,7 @@ class Post extends migi.Component {
         migi.eventBus.emit('BOT_FN', {
           canFn: true,
           canReport: true,
-          canDel: true,
+          canDel: self.data.info.isOwn,
           clickReport: function(botFn) {
             jsBridge.confirm('确认举报吗？', function(res) {
               if(res) {
@@ -106,6 +106,7 @@ class Post extends migi.Component {
     currentPriority = priority;
 
     let self = this;
+    self.data = data;
     self.ref.postList.setData(data.info);
 
     offset = data.commentList.limit;
@@ -206,7 +207,7 @@ class Post extends migi.Component {
     if(!self.id) {
       return;
     }
-    jsBridge.pushWindow('/sub_comment.html?type=1&id=' + self.id, {
+    jsBridge.pushWindow('/sub_comment.html?type=3&id=' + self.id, {
       title: '评论',
       optionMenu: '发布',
     });
@@ -222,6 +223,12 @@ class Post extends migi.Component {
         });
         jsBridge.setPreference(cacheKey, cache);
       }
+    });
+  }
+  reply(id) {
+    jsBridge.pushWindow('/sub_comment.html?type=3&id=' + this.id + '&pid=' + id, {
+      title: '评论',
+      optionMenu: '发布',
     });
   }
   render() {
