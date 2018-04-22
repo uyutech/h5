@@ -134,7 +134,7 @@ class sub_comment extends migi.Component {
         jsBridge.hideLoading();
         if(res.success) {
           jsBridge.setPreference(self.getContentKey(), null);
-          jsBridge.popWindow({ type: 'sub_comment', data: res.data });
+          jsBridge.popWindow({ type: 'subComment', data: res.data });
         }
         else {
           jsBridge.toast(res.message || $util.ERROR_MESSAGE);

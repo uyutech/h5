@@ -16,21 +16,16 @@ class Comments extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    self.visible = self.props.visible;
     self.on(migi.Event.DOM, function() {
-      let $body = $(document.body);
-      $body.on('click', function() {
-        self.showSort = false;
-      });
-      self.isLogin = $util.isLogin();
       jsBridge.on('resume', function(e) {
         let data = e.data;
-        if(data && data.type && data.type === 'sub_comment') {
+        if(data && data.type && data.type === 'subComment') {
           self.ref.comment.prependData(data.data);
         }
       });
     });
   }
-  @bind isLogin
   @bind visible
   setData(id, data) {
     let self = this;

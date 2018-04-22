@@ -15,6 +15,14 @@ class Comments extends migi.Component {
     super(...data);
     let self = this;
     self.visible = self.props.visible;
+    self.on(migi.Event.DOM, function() {
+      jsBridge.on('resume', function(e) {
+        let data = e.data;
+        if(data && data.type && data.type === 'subComment') {
+          self.ref.comment.prependData(data.data);
+        }
+      });
+    });
   }
   @bind visible
   setData(id, data) {
