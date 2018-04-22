@@ -15,7 +15,7 @@ class PostList extends migi.Component {
     self.exist = {};
     self.on(migi.Event.DOM, function() {
       let $list = $(this.ref.list.element);
-      $list.on('click', '.pic,.name', function(e) {
+      $list.on('click', '.name', function(e) {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
@@ -244,6 +244,17 @@ class PostList extends migi.Component {
         let $li = $(this).closest('li');
         $li.find('.snap, .full, .more, .less').toggleClass('fn-hide');
       });
+      $list.on('click', '.video .pic', function() {
+        let video = this.querySelector('video');
+        if(video.classList.contains('fn-hide')) {
+          video.classList.remove('fn-hide');
+          video.play();
+        }
+        else {
+          video.classList.add('fn-hide');
+          video.pause();
+        }
+      });
       $list.on('click', '.image img', function() {
         let list = [];
         let $this = $(this);
@@ -417,14 +428,19 @@ class PostList extends migi.Component {
                     });
                   });
                   return <li>
-                    <a class="pic"
-                       title={ item.title }
-                       href={ url }>
+                    <div class="pic">
                       <img src={ $util.img(item.work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
                       <div class="num">
                         <span class="play">{ $util.abbrNum(item.work.views) }次播放</span>
                       </div>
-                    </a>
+                      <b/>
+                      <video class="fn-hide"
+                             poster="/src/common/blank.png"
+                             src={ item.work.url }
+                             preload="meta"
+                             playsinline="true"
+                             webkit-playsinline="true"/>
+                    </div>
                     <a class="name"
                        href={ url }
                        title={ item.title }>{ item.work.title }</a>
