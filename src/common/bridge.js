@@ -515,6 +515,9 @@ let jsBridge = {
     if(this.isInApp) {
       this.call('media', data, cb);
     }
+    else {
+      cb();
+    }
   },
   setBack: function(data) {
     if(this.isInApp) {

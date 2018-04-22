@@ -13,6 +13,7 @@ class PostList extends migi.Component {
     self.visible = self.props.visible;
     self.message = self.props.message;
     self.exist = {};
+    self.list = [];
     self.on(migi.Event.DOM, function() {
       let $list = $(this.ref.list.element);
       $list.on('click', '.name', function(e) {
@@ -246,15 +247,28 @@ class PostList extends migi.Component {
       });
       $list.on('click', '.video .pic', function() {
         let video = this.querySelector('video');
-        if(video.classList.contains('fn-hide')) {
+        if(video.classList.contains('loading')) {
+          //
+        }
+        else if(video.classList.contains('fn-hide')) {
+          $list.find('video').addClass('fn-hide').each(function(i, o) {
+            o.pause();
+          });
           video.classList.remove('fn-hide');
-          video.play();
+          video.classList.add('loading');
+          jsBridge.media({
+            key: 'pause',
+          }, function() {
+            video.play();
+            video.classList.remove('loading');
+          });
         }
         else {
           video.classList.add('fn-hide');
           video.pause();
         }
       });
+      $list.on('click', '.audio', function() {});
       $list.on('click', '.image img', function() {
         let list = [];
         let $this = $(this);
@@ -287,7 +301,7 @@ class PostList extends migi.Component {
   @bind visible
   setData(data) {
     let self = this;
-    self.exist = {};
+    self.clearData();
     if(!data) {
       return;
     }
@@ -296,7 +310,11 @@ class PostList extends migi.Component {
       data = [data];
     }
     data.forEach(function(item) {
-      s += self.genItem(item) || '';
+      let o = self.genItem(item);
+      if(o) {
+        self.list.push(item);
+        s += o;
+      }
     });
     $(self.ref.list.element).html(s);
   }
@@ -309,14 +327,19 @@ class PostList extends migi.Component {
     if(!Array.isArray(data)) {
       data = [data];
     }
-    (data || []).forEach(function(item) {
-      s += self.genItem(item) || '';
+    data.forEach(function(item) {
+      let o = self.genItem(item);
+      if(o) {
+        self.list.push(item);
+        s += o;
+      }
     });
     $(self.ref.list.element).append(s);
   }
   clearData() {
     let self = this;
     self.exist = {};
+    self.list = [];
     $(self.ref.list.element).html('');
   }
   prependData(data) {
@@ -328,8 +351,12 @@ class PostList extends migi.Component {
     if(!Array.isArray(data)) {
       data = [data];
     }
-    (data || []).forEach(function(item) {
-      s += self.genItem(item) || '';
+    data.forEach(function(item) {
+      let o = self.genItem(item);
+      if(o) {
+        self.list.unshift(item);
+        s += o;
+      }
     });
     $(self.ref.list.element).prepend(s);
   }
