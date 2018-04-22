@@ -7,10 +7,22 @@
 class MusicAlbumList extends migi.Component {
   constructor(...data) {
     super(...data);
+    this.visible = this.props.visible;
   }
   @bind list
+  @bind visible
+  click(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+      transparentTitle: true,
+    });
+  }
   render() {
-    return <div class="mod-musicalbumlist">
+    return <div class={ 'mod-musicalbumlist' + (this.visible ? '' : ' fn-hide') }
+                onClick={ { a: this.click } }>
       {
         this.list
           ? this.list.length
@@ -20,12 +32,16 @@ class MusicAlbumList extends migi.Component {
                   let url = `/music_album.html?id=${item.id}`;
                   return <li>
                     <b class="bg"/>
-                    <a href={ url } class="pic" title={ item.title }>
+                    <a href={ url }
+                       class="pic"
+                       title={ item.title }>
                       <img src={ $util.img(item.cover, 170, 170, 80) || '/src/common/blank.png' }/>
                       <span class="type">{ item.typeName }</span>
                       <span class="num">{ $util.abbrNum(item.popular) }</span>
                     </a>
-                    <a href={ url } class="txt" title={ item.title }>
+                    <a href={ url }
+                       class="txt"
+                       title={ item.title }>
                       <span>{ item.title }</span>
                       <span class="profession">{ (item.profession || []).map((item) => {
                         return item.name;
@@ -33,11 +49,6 @@ class MusicAlbumList extends migi.Component {
                     </a>
                   </li>;
                 })
-              }
-              {
-                this.props.more
-                  ? <li class="more"><a href={ this.props.more } title="全部作品">查看更多</a></li>
-                  : ''
               }
               </ul>
             : <div class="empty">暂无</div>

@@ -7,8 +7,10 @@
 class WorksList extends migi.Component {
   constructor(...data) {
     super(...data);
+    this.visible = this.props.visible;
   }
   @bind list
+  @bind visible
   click(e, vd, tvd) {
     e.preventDefault();
     let url = tvd.props.href;
@@ -19,7 +21,7 @@ class WorksList extends migi.Component {
     });
   }
   render() {
-    return <div class="mod-workslist"
+    return <div class={ 'mod-workslist' + (this.visible ? '' : ' fn-hide') }
                 onClick={ { a: this.click } }>
       {
         this.list

@@ -7,10 +7,22 @@
 class Cooperation extends migi.Component {
   constructor(...data) {
     super(...data);
+    this.visible = this.props.visible;
   }
   @bind list
+  @bind visible
+  click(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+      transparentTitle: true,
+    });
+  }
   render() {
-    return <div class="mod-cooperation">
+    return <div class={ 'mod-cooperation' + (this.visible ? '' : ' fn-hide') }
+                onClick={ { a: this.click } }>
       {
         this.list
           ? this.list.length

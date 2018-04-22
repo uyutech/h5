@@ -28,6 +28,9 @@ class Author extends migi.Component {
   @bind showHome
   @bind showWork
   @bind showDynamic
+  @bind showWorks
+  @bind showMusicAlbum
+  @bind showCooperation
   init(id) {
     let self = this;
     self.id = id;
@@ -78,22 +81,28 @@ class Author extends migi.Component {
     if(data.mainWorksList && data.mainWorksList.count) {
       worksList.list = data.mainWorksList.data;
       showHome = true;
+      self.showWorks = true;
     }
     else {
       worksList.list = null;
+      self.showWorks = false;
     }
     if(data.mainMusicAlbumList && data.mainMusicAlbumList.count) {
       musicAlbumList.list = data.mainMusicAlbumList.data;
       showHome = true;
+      self.showMusicAlbum = true;
     }
     else {
       musicAlbumList.list = null;
+      self.showMusicAlbum = false;
     }
-    if(data.cooperationList) {
+    if(data.cooperationList && data.cooperationList.count) {
       cooperation.list = data.cooperationList.data;
+      self.showCooperation = true;
     }
     else {
       cooperation.list = null;
+      self.showCooperation = false;
     }
 
     if(showHome) {
@@ -201,12 +210,15 @@ class Author extends migi.Component {
             rel={ 3 }>留言</li>
       </ul>
       <div class={ 'home' + (this.curColumn === 0 ? '' : ' fn-hide') }>
-        <h4>主打作品</h4>
-        <WorksList ref="worksList"/>
-        <h4>相关专辑</h4>
-        <MusicAlbum ref="musicAlbumList"/>
-        <h4>合作关系</h4>
-        <Cooperation ref="cooperation"/>
+        <h4 class={ this.showWorks ? '' : 'fn-hide' }>主打作品</h4>
+        <WorksList ref="worksList"
+                   @visible={ this.showWorks }/>
+        <h4 class={ this.showMusicAlbum ? '' : 'fn-hide' }>相关专辑</h4>
+        <MusicAlbum ref="musicAlbumList"
+                    @visible={ this.showMusicAlbum }/>
+        <h4 class={ this.showCooperation ? '' : 'fn-hide' }>合作关系</h4>
+        <Cooperation ref="cooperation"
+                     @visible={ this.showCooperation }/>
       </div>
       <Work ref="work"
             @visible={ this.curColumn === 1 }/>
