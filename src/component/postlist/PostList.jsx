@@ -16,7 +16,7 @@ class PostList extends migi.Component {
     self.list = [];
     self.on(migi.Event.DOM, function() {
       let $list = $(this.ref.list.element);
-      $list.on('click', '.video .name, .audio .name', function(e) {
+      $list.on('click', '.profile .name', function(e) {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
@@ -24,6 +24,13 @@ class PostList extends migi.Component {
         jsBridge.pushWindow(url, {
           title,
           transparentTitle: true,
+        });
+      });
+      $list.on('click', '.profile .time', function(e) {
+        e.preventDefault();
+        let url = $(this).attr('href');
+        jsBridge.pushWindow(url, {
+          title: '画圈详情',
         });
       });
       $list.on('click', '.circle', function(e) {
@@ -135,6 +142,16 @@ class PostList extends migi.Component {
           jsBridge.openUri(url);
         });
       });
+      $list.on('click', '.video .name, .audio .name', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle: true,
+        });
+      });
       $list.on('click', '.share', function() {
         let id = parseInt($(this).attr('rel'));
         migi.eventBus.emit('BOT_FN', {
@@ -233,13 +250,6 @@ class PostList extends migi.Component {
             });
           }
         }
-      });
-      $list.on('click', '.time', function(e) {
-        e.preventDefault();
-        let url = $(this).attr('href');
-        jsBridge.pushWindow(url, {
-          title: '画圈详情',
-        });
       });
       $list.on('click', '.more, .less', function() {
         let $li = $(this).closest('li');
