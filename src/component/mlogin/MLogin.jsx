@@ -57,10 +57,8 @@ class NeedLogin extends migi.Component {
           jsBridge.hideLoading();
           if(res.success) {
             let data = res.data;
-            jsBridge.setPreference('loginInfo', data);
+            jsBridge.setPreference('my', data);
             $.cookie('isLogin', true);
-            $.cookie('uid', data.userInfo.UID);
-            $.cookie('userType', data.userInfo.UserType);
             self.hide();
             migi.eventBus.emit('LOGIN', data);
           }

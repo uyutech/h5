@@ -130,7 +130,7 @@ class Login extends migi.Component {
       if(res.success) {
         let data = res.data;
         jsBridge.toast('登录成功');
-        $util.setUserInfo(data.user, data.author);
+        jsBridge.setPreference('my', data);
         $.cookie('isLogin', true);
 
         setTimeout(function() {

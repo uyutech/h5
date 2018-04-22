@@ -64,8 +64,8 @@ class Message extends migi.Component {
     self.exist[id] = true;
     let comment = item.comment;
     let peopleUrl = comment.isAuthor
-      ? '/author.html?id=' + comment.aid
-      : '/user.html?id=' + comment.uid;
+      ? '/author.html?id=' + comment.authorId
+      : '/user.html?id=' + comment.userId;
     let url;
     let action;
     switch(item.type) {

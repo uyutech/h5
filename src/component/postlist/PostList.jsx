@@ -459,8 +459,8 @@ class PostList extends migi.Component {
       html = `<p class="snap">${html}</p><p class="full fn-hide">${full}</p>`;
     }
     let peopleUrl = item.isAuthor
-      ? '/author.html?id=' + item.aid
-      : '/user.html?id=' + item.uid;
+      ? '/author.html?id=' + item.authorId
+      : '/user.html?id=' + item.userId;
     let url = '/post.html?id=' + id;
     let videoList = [];
     let audioList = [];
