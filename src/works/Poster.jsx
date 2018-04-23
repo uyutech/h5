@@ -22,7 +22,7 @@ class Poster extends migi.Component {
           (this.list || []).map(function(item) {
             return <li>
               <a href={ item.url }>
-                <img src={ $util.img(item.url, 720, 0, 80) || '/src/common/blank.png' }/>
+                <img src={ $util.img(item.url, 750, 0, 80) || '/src/common/blank.png' }/>
               </a>
             </li>;
           })
