@@ -16,7 +16,7 @@ class PostList extends migi.Component {
     self.list = [];
     self.on(migi.Event.DOM, function() {
       let $list = $(this.ref.list.element);
-      $list.on('click', '.profile .name', function(e) {
+      $list.on('click', '.profile .pic,.profile .name', function(e) {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
