@@ -489,7 +489,7 @@ class PostList extends migi.Component {
              title={ item.name || item.nickname }>{ item.name || item.nickname }</a>
           <a class="time"
              title={ item.createTime }
-             href={ url }>{ $util.formatDate(item.createTime)}</a>
+             href={ url }>{ item.typeName || $util.formatDate(item.createTime)}</a>
         </div>
         <ul class="circle">
         {

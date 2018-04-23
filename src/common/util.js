@@ -111,7 +111,7 @@ let util = {
   },
   setClipboard: function(s) {
     let input = document.createElement('input');
-    input.setAttribute('style', 'position:absolute;left:0;top:0;');
+    input.setAttribute('style', 'position:fixed;left:-9999rem;top:-9999rem;');
     input.value = s;
     document.body.appendChild(input);
     input.focus();

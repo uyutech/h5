@@ -94,7 +94,7 @@ class Circling extends migi.Component {
     self.circleList = data.circleList.data;
     circleOffset = data.circleList.limit;
 
-    postList.setData(data.postList.data);
+    postList.setData(data.recommendComment.concat(data.postList.data));
     offset = data.postList.limit;
   }
   checkMore() {
