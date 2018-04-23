@@ -14,4 +14,5 @@ jsBridge.ready(function() {
     <AllCircles/>,
     '#page'
   );
+  allCircles.init();
 });

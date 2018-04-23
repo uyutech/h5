@@ -266,7 +266,7 @@ class Comment extends migi.Component {
           item.quote
             ? <div class="quote">
                 <span>回复@{ item.quote.isAuthor ? item.quote.name : item.quote.nickname }：</span>
-                <p>{ item.quote.content }</p>
+                <p class={ item.quote.isDelete ? 'delete' : '' }>{ item.quote.isDelete ? '内容已删除' : item.quote.content }</p>
               </div>
             : ''
         }

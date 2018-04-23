@@ -39,7 +39,7 @@ class MyMessage extends migi.Component {
         self.setData(cache, 0);
       }
     });
-    ajax = $net.postJSON('/h5/my2/message', function(res) {
+    ajax = $net.postJSON('/h5/my2/messageList', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -100,7 +100,7 @@ class MyMessage extends migi.Component {
     }
     let message = self.ref.message;
     loading = true;
-    ajax = $net.postJSON('/h5/my2/message', { offset }, function(res) {
+    ajax = $net.postJSON('/h5/my2/messageList', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
         message.appendData(data.data);

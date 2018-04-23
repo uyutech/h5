@@ -4,70 +4,111 @@
 
 'use strict';
 
-let take = 30;
-let skip = 0;
+let offset = 0;
 let loading;
 let loadEnd;
+
+let currentPriority = 0;
+let cacheKey = 'allCircles';
 
 class AllCircles extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    self.message = '正在加载...';
     self.on(migi.Event.DOM, function() {
-      $net.postJSON('/h5/find/allCircles', { skip, take }, function(res) {
-        if(res.success) {
-          skip += take;
-          self.setData(res.data);
-        }
-        else {
-          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      let $list = $(self.ref.list.element);
+      $list.on('click', 'a', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle: true,
+        });
       });
     });
   }
-  @bind hasData
   @bind message
-  setData(data) {
+  init() {
     let self = this;
-    self.workList = data.data;
-    loadEnd = skip >= data.Size;
-    self.hasData = true;
-
-    $(self.ref.list.element).on('click', 'a', function(e) {
-      e.preventDefault();
-      let $this = $(this);
-      let url = $this.attr('href');
-      let title = $this.attr('title');
-      if(!url) {
-        throw new Error('allcircles url is null');
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        try {
+          self.setData(cache, 0);
+        }
+        catch(e) {}
       }
-      jsBridge.pushWindow(url, {
-        title,
-      });
     });
+    $net.postJSON('/h5/circle2/popularList', function(res) {
+      if(res.success) {
+        let data = res.data;
+        jsBridge.setPreference(cacheKey, data);
+        self.setData(data, 1);
 
-    if(loadEnd) {
-      self.message = '已经到底了';
+        window.addEventListener('scroll', function() {
+          self.checkMore();
+        });
+      }
+      else {
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+    });
+  }
+  setData(data, priority) {
+    if(priority < currentPriority) {
       return;
     }
-    let $window = $(window);
-    $window.on('scroll', function() {
-      self.checkMore($window);
-    });
+    currentPriority = priority;
+
+    let self = this;
+    self.ref.list.element.innerHTML = '';
+    offset = data.limit;
+    self.appendData(data.data);
+
+    if(offset >= data.count) {
+      loadEnd = true;
+      self.message = '已经到底了';
+    }
+    else {
+      loadEnd = false;
+      self.message = '';
+    }
   }
-  checkMore($window) {
+  appendData(data) {
+    let self = this;
+    let s = '';
+    (data || []).forEach(function(item) {
+      s += self.genItem(item);
+    });
+    $(self.ref.list.element).append(s);
+  }
+  genItem(item) {
+    let url = `/circle.html?id=${item.id}`;
+    return <li>
+      <a href={url}
+         class="pic"
+         title={ item.name + '圈' }>
+        <img src={$util.img(item.cover, 288, 288, 80) || '/src/common/blank.png'}/>
+      </a>
+      <a href={url}
+         class="txt"
+         title={ item.name + '圈' }>
+        <span class="name">{ item.name }</span>
+        <span class="fans">成员{ $util.abbrNum(item.fansCount) }</span>
+        <span class="comment">画圈{ $util.abbrNum(item.postCount) }</span>
+      </a>
+    </li>;
+  }
+  checkMore() {
     if(loading || loadEnd) {
       return;
     }
     let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    let scrollY = $window.scrollTop();
-    let bool;
-    bool = scrollY + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    if($util.isBottom()) {
       self.load();
     }
   }
@@ -77,18 +118,14 @@ class AllCircles extends migi.Component {
       return;
     }
     loading = true;
-    self.message = '正在加载...';
-    $net.postJSON('/h5/find/allCircles', { skip, take }, function(res) {
+    $net.postJSON('/h5/circle2/popularList', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
         self.appendData(data.data);
-        if(skip >= data.Size) {
+        offset += data.limit;
+        if(offset >= data.count) {
           loadEnd = true;
           self.message = '已经到底了';
-        }
-        else {
-          self.message = '';
         }
       }
       else {
@@ -100,47 +137,9 @@ class AllCircles extends migi.Component {
       loading = false;
     });
   }
-  appendData(data) {
-    let self = this;
-    let s = '';
-    (data || []).forEach(function(item) {
-      s += self.genItem(item);
-    });
-    $(self.ref.list.element).append(s);
-  }
-  genItem(item) {
-    let url = `/circle.html?id=${item.TagID}`;
-    return <li>
-      <a href={url} class="pic" title={ item.TagName + '圈' }>
-        <img src={$util.img(item.TagCover, 288, 288, 80) || '//zhuanquan.xin/img/blank.png'}/>
-      </a>
-      <a href={url} class="txt" title={ item.TagName + '圈' }>
-        <span class="name">{ item.TagName }</span>
-        <span class="fans">成员{ $util.abbrNum(item.FansNumber) }</span>
-        <span class="comment">画圈{ $util.abbrNum(item.Popular) }</span>
-      </a>
-    </li>;
-  }
-  genDom() {
-    let self = this;
-    return <ul ref="list" class="fn-clear">
-      {
-        self.workList.map(function(item) {
-          return self.genItem(item);
-        })
-      }
-    </ul>;
-  }
   render() {
     return <div class="all-circles">
-      {
-        this.hasData
-          ? this.genDom()
-          : <div>
-              <div class="fn-placeholder-circles"/>
-              <div class="fn-placeholder"/>
-            </div>
-      }
+      <ul ref="list"/>
       <div class="cp-message">{ this.message }</div>
     </div>;
   }

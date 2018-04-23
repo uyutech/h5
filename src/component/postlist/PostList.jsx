@@ -57,8 +57,8 @@ class PostList extends migi.Component {
           // canBlock: true,
           canReport: true,
           canDel: $fn.attr('own') === 'true',
-          canShare: true,
-          canShareLink: true,
+          // canShare: true,
+          // canShareLink: true,
           // clickBlock: function(botFn) {
           //   if(!$util.isLogin()) {
           //     migi.eventBus.emit('NEED_LOGIN');
@@ -119,11 +119,6 @@ class PostList extends migi.Component {
                 jsBridge.toast(res.message || $util.ERROR_MESSAGE);
               });
             });
-          },
-          clickShareLink: function(botFn) {
-            let url = window.ROOT_DOMAIN + '/post/' + id;
-            $util.setClipboard(url);
-            botFn.cancel();
           },
         });
       });

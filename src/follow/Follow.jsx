@@ -228,7 +228,7 @@ class Follow extends migi.Component {
       if(circleAjax) {
         circleAjax.abort();
       }
-      circleAjax = $net.postJSON('/h5/follow2/circle', { offset: circleOffset }, function(res) {
+      circleAjax = $net.postJSON('/h5/follow2/circleList', { offset: circleOffset }, function(res) {
         if(res.success) {
           let data = res.data;
           self.circleList = self.circleList.concat(data.data);

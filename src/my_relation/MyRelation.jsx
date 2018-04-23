@@ -29,7 +29,7 @@ class MyRelation extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = $net.postJSON('/h5/my2/relation', function(res) {
+    ajax = $net.postJSON('/h5/my2/relationList', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);

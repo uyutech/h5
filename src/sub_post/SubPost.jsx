@@ -19,6 +19,9 @@ const TEXT = {
 const MAX_IMG_NUM = 9;
 const MAX_TEXT_LENGTH = 4096;
 
+let activity;
+let circleHash = {};
+
 let currentPriority = 0;
 let cacheKey = 'subPost';
 let uploading;
@@ -125,11 +128,12 @@ class SubPost extends migi.Component {
         catch(e) {}
       }
     });
-    $net.postJSON('/h5/subPost2/index', function(res) {
+    $net.postJSON('/h5/subPost2/index', { circleId: self.circleId }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.setData(data, 1);
         jsBridge.setPreference(cacheKey, data);
+        self.setData(data, 1);
+        self.circleId = null;
       }
       else {
         jsBridge.toast(res.message || $util.ERROR_MESSAGE);
@@ -145,12 +149,25 @@ class SubPost extends migi.Component {
     currentPriority = priority;
 
     let self = this;
-    self.circleList = data.circleList.data;
-    self.circleHash = {};
-    self.circleList.forEach((item) => {
-      self.circleHash[item.id] = item;
+    let circleList = [];
+    activity = data.activity;
+    let tagList = activity.slice();
+    circleHash = {};
+    if(data.circle) {
+      circleHash[data.circle.id] = data.circle;
+      circleList.push(data.circle);
+      data.circle.tag.forEach((item) => {
+        tagList.push(item);
+      });
+    }
+    data.circleList.data.forEach((item) => {
+      if(!circleHash[item.id]) {
+        circleHash[item.id] = item;
+      }
+      circleList.push(item);
     });
-    self.tagList = self.activity = data.activity;
+    self.circleList = circleList;
+    self.tagList = tagList;
   }
   clickAlt() {
     let self = this;
@@ -451,9 +468,10 @@ class SubPost extends migi.Component {
     $ul.find('.on').each((i, o) => {
       let $o = $(o);
       let circleId = $o.attr('rel');
-      temp = temp.concat(self.circleHash[circleId].tag);
+      let tag = circleHash[circleId].tag;
+      temp = temp.concat(tag);
     });
-    temp = temp.concat(self.activity);
+    temp = temp.concat(activity);
     self.tagList = temp;
   }
   clickTag(e, vd, tvd) {

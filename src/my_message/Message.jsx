@@ -105,7 +105,11 @@ class Message extends migi.Component {
       <div class="wrap">
         <div class="quote">
           <span>{ action }</span>
-          <p>{ comment.quote && comment.quote.content }</p>
+          {
+            comment.quote
+              ? <p>{ comment.quote.isDelete ? '内容已删除' : comment.quote.content }</p>
+              : ''
+          }
         </div>
         <div class="con">{ comment.content }</div>
       </div>
