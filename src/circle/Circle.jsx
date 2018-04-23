@@ -78,8 +78,8 @@ class Circle extends migi.Component {
     ajax = $net.postJSON('/h5/circle2/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.setData(data, 1);
         jsBridge.setPreference(cacheKey, data);
+        self.setData(data, 1);
 
         window.addEventListener('scroll', function() {
           self.checkMore();
@@ -105,7 +105,7 @@ class Circle extends migi.Component {
     nav.setData(data.info, data.isFollow, data.fansCount);
 
     offset = data.postList.limit;
-    postList.setData(data.postList.data);
+    postList.setData(data.top.concat(data.postList.data));
     loadEnd = offset >= data.postList.count;
     if(data.postList.count === 0) {
       postList.message = '暂无画圈';
@@ -113,24 +113,6 @@ class Circle extends migi.Component {
     else if(loadEnd) {
       postList.message = '已经到底了';
     }
-
-    // let imageView = self.ref.imageView;
-    // imageView.on('clickLike', function(sid) {
-    //   hotPost.like(sid, function(res) {
-    //     imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
-    //   });
-    // });
-    // jsBridge.on('back', function(e) {
-    //   if(!imageView.isHide()) {
-    //     e.preventDefault();
-    //     imageView.hide();
-    //   }
-    // });
-    // jsBridge.on('resume', function(e) {
-    //   if(e.data && e.data.type === 'subPost') {
-    //     self.ref.hotPost.prependData(e.data.data);
-    //   }
-    // });
   }
   checkMore() {
     let self = this;
