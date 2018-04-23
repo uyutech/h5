@@ -104,14 +104,19 @@ class Circle extends migi.Component {
 
     nav.setData(data.info, data.isFollow, data.fansCount);
 
-    offset = data.postList.limit;
     postList.setData(data.top.concat(data.postList.data));
-    loadEnd = offset >= data.postList.count;
+    offset = data.postList.limit;
     if(data.postList.count === 0) {
       postList.message = '暂无画圈';
+      loadEnd = true;
     }
-    else if(loadEnd) {
+    else if(offset >= data.postList.count) {
       postList.message = '已经到底了';
+      loadEnd = true;
+    }
+    else {
+      postList.message = '正在加载...';
+      loadEnd = false;
     }
   }
   checkMore() {
