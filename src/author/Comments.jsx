@@ -31,8 +31,16 @@ class Comments extends migi.Component {
     if(data) {
       offset = data.limit;
       self.ref.comment.setData(data.data);
-      if(offset >= data.count) {
+      if(data.count === 0) {
+        loadEnd = true;
+        self.ref.comment.message = '';
+      }
+      else if(offset >= data.count) {
+        loadEnd = true;
         self.ref.comment.message = '已经到底了';
+      }
+      else {
+        loadEnd = false;
       }
     }
   }
@@ -53,11 +61,10 @@ class Comments extends migi.Component {
   }
   load() {
     let self = this;
+    let comment = self.ref.comment;
     if(ajax) {
       ajax.abort();
     }
-    let comment = self.ref.comment;
-    comment.message = '正在加载...';
     loading = true;
     ajax = $net.postJSON('/h5/author2/commentList', { id: self.id, offset }, function(res) {
       if(res.success) {

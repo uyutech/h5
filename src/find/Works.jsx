@@ -39,26 +39,26 @@ class Works extends migi.Component {
         <a href={ url }
            title={ this.data.content.title }
            class="name">{ this.data.content.title }</a>
+        <div class="author">
         {
           this.data.content.author.map((item) => {
             return <dl>
               <dt>{ item.name }</dt>
-              <dd>
-                {
-                  item.list.map((item) => {
-                    return <dd>
-                      <a href={ '/author.html?id=' + item.id }
-                         title={ item.name }>
-                        <img src={ $util.img(item.headUrl, 60, 60, 80) || '/src/common/head.png' }/>
-                        <span>{ item.name }</span>
-                      </a>
-                    </dd>;
-                  })
-                }
-              </dd>
+              {
+                item.list.map((item) => {
+                  return <dd>
+                    <a href={ '/author.html?id=' + item.id }
+                       title={ item.name }>
+                      <img src={ $util.img(item.headUrl, 60, 60, 80) || '/src/common/head.png' }/>
+                      <span>{ item.name }</span>
+                    </a>
+                  </dd>;
+                })
+              }
             </dl>
           })
         }
+        </div>
         <a href={ '/works.html?id=' + this.data.content.id }
            title={ this.data.content.title }
            class="intro">

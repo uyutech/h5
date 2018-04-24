@@ -125,6 +125,10 @@ class Post extends migi.Component {
       loadEnd = true;
       self.ref.comment.message = '已经到底了';
     }
+    else {
+      loadEnd = false;
+      self.ref.comment.message = '正在加载...';
+    }
   }
   checkMore() {
     let self = this;

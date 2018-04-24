@@ -57,9 +57,8 @@ class Item extends migi.Component {
     list.forEach((item) => {
       item.emit(migi.Event.DOM);
     });
-    self.message = '';
 
-    self.offset = self.limit = data.list.limit;
+    self.offset = data.list.limit;
     if(self.kind) {
       self.loadEnd = self.offset >= data.kind.count;
     }
@@ -163,8 +162,7 @@ class Item extends migi.Component {
               break;
           }
         }
-        self.limit = list.limit;
-        self.offset += self.limit;
+        self.offset += list.limit;
         if(self.offset >= list.count) {
           self.loadEnd = true;
           self.message = '已经到底了';

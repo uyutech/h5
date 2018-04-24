@@ -28,7 +28,7 @@ class WorksList extends migi.Component {
           ? this.list.length
             ? <ul class="list">
               {
-                this.list.map(function(item) {
+                this.list.filter((item) => { return item; }).map((item) => {
                   let url = `/works.html?id=${item.id}`;
                   return <li>
                     <a class="pic"

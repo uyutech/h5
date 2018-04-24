@@ -16,7 +16,7 @@ class InputCmt extends migi.Component {
         if(useAuthor) {
           self.headUrl = my.author[0].headUrl;
         }
-        else {
+        else if(my) {
           self.headUrl = my.user.headUrl;
         }
       });

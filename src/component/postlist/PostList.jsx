@@ -627,7 +627,7 @@ class PostList extends migi.Component {
     return s.replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/#([^#\n\s]+?)#/g, function($0, $1) {
-        let id = tagCircleHash[$1];
+        let id = tagCircleHash[$1.toLowerCase()];
         if(id) {
           return `<a class="link" href="/circle.html?id=${id}" title="${$1}圈" transparentTitle="true">#${$1}#</a>`;
         }

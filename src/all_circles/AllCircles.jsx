@@ -139,7 +139,7 @@ class AllCircles extends migi.Component {
   }
   render() {
     return <div class="all-circles">
-      <ul ref="list"/>
+      <ul class="fn-clear" ref="list"/>
       <div class="cp-message">{ this.message }</div>
     </div>;
   }

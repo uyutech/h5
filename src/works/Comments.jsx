@@ -33,6 +33,17 @@ class Comments extends migi.Component {
     if(data) {
       offset = data.limit;
       self.ref.comment.setData(data.data);
+      if(data.count === 0) {
+        loadEnd = true;
+        self.ref.comment.message = '';
+      }
+      else if(offset >= data.count) {
+        loadEnd = true;
+        self.ref.comment.message = '已经到底了';
+      }
+      else {
+        loadEnd = false;
+      }
     }
   }
   listenScroll() {

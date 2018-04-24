@@ -16,7 +16,7 @@ let util = {
     url = url || '';
     url = url.trim();
     if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
+      return $util.autoSsl(url);
     }
     url = url.replace(/\.(\w+)-\d*_\d*_\d*/, '.$1');
     if(w === undefined && h === undefined && q === undefined) {
