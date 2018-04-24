@@ -22,7 +22,7 @@ class Message extends migi.Component {
           transparentTitle: true,
         });
       });
-      $list.on('click', '.time', function(e) {
+      $list.on('click', '.time,.quote', function(e) {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
@@ -119,13 +119,16 @@ class Message extends migi.Component {
              href={ peopleUrl }
              title={ comment.name || comment.nickname }>{ comment.name || comment.nickname }</a>
           <a class="time"
-             title="画圈详情"
-             transParentTitle={ item.type !== 4 }
+             title={ item.type !== 3 && item.type !== 4 ? '' : '画圈详情'  }
+             transParentTitle={ item.type !== 3 && item.type !== 4 }
              href={ url }>{ $util.formatDate(comment.createTime)}</a>
         </div>
       </div>
       <div class="wrap">
-        <div class="quote">
+        <div class="quote"
+             title={ item.type !== 3 && item.type !== 4 ? '' : '画圈详情'  }
+             transParentTitle={ item.type !== 3 && item.type !== 4 }
+             href={ url }>
           <span>{ action }</span>
           {
             comment.quote
