@@ -20,12 +20,11 @@ class MyMessage extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      jsBridge.getCache(['my', 'useAuthor'], (data, useAuthor) => {
-        if(data) {
-          self.myInfo = data;
-          self.isAuthor = data.author && data.author.length;
-          self.useAuthor = useAuthor;
+      jsBridge.getCache(['my', 'useAuthor'], ([my, useAuthor]) => {
+        if(my) {
+          self.myInfo = my;
         }
+        self.useAuthor = useAuthor;
       });
     });
   }
@@ -55,13 +54,6 @@ class MyMessage extends migi.Component {
     }, function(res) {
       jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
-    // jsBridge.on('refresh', function(e) {
-    //   e.preventDefault();
-    //   skip = 0;
-    //   loading = loadEnd = false;
-    //   self.ref.messages.clearData();
-    //   self.load();
-    // });
   }
   setData(data, priority) {
     priority = priority || 0;
@@ -119,12 +111,13 @@ class MyMessage extends migi.Component {
       loading = false;
     });
   }
-  reply(id) {
+  reply(id, rid) {
     let self = this;
     let subCmt = self.ref.subCmt;
     subCmt.readOnly = false;
     subCmt.focus();
     self.cid = id;
+    self.rid = rid;
   }
   submit(content) {
     let self = this;
@@ -138,6 +131,7 @@ class MyMessage extends migi.Component {
     $net.postJSON('/h5/comment2/sub', {
       content,
       id: self.cid,
+      type: 4,
       authorId,
     }, function(res) {
       jsBridge.hideLoading();

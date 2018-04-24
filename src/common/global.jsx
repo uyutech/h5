@@ -5,7 +5,6 @@
 'use strict';
 
 import MLogin from '../component/mlogin/MLogin.jsx';
-import Message from '../component/message/Message.jsx';
 import uuidv4 from 'uuid/v4';
 
 let toString = {}.toString;
@@ -29,31 +28,31 @@ migi.eventBus.on('NEED_LOGIN', function() {
 });
 
 jsBridge.ready(function() {
-  if(location.pathname === '/message.html') {
-    return;
-  }
-  setTimeout(function() {
-    let message = migi.render(
-      <Message/>,
-      document.body
-    );
-    let top = migi.render(
-      <div class="g-top" onClick={ function() { document.body.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      }) } }/>,
-      document.body
-    );
-    window.addEventListener('scroll', function() {
-      let y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-      if(y > screen.availHeight) {
-        top.element.classList.add('show');
-      }
-      else {
-        top.element.classList.remove('show');
-      }
-    });
-  }, 1000);
+  // if(location.pathname === '/message.html') {
+  //   return;
+  // }
+  // setTimeout(function() {
+  //   let message = migi.render(
+  //     <Message/>,
+  //     document.body
+  //   );
+  //   let top = migi.render(
+  //     <div class="g-top" onClick={ function() { document.body.scrollIntoView({
+  //       behavior: 'smooth',
+  //       block: 'start',
+  //     }) } }/>,
+  //     document.body
+  //   );
+  //   window.addEventListener('scroll', function() {
+  //     let y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+  //     if(y > screen.availHeight) {
+  //       top.element.classList.add('show');
+  //     }
+  //     else {
+  //       top.element.classList.remove('show');
+  //     }
+  //   });
+  // }, 1000);
   jsBridge.getPreference('UUID', function(res) {
     let first = !res;
     if(first) {
