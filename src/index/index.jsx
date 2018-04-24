@@ -95,12 +95,12 @@ jsBridge.ready(function() {
       if(minor < 6) {
         old = true;
       }
-    }
-    else {
-      if(minor < 5) {
+      else if(patch < 6) {
         old = true;
       }
-      else if(minor === 5 && patch < 4) {
+    }
+    else {
+      if(minor < 6) {
         old = true;
       }
     }
@@ -110,7 +110,7 @@ jsBridge.ready(function() {
       <a class="notice" href="#" onClick={ function(e) {
         e.preventDefault();
         let url = jsBridge.android
-          ? 'https://circling.$net.cn/android/circling-0.6.5.apk'
+          ? 'https://circling.$net.cn/android/circling-0.6.6.apk'
           : 'https://itunes.apple.com/cn/app/id1331367220';
         jsBridge.openUri(url);
       } }>您的app版本过低，考虑到功能和体验，请点击下载更新</a>
