@@ -12,6 +12,25 @@ class Message extends migi.Component {
     self.exist = {};
     self.on(migi.Event.DOM, function() {
       let $list = $(self.ref.list.element);
+      $list.on('click', '.pic,.name', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle: true,
+        });
+      });
+      $list.on('click', '.time', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let transparentTitle = $this.attr('transparentTitle') === 'true';
+        jsBridge.pushWindow(url, {
+          transparentTitle,
+        });
+      });
       $list.on('click', '.reply', function() {
         $list.find('li.cur').removeClass('cur');
         let $this = $(this);
@@ -70,15 +89,15 @@ class Message extends migi.Component {
     let action;
     switch(item.type) {
       case 1:
-        action = '回复了评论';
+        action = '回复了作者页评论';
         url = '/author.html?id=' + item.refId;
         break;
       case 2:
-        action = '回复了评论';
+        action = '回复了作品页评论';
         url = '/works.html?id=' + item.refId;
         break;
       case 3:
-        action = '回复了评论';
+        action = '回复了画圈页评论';
         url = '/post.html?id=' + item.refId;
         break;
       case 4:
@@ -98,7 +117,7 @@ class Message extends migi.Component {
              href={ peopleUrl }
              title={ comment.name || comment.nickname }>{ comment.name || comment.nickname }</a>
           <a class="time"
-             title={ item.createTime }
+             transParentTitle={ item.type !== 4 }
              href={ url }>{ $util.formatDate(comment.createTime)}</a>
         </div>
       </div>

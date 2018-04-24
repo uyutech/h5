@@ -159,6 +159,7 @@ class My extends migi.Component {
     jsBridge.pushWindow('/passport.html', {
       title: '登录注册',
       backgroundColor: '#b6d1e8',
+      transparentTitle: true,
     });
   }
   render() {

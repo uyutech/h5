@@ -143,6 +143,9 @@ class Login extends migi.Component {
         jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         self.loading = false;
       }
+    }, function(res) {
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      self.loading = false;
     });
   }
   clickRegister() {
