@@ -115,7 +115,7 @@ class VideoList extends migi.Component {
         }
         else {
           let url = '/works.html?id=' + id + '&comment=1';
-          let title = tvd.props.title;
+          let title = $this.attr('title');
           jsBridge.pushWindow(url, {
             title,
             transparentTitle: true,
