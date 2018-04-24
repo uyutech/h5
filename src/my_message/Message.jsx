@@ -26,8 +26,10 @@ class Message extends migi.Component {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
+        let title = $this.attr('title');
         let transparentTitle = $this.attr('transparentTitle') === 'true';
         jsBridge.pushWindow(url, {
+          title,
           transparentTitle,
         });
       });
@@ -117,6 +119,7 @@ class Message extends migi.Component {
              href={ peopleUrl }
              title={ comment.name || comment.nickname }>{ comment.name || comment.nickname }</a>
           <a class="time"
+             title="画圈详情"
              transParentTitle={ item.type !== 4 }
              href={ url }>{ $util.formatDate(comment.createTime)}</a>
         </div>
