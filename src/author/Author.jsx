@@ -51,6 +51,7 @@ class Author extends migi.Component {
         jsBridge.setPreference(cacheKey, data);
         self.setData(data, 1);
         self.ref.comments.listenScroll();
+        self.ref.dynamics.listenScroll();
       }
       else {
         jsBridge.toast(res.message || $util.ERROR_MESSAGE);

@@ -25,7 +25,12 @@ class Dynamics extends migi.Component {
       offset = data.limit;
       self.ref.postList.setData(data.data);
       if(offset >= data.count) {
+        loadEnd = true;
         self.ref.postList.message = '已经到底了';
+      }
+      else {
+        loadEnd = false;
+        self.ref.postList.message = '正在加载...';
       }
     }
   }
@@ -55,10 +60,8 @@ class Dynamics extends migi.Component {
     ajax = $net.postJSON('/h5/author2/dynamicList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        if(data.data.length) {
-          postList.appendData(data.data);
-        }
-        offset += limit;
+        postList.appendData(data.data);
+        offset += data.limit;
         if(offset >= data.count) {
           loadEnd = true;
           postList.message = '已经到底了';
