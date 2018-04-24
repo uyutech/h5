@@ -41,8 +41,8 @@ class MyMessage extends migi.Component {
     ajax = $net.postJSON('/h5/my2/messageList', function(res) {
       if(res.success) {
         let data = res.data;
-        self.setData(data, 1);
         jsBridge.setPreference(cacheKey, data);
+        self.setData(data, 1);
 
         window.addEventListener('scroll', function() {
           self.checkMore();
