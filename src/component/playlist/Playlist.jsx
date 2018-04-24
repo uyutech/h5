@@ -36,9 +36,11 @@ class Playlist extends migi.Component {
         });
       });
       $list.on('click', '.txt', function() {
-        let id = parseInt($(this).attr('rel'));
+        let worksId = parseInt($(this).attr('worksId'));
+        let workId = parseInt($(this).attr('workId'));
         for(let i = 0, len = self.list.length; i < len; i++) {
-          if(self.list[i].work.id === id) {
+          let item = self.list[i];
+          if(item.id === worksId && item.work.id === workId) {
             self.setCur(i);
             self.emit('change', self.list[i]);
             break;
@@ -183,7 +185,8 @@ class Playlist extends migi.Component {
         <img src={ $util.img(item.cover, 80, 80, 80) || '/src/common/blank.png' }/>
       </a>
       <div class="txt"
-           rel={ item.work.id }>
+           worksId={ item.id }
+           workId={ item.work.id }>
         <span class="name">{ item.work.title }</span>
         <p class="author">{ author.join(' ') }</p>
       </div>

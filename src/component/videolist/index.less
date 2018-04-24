@@ -56,6 +56,25 @@
           color:#FFF;
         }
       }
+      video{
+        position:absolute;
+        left:0;
+        top:0;
+        display:none;
+        width:100%;
+        height:100%;
+        background:#000 url(https://zhuanquan.xin/img/b44664e647a0924aea0106059c8bd4a6.webp) no-repeat center;
+        background-size:0.4rem auto;
+        z-index:10;
+      }
+      &.play{
+        //&:after{
+        //  background-image:url(../videolist/pause.png);
+        //}
+        video{
+          display:block;
+        }
+      }
     }
     .name{
       padding:0 0.1rem;

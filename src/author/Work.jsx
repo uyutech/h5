@@ -184,6 +184,24 @@ class Work extends migi.Component {
         break;
     }
   }
+  change(data) {
+    let work = data.work;
+    work.worksId = data.id;
+    work.worksCover = data.cover;
+    work.worksTitle = data.title;
+    $util.recordPlay(work);
+    $net.postJSON('/h5/work2/addViews', { id: work.id });
+    jsBridge.media({
+      key: 'info',
+      value: {
+        id: work.id,
+        url: location.protocol + $util.autoSsl(work.url),
+      },
+    });
+    jsBridge.media({
+      key: 'play',
+    });
+  }
   render() {
     return <div class={ 'mod-work' + (this.visible ? '' : ' fn-hide') }>
       <ul class={ 'group' + (this.kind ? '' : ' fn-hide') }
@@ -202,6 +220,7 @@ class Work extends migi.Component {
       <Playlist ref="playlist"
                 profession={ true }
                 message="正在加载..."
+                on-change={ this.change }
                 @visible={ this.kind === 2 }/>
       <WaterFall ref="waterFall"
                  profession={ true }

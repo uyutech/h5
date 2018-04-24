@@ -143,6 +143,9 @@ let util = {
           break;
         }
       }
+      if(!data.id || !data.worksId) {
+        return;
+      }
       res.unshift(data);
       if(res.length > 20) {
         res.splice(20);

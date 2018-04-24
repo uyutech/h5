@@ -183,15 +183,21 @@ class Item extends migi.Component {
     });
   }
   change(data) {
-    let work = {};
-    Object.keys(data.work).forEach((key) => {
-      work[key] = data.work[key];
-    });
+    let work = data.work;
     work.worksId = data.id;
     work.worksTitle = data.title;
     work.worksCover = data.cover;
-    $util.recordPlay(work, function() {
-      jsBridge.pushWindow('/record.html');
+    $util.recordPlay(work);
+    $net.postJSON('/h5/work2/addViews', { id: work.id });
+    jsBridge.media({
+      key: 'info',
+      value: {
+        id: work.id,
+        url: location.protocol + $util.autoSsl(work.url),
+      },
+    });
+    jsBridge.media({
+      key: 'play',
     });
   }
   render() {

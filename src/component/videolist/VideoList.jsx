@@ -14,7 +14,45 @@ class VideoList extends migi.Component {
     self.exist = {};
     self.on(migi.Event.DOM, function() {
       let $list = $(self.ref.list.element);
-      $list.on('click', '.pic,.name', function(e) {
+      $list.on('click', '.pic', function() {
+        let $this = $(this);
+        let video = this.querySelector('video');
+        if($this.hasClass('first')) {
+          $this.removeClass('first');
+          let workId = parseInt($this.attr('workId'));
+          let worksId = parseInt($this.attr('worksId'));
+          outer:
+          for(let i = 0, len = self.list.length; i < len; i++) {
+            let av = self.list[i];
+            if(av.id === worksId && av.work.id === workId) {
+              let o = av.work;
+              o.worksId = worksId;
+              o.worksCover = av.cover;
+              o.worksTitle = av.title;
+              $util.recordPlay(o);
+              $net.postJSON('/h5/work2/addViews', { id: workId });
+              break outer;
+            }
+          }
+        }
+        if($this.hasClass('play')) {
+          $this.removeClass('play');
+          video.pause();
+        }
+        else {
+          $list.find('.video .play,.audio .play').removeClass('play');
+          $this.addClass('play');
+          $list.find('video').each(function(i, o) {
+            o.pause();
+          });
+          jsBridge.media({
+            key: 'pause',
+          });
+          $this.addClass('play');
+          video.play();
+        }
+      });
+      $list.on('click', '.name', function(e) {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
@@ -210,14 +248,19 @@ class VideoList extends migi.Component {
       });
     }
     return <li>
-      <a class="pic"
-         title={ item.title }
-         href={ url }>
+      <div class="pic first"
+           worksId={ item.id }
+           workId={ item.work.id }>
         <img src={ $util.img(item.work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
         <div class="num">
           <span class="play">{ $util.abbrNum(item.work.views) }次播放</span>
         </div>
-      </a>
+        <video poster="/src/common/blank.png"
+               src={ item.work.url }
+               preload="meta"
+               playsinline="true"
+               webkit-playsinline="true"/>
+      </div>
       <a class="name"
          href={ url }
          title={ item.title }>{ item.work.title }</a>
