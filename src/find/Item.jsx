@@ -183,6 +183,7 @@ class Item extends migi.Component {
     });
   }
   change(data) {
+    migi.eventBus.emit('PLAY_INLINE');
     let work = data.work;
     work.worksId = data.id;
     work.worksTitle = data.title;

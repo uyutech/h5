@@ -14,6 +14,15 @@ class VideoList extends migi.Component {
     self.exist = {};
     self.on(migi.Event.DOM, function() {
       let $list = $(self.ref.list.element);
+      migi.eventBus.on('PLAY_INLINE', function() {
+        jsBridge.media({
+          key: 'pause',
+        });
+        $list.find('.pic.play').removeClass('play');
+        $list.find('video').each(function(i, o) {
+          o.pause();
+        });
+      });
       $list.on('click', '.pic', function() {
         let $this = $(this);
         let video = this.querySelector('video');
@@ -40,14 +49,7 @@ class VideoList extends migi.Component {
           video.pause();
         }
         else {
-          $list.find('.video .play,.audio .play').removeClass('play');
-          $this.addClass('play');
-          $list.find('video').each(function(i, o) {
-            o.pause();
-          });
-          jsBridge.media({
-            key: 'pause',
-          });
+          migi.eventBus.emit('PLAY_INLINE');
           $this.addClass('play');
           video.play();
         }

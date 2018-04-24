@@ -256,6 +256,15 @@ class PostList extends migi.Component {
         let $li = $(this).closest('li');
         $li.find('.snap, .full, .more, .less').toggleClass('fn-hide');
       });
+      migi.eventBus.on('PLAY_INLINE', function() {
+        jsBridge.media({
+          key: 'pause',
+        });
+        $list.find('.video .pic.play,.audio .pic.play').removeClass('play');
+        $list.find('video').each(function(i, o) {
+          o.pause();
+        });
+      });
       $list.on('click', '.video .pic', function() {
         let $this = $(this);
         let video = this.querySelector('video');
@@ -285,14 +294,7 @@ class PostList extends migi.Component {
           video.pause();
         }
         else {
-          $list.find('.video .play,.audio .play').removeClass('play');
-          $this.addClass('play');
-          $list.find('video').each(function(i, o) {
-            o.pause();
-          });
-          jsBridge.media({
-            key: 'pause',
-          });
+          migi.eventBus.emit('PLAY_INLINE');
           $this.addClass('play');
           video.play();
         }
