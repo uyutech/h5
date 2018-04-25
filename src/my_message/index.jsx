@@ -13,7 +13,7 @@ jsBridge.ready(function() {
   jsBridge.on('back', function(e) {
     e.preventDefault();
     jsBridge.popWindow({
-      message: true,
+      myMessage: true,
     });
   });
   let message = migi.preExist(
