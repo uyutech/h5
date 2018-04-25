@@ -60,7 +60,7 @@ class Login extends migi.Component {
         clearInterval(interval);
       }
     }, 1000);
-    $net.postJSON('/h5/passport/code', { phone: self.phone, type: 1 }, function(res) {
+    $net.postJSON('/h5/passport2/registerCode', { phone: self.phone }, function(res) {
       if(res.success) {
         jsBridge.toast('验证码已发送，10分钟内有效~');
       }
