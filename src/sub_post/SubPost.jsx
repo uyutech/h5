@@ -163,8 +163,8 @@ class SubPost extends migi.Component {
     data.circleList.data.forEach((item) => {
       if(!circleHash[item.id]) {
         circleHash[item.id] = item;
+        circleList.push(item);
       }
-      circleList.push(item);
     });
     self.circleList = circleList;
     self.tagList = tagList;

@@ -233,24 +233,24 @@ class Comment extends migi.Component {
       return;
     }
     exist[id] = true;
-    let url = item.isAuthor
+    let url = item.authorId
       ? '/author.html?id=' + item.authorId
       : '/user.html?id=' + item.userId;
-    return <li class={ item.isAuthor ? 'author'  : 'user' }>
+    return <li class={ item.authorId ? 'author'  : 'user' }>
       <div class="t">
         <div class="profile fn-clear">
           <a class="pic"
              href={ url }
-             title={ item.isAuthor ? item.name : item.nickname }>
+             title={ item.authorId ? item.name : item.nickname }>
             <img class="pic"
                  src={ $util.img(item.headUrl, 60, 60, 80) || '/src/common/head.png' }/>
           </a>
           <div class="txt">
             <a class="name"
                href={ url }
-               title={ item.isAuthor
+               title={ item.authorId
                  ? item.name
-                 : item.nickname }>{ item.isAuthor
+                 : item.nickname }>{ item.authorId
               ? item.name
               : item.nickname }</a>
             <small class="time"
@@ -265,7 +265,7 @@ class Comment extends migi.Component {
         {
           item.quote
             ? <div class="quote">
-                <span>回复@{ item.quote.isAuthor ? item.quote.name : item.quote.nickname }：</span>
+                <span>回复@{ item.quote.authorId ? item.quote.name : item.quote.nickname }：</span>
                 <p class={ item.quote.isDelete ? 'delete' : '' }>{ item.quote.isDelete ? '内容已删除' : item.quote.content }</p>
               </div>
             : ''

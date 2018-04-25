@@ -83,7 +83,7 @@ class Message extends migi.Component {
     }
     self.exist[id] = true;
     let comment = item.comment;
-    let peopleUrl = comment.isAuthor
+    let peopleUrl = comment.authorId
       ? '/author.html?id=' + comment.authorId
       : '/user.html?id=' + comment.userId;
     let url;
@@ -106,7 +106,7 @@ class Message extends migi.Component {
         url = '/post.html?id=' + item.refId;
         break;
     }
-    return <li class={ (comment.isAuthor ? 'author' : 'user') + (item.isRead ? ' read' : '') }>
+    return <li class={ (comment.authorId ? 'author' : 'user') + (item.isRead ? ' read' : '') }>
       <div class="profile">
         <a class="pic"
            href={ peopleUrl }

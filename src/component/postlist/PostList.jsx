@@ -135,11 +135,11 @@ class PostList extends migi.Component {
       });
       $list.on('click', '.outside', function(e) {
         e.preventDefault();
+        let url = $(this).attr('href');
         jsBridge.confirm('即将前往站外链接，确定吗？', function(res) {
           if(!res) {
             return;
           }
-          let url = $this.attr('href');
           jsBridge.openUri(url);
         });
       });
@@ -455,7 +455,7 @@ class PostList extends migi.Component {
       let full = this.encode(item.content, item.refHash, item.tagCircleHash) + '<span class="placeholder"></span><span class="less fn-hide">收起全文</span>';
       html = `<p class="snap">${html}</p><p class="full fn-hide">${full}</p>`;
     }
-    let peopleUrl = item.isAuthor
+    let peopleUrl = item.authorId
       ? '/author.html?id=' + item.authorId
       : '/user.html?id=' + item.userId;
     let url = '/post.html?id=' + id;
@@ -478,7 +478,7 @@ class PostList extends migi.Component {
       }
     });
     return <li id={ 'post_' + id }
-               class={ item.isAuthor ? 'author'  : 'user' }>
+               class={ item.authorId ? 'author'  : 'user' }>
       <div class="profile">
         <a class="pic"
            href={ peopleUrl }
