@@ -78,7 +78,7 @@ class Author extends migi.Component {
 
     nav.setData(data.info, data.aliases, data.skill, data.outside, data.isFollow);
 
-    let showHome = true;
+    let showHome;
     if(data.mainWorksList && data.mainWorksList.count) {
       worksList.list = data.mainWorksList.data;
       showHome = true;

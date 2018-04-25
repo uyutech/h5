@@ -37,8 +37,7 @@ class Message extends migi.Component {
         $list.find('li.cur').removeClass('cur');
         let $this = $(this);
         $this.closest('li').addClass('cur');
-        let id = $this.attr('rel');
-        self.emit('reply', id);
+        self.emit('reply', parseInt($this.attr('type')), parseInt($this.attr('rel')), parseInt($this.attr('pid')));
       });
     });
   }
@@ -139,7 +138,9 @@ class Message extends migi.Component {
         <div class="con">{ comment.content }</div>
       </div>
       <b class="reply"
-         rel={ comment.id }>回复</b>
+         type={ item.type }
+         rel={ item.refId }
+         pid={ comment.id }>回复</b>
     </li>;
   }
   render() {

@@ -5,7 +5,6 @@
 'use strict';
 
 import Message from './Message.jsx';
-import SubCmt from '../component/subcmt/SubCmt.jsx';
 
 let offset = 0;
 let loading;
@@ -111,13 +110,14 @@ class MyMessage extends migi.Component {
       loading = false;
     });
   }
-  reply(id, rid) {
-    let self = this;
-    let subCmt = self.ref.subCmt;
-    subCmt.readOnly = false;
-    subCmt.focus();
-    self.cid = id;
-    self.rid = rid;
+  reply(type, id, pid) {
+    if(type === 4) {
+      type = 3;
+    }
+    jsBridge.pushWindow('/sub_comment.html?type=' + type + '&id=' + id + '&pid=' + pid, {
+      title: '评论',
+      optionMenu: '发布',
+    });
   }
   submit(content) {
     let self = this;
@@ -130,8 +130,9 @@ class MyMessage extends migi.Component {
     }
     $net.postJSON('/h5/comment2/sub', {
       content,
-      id: self.cid,
-      type: 4,
+      id: self.id,
+      type: self.type,
+      pid: self.pid,
       authorId,
     }, function(res) {
       jsBridge.hideLoading();
@@ -153,12 +154,6 @@ class MyMessage extends migi.Component {
       <Message ref="message"
                message="正在加载..."
                on-reply={ this.reply }/>
-      <SubCmt ref="subCmt"
-              readOnly={ true }
-              placeholder="请选择留言回复"
-              subText="发送"
-              tipText="-${n}"
-              on-submit={ this.submit }/>
     </div>;
   }
 }
