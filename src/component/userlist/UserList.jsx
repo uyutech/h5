@@ -57,7 +57,7 @@ class UserList extends migi.Component {
   }
   genItem(item) {
     return <li>
-      <a href={ '/user.html?' + item.id }
+      <a href={ '/user.html?id=' + item.id }
          title={ item.nickname }>
         <img src={ $util.img(item.headUrl, 120, 120, 80) || '/src/common/head.png' }/>
         <span>{ item.nickname }</span>

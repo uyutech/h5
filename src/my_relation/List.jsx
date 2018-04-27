@@ -99,7 +99,8 @@ class List extends migi.Component {
     });
   }
   click(e, vd, tvd) {
-    let url = tvd.props.url;
+    e.preventDefault();
+    let url = tvd.props.href;
     let title = tvd.props.title;
     jsBridge.pushWindow(url, {
       title,
@@ -109,7 +110,7 @@ class List extends migi.Component {
   render() {
     return <div class={ 'mod-list' + (this.visible ? '' : ' fn-hide') }>
       <ul class="fn-clear"
-          onClick={ { li: this.click } }>{ this.list }</ul>
+          onClick={ { a: this.click } }>{ this.list }</ul>
       <div class="cp-message">{ this.message }</div>
     </div>;
   }
