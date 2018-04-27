@@ -535,7 +535,7 @@ class PostList extends migi.Component {
                     <div class="pic first"
                          worksId={ item.id }
                          workId={ item.work.id }>
-                      <img src={ $util.img(item.work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
+                      <img src={ $util.img(item.work.cover || item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
                       <div class="num">
                         <span class="play">{ $util.abbrNum(item.work.views) }次播放</span>
                       </div>
@@ -578,7 +578,7 @@ class PostList extends migi.Component {
                          worksId={ item.id }
                          workId={ item.work.id }
                          url={ item.work.url }>
-                      <img src={ $util.img(item.work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
+                      <img src={ $util.img(item.work.cover || item.cover, 80, 80, 80) || '/src/common/blank.png' }/>
                     </div>
                     <div class="txt">
                       <a class="name"

@@ -304,7 +304,7 @@ class Follow extends migi.Component {
           }
           <li>
             <a class="more"
-               href="/myrelation.html"
+               href="/my_relation.html"
                title="圈关系">查看更多</a>
           </li>
         </ul>
