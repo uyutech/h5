@@ -4,10 +4,9 @@
 
 'use strict';
 
-import MLogin from '../component/mlogin/MLogin.jsx';
-import Share from '../component/share/Share.jsx';
-import Message from '../component/message/Message.jsx';
 import uuidv4 from 'uuid/v4';
+import MLogin from '../component/mlogin/MLogin.jsx';
+import Message from '../component/message/Message.jsx';
 
 let toString = {}.toString;
 function isType(type) {
@@ -29,54 +28,15 @@ migi.eventBus.on('NEED_LOGIN', function() {
   mlogin.show();
 });
 
-let share;
-migi.eventBus.on('SHARE', function(data) {
-  let url;
-  if(isString(data)) {
-    url = data;
-  }
-  else {
-    url = data.url;
-  }
-  if(url.charAt(0) === '/') {
-    url = window.ROOT_DOMAIN + url;
-  }
-  if(!share) {
-    share = migi.render(
-      <Share/>,
-      document.body
-    );
-  }
-  share.url = url;
-  share.show();
-});
-
 jsBridge.ready(function() {
-  if(location.pathname === '/message.html') {
-    return;
+  if(location.pathname !== '/my_message.html') {
+    setTimeout(function() {
+      migi.render(
+        <Message/>,
+        document.body
+      );
+    }, 1000);
   }
-  setTimeout(function() {
-    let message = migi.render(
-      <Message/>,
-      document.body
-    );
-    let top = migi.render(
-      <div class="g-top" onClick={ function() { document.body.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      }) } }/>,
-      document.body
-    );
-    window.addEventListener('scroll', function() {
-      let y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
-      if(y > screen.availHeight) {
-        top.element.classList.add('show');
-      }
-      else {
-        top.element.classList.remove('show');
-      }
-    });
-  }, 1000);
   jsBridge.getPreference('UUID', function(res) {
     let first = !res;
     if(first) {

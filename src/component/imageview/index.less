@@ -84,20 +84,9 @@
     text-shadow:0 1px 1px rgba(0, 0, 0, 0.5);
     z-index:104;
   }
-  .download{
-    position:fixed;
-    right:0.54rem;
-    bottom:0.2rem;
-    width:0.24rem;
-    height:0.24rem;
-    background:rgba(0, 0, 0, 0.5) url(download.png) no-repeat center;
-    background-size:contain;
-    border-radius:0.02rem;
-    z-index:104;
-  }
   .like{
     position:fixed;
-    right:0.2rem;
+    right:0.54rem;
     bottom:0.2rem;
     width:0.24rem;
     height:0.24rem;
@@ -105,8 +94,19 @@
     background-size:contain;
     border-radius:0.02rem;
     z-index:104;
-    &.has{
+    &.liked{
       background-image:url(liked.png);
     }
+  }
+  .download{
+    position:fixed;
+    right:0.2rem;
+    bottom:0.2rem;
+    width:0.24rem;
+    height:0.24rem;
+    background:rgba(0, 0, 0, 0.5) url(download.png) no-repeat center;
+    background-size:contain;
+    border-radius:0.02rem;
+    z-index:104;
   }
 }

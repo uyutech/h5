@@ -13,6 +13,7 @@ import Follow from '../follow/Follow.jsx';
 import My from '../my/My.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 import First from './First.jsx';
+import ImageView from '../component/imageview/ImageView.jsx';
 
 jsBridge.ready(function() {
   jsBridge.on('refresh', function(e) {
@@ -29,66 +30,38 @@ jsBridge.ready(function() {
       }
     }
   });
-  jsBridge.getPreference('loginInfo', function(loginInfo) {
-    jsBridge.on('resume', function() {
-      // ios暂不清楚为何需要延迟，否则不触发
-      setTimeout(function() {
-        jsBridge.getPreference('loginInfo', function(loginInfo2) {
-          if(loginInfo && !loginInfo2) {
-            loginInfo = null;
-            migi.eventBus.emit('LOGIN_OUT');
-            $.cookie('isLogin', null);
-            $.cookie('uid', null);
-            $.cookie('userType', null);
-          }
-          else if(!loginInfo && loginInfo2) {
-            loginInfo = loginInfo2;
-            migi.eventBus.emit('LOGIN', loginInfo);
-          }
-        });
-      }, 1);
-    });
-    migi.eventBus.on('LOGIN_OUT', function() {
-      loginInfo = null;
-    });
-    migi.eventBus.on('LOGIN', function(data) {
-      loginInfo = data;
-    });
-  });
 
   let topNav = migi.preExist(<TopNav/>, '#page');
   let botNav = migi.preExist(<BotNav/>, '#page');
 
-  let loginInfo;
-  jsBridge.delPreference('userInfo');
-  jsBridge.delPreference('bonusPoint');
-  jsBridge.getPreference('loginInfo', function(res) {
-    if(!res) {
-      return;
-    }
-    loginInfo = res;
-    migi.eventBus.emit('LOGIN', loginInfo);
-  });
-
-  let find = migi.preExist(<Find/>, '#page');
+  let find = migi.preExist(
+    <Find visible={ true }/>,
+    '#page'
+  );
   let my;
   let circling;
   let follow;
   let last = find;
 
   botNav.on('change', function(i) {
-    last.hide();
+    last.visible = false;
     if(i === 0) {
       topNav.hide();
       if(!find) {
-        find = migi.render(<Find/>, '#page');
+        find = migi.render(
+          <Find/>,
+          '#page'
+        );
       }
       last = find;
     }
     else if(i === 1) {
       topNav.show();
       if(!circling) {
-        circling = migi.render(<Circling/>, '#page');
+        circling = migi.render(
+          <Circling/>,
+          '#page'
+        );
       }
       last = circling;
     }
@@ -102,14 +75,15 @@ jsBridge.ready(function() {
     else if(i === 3) {
       topNav.hide();
       if(!my) {
-        my = migi.render(<My loginInfo={ loginInfo }/>, '#page');
+        my = migi.render(<My/>, '#page');
       }
       last = my;
     }
-    last.show();
+    last.visible = true;
     migi.eventBus.emit('REFRESH_MESSAGE');
   });
   migi.render(<BotFn/>, '#page');
+  migi.render(<ImageView/>, '#page');
 
   let old = false;
   if(jsBridge.appVersion) {
@@ -121,12 +95,12 @@ jsBridge.ready(function() {
       if(minor < 6) {
         old = true;
       }
-    }
-    else {
-      if(minor < 5) {
+      else if(patch < 6) {
         old = true;
       }
-      else if(minor === 5 && patch < 4) {
+    }
+    else {
+      if(minor < 6) {
         old = true;
       }
     }
@@ -136,7 +110,7 @@ jsBridge.ready(function() {
       <a class="notice" href="#" onClick={ function(e) {
         e.preventDefault();
         let url = jsBridge.android
-          ? 'https://circling.net.cn/android/circling-0.6.1.apk'
+          ? 'https://circling.net.cn/android/circling-0.6.6.apk'
           : 'https://itunes.apple.com/cn/app/id1331367220';
         jsBridge.openUri(url);
       } }>您的app版本过低，考虑到功能和体验，请点击下载更新</a>

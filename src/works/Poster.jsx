@@ -4,26 +4,25 @@
 
 'use strict';
 
-import util from '../common/util';
-
 class Poster extends migi.Component {
   constructor(...data) {
     super(...data);
   }
   @bind list
+  @bind visible
   click(e, vd, tvd) {
     e.preventDefault();
     let url = tvd.props.href;
     jsBridge.openUri('https://' + url);
   }
   render() {
-    return <div class="mod mod-poster">
+    return <div class={ 'mod-poster' + (this.visible ? '' : ' fn-hide') }>
       <ul class="c" onClick={ { a: this.click } }>
         {
           (this.list || []).map(function(item) {
             return <li>
-              <a href={ util.autoSsl(item.FileUrl) || '/src/common/blank.png' }>
-                <img src={ util.autoSsl(util.img720__80(item.FileUrl)) || '/src/common/blank.png' }/>
+              <a href={ item.url }>
+                <img src={ $util.img(item.url, 750, 0, 80) || '/src/common/blank.png' }/>
               </a>
             </li>;
           })

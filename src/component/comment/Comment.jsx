@@ -4,195 +4,122 @@
 
 'use strict';
 
-import net from '../../common/net';
-import util from '../../common/util';
-
-const NOT_LOADED = 0;
-const IS_LOADING = 1;
-const HAS_LOADED = 2;
-let subLoadHash = {};
-let subSkipHash = {};
-let $last;
-let take = 10;
-let ajax;
 let exist = {};
+
+const MAX_LEN = 144;
 
 class Comment extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    let html = '';
-    (self.props.data || []).forEach(function(item) {
-      html += self.genComment(item) || '';
-    });
-    self.html = html;
+    self.empty = self.props.empty;
     self.message = self.props.message;
-    if(!self.props.data || self.props.data.length === 0) {
-      self.empty = true;
-    }
 
     self.on(migi.Event.DOM, function() {
-      let $root = $(self.element);
-      $root.on('click', '.like', function() {
-        let $elem = $(this);
-        let commentID = $elem.attr('cid');
-        net.postJSON(self.props.zanUrl, { commentID }, function(res) {
+      let $list = $(this.ref.list.element);
+      $list.on('click', '.like', function() {
+        let $this = $(this);
+        let id = parseInt($this.attr('rel'));
+        let isLike = $this.hasClass('liked');
+        let url = isLike ? '/h5/comment2/unLike' : '/h5/comment2/like';
+        $net.postJSON(url, { id }, function(res) {
           if(res.success) {
             let data = res.data;
-            if(data.State === 'likeWordsUser') {
-              $elem.addClass('liked');
-              // $elem.text('已赞');
+            if(data.state) {
+              $this.addClass('liked');
             }
             else {
-              $elem.removeClass('liked');
-              // $elem.text('点赞');
+              $this.removeClass('liked');
             }
-            // $elem.text(data.LikeCount);
+            $this.text(data.count || '');
+            self.emit('like', id, data);
           }
           else if(res.code === 1000) {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
         });
       });
-      $root.on('click', '.slide .sub, .slide span', function() {
-        self.slide($(this).closest('li'));
-      });
-      $root.on('click', '.list>li>.c>pre', function() {
-        self.slide($(this).closest('li'));
-      });
-      $root.on('click', '.list2 pre, .slide2 .sub', function() {
+      $list.on('click', '.reply', function() {
         let $this = $(this);
-        let $li = $this.closest('li');
-        if($li.hasClass('on')) {
-          $li.removeClass('on');
-          let $slide = $last.find('.slide');
-          self.emit('chooseSubComment', $slide.attr('rid'), $slide.attr('cid'), $slide.attr('name'));
-        }
-        else {
-          $li.parent().find('.on').removeClass('on');
-          $li.addClass('on');
-          self.emit('chooseSubComment', $this.attr('rid'), $this.attr('cid'), $this.attr('name'));
-        }
+        let id = $this.attr('rel');
+        self.emit('reply', id);
       });
-      $root.on('click', '.more', function() {
-        let $message = $(this);
-        let rid = $message.attr('rid');
-        $message.removeClass('more').text('读取中...');
-        ajax = net.postJSON(self.props.subUrl, { rootID: rid, skip: subSkipHash[rid], take }, function(res) {
-          if(res.success) {
-            let data = res.data;
-            if(data.data.length) {
-              subSkipHash[rid] += data.data.length;
-              let s = '';
-              data.data.forEach(function (item) {
-                s += self.genChildComment(item);
-              });
-              let $ul = $message.prev();
-              $ul.append(s);
-              if(data.data.length < take) {
-                $message.addClass('fn-hide');
-              }
-              else {
-                $message.addClass('more').text('点击加载更多');
-              }
-            }
-            else {
-              $message.addClass('fn-hide');
-            }
-          }
-          else {
-            $message.addClass('more').text(res.message || util.ERROR_MESSAGE);
-          }
-        }, function(res) {
-          $message.addClass('more').text(res.message || util.ERROR_MESSAGE);
-        });
-      });
-      $root.on('click', '.fn', function() {
+      $list.on('click', '.fn', function() {
         let $fn = $(this);
-        let $like = $fn.closest('li').find('.like');
-        let commentID = $like.attr('cid');
+        let id = parseInt($fn.attr('rel'));
         migi.eventBus.emit('BOT_FN', {
           canFn: true,
-          canLike: true,
-          isLike: $like.hasClass('liked'),
-          canDel: $fn.attr('own') === 'true',
-          canBlock: true,
+          // canBlock: true,
           canReport: true,
-          clickLike: function(botFn) {
-            net.postJSON(self.props.zanUrl, { commentID }, function(res) {
-              if(res.success) {
-                let data = res.data;
-                botFn.isLike = data.State === 'likeWordsUser';
-                if(data.State === 'likeWordsUser') {
-                  $like.addClass('liked');
-                }
-                else {
-                  $like.removeClass('liked');
-                }
-                $like.text(data.LikeCount);
-              }
-              else if(res.code === 1000) {
-                migi.eventBus.emit('NEED_LOGIN');
-              }
-              else {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              }
-            });
-          },
-          clickBlock: function(botFn) {
-            let type = $fn.attr('isAuthor') === 'true' ? 5 : 6;
-            let id = $fn.attr(type === 5 ? 'authorId' : 'userId');
-            self.block(id, type, function() {
-              jsBridge.toast('屏蔽成功');
-              botFn.cancel();
-            });
-          },
+          canDel: $fn.attr('own') === 'true',
+          // clickBlock: function(botFn) {
+          //   if(!$util.isLogin()) {
+          //     migi.eventBus.emit('NEED_LOGIN');
+          //     return;
+          //   }
+          //   jsBridge.confirm('确认屏蔽吗？', function(res) {
+          //     if(!res) {
+          //       return;
+          //     }
+          //     $net.postJSON('/h5/comment2/block', { id }, function(res) {
+          //       if(res.success) {
+          //         jsBridge.toast('屏蔽成功');
+          //       }
+          //       else {
+          //         jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+          //       }
+          //       botFn.cancel();
+          //     }, function(res) {
+          //       jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+          //       botFn.cancel();
+          //     });
+          //   });
+          // },
           clickReport: function(botFn) {
-            self.report(commentID, function() {
-              jsBridge.toast('举报成功');
-              botFn.cancel();
-            });
-          },
-          clickDel: function(botFn) {
-            jsBridge.confirm('会删除子留言哦，确定要删除吗？', function(res) {
+            jsBridge.confirm('确认举报吗？', function(res) {
               if(!res) {
                 return;
               }
-              net.postJSON(self.props.delUrl, { commentID }, function(res) {
+              $net.postJSON('/h5/comment2/report', { id }, function(res) {
+                if(res) {
+                  jsBridge.toast('举报成功');
+                }
+                else {
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                }
+                botFn.cancel();
+              }, function(res) {
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                botFn.cancel();
+              });
+            });
+          },
+          clickDel: function(botFn) {
+            jsBridge.confirm('确定要删除吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              $net.postJSON('/h5/comment2/del', { id }, function(res) {
                 if(res.success) {
                   $fn.closest('li').remove();
                   self.empty = !$(self.ref.list.element).children('li').length;
                   botFn.cancel();
-                }
-                else if(res.code === 1000) {
-                  migi.eventBus.emit('NEED_LOGIN');
+                  self.emit('del', id);
                 }
                 else {
-                  jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
                 }
               }, function(res) {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
               });
             });
           },
         });
       });
-      $root.on('click', 'li.author a', function(e) {
-        e.stopImmediatePropagation();
-        e.stopPropagation();
-        e.preventDefault();
-        let $this = $(this);
-        let url = $this.attr('href');
-        let title = $this.attr('title');
-        util.openAuthor({
-          url,
-          title,
-        });
-      });
-      $root.on('click', 'li.user a', function(e) {
+      $list.on('click', 'li.author a', function(e) {
         e.stopImmediatePropagation();
         e.stopPropagation();
         e.preventDefault();
@@ -204,145 +131,83 @@ class Comment extends migi.Component {
           transparentTitle: true,
         });
       });
-      // TODO: del
-      migi.eventBus.on('subCmtDelTo', function() {
-        if($last && $last.hasClass('on')) {
-          self.hideLast();
-          self.emit('closeSubComment');
-        }
+      $list.on('click', 'li.user a', function(e) {
+        e.stopImmediatePropagation();
+        e.stopPropagation();
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle: true,
+        });
+      });
+      $list.on('click', '.more, .less', function() {
+        let $li = $(this).closest('li');
+        $li.find('.snap, .full').toggleClass('fn-hide');
       });
     });
   }
   @bind message
   @bind empty
-  slide($li) {
-    let self = this;
-    if(ajax) {
-      ajax.abort();
-    }
-    let $slide = $li.find('.slide');
-    let $list2 = $li.find('.list2');
-    let $ul = $list2.find('ul');
-    let $message = $list2.find('.message');
-    let cid = $slide.attr('cid');
-    if($last && $last[0] !== $li[0] && $last.hasClass('on')) {
-      self.hideLast();
-    }
-    if($li.hasClass('on')) {
-      $li.removeClass('on');
-      $li.find('li.on').removeClass('on');
-      $list2.css('height', 0);
-      self.emit('closeSubComment');
-      $last = null;
-      if(subLoadHash[cid] === IS_LOADING) {
-        subLoadHash[cid] = NOT_LOADED;
-      }
-    }
-    else {
-      $last = $li;
-      $li.addClass('on');
-      self.emit('chooseSubComment', $slide.attr('rid'), $slide.attr('cid'), $slide.attr('name'), $slide.find('.sub').text());
-      let state = subLoadHash[cid];
-      if(state === HAS_LOADED || state === IS_LOADING) {
-        $list2.css('height', 'auto');
-      }
-      else {
-        $list2.css('height', 'auto');
-        subLoadHash[cid] = IS_LOADING;
-        ajax = net.postJSON(self.props.subUrl, { rootID: cid, skip: 0, take }, function(res) {
-          if(res.success) {
-            subLoadHash[cid] = HAS_LOADED;
-            let s = '';
-            let data = res.data;
-            data.data.forEach(function(item) {
-              s += self.genChildComment(item);
-            });
-            $ul.append(s);
-            if(data.data.length >= data.Size) {
-              $message.addClass('fn-hide');
-            }
-            else {
-              $message.addClass('more').text('点击加载更多');
-              subSkipHash[cid] = data.data.length;
-            }
-            $ul.removeClass('fn-hide');
-            $list2.css('height', 'auto');
-          }
-          else {
-            subLoadHash[cid] = NOT_LOADED;
-            $message.text(res.message || util.ERROR_MESSAGE);
-          }
-        }, function(res) {
-          subLoadHash[cid] = NOT_LOADED;
-          $message.text(res.message || util.ERROR_MESSAGE);
-        });
-      }
-    }
-  }
-  slideOn(cid) {
-    let $slide = $(this.element).find('#comment_' + cid).find('.slide');
-    if(!$slide.hasClass('on')) {
-      $slide.find('.sub').click();
-    }
-  }
-  clearData(noEmpty) {
-    if(ajax) {
-      ajax.abort();
-    }
-    exist = {};
-    this.message = '';
-    this.setData(null, noEmpty);
-    subLoadHash = {};
-    subSkipHash = {};
-    $last = null;
-  }
-  setData(data, noEmpty) {
+  setData(data) {
     let self = this;
     exist = {};
+    if(!data) {
+      return;
+    }
     let s = '';
-    (data || []).forEach(function(item) {
-      s += self.genComment(item) || '';
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
+    data.forEach(function(item) {
+      s += self.genItem(item) || '';
     });
     $(self.ref.list.element).html(s);
-    self.empty = !noEmpty && !s;
+    self.empty = !s;
   }
   appendData(data) {
     let self = this;
+    if(!data) {
+      return;
+    }
     let s = '';
-    (data || []).forEach(function(item) {
-      s += self.genComment(item) || '';
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
+    data.forEach(function(item) {
+      s += self.genItem(item) || '';
     });
     $(self.ref.list.element).append(s);
-    if(self.empty) {
-      if(s) {
-        self.empty = false;
-      }
+    if(s) {
+      self.empty = false;
     }
   }
-  prependData(item) {
-    let vd = this.genComment(item);
-    if(vd) {
-      vd.prependTo(this.ref.list.element);
-      this.empty = false;
+  prependData(data) {
+    let self = this;
+    if(!data) {
+      return;
+    }
+    let s = '';
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
+    data.forEach(function(item) {
+      s += self.genItem(item) || '';
+    });
+    $(self.ref.list.element).prepend(s);
+    if(s) {
+      self.empty = false;
     }
   }
-  prependChild(item) {
-    let $comment = $('#comment_' + item.RootID);
-    let $list2 = $comment.find('.list2');
-    let $ul = $list2.find('ul');
-    let state = subLoadHash[item.RootID];
-    if(state === HAS_LOADED || state === IS_LOADING) {
-      let li = this.genChildComment(item);
-      li.prependTo($ul[0]);
-    }
-    if($ul.closest('li').find('.slide').hasClass('on')) {
-      $list2.css('height', $ul.height());
-    }
-    let $num = $comment.find('.slide small.sub');
-    $num.text((parseInt($num.text()) || 0) + 1);
+  clearData() {
+    let self = this;
+    exist = {};
+    $(self.ref.list.element).html('');
   }
   block(id, type, cb) {
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -350,158 +215,94 @@ class Comment extends migi.Component {
       if(!res) {
         return;
       }
-      net.postJSON('/h5/report/index', { reportType: type, businessId: id }, function(res) {
+      $net.postJSON('/h5/report/index', { reportType: type, businessId: id }, function(res) {
         if(res.success) {
           cb && cb();
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
       }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       });
     });
   }
-  report(id, cb) {
-    jsBridge.confirm('确认举报吗？', function(res) {
-      if(!res) {
-        return;
-      }
-      net.postJSON('/h5/report/index', { reportType: 4, businessId: id }, function(res) {
-        if(res.success) {
-          cb && cb();
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
-    });
-  }
-  genComment(item) {
-    let id = item.ID;
+  genItem(item) {
+    let id = item.id;
     if(exist[id]) {
       return;
     }
     exist[id] = true;
-    let url = item.IsAuthor ? '/author.html?authorId=' + item.SendUserID : '/user.html?userID=' + item.SendUserID;
-    return <li class="user" id={ 'comment_' + id }>
+    let url = item.authorId
+      ? '/author.html?id=' + item.authorId
+      : '/user.html?id=' + item.userId;
+    return <li class={ item.authorId ? 'author'  : 'user' }>
       <div class="t">
         <div class="profile fn-clear">
-          <a class="pic" href={ url } title={ item.SendUserNickName }>
-            <img class="pic" src={ util.autoSsl(util.img60_60_80(item.SendUserHead_Url || '/src/common/head.png')) }/>
+          <a class="pic"
+             href={ url }
+             title={ item.authorId ? item.name : item.nickname }>
+            <img class="pic"
+                 src={ $util.img(item.headUrl, 60, 60, 80) || '/src/common/head.png' }/>
           </a>
           <div class="txt">
-            <a class="name" href={ url } title={ item.SendUserNickName }>{ item.SendUserNickName }</a>
-            <small class="time" rel={ item.CreateTime }>{ util.formatDate(item.CreateTime) }</small>
+            <a class="name"
+               href={ url }
+               title={ item.authorId
+                 ? item.name
+                 : item.nickname }>{ item.authorId
+              ? item.name
+              : item.nickname }</a>
+            <small class="time"
+                   rel={ item.createTime }>{ $util.formatDate(item.createTime) }</small>
           </div>
         </div>
-        <b class="fn" own={ item.IsOwn } userId={ item.SendUserID }/>
+        <b class="fn"
+           rel={ id }
+           own={ item.isOwn }/>
       </div>
-      <div class="c">
+      <div class="wrap">
         {
-          item.ParentContent
-            ? <p class="quote">
-              <label>回复@{ item.ParentSendUserNickName }：</label>
-              <span>{ item.ParentContent }</span>
-            </p>
+          item.quote
+            ? <div class="quote">
+                <span>回复@{ item.quote.authorId ? item.quote.name : item.quote.nickname }：</span>
+                <p class={ item.quote.isDelete ? 'delete' : '' }>{ item.quote.isDelete ? '内容已删除' : item.quote.content }</p>
+              </div>
             : ''
         }
-        <pre>{ item.LContent }<span class="placeholder"/></pre>
-        <div class="slide" cid={ id } rid={ item.RootID } name={ item.SendUserNickName }>
-          <small cid={ id } class={ 'like' + (item.ISLike ? ' liked' : '') }></small>
-          <small class="sub">{ item.CommentCountRaw || '' }</small>
-          <span>收起</span>
-        </div>
-        <b class="arrow"/>
-      </div>
-      <div class="list2">
-        <ul class="fn-hide"/>
-        <p class="message" cid={ id } rid={ item.RootID }>读取中...</p>
-      </div>
-    </li>;
-  }
-  genChildComment(item) {
-    if(item.IsAuthor) {
-      let authorID = item.AuthorID;
-      return <li class="author" id={ 'comment_' + item.Send_ID }>
-        <div class="t">
-          <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } title={ item.Send_AuthorName }>
-            <a class="pic"
-               href={ '/author.html?authorId=' + authorID }
-               title={ item.Send_AuthorName }
-               transparentTitle={ true }>
-              <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_AuthorHeadUrl || '/src/common/head.png')) }/>
-            </a>
-            <div class="txt">
-              <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
-              <a class="name"
-                 href={ '/author.html?authorId=' + authorID }
-                 title={ item.Send_AuthorName }
-                 transparentTitle={ true }>{ item.Send_AuthorName }</a>
-            </div>
-          </div>
-          <b class="fn" own={ item.ISOwn } isAuthor={ true } authorId={ authorID }/>
-        </div>
-        <div class="c">
-          {
-            item.Content
-              ? <p class="quote">
-                  <label>回复@{ item.Send_ToUserName }：</label>
-                  <span>{ item.Content }</span>
-                </p>
-              : ''
-          }
-          <pre cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_AuthorName }>{ item.Send_Content }</pre>
-          <div class="slide2">
-            <small cid={ item.Send_ID } class={ 'like' + (item.IsLike ? ' liked' : '') }>{ item.LikeCount }</small>
-            <small class="sub" cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_AuthorName }>回复</small>
-          </div>
-          <b class="arrow"/>
-        </div>
-      </li>;
-    }
-    return <li class="user" id={ 'comment_' + item.Send_ID }>
-      <div class="t">
-        <div class="profile fn-clear" cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_UserName }>
-          <a class="pic" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>
-            <img class="pic" src={ util.autoSsl(util.img60_60_80(item.Send_UserHeadUrl || '/src/common/head.png')) }/>
-          </a>
-          <div class="txt">
-            <small class="time" rel={ item.Send_Time }>{ util.formatDate(item.Send_Time) }</small>
-            <a class="name" href={ '/user.html?userID=' + item.Send_UserID } title={ item.Send_UserName }>{ item.Send_UserName }</a>
-          </div>
-        </div>
-        <b class="fn" own={ item.ISOwn } userId={ item.Send_UserID }/>
-      </div>
-      <div class="c">
         {
-          item.Content
-            ? <p class="quote">
-              <label>回复@{ item.Send_ToUserName }：</label>
-              <span>{ item.Content }</span>
-            </p>
+          item.content.length > MAX_LEN
+            ? <pre class="snap">
+                { item.content.slice(0, MAX_LEN) + '...' }
+                <span class="more">查看全文</span>
+              </pre>
             : ''
         }
-        <pre cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_UserName }>{ item.Send_Content }</pre>
-        <div class="slide2">
-          <small cid={ item.Send_ID } class={ 'like' + (item.IsLike ? ' liked' : '') }>{ item.LikeCount }</small>
-          <small class="sub" cid={ item.Send_ID } rid={ item.RootID } name={ item.Send_UserName }>回复</small>
+        {
+          item.content.length > MAX_LEN
+            ? <pre class="full fn-hide">
+                { item.content }
+                <span class="less">收起全文</span>
+              </pre>
+            : <pre class="full">
+                { item.content }
+                <span class="placeholder"/>
+              </pre>
+        }
+        <div class="slide">
+          <small class={ 'like' + (item.isLike ? ' liked' : '') }
+                 rel={ item.id }>{ item.likeCount || '' }</small>
+          <small class="reply"
+                 rel={ item.id }/>
         </div>
-        <b class="arrow"/>
       </div>
     </li>;
-  }
-  hideLast() {
-    if($last && $last.hasClass('on')) {
-      $last.removeClass('on').find('.list2').css('height', 0).find('li.on').removeClass('on');
-    }
-    $last = null;
   }
   render() {
     return <div class="cp-comment">
-      <ul class="list" ref="list" dangerouslySetInnerHTML={ this.html }/>
+      <ul class="list"
+          ref="list"
+          dangerouslySetInnerHTML={ this.html }/>
       <p class={ 'empty' + (this.empty ? '' : ' fn-hide') }>这儿空空的，需要你的留言噢(* ॑꒳ ॑* )</p>
       <p class={ 'message' + (this.message ? '' : ' fn-hide') }>{ this.message }</p>
     </div>;

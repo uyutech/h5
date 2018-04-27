@@ -7,8 +7,6 @@
 import './allalbums.html';
 import './index.less';
 
-import net from '../common/net';
-import util from '../common/util';
 import AllAlbums from './AllAlbums.jsx';
 
 jsBridge.ready(function() {

@@ -10,12 +10,31 @@
 @import './authorlist';
 @import './post';
 @import './taglist';
-@import './videolist';
 @import './fn';
+@import '../component/videolist/index';
 @import '../component/waterfall/index';
 @import '../component/playlist/index';
-@import '../component/imageview/index';
 @import '../component/background/index';
 
 #page > .find{
+  .cp-videolist{
+    margin:0 0.1rem;
+  }
+  .cp-playlist{
+    margin:0 0.1rem;
+    .cur{
+      .txt{
+        .name{
+          color:inherit;
+        }
+      }
+    }
+  }
+  .cp-background{
+    position:static;
+    b{
+      background:#8bbde1;
+      box-shadow:0 0.01rem 0.02rem rgba(139, 189, 225, 0.3);
+    }
+  }
 }

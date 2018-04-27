@@ -9,40 +9,38 @@ import Background from '../component/background/Background.jsx';
 class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
-    let self = this;
-    self.dataList = self.props.dataList;
-    self.on(migi.Event.DOM, function() {
-      let $ul = $(self.ref.list.element);
-      $ul.on('click', 'li', function() {
-        let $li = $(this);
-        if($li.hasClass('cur')) {
-          return;
-        }
-        $ul.find('.cur').removeClass('cur');
-        $li.addClass('cur');
-        self.emit('change', $li.attr('rel'));
-      });
-    });
   }
-  @bind dataList
-  click() {
+  @bind list
+  @bind tag
+  setData(data) {
+    this.tag = data[0].id;
+    this.list = data;
+  }
+  clickSearch() {
     jsBridge.pushWindow('/search.html', {
       hideBackButton: true,
       transparentTitle: true,
     });
   }
+  click(e, vd, tvd) {
+    if(tvd.props.rel === this.tag) {
+      return;
+    }
+    this.tag = tvd.props.rel;
+    this.emit('change', this.tag);
+  }
   render() {
     return <div class="mod-nav">
-      <b class="search" onClick={ this.click }/>
-      <ul ref="list">
-        {
-          (this.dataList || []).map(function(item, i) {
-            if(!i) {
-              return <li class="cur" rel={ item.ID }>{ item.Title }</li>
-            }
-            return <li rel={ item.ID }>{ item.Title }</li>;
-          })
-        }
+      <b class="search"
+         onClick={ this.clickSearch }/>
+      <ul ref="list"
+          onClick={ { li: this.click } }>
+      {
+        (this.tag, this.list || []).map((item) => {
+          return <li class={ item.id === this.tag ? 'cur' : '' }
+                     rel={ item.id }>{ item.name }</li>;
+        })
+      }
       </ul>
       <Background/>
     </div>;

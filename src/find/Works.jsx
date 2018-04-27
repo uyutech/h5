@@ -4,67 +4,66 @@
 
 'use strict';
 
-import net from '../common/net';
-import util from '../common/util';
-
 class Works extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.data = self.props.data;
   }
-  clickWorks(e, vd, tvd) {
-    e.preventDefault();
-    util.openWorks({
-      url: tvd.props.href,
-      title: tvd.props.title,
-    }, tvd.props.option);
-  }
-  clickAuthor(e, vd, tvd) {
-    e.preventDefault();
-    util.openAuthor({
-      url: tvd.props.href,
-      title: tvd.props.title,
-    });
+  @bind data
+  setData(data) {
+    this.data = data;
   }
   render() {
-    let data = this.props.data;
-    let works = data.worklist[0];
-    let author = ((works.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
-    let url = util.getWorksUrl(works.WorksID, works.WorkType);
-    let option = util.getWorksUrlOption(works.WorkType);
-    return <div class="mod-works"
-                onClick={ { '.pic,.name,.intro': this.clickWorks, 'dd a': this.clickAuthor } }>
-      <a href={ url }
-         title={ works.Title }
-         option={ option }
-         class="pic">
-        <img src={ util.autoSsl(util.img250_250_80(data.coverpic || works.cover_Pic)) || '/src/common/blank.png' }/>
-        <div class={ data.Describe ? '' : 'fn-hide' }>
-          <span>{ data.Describe }</span>
+    let url;
+    if(this.props.type === 3) {
+      url = '/image_album.html?id=' + this.data.content.id;
+    }
+    else if(this.props.type === 2) {
+      url = '/music_album.html?id=' + this.data.content.id;
+    }
+    else {
+      url = '/works.html?id=' + this.data.content.id;
+    }
+    return <div class="mod-works">
+      <a class="pic"
+         href={ url }
+         title={ this.data.content.title }>
+        <img src={ $util.img(this.data.content.cover, 250, 250, 80)
+          || '/src/common/blank.png' }/>
+        <div class={ this.data.title ? '' : 'fn-hide' }>
+          <span>{ this.data.title }</span>
         </div>
       </a>
       <div class="txt">
         <a href={ url }
-           title={ works.Title }
-           option={ option }
-           class="name">{ works.Title }</a>
-        <dl>
-          <dt>{ author.Describe }</dt>
-          {
-            (author.AuthorInfo || []).map(function(item) {
-              return <dd>
-                <a href={ '/author.html?authorId=' + item.AuthorID }
-                   title={ item.AuthorName }>
-                  <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/head.png')) }/>
-                  <span>{ item.AuthorName }</span>
-                </a>
-              </dd>;
-            })
-          }
-        </dl>
-        <a href={ url }
-           title={ works.Title }
-           option={ option }
-           class="intro"><pre>{ data.Intro }</pre></a>
+           title={ this.data.content.title }
+           class="name">{ this.data.content.title }</a>
+        <div class="author">
+        {
+          this.data.content.author.map((item) => {
+            return <dl>
+              <dt>{ item.name }</dt>
+              {
+                item.list.map((item) => {
+                  return <dd>
+                    <a href={ '/author.html?id=' + item.id }
+                       title={ item.name }>
+                      <img src={ $util.img(item.headUrl, 60, 60, 80) || '/src/common/head.png' }/>
+                      <span>{ item.name }</span>
+                    </a>
+                  </dd>;
+                })
+              }
+            </dl>
+          })
+        }
+        </div>
+        <a href={ '/works.html?id=' + this.data.content.id }
+           title={ this.data.content.title }
+           class="intro">
+          <pre>{ this.data.describe }</pre>
+        </a>
       </div>
     </div>;
   }

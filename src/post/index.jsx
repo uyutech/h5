@@ -9,26 +9,19 @@ import './index.less';
 
 import qs from 'anima-querystring';
 
-import net from '../common/net';
-import util from '../common/util';
 import Post from './Post.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let postId = search.postId || search.postID;
+let id = search.id;
 
 jsBridge.ready(function() {
   let post = migi.preExist(
     <Post/>,
     '#page'
   );
-  net.postJSON('/h5/post/index', { postID: postId }, function(res) {
-    if(res.success) {
-      post.setData(postId, res.data);
-    }
-    else {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-    }
-  }, function(res) {
-    jsBridge.toast(res.message || util.ERROR_MESSAGE);
+  post.init(id);
+
+  jsBridge.setOptionMenu({
+    icon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAHlBMVEUAAACMvuGMvuGMvuGNveGMvuGNweOPwuuMvuKLveG52ByYAAAACXRSTlMA7+bFiGY1GfMKDs4PAAAASklEQVRIx2MYBSMZlIbjl2eTnJiAVwHzzJkGeBVwzJzZQK4JCDcQ9MUoAAInFfzyLDNnOuBVwDRzpgK5ChBWEHTkKBjNeqNgWAAAQowW2TR/xN0AAAAASUVORK5CYII=',
   });
 });

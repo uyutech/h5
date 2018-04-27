@@ -4,187 +4,275 @@
 
 'use strict';
 
-import net from '../common/net';
-import util from '../common/util';
-import HotPost from '../component/hotpost/HotPost.jsx';
-import People from './People.jsx';
-import Circles from './Circles.jsx';
+import PostList from '../component/postlist/PostList.jsx';
 
-let take = 10;
-let skip = take;
+let scrollY = 0;
+
+let circleOffset = 0;
+let loadingCircle;
+let loadCircleEnd;
+let circleAjax;
+
 let loading;
 let loadEnd;
+let offset = 0;
 let ajax;
-let visible;
-let scrollY = 0;
+let loading2;
+let loadEnd2;
+let offset2 = 0;
+let ajax2;
+let friendFirst = true;
+
 let interval;
 let isPause;
 let lastId;
+
+let currentPriority = 0;
+let cacheKey = 'follow';
+let scroll;
 
 class Follow extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    self.type = 0;
+    self._visible = self.props.visible;
     self.on(migi.Event.DOM, function() {
-      visible = true;
       self.init();
-      migi.eventBus.on('LOGIN_OUT', function() {
-        let people = self.ref.people;
-        people.list = [];
-
-        let circles = self.ref.circles;
-        circles.dataList = [];
-
-        let hotPost = self.ref.hotPost;
-        hotPost.clearData();
-
-        self.type = '0';
-      });
-      migi.eventBus.on('LOGIN', function() {
-        if(visible) {
-          self.init();
+      jsBridge.on('resume', function(e) {
+        if(e.data) {
+          if(e.data.login) {
+            self.init();
+          }
+          else if(e.data.loginOut) {
+            jsBridge.delPreference(cacheKey);
+            self.setData(null, 1);
+          }
         }
       });
-      jsBridge.on('pause', function() {
-        isPause = true;
-      });
-      jsBridge.on('resume', function() {
-        isPause = false;
+      migi.eventBus.on('LOGIN', function() {
+        self.init();
       });
     });
   }
-  @bind type = '0'
-  show() {
-    $(this.element).removeClass('fn-hide');
-    $(window).scrollTop(scrollY);
-    visible = true;
+  get visible() {
+    return this._visible;
   }
-  hide() {
-    $(this.element).addClass('fn-hide');
-    visible = false;
-  }
-  refresh() {
-    let self = this;
-    if(visible) {
-      if(ajax) {
-        ajax.abort();
-      }
-      loadEnd = loading = false;
-      skip = 0;
-      self.ref.hotPost.clearData();
-      self.load();
+  @bind
+  set visible(v) {
+    this._visible = v;
+    $util.scrollY(scrollY);
+    if(v && !$util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
     }
   }
+  @bind personList
+  @bind type
+  @bind circleList
   init() {
     let self = this;
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
-    self.ref.hotPost.message = '正在加载...';
-    net.postJSON('/h5/follow/index', { type: self.type }, function(res) {
+    if(ajax) {
+      ajax.abort();
+    }
+    if(ajax2) {
+      ajax.abort();
+    }
+    if(circleAjax) {
+      circleAjax.abort();
+    }
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        try {
+          self.setData(cache, 0);
+        }
+        catch(e) {}
+      }
+    });
+    ajax = $net.postJSON('/h5/follow2/index', function(res) {
       if(res.success) {
         let data = res.data;
-        lastId = (data.postList.data[0] || {}).ID;
-        self.setData(data);
-        if(interval) {
-          clearInterval(interval);
-        }
-        interval = setInterval(function() {
-          if(isPause) {
-            return;
-          }
-          net.postJSON('/h5/follow/postList', { skip: 0, take: 1 }, function(res) {
-            if(res.success) {
-              if((res.data.data[0] || {}).ID !== lastId) {
-                migi.eventBus.emit('FOLLOW_UPDATE');
-              }
+        jsBridge.setPreference(cacheKey, data);
+        self.setData(data, 1);
+
+        if(!scroll) {
+          scroll = true;
+          window.addEventListener('scroll', function() {
+            if(self.visible) {
+              self.checkMore();
+              scrollY = $util.scrollY();
             }
           });
-        }, 10000);
+        }
       }
       else if(res.code === 1000) {
         migi.eventBus.emit('NEED_LOGIN');
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
-  setData(data) {
-    let self = this;
-
-    let people = self.ref.people;
-    people.list = data.follows || [];
-
-    let circles = self.ref.circles;
-    circles.dataList = data.hotCircle || [];
-
-    let hotPost = self.ref.hotPost;
-    if(data.postList && data.postList.Size > 0) {
-      hotPost.setData(data.postList.data);
-    }
-
-    let $window = $(window);
-    $window.on('scroll', function() {
-      if(!visible) {
-        return;
-      }
-      self.checkMore($window);
-    });
-    if(loadEnd) {
-      self.ref.hotPost.message = '已经到底了';
-    }
-  }
-  checkMore($window) {
-    if(loading || loadEnd) {
+  setData(data, priority) {
+    priority = priority || 0;
+    if(priority < currentPriority) {
       return;
     }
+    currentPriority = priority;
+
     let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    scrollY = $window.scrollTop();
-    let bool;
-    bool = scrollY + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
-      self.load();
+    let postList = self.ref.postList;
+
+    if(data) {
+      self.personList = data.personList.data;
+
+      circleOffset = data.circleList.limit;
+      self.circleList = data.circleList.data;
+
+      postList.setData(data.postList.data);
+      offset = data.postList.limit;
+      loadEnd = offset >= data.postList.count;
+    }
+    else {
+      self.personList = null;
+
+      circleOffset = 0;
+      self.circleList = null;
+
+      postList.clearData();
+      offset = 0;
+      loadEnd = false;
+    }
+  }
+  checkMore() {
+    let self = this;
+    if(self.type === 0) {
+      if(loading || loadEnd) {
+        return;
+      }
+    }
+    else {
+      if(loading2 || loadEnd2) {
+        return;
+      }
+    }
+    if($util.isBottom()) {
+      self.type === 0 ? self.load() : self.load2();
     }
   }
   load() {
     let self = this;
-    if(loading) {
-      return;
-    }
-    let hotPost = self.ref.hotPost;
-    loading = true;
-    hotPost.message = '正在加载...';
     if(ajax) {
       ajax.abort();
     }
-    ajax = net.postJSON('/h5/follow/postList', { skip, take, type: self.type }, function(res) {
+    let postList = self.ref.postList;
+    loading = true;
+    ajax = $net.postJSON('/h5/follow2/postList', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        lastId = (data.data[0] || {}).ID;
-        migi.eventBus.emit('FOLLOW_UPDATED');
-        skip += take;
-        hotPost.appendData(data.data);
-        if(skip >= data.Size) {
+        postList.appendData(data.data);
+        offset += data.limit;
+        if(offset >= data.count) {
           loadEnd = true;
-          hotPost.message = '已经到底了';
-        }
-        else {
-          hotPost.message = '';
+          postList.message = '已经到底了';
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
+    });
+  }
+  load2() {
+    let self = this;
+    if(ajax) {
+      ajax.abort();
+    }
+    let postList = self.ref.postList2;
+    loading2 = true;
+    ajax = $net.postJSON('/h5/follow2/friendPostList', { offset: offset2 }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        postList.appendData(data.data);
+        offset2 += data.limit;
+        if(offset >= data.count) {
+          loadEnd2 = true;
+          postList.message = '已经到底了';
+        }
+      }
+      else {
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      }
+      loading2 = false;
+    }, function(res) {
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      loading2 = false;
+    });
+  }
+  scroll(e, vd) {
+    let self = this;
+    let el = vd.element;
+    if(loadingCircle || loadCircleEnd) {
+      return;
+    }
+    if(el.scrollLeft + el.offsetWidth + 30 > el.scrollWidth) {
+      loadingCircle = true;
+      if(circleAjax) {
+        circleAjax.abort();
+      }
+      circleAjax = $net.postJSON('/h5/follow2/circleList', { offset: circleOffset }, function(res) {
+        if(res.success) {
+          let data = res.data;
+          self.circleList = self.circleList.concat(data.data);
+          circleOffset += data.limit;
+          if(circleOffset >= data.count) {
+            loadCircleEnd = true;
+          }
+        }
+        else {
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+        }
+        loadingCircle = false;
+      }, function(res) {
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+        loadingCircle = false;
+      });
+    }
+  }
+  refresh() {
+    this.init();
+  }
+  clickTag(e, vd, tvd) {
+    let id = tvd.props.rel;
+    let title = tvd.props.title;
+    jsBridge.pushWindow('/circle.html?id=' + id, {
+      title,
+      transparentTitle: true,
+    });
+  }
+  clickPerson(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+      transparentTitle: true,
+    });
+  }
+  clickMore(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
     });
   }
   clickType(e, vd, tvd) {
@@ -193,26 +281,56 @@ class Follow extends migi.Component {
       return;
     }
     self.type = tvd.props.rel;
-    skip = 0;
-    loading = loadEnd = false;
-    self.ref.hotPost.clearData();
-    self.load();
+    if(self.type === 1 && friendFirst) {
+      friendFirst = false;
+      self.load2();
+    }
   }
   render() {
-    return <div class="follow">
-      <div class="author">
+    return <div class={ 'follow' + (this.visible ? '' : ' fn-hide') }>
+      <div class="person">
         <h4>关注的人</h4>
-        <People ref="people"
-                more="/relation.html"/>
+        <ul onClick={ { '.pic': this.clickPerson, '.more': this.clickMore } }>
+          {
+            (this.personList || []).map(function(item) {
+              return <li>
+                <a class="pic"
+                   title={ item.name || item.nickname }
+                   href={ item.isAuthor ? ('/author.html?id=' + item.id) : ('/user.html?id=' + item.id) }>
+                  <img src={ $util.img(item.headUrl, 120, 120, 80) || '/src/common/head.png' }/>
+                </a>
+              </li>;
+            })
+          }
+          <li>
+            <a class="more"
+               href="/my_relation.html"
+               title="圈关系">查看更多</a>
+          </li>
+        </ul>
       </div>
-      <Circles ref="circles"
-               empty={ '你还没有关注话题哦，快去发现页看看有没有喜欢的话题吧！' }/>
+      <div class="circle">
+        <ul onScroll={ this.scroll }
+            onClick={ this.clickTag }>
+          {
+            (this.circleList || []).map(function(item) {
+              return <li rel={ item.id }
+                         title={ item.name }>{ item.name }</li>;
+            })
+          }
+        </ul>
+      </div>
       <ul class="type"
           onClick={ { li: this.clickType } }>
-        <li class={ this.type === '0' ? 'cur': '' } rel="0">全部</li>
-        <li class={ this.type === '1' ? 'cur': '' } rel="1">圈友</li>
+        <li class={ this.type === 0 ? 'cur': '' } rel={ 0 }>全部</li>
+        <li class={ this.type === 1 ? 'cur': '' } rel={ 1 }>圈友</li>
       </ul>
-      <HotPost ref="hotPost"/>
+      <PostList ref="postList"
+                @visible={ this.type === 0 }
+                message="正在加载..."/>
+      <PostList ref="postList2"
+                @visible={ this.type === 1 }
+                message="正在加载..."/>
     </div>;
   }
 }

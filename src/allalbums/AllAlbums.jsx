@@ -4,9 +4,6 @@
 
 'use strict';
 
-import net from '../common/net';
-import util from '../common/util';
-
 let take = 30;
 let skip = 0;
 let loading;
@@ -17,16 +14,16 @@ class AllAlbums extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      net.postJSON('/h5/find/allAlbums', { skip, take }, function(res) {
+      $net.postJSON('/h5/find/allAlbums', { skip, take }, function(res) {
         if(res.success) {
           skip += take;
           self.setData(res.data);
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
       }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       });
     });
   }
@@ -81,7 +78,7 @@ class AllAlbums extends migi.Component {
     }
     loading = true;
     self.message = '正在加载...';
-    net.postJSON('/h5/find/allAlbums', { skip, take }, function(res) {
+    $net.postJSON('/h5/find/allAlbums', { skip, take }, function(res) {
       if(res.success) {
         let data = res.data;
         skip += take;
@@ -95,11 +92,11 @@ class AllAlbums extends migi.Component {
         }
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }
@@ -115,9 +112,9 @@ class AllAlbums extends migi.Component {
     let url = `/works.html?worksID=${item.WorksID}`;
     return <li>
       <a href={ url } class="pic" title={ item.Title }>
-        <img src={ util.autoSsl(util.img200_200_80(item.cover_Pic)) || '/src/common/blank.png' }/>
+        <img src={ $util.img(item.cover_Pic) || '/src/common/blank.png' }/>
         <span class="type">原创音乐</span>
-        <span class="num">{ util.abbrNum(item.Popular) }</span>
+        <span class="num">{ $util.abbrNum(item.Popular) }</span>
         {
           item.WorkState === 2 || item.WorkState === 3
             ? <span class="state">填坑中</span>

@@ -2,8 +2,6 @@
  * Created by army8735 on 2017/9/1.
  */
 
-import util from '../common/util';
-import net from '../common/net';
 import lrcParser from './lrcParser';
 
 let loadingLike;
@@ -15,6 +13,7 @@ let isStart;
 let WIDTH;
 let mediaService;
 let first = true;
+let firstPlay = true;
 let dragPlaying;
 
 class Media extends migi.Component {
@@ -24,7 +23,7 @@ class Media extends migi.Component {
     self.lrc = {};
     self.lrcIndex = 0;
     self.on(migi.Event.DOM, function() {
-      WIDTH = $(window).width();
+      WIDTH = screen.availWidth;
       if(jsBridge.appVersion) {
         let version = jsBridge.appVersion.split('.');
         let major = parseInt(version[0]) || 0;
@@ -33,14 +32,14 @@ class Media extends migi.Component {
         if(jsBridge.android && (major > 0 || minor > 4) || jsBridge.ios && (major > 0 || minor > 5)) {
           mediaService = true;
           jsBridge.on('mediaPrepared', function(e) {
-            if(self.data && e.data && e.data.id === self.data.workId.toString()) {
+            if(self.data && e.data && e.data.id === self.data.id.toString()) {
               self.duration = e.data.duration * 0.001;
               self.canControl = true;
             }
           });
           jsBridge.on('mediaTimeupdate', function(e) {
             // 延迟导致拖动开始后，timeupdate还会抵达，需注意判断
-            if(self.data && e.data && !isStart && e.data.id === self.data.workId.toString()) {
+            if(self.data && e.data && !isStart && e.data.id === self.data.id.toString()) {
               self.duration = e.data.duration * 0.001;
               self.canControl = true;
               if(!isStart) {
@@ -48,11 +47,12 @@ class Media extends migi.Component {
                 self.currentTime = e.data.currentTime * 0.001;
                 self.updateLrc();
                 self.setBarPercent(self.currentTime / self.duration);
+                self.emit('timeupdate', self.currentTime);
               }
             }
           });
           jsBridge.on('mediaProgress', function(e) {
-            if(self.data && e.data && e.data.id === self.data.workId.toString()) {
+            if(self.data && e.data && e.data.id === self.data.id.toString()) {
               let load = self.ref.load.element;
               if(jsBridge.ios) {
                 let length = e.data.length;
@@ -78,105 +78,29 @@ class Media extends migi.Component {
         if(self.data) {
           migi.eventBus.emit('BOT_FN', {
             canFn: true,
-            canLike: true,
-            canFavor: true,
-            isLike: self.isLike,
-            isFavor: self.isFavor,
-            canBlock: true,
             canReport: true,
-            canShare: true,
-            canShareIn: true,
-            canShareWb: true,
-            canShareLink: true,
-            clickLike: function(botFn) {
-              self.like(function() {
-                botFn.isLike = self.isLike;
-              });
-            },
-            clickFavor: function(botFn) {
-              self.favor(function() {
-                botFn.isFavor = self.isFavor;
-              });
-            },
-            clickCancel: function() {
-              loadingLike = loadingFavor = false;
-              if(ajaxLike) {
-                ajaxLike.abort();
-              }
-              if(ajaxFavor) {
-                ajaxFavor.abort();
-              }
-            },
-            clickBlock: function(botFn) {
-              jsBridge.toast('屏蔽成功');
-              botFn.cancel();
-            },
             clickReport: function(botFn) {
-              jsBridge.toast('举报成功');
-              botFn.cancel();
-            },
-            clickShareIn: function(botFn) {
               if(!self.data) {
                 return;
               }
-              jsBridge.pushWindow('/subpost.html?worksId=' + self.data.worksId
-                + '&workId=' + self.data.workId
-                + '&cover=' + encodeURIComponent(self.data.worksCover || ''), {
-                title: '画个圈',
-                optionMenu: '发布',
+              let id = self.data.id;
+              jsBridge.confirm('确认举报吗？', function(res) {
+                if(!res) {
+                  return;
+                }
+                $net.postJSON('/h5/work2/report', { id }, function(res) {
+                  if(res.success) {
+                    jsBridge.toast('举报成功');
+                  }
+                  else {
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                  }
+                  botFn.cancel();
+                }, function(res) {
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                  botFn.cancel();
+                });
               });
-            },
-            clickShareWb: function(botFn) {
-              if(!self.data) {
-                return;
-              }
-              let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
-              if(self.data.workId) {
-                url += '/' + self.data.workId;
-              }
-              let text = '【';
-              if(self.data.worksTitle) {
-                text += self.data.worksTitle;
-              }
-              if(self.data.worksSubTitle) {
-                if(self.data.worksTitle) {
-                  text += ' ';
-                }
-                text += self.data.worksSubTitle;
-              }
-              text += '】';
-              if(self.data.author
-                && self.data.author[0]
-                && self.data.author[0].AuthorTypeHashlist
-                && self.data.author[0].AuthorTypeHashlist[0].AuthorInfo
-                && self.data.author[0].AuthorTypeHashlist[0].AuthorInfo[0]) {
-                text += self.data.author[0].AuthorTypeHashlist[0].AuthorInfo[0].AuthorName;
-              }
-              text += ' #转圈circling# ';
-              text += url;
-              jsBridge.shareWb({
-                text,
-              }, function(res) {
-                if(res.success) {
-                  jsBridge.toast("分享成功");
-                }
-                else if(res.cancel) {
-                  jsBridge.toast("取消分享");
-                }
-                else {
-                  jsBridge.toast("分享失败");
-                }
-              });
-            },
-            clickShareLink: function(botFn) {
-              if(!self.data) {
-                return;
-              }
-              let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
-              if(self.data.workId) {
-                url += '/' + self.data.workId;
-              }
-              util.setClipboard(url);
             },
           });
         }
@@ -192,8 +116,9 @@ class Media extends migi.Component {
   @bind currentTime
   @bind canControl
   @bind isLike
-  @bind likeNum
+  @bind likeCount
   @bind isFavor
+  @bind favorCount
   @bind isVideo
   setData(data) {
     let self = this;
@@ -208,10 +133,12 @@ class Media extends migi.Component {
       self.stop();
       self.duration = 0;
       self.isLike = self.isFavor = false;
-      self.likeNum = 0;
+      self.likeCount = 0;
+      self.favorCount = 0;
       self.canControl = false;
       self.lrc = {};
       load.innerHTML = '';
+      firstPlay = true;
       if(ajaxLike) {
         ajaxLike.abort();
       }
@@ -227,7 +154,8 @@ class Media extends migi.Component {
           self.currentTime = 0;
           self.canControl = false;
           self.isLike = self.isFavor = false;
-          self.likeNum = 0;
+          self.likeCount = 0;
+          self.favorCount = 0;
           self.lrc = {};
           load.innerHTML = '';
           self.setBarPercent(0);
@@ -236,22 +164,26 @@ class Media extends migi.Component {
       return;
     }
 
+    self.data = data;
+    self.isLike = data.isLike;
+    self.likeCount = data.likeCount;
+    self.favorCount = data.favorCount;
+    self.isFavor = data.isFavor;
+
     // 如果传入相同信息则忽略
-    if(old && old.workId === data.workId) {
+    if(old && old.id === data.id && old.kind === data.kind) {
       return;
     }
-    self.data = data;
+
     self.duration = 0;
     self.currentTime = 0;
     self.canControl = false;
-    self.isLike = data.isLike;
-    self.likeNum = data.likeNum;
-    self.isFavor = data.isFavor;
+    firstPlay = true;
     self.setBarPercent(0);
 
     // 除了第一次，每次设置后除非信息相同，否则停止播放
     if(!first) {
-      self.pause();
+      self.stop();
     }
     first = false;
 
@@ -264,7 +196,7 @@ class Media extends migi.Component {
     loadingLike = loadingFavor = false;
 
     // 1音频2视频
-    self.isVideo = data.workType.toString().charAt(0) === '2';
+    self.isVideo = data.kind === 1;
     let l = {};
     if(lrcParser.isLrc(data.lrc)) {
       l.is = true;
@@ -291,8 +223,8 @@ class Media extends migi.Component {
       jsBridge.media({
         key: 'info',
         value: {
-          id: self.data.workId,
-          url: location.protocol + util.autoSsl(self.data.url),
+          id: self.data.id,
+          url: location.protocol + $util.autoSsl(self.data.url),
         },
       }, function(res) {
         load.innerHTML = '';
@@ -352,6 +284,7 @@ class Media extends migi.Component {
   onPlaying(e) {
     this.isPlaying = true;
     this.duration = e.target.duration;
+    this.emit('playing', this.duration);
   }
   play() {
     let self = this;
@@ -379,7 +312,10 @@ class Media extends migi.Component {
       self.isPlaying = true;
       self.emit('play', self.data);
     }
-    net.postJSON('/h5/works/addPlayCount', { workID: self.data.workId });
+    if(firstPlay) {
+      firstPlay = false;
+      $net.postJSON('/h5/work2/addViews', { id: self.data.id });
+    }
   }
   pause() {
     let self = this;
@@ -458,43 +394,24 @@ class Media extends migi.Component {
     this.lrcMode = !this.lrcMode;
   }
   clickFullScreen() {
-    let video = this.ref.video.element;
     if(jsBridge.ios) {
       jsBridge.fullscreen(true);
-      setTimeout(function() {
-        if(video.requestFullscreen) {
-          video.requestFullscreen();
-        }
-        else if(video.mozRequestFullscreen) {
-          video.mozRequestFullscreen();
-        }
-        else if(video.webkitRequestFullscreen) {
-          video.webkitRequestFullscreen();
-        }
-        else if(video.msRequestFullscreen) {
-          video.msRequestFullscreen();
-        }
-        else if(video.webkitEnterFullScreen) {
-          video.webkitEnterFullScreen();
-        }
-      }, 10);
     }
-    else {
-      if(video.requestFullscreen) {
-        video.requestFullscreen();
-      }
-      else if(video.mozRequestFullscreen) {
-        video.mozRequestFullscreen();
-      }
-      else if(video.webkitRequestFullscreen) {
-        video.webkitRequestFullscreen();
-      }
-      else if(video.msRequestFullscreen) {
-        video.msRequestFullscreen();
-      }
-      else if(video.webkitEnterFullScreen) {
-        video.webkitEnterFullScreen();
-      }
+    let video = this.ref.video.element;
+    if(video.requestFullscreen) {
+      video.requestFullscreen();
+    }
+    else if(video.mozRequestFullscreen) {
+      video.mozRequestFullscreen();
+    }
+    else if(video.webkitRequestFullscreen) {
+      video.webkitRequestFullscreen();
+    }
+    else if(video.msRequestFullscreen) {
+      video.msRequestFullscreen();
+    }
+    else if(video.webkitEnterFullScreen) {
+      video.webkitEnterFullScreen();
     }
   }
   touchStart(e) {
@@ -570,12 +487,12 @@ class Media extends migi.Component {
       }
     }
   }
-  clickLike(e) {
+  clickLike() {
     this.like();
   }
   like(cb) {
     let self = this;
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -586,31 +503,36 @@ class Media extends migi.Component {
       return;
     }
     loadingLike = true;
-    ajaxLike = net.postJSON('/h5/works/likeWork', { workID: self.data.workId }, function(res) {
+    let item = self.data;
+    let url = self.isLike ? 'unLike' : 'like';
+    ajaxLike = $net.postJSON('/h5/works2/' + url, {
+      workId: item.id, id: item.worksId,
+    }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.isLike = self.data.isLike = data.State === 'likeWordsUser';
-        self.data.likeNum = self.likeNum = data.LikeCount;
+        self.isLike = item.isLike = data.state;
+        self.likeCount = item.likeCount = data.count;
         cb && cb();
+        self.emit('like', item);
       }
       else if(res.code === 1000) {
         migi.eventBus.emit('NEED_LOGIN');
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loadingLike = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loadingLike = false;
     });
   }
-  clickFavor(e) {
+  clickFavor() {
     this.favor();
   }
   favor(cb) {
     let self = this;
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -621,46 +543,33 @@ class Media extends migi.Component {
       return;
     }
     loadingFavor = true;
-    if(self.isFavor) {
-      ajaxFavor = net.postJSON('/h5/works/unFavorWork', { workID: self.data.workId }, function (res) {
-        if(res.success) {
-          self.isFavor = self.data.isFavor = false;
-          cb && cb();
-        }
-        else if(res.code === 1000) {
-          migi.eventBus.emit('NEED_LOGIN');
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-        loadingFavor = false;
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        loadingFavor = false;
-      });
-    }
-    else {
-      ajaxFavor = net.postJSON('/h5/works/favorWork', { workID: self.data.workId }, function (res) {
-        if(res.success) {
-          self.isFavor = self.data.isFavor = true;
-          cb && cb();
-        }
-        else if(res.code === 1000) {
-          migi.eventBus.emit('NEED_LOGIN');
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-        loadingFavor = false;
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        loadingFavor = false;
-      });
-    }
+    let item = self.data;
+    let url = self.isFavor ? 'unFavor' : 'favor';
+    ajaxFavor = $net.postJSON('/h5/works2/' + url, {
+      workId: item.id, id: item.worksId,
+    }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        self.isFavor = item.isFavor = data.state;
+        self.favorCount = item.favorCount = data.count;
+        cb && cb();
+        self.emit('favor', item);
+      }
+      else if(res.code === 1000) {
+        migi.eventBus.emit('NEED_LOGIN');
+      }
+      else {
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      }
+      loadingFavor = false;
+    }, function(res) {
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      loadingFavor = false;
+    });
   }
   clickDownload() {
     let self = this;
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
@@ -715,40 +624,34 @@ class Media extends migi.Component {
         if(!self.data) {
           return;
         }
-        jsBridge.pushWindow('/subpost.html?worksId=' + self.data.worksId
-          + '&workId=' + self.data.workId
-          + '&cover=' + encodeURIComponent(self.data.worksCover || ''), {
+        jsBridge.pushWindow('/sub_post.html?worksId=' + self.data.worksId
+          + '&workId=' + self.data.id
+          + '&cover=' + encodeURIComponent(self.data.cover || self.data.worksCover || ''), {
           title: '画个圈',
           optionMenu: '发布',
         });
+        botFn.cancel();
       },
       clickShareWb: function(botFn) {
         if(!self.data) {
           return;
         }
-        let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
-        if(self.data.workId) {
-          url += '/' + self.data.workId;
-        }
-        let text = '【';
-        if(self.data.worksTitle) {
-          text += self.data.worksTitle;
-        }
-        if(self.data.worksSubTitle) {
-          if(self.data.worksTitle) {
-            text += ' ';
-          }
-          text += self.data.worksSubTitle;
+        let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId + '/' + self.data.id;
+        let text = '【' + self.data.title;
+        if(self.data.subTitle) {
+          text += ' ' + self.data.subTitle;
         }
         text += '】';
-        if(self.data.author
-          && self.data.author[0]
-          && self.data.author[0].AuthorTypeHashlist
-          && self.data.author[0].AuthorTypeHashlist[0].AuthorInfo
-          && self.data.author[0].AuthorTypeHashlist[0].AuthorInfo[0]) {
-          text += self.data.author[0].AuthorTypeHashlist[0].AuthorInfo[0].AuthorName;
-        }
-        text += ' #转圈circling# ';
+        let hash = {};
+        self.data.author.forEach((item) => {
+          item.list.forEach((author) => {
+            if(!hash[author.id]) {
+              hash[author.id] = true;
+              text += author.name + ' ';
+            }
+          });
+        });
+        text += '#转圈circling# ';
         text += url;
         jsBridge.shareWb({
           text,
@@ -763,16 +666,15 @@ class Media extends migi.Component {
             jsBridge.toast("分享失败");
           }
         });
+        botFn.cancel();
       },
       clickShareLink: function(botFn) {
         if(!self.data) {
           return;
         }
-        let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId;
-        if(self.data.workId) {
-          url += '/' + self.data.workId;
-        }
-        util.setClipboard(url);
+        let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId + '/' + self.data.id;
+        $util.setClipboard(url);
+        botFn.cancel();
       },
     });
   }
@@ -781,7 +683,8 @@ class Media extends migi.Component {
       <div class={ 'c'  + (this.isVideo ? ' is-video' : '') + (this.isPlaying ? ' is-playing' : '') }>
         <div class="cover">
           <img class={ this.lrcMode && this.lrc.data ? 'blur' : '' }
-               src={ util.autoSsl(util.img750_750_80((this.data || {}).worksCover || '/src/common/blank.png')) }/>
+               src={ $util.img((this.data || {}).cover || (this.data || {}).worksCover, 750, 750, 80)
+                 || '/src/common/blank.png' }/>
         </div>
         <video ref="video"
                poster="/src/common/blank.png"
@@ -831,8 +734,8 @@ class Media extends migi.Component {
         </div>
         <b class={ 'start' + (this.isPlaying ? ' fn-hide' : '') } onClick={ this.play }/>
         <div class="time">
-          <span class="now">{ util.formatTime(this.currentTime) }</span>
-          <span class="total">{ util.formatTime(this.duration) }</span>
+          <span class="now">{ $util.formatTime(this.currentTime) }</span>
+          <span class="total">{ $util.formatTime(this.duration) }</span>
         </div>
         <div class={ 'progress' + (this.canControl ? ' can' : '') }>
           <div class="load"
@@ -849,11 +752,11 @@ class Media extends migi.Component {
       <ul class="btn">
         <li onClick={ this.clickLike }>
           <b class={ 'like' + (this.isLike ? ' liked' : '') }/>
-          <span>{ this.isLike ? (this.likeNum || 0) : '点赞' }</span>
+          <span>{ this.likeCount || '点赞' }</span>
         </li>
         <li onClick={ this.clickFavor }>
           <b class={ 'favor' + (this.isFavor ? ' favored' : '') }/>
-          <span>{ this.isFavor ? '已收藏' : '收藏' }</span>
+          <span>{ this.favorCount || '收藏' }</span>
         </li>
         <li onClick={ this.clickShare }>
           <b class="share"/>

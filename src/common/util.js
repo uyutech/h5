@@ -2,17 +2,9 @@
  * Created by army on 2017/5/20.
  */
 
-import BigNumber from 'bignumber.js';
-
 let util = {
   isLogin: function() {
     return $.cookie('isLogin') === 'true';
-  },
-  isIPhone: function(){
-    return navigator.appVersion.match(/iphone/gi);
-  },
-  goto: function(url) {
-    location.href = url;
   },
   autoSsl: function(url) {
     if(!/\/\/zhuanquan\./i.test(url) && !/\.sinaimg\.cn\//i.test(url)) {
@@ -20,289 +12,18 @@ let util = {
     }
     return (url || '').replace(/^https?:\/\//i, '//');
   },
-  img: function(url) {
+  img: function(url, w, h, q) {
     url = url || '';
     url = url.trim();
     if(!/\/\/zhuanquan\./i.test(url)) {
+      return $util.autoSsl(url);
+    }
+    url = url.replace(/\.(\w+)-\d*_\d*_\d*/, '.$1');
+    if(w === undefined && h === undefined && q === undefined) {
       return url;
     }
-    return url ? url.replace(/\.(\w+)-\d*_\d*_\d*/, '.$1') : url;
-  },
-  img1600__80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-1600__80' : url;
-  },
-  img1296_1296_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-1296_1296_80' : url;
-  },
-  img1200__80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-1200__80' : url;
-  },
-  img980_980_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-980_980_80' : url;
-  },
-  img750_750_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-750_750_80' : url;
-  },
-  img750__80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-750__80' : url;
-  },
-  img720__80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-720__80' : url;
-  },
-  img600_600_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-600_600_80' : url;
-  },
-  img600__80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-600__80' : url;
-  },
-  img480_480_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-480_480_80' : url;
-  },
-  img375__80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-375__80' : url;
-  },
-  img360__80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-360__80' : url;
-  },
-  img336__80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-336__80' : url;
-  },
-  img332_332_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-332_332_80' : url;
-  },
-  img288__80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-288__80' : url;
-  },
-  img288_288_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-288_288_80' : url;
-  },
-  img250_250_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-250_250_80' : url;
-  },
-  img240_240_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-240_240_80' : url;
-  },
-  img220_220_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-240_240_80' : url;
-  },
-  img208_208_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-208_208_80' : url;
-  },
-  img200_200: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-200_200' : url;
-  },
-  img200_200_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-200_200_80' : url;
-  },
-  img192_192: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-192_192' : url;
-  },
-  img172_172_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-172_172_80' : url;
-  },
-  img170_170_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-170_170_80' : url;
-  },
-  img160_160_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-160_160_80' : url;
-  },
-  img168__80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-168__80' : url;
-  },
-  img150_150_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-150_150_80' : url;
-  },
-  img144_: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-144_' : url;
-  },
-  img144_144: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-144_144' : url;
-  },
-  img144_144_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-144_144_80' : url;
-  },
-  img132_132_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-132_132_80' : url;
-  },
-  img128_128_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-120_120_80' : url;
-  },
-  img120_120: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-120_120' : url;
-  },
-  img120_120_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-120_120_80' : url;
-  },
-  img108_108_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-108_108_80' : url;
-  },
-  img100_100_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? url + '-100_100_80' : url;
-  },
-  img100_100: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-100_100' : url;
-  },
-  img96_96_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-90_90' : url;
-  },
-  img90_90: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-90_90' : url;
-  },
-  img80_80_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-80_80_80' : url;
-  },
-  img64_64_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-64_64_80' : url;
-  },
-  img60_60: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-60_60' : url;
-  },
-  img60_60_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-60_60_80' : url;
-  },
-  img__60: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-__60' : url;
-  },
-  img48_48_80: function(url) {
-    if(!/\/\/zhuanquan\./i.test(url)) {
-      return url;
-    }
-    return url ? util.img(url) + '-48_48_80' : url;
+    url += '-' + (w ? w : '') + '_' + (h ? h : '') + '_' + (q ? q : '');
+    return $util.autoSsl(url);
   },
   decode: function(str) {
     return str.replace(/&lt;/g, '<').replace(/&amp;/g, '&');
@@ -336,7 +57,6 @@ let util = {
     return res;
   },
   formatDate: function(time) {
-    time = time.replace(/-/g, '/');
     time = new Date(time);
     let now = Date.now();
     let diff = now - time;
@@ -376,40 +96,6 @@ let util = {
     return n;
   },
   ERROR_MESSAGE: '人气大爆发，请稍后再试。',
-  scrollTop: function(y) {
-    $(window).scrollTop(y - 70);
-  },
-  openAuthor: function(data) {
-    jsBridge.pushWindow(data.url || ('/author.html?authorId=' + data.authorId), {
-      transparentTitle: true,
-    });
-  },
-  openWorks: function(data, option) {
-    option = option || {};
-    option.title = data.title;
-    option.subTitle = data.subTitle;
-    jsBridge.pushWindow(data.url || ('/works.html?worksId=' + data.worksId + '&workId=' + data.workId), option);
-  },
-  getWorksUrl: function(worksId, worksType, workId) {
-    if([11, 12].indexOf(worksType) > -1) {
-      return '/image.html?worksId=' + worksId;
-    }
-    else if([5, 6, 18].indexOf(worksType) > -1) {
-      return '/music.html?worksId=' + worksId;
-    }
-    else {
-      return '/works.html?worksId=' + worksId + (workId ? '&workId=' + workId : '');
-    }
-  },
-  getWorksUrlOption: function(worksType) {
-    if([11, 12].indexOf(worksType) > -1) {
-      return {};
-    }
-    return {
-      transparentTitle: true,
-      optionMenuIcon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAALVBMVEUAAAAAAAAAAAAAAAD+/v4AAAD5+fnk5OTq6uoAAAAwMDAAAAAAAACAgID///8waL84AAAADnRSTlMABxEL8BqUoZ0nIiITDIsBZnQAAABpSURBVEjHYxgFgxYICuKXl01xu4hPnlHs3btEAXwKTN69c8anQFDl3TsnfK4Q1nj3rskQnwlaJe6L8CpQ3Tk7CJ8VjDahoYfx+kJYSclQAG9AChsKEgxqCgHjaGyOxuZobA7K2BwFNAMAj1k2xo1Ti1oAAAAASUVORK5CYII=',
-    };
-  },
   uniqueList: function(list) {
     list = list || [];
     let hash = {};
@@ -425,7 +111,7 @@ let util = {
   },
   setClipboard: function(s) {
     let input = document.createElement('input');
-    input.setAttribute('style', 'position:absolute;left:0;top:0;');
+    input.setAttribute('style', 'position:fixed;left:-9999rem;top:-9999rem;');
     input.value = s;
     document.body.appendChild(input);
     input.focus();
@@ -434,6 +120,43 @@ let util = {
     document.body.removeChild(input);
     jsBridge.toast('复制成功');
   },
+  isBottom: function(offset) {
+    offset = offset || 30;
+    let y = this.scrollY();
+    let WIN_HEIGHT = document.documentElement.clientHeight;
+    let HEIGHT = document.body.clientHeight;
+    return y + WIN_HEIGHT + offset > HEIGHT;
+  },
+  scrollY: function(v) {
+    if(v !== undefined) {
+      window.scroll(0, v);
+    }
+    return document.documentElement.scrollTop || window.pageYOffset || window.scrollY || 0;
+  },
+  recordPlay(data, cb) {
+    jsBridge.setPreference('recordCur', data.id);
+    jsBridge.getPreference('record', function(res) {
+      res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
+      for(let i = 0, len = res.length; i < len; i++) {
+        if(res[i].id === data.id && res[i].worksId === data.worksId) {
+          res.splice(i, 1);
+          break;
+        }
+      }
+      if(!data.id || !data.worksId) {
+        return;
+      }
+      res.unshift(data);
+      if(res.length > 20) {
+        res.splice(20);
+      }
+      jsBridge.setPreference('record', jsBridge.android ? res : JSON.stringify(res), function() {
+        if(cb) {
+          cb(res, data.id);
+        }
+      });
+    });
+  },
 };
 
-export default util;
+module.exports = util;

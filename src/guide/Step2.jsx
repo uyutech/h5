@@ -2,19 +2,12 @@
  * Created by army on 2017/4/21.
  */
 
-import net from '../common/net';
-import util from '../common/util';
-
-let loading;
-let loadEnd;
-let skip = 0;
-let take = 30;
-
 class Step2 extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
     self.isShow = self.props.isShow;
+    self.message = '正在加载...';
     self.on(migi.Event.DOM, function() {
       if(self.isShow) {
         self.loadMore();
@@ -28,13 +21,6 @@ class Step2 extends migi.Component {
   @bind isShow
   @bind sending
   @bind message
-  get list() {
-    return this._list || [];
-  }
-  @bind
-  set list(v) {
-    this._list = v;
-  }
   click(e, vd, tvd) {
     let $li = $(tvd.element);
     let tagId = tvd.props.tagId;
@@ -58,16 +44,16 @@ class Step2 extends migi.Component {
       ids.push($(o).attr('rel'));
     });
     ids = ids.join(',');
-    net.postJSON('/h5/passport/guideCircle', { ids }, function(res) {
+    $net.postJSON('/h5/my2/guideCircle', { ids }, function(res) {
       if(res.success) {
         self.emit('next');
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       self.sending = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       self.sending = false;
     });
   }
@@ -79,36 +65,28 @@ class Step2 extends migi.Component {
   }
   loadMore() {
     let self = this;
-    if(loading || loadEnd || !self.isShow) {
+    if(!self.isShow) {
       return;
     }
-    loading = true;
-    self.message = '正在加载...';
-    net.postJSON('/h5/passport/guideCircleList', { skip, take }, function(res) {
+    $net.postJSON('/h5/circle2/all', function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
-        if(skip >= data.Size) {
-          loadEnd = true;
-          self.message = '已经到底了';
-        }
         let s = '';
         (data.data || []).forEach(function(item) {
           s += self.genItem(item);
         });
         $(self.ref.list.element).append(s);
+        self.message = '';
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
-      loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      loading = false;
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   genItem(item) {
-    return <li rel={ item.ID }>{ item.Tag_Name }</li>;
+    return <li rel={ item.id }>{ item.name }</li>;
   }
   render() {
     return <div class={ 'step2' + (this.isShow ? '' : ' fn-hide') }>
@@ -116,10 +94,12 @@ class Step2 extends migi.Component {
         <b class="icon"/>
         <h2>请选择你感兴趣的圈子</h2>
         <h4>以便我们呈现更适合你的内容</h4>
-        <ul class="list fn-clear" ref="list"/>
+        <ul class="list"
+            ref="list"/>
         <p class="cp-message">{ this.message }</p>
       </div>
-      <button class={ 'sub' + (this.sending ? ' dis' : '') } onClick={ this.next }>我选好啦！</button>
+      <button class={ 'sub' + (this.sending ? ' dis' : '') }
+              onClick={ this.next }>我选好啦！</button>
     </div>;
   }
 }

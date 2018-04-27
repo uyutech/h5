@@ -4,16 +4,18 @@
 
 'use strict';
 
-import net from "../common/net";
-import util from "../common/util";
-
 class WorksList extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
     self.index = 0;
+    self.data = self.props.data;
   }
   @bind index
+  @bind data
+  setData(data) {
+    this.data = data;
+  }
   click() {
     let data = this.props.data;
     let length = (data.worklist || []).length;
@@ -24,46 +26,35 @@ class WorksList extends migi.Component {
       this.index += 6;
     }
   }
-  clickWorks(e, vd, tvd) {
-    e.preventDefault();
-    util.openWorks({
-      url: tvd.props.href,
-      title: tvd.props.title,
-    }, tvd.props.option);
-  }
   render() {
-    let data = this.props.data;
-    return <div class="mod-workslist" onClick={ { a: this.clickWorks } }>
-      <h3 style={ data.coverpic ? `background-image:url(${data.coverpic})` : '' }>
-        { data.Describe }
-        { (data.worklist || []).length > 6 ? <span onClick={ this.click }>换一换</span> : '' }
+    return <div class="mod-workslist">
+      <h3>
+        { this.data.title }
+        { (this.data.content || []).length > 6 ? <span onClick={ this.clickChange }>换一换</span> : '' }
       </h3>
-      <ul ref="list">
-        {
-          (data.worklist || []).slice(this.index, this.index + 6).map(function(item) {
-            let GroupAuthorTypeHash = item.GroupAuthorTypeHash || {};
-            let AuthorTypeHashlist = GroupAuthorTypeHash.AuthorTypeHashlist || [];
-            let author = AuthorTypeHashlist[0] || {};
-            let url = util.getWorksUrl(item.WorksID, item.WorkType);
-            let option = util.getWorksUrlOption(item.WorkType);
-            return <li>
-              <a href={ url }
-                 title={ item.Title }
-                 option={ option }
-                 class="pic">
-                <img src={ util.autoSsl(util.img170_170_80(item.cover_Pic)) }/>
-                <span>{ item.CommentCount }</span>
-              </a>
-              <a href={ url }
-                 title={ item.Title }
-                 option={ option }
-                 class="name">{ item.Title }</a>
-              <p class="author">{ (author.AuthorInfo || []).map(function(item) {
-                return item.AuthorName;
-              }).join(' ') }</p>
-            </li>;
-          })
-        }
+      <ul onClick={ { a: this.click } }>
+      {
+        (this.data.content || []).slice(this.index, this.index + 6).map(function(item) {
+          return <li>
+            <a class="pic"
+               href={ '/works.html?id=' + item.id }
+               title={ item.title }>
+              <img src={ $util.img(item.cover, 170, 170, 80) || '/src/common/blank.png' }/>
+              <span>{ item.CommentCount }</span>
+            </a>
+            <a class="name"
+               href={ '/works.html?id=' + item.id }
+               title={ item.title }>{ item.title }</a>
+            {
+              item.author.length
+                ? <p class="author">{ item.author[0].list.map(function(item) {
+                    return item.name;
+                  }).join(' ') }</p>
+                : ''
+            }
+          </li>;
+        })
+      }
       </ul>
     </div>;
   }

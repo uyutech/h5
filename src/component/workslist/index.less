@@ -1,0 +1,100 @@
+/**
+ * Created by army8735 on 2018/4/10.
+ */
+
+.cp-workslist{
+  ul{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:flex-start;
+  }
+  li{
+    margin-right:5%;
+    margin-bottom:0.1rem;
+    width:30%;
+    overflow:hidden;
+    &:nth-child(3n) {
+      margin-right:0;
+    }
+    .pic{
+      position:relative;
+      display:block;
+      margin:0 auto;
+      width:0.85rem;
+      height:0.85rem;
+      background:#EDF3F7;
+      border-radius:0.05rem;
+      color:#FFF;
+      overflow:hidden;
+      &:before{
+        position:absolute;
+        right:0;
+        bottom:0;
+        display:block;
+        width:70%;
+        height:0.18rem;
+        background:linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.3));
+        content:' ';
+        z-index:1;
+      }
+      img{
+        display:block;
+        width:100%;
+        height:100%;
+        object-fit:contain;
+      }
+      .state{
+        position:absolute;
+        left:0.04rem;
+        top:0.02rem;
+        text-shadow:@picHoverShadow;
+        font-size:0.1rem;
+      }
+      .type{
+        position:absolute;
+        top:0.04rem;
+        right:0.04rem;
+        display:block;
+        padding:0 0.03rem;
+        background:rgba(0,0,0,0.3);
+        line-height:0.18rem;
+        border-radius:0.04rem;
+        font-size:0.12rem;
+        transform:scale(0.833);
+        transform-origin:right top;
+      }
+      .num{
+        position:absolute;
+        right:0.05rem;
+        bottom:0;
+        display:block;
+        padding-left:0.22rem;
+        line-height:0.18rem;
+        background:url(../../icon/popular-white.png) no-repeat 0.05rem center;
+        background-size:0.16rem auto;
+        font-size:0.11rem;
+        z-index:1;
+      }
+    }
+    .txt{
+      display:block;
+      margin:0.05rem auto 0;
+      width:0.85rem;
+      font-size:0.12rem;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      color:#636365;
+      line-height:1.3;
+      span{
+        display:block;
+        text-overflow:ellipsis;
+        overflow:hidden;
+      }
+      .profession{
+        font-size:0.11rem;
+        color:#B6B6B6;
+      }
+    }
+  }
+}

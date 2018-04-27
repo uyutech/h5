@@ -4,7 +4,6 @@
 
 @import './var';
 @import '../component/mlogin/index';
-@import '../component/share/index';
 @import '../component/message/index';
 
 *,
@@ -95,8 +94,9 @@ body{
   width:100%;
   min-height:100%;
   background:#FFF;
-  &.pop{
+  &.no-scroll{
     position:fixed;
+    overflow:hidden;
   }
 }
 

@@ -4,14 +4,7 @@
 
 'use strict';
 
-import net from '../../common/net';
-import util from '../../common/util';
-import ImageView from '../imageview/ImageView.jsx';
-
-let pool = [];
-let list = [];
-let index = 0;
-let WIDTH = 0;
+let uuid = 0;
 
 class WaterFall extends migi.Component {
   constructor(...data) {
@@ -19,30 +12,29 @@ class WaterFall extends migi.Component {
     let self = this;
     self.message = self.props.message;
     self.visible = self.props.visible;
-    if(self.props.visible !== undefined) {
-      self.visible = self.props.visible;
-    }
-    self.pause = self.props.pause;
+    self.pool = [];
+    self.exist = {};
+    self.list = [];
+    self.index = 0;
+    self.height1 = self.height2 = 0;
+    self.WIDTH = self.props.WIDTH;
     self.on(migi.Event.DOM, function() {
-      if(self.props.dataList) {
-        self.appendData(self.props.dataList);
+      if(!self.WIDTH) {
+        self.WIDTH = (screen.availWidth - 30) >> 1;
       }
-      let imageView = self.ref.imageView;
       let $root = $(self.element);
-      WIDTH = $root.find('ul:first-child').width();
       $root.on('click', '.authors a', function(e) {
         e.preventDefault();
         let $this = $(this);
         let url = $this.attr('href');
         let title = $this.attr('title');
-        util.openAuthor({
-          url,
+        jsBridge.pushWindow(url, {
           title,
+          transparentTitle: true,
         });
       });
-
-      function like() {
-        if(!util.isLogin()) {
+      $root.on('click', '.like', function() {
+        if(!$util.isLogin()) {
           migi.eventBus.emit('NEED_LOGIN');
           return;
         }
@@ -51,78 +43,93 @@ class WaterFall extends migi.Component {
           return;
         }
         $b.addClass('loading');
-        let id = $b.attr('itemID');
-        net.postJSON('/h5/works/likeWork', { workID: id }, function(res) {
+        let id = $b.attr('rel');
+        let url = $b.hasClass('liked') ? 'unLike' : 'like';
+        $net.postJSON('/h5/works2/' + url, { worksId: $b.attr('worksId'), workId: id }, function(res) {
           if(res.success) {
-            if(res.data.State === 'likeWordsUser') {
-              $b.addClass('has');
-            }
-            else {
-              $b.removeClass('has');
-            }
-            for(let i = 0, len = list.length; i < len; i++) {
-              if(id.toString() === list[i].ItemID.toString()) {
-                list[i].ISLike = res.data.State === 'likeWordsUser';
-                imageView.list = list;
-                break;
-              }
-            }
+            let data = res.data;
+            data.state ? $b.addClass('liked') : $b.removeClass('liked');
+            $b.text(data.count);
+            self.emit('like', data);
           }
           else if(res.code === 1000) {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
           $b.removeClass('loading');
         }, function (res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           $b.removeClass('loading');
         });
-      }
-      $root.on('click', '.like', like);
-
-      function favor() {
+      });
+      $root.on('click', '.favor', function() {
+        if(!$util.isLogin()) {
+          migi.eventBus.emit('NEED_LOGIN');
+          return;
+        }
         let $b = $(this);
         if($b.hasClass('loading')) {
           return;
         }
         $b.addClass('loading');
-        let id = $b.attr('itemID');
-        let url = $b.hasClass('has') ? '/h5/works/unFavorWork' : '/h5/works/favorWork';
-        net.postJSON(url, { workID: id }, function(res) {
+        let id = $b.attr('rel');
+        let url = $b.hasClass('has') ? 'unFavor' : 'favor';
+        $net.postJSON('/h5/works2/' + url, { worksId: 1, workId: id }, function(res) {
           if(res.success) {
-            if(url === '/h5/works/favorWork') {
-              $b.addClass('has');
-            }
-            else {
-              $b.removeClass('has');
-            }
+            let data = res.data;
+            data.state ? $b.addClass('liked') : $b.removeClass('liked');
+            $b.text(data.count);
           }
           else if(res.code === 1000) {
             migi.eventBus.emit('NEED_LOGIN');
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
           $b.removeClass('loading');
         }, function (res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           $b.removeClass('loading');
         });
-      }
-      $root.on('click', '.favor', favor);
-
+      });
       $root.on('click', 'img', function() {
         let $img = $(this);
-        let index = $img.attr('rel');
-        imageView.setData(list, index);
+        let index = parseInt($img.attr('rel'));
+        let copy = self.list.map((item) => {
+          return {
+            worksId: item.id,
+            id: item.work.id,
+            url: item.work.url,
+            width: item.work.width,
+            height: item.work.height,
+            preview: item.work.preview,
+            isLike: item.work.isLike,
+            likeCount: item.work.likeCount,
+            isFavor: item.work.isFavor,
+            favorCount: item.work.favorCount,
+          };
+        });
+        migi.eventBus.emit('IMAGE_VIEW', copy, index);
       });
-
-      imageView.on('like', function(list, index) {
-        let id = list[index].ItemID;
-        let $li = $('#image_' + id);
-        like.call($li.find('.like'));
+      migi.eventBus.on('IMAGE_VIEW_LIKE', function(id, data) {
+        let $b = $root.find('#image_' + id + ' .like');
+        $b.text(data.count);
+        if(data.state) {
+          $b.addClass('liked');
+        }
+        else {
+          $b.removeClass('liked');
+        }
+        for(let i = 0, len = self.list.length; i < len; i++) {
+          let item = self.list[i];
+          if(item.work.id === id) {
+            item.work.isLike = data.state;
+            item.work.likeCount = data.count;
+            break;
+          }
+        }
       });
     });
   }
@@ -136,13 +143,14 @@ class WaterFall extends migi.Component {
   }
   clearData() {
     let self = this;
-    let $l1 = $(self.ref.l1.element);
-    let $l2 = $(self.ref.l2.element);
-    $l1.html('');
-    $l2.html('');
-    pool = [];
-    list = [];
-    index = 0;
+    self.ref.l1.element.innerHTML = '';
+    self.ref.l2.element.innerHTML = '';
+    self.pool = [];
+    self.list = [];
+    self.index = 0;
+    self.height1 = self.height2 = 0;
+    self.exist = {};
+    self.uuid = uuid++; //重新加载时防止未完成异步图片加载再次显示
   }
   setData(data) {
     this.clearData();
@@ -150,137 +158,149 @@ class WaterFall extends migi.Component {
   }
   appendData(data) {
     let self = this;
+    if(!data) {
+      return;
+    }
     if(!Array.isArray(data)) {
       data = [data];
+    }
+    for(let i = data.length - 1; i >= 0; i--) {
+      let id = data[i].work.id;
+      if(self.exist[id]) {
+        data.splice(i, 1);
+      }
+      self.exist[id] = true;
     }
     if(data.length) {
       //未知高宽的去加载图片获取高宽
       data.forEach(function(item) {
-        if(!item.Width || !item.Height) {
-          self.loadImgSize(item, self.checkPool.bind(self));
+        if(!item.work.width || !item.work.height) {
+          self.loadImgSize(item, self.checkPool.bind(self), self.uuid);
         }
       });
-      pool = pool.concat(data);
-      list = list.concat(data);
-      if(self.visible && !self.pause) {
-        self.checkPool();
-      }
+      self.pool = self.pool.concat(data);
+      self.list = self.list.concat(data);
+      self.checkPool();
     }
   }
   checkPool() {
     let self = this;
-    if(!self.visible || self.pause) {
-      return;
-    }
-    if(WIDTH === 0) {
-      WIDTH = $(self.element).find('ul:first-child').width();
-    }
-    while(pool.length) {
-      let item = pool[0];
-      if(item.Width && item.Height) {
-        let li = self.genItem(item);
-        self.append(li);
-        pool.shift();
+    while(self.pool && self.pool.length) {
+      let item = self.pool[0];
+      if(item.work.width && item.work.height) {
+        self.append(item);
+        self.pool.shift();
       }
       else {
         return;
       }
     }
   }
-  append(li) {
+  append(item) {
     let self = this;
-    let $l1 = $(self.ref.l1.element);
-    let $l2 = $(self.ref.l2.element);
-    let $min = $l1;
-    if($l2.height() < $min.height()) {
-      $min = $l2;
+    let target;
+    if(self.height1 > self.height2) {
+      target = self.ref.l2.element;
+      if(item.work.width <= self.WIDTH / 2) {
+        self.height2 += item.work.height;
+      }
+      else {
+        self.height2 += item.work.height * self.WIDTH / item.work.width;
+      }
     }
-    li.appendTo($min[0]);
+    else {
+      target = self.ref.l1.element;
+      if(item.work.width <= self.WIDTH / 2) {
+        self.height1 += item.work.height;
+      }
+      else {
+        self.height1 += item.work.height * self.WIDTH / item.work.width;
+      }
+    }
+    self.genItem(item).appendTo(target);
   }
-  genItem(data) {
+  genItem(item) {
     let self = this;
-    let author = ((data.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
-    data.preview = util.autoSsl(util.img375__80(data.FileUrl));
-    if(data.Width <= WIDTH * 2) {
-      return <li id={ 'image_' + data.ItemID }>
-        <img class="pic" src={ util.autoSsl(util.img375__80(data.FileUrl)) || '/src/common/blank.png' }
-             rel={ index++ } height={ data.Height / 2 }/>
+    let author = [];
+    let hash = {};
+    if(self.props.profession) {
+      item.work.profession.forEach((item) => {
+        author.push(item.name);
+      });
+    }
+    else {
+      item.work.author.forEach((item) => {
+        item.list.forEach((at) => {
+          if(!hash[at.id]) {
+            hash[at.id] = true;
+            author.push(at.name);
+          }
+        });
+      });
+    }
+    item.work.preview = $util.img(item.work.url, 375, 0, 80);
+    if(item.work.width <= self.WIDTH / 2) {
+      return <li id={ 'image_' + item.work.id }>
+        <img class="pic"
+             src={ $util.autoSsl(item.work.preview) || '/src/common/blank.png' }
+             rel={ self.index++ }
+             height={ item.work.height / 2 }/>
         <div class="txt">
-          <div class="author">
-            {
-              (author.AuthorInfo || []).map(function(item) {
-                return <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
-                  <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/head.png')) }/>
-                  {
-                    self.props.profession
-                      ? <span>{ item.AuthorTypeName }</span>
-                      : <span>{ item.AuthorName }</span>
-                  }
-                </a>
-              })
-            }
-          </div>
-          <b class={ 'like' + (data.ISLike ? ' has' : '') } itemID={ data.ItemID }/>
+          <p class={ 'author' + (self.props.profession ? ' profession' : '') }>{ author.join(' ') }</p>
+          <b class={ 'like' + (item.work.isLike ? ' liked' : '') }
+             worksId={ item.id }
+             rel={ item.work.id }>{ item.work.likeCount }</b>
         </div>
       </li>;
     }
-    let height = data.Height * WIDTH * 2 / data.Width;
-    return <li id={ 'image_' + data.ItemID }>
-      <img class="pic" src={ util.autoSsl(util.img375__80(data.FileUrl)) || '/src/common/blank.png' }
-           rel={ index++ } height={ height / 2 }/>
+    let height = item.work.height * self.WIDTH / item.work.width;
+    return <li id={ 'image_' + item.work.id }>
+      <img class="pic"
+           src={ $util.autoSsl(item.work.preview) || '/src/common/blank.png' }
+           rel={ self.index++ }
+           height={ height }/>
       <div class="txt">
-        <div class="authors">
-          {
-            (author.AuthorInfo || []).map(function(item) {
-              return <a href={ '/author.html?authorId=' + item.AuthorID } title={ item.AuthorName }>
-                <img src={ util.autoSsl(util.img60_60_80(item.Head_url || '/src/common/head.png')) }/>
-                {
-                  self.props.profession
-                    ? <span>{ item.AuthorTypeName }</span>
-                    : <span>{ item.AuthorName }</span>
-                }
-              </a>
-            })
-          }
-        </div>
-        <b class={ 'like' + (data.ISLike ? ' has' : '') } itemID={ data.ItemID }/>
+        <p class={ 'author' + (self.props.profession ? ' profession' : '') }>{ author.join(' ') }</p>
+        <b class={ 'like' + (item.work.isLike ? ' liked' : '') }
+           worksId={ item.id }
+           rel={ item.work.id }>{ item.work.likeCount }</b>
       </div>
     </li>;
   }
-  loadImgSize(data, cb) {
+  loadImgSize(item, cb, uuid) {
+    let self = this;
     let img = document.createElement('img');
     img.style.position = 'absolute';
     img.style.left = '-9999rem;';
     img.style.top = '-9999rem';
     img.style.visibility = 'hidden';
-    img.src = util.autoSsl(util.img__60(data.FileUrl));
+    img.src = $util.img(item.work.url, 0, 0, 60);
     img.onload = function() {
-      data.Width = img.width;
-      data.Height = img.height;
-      cb();
+      item.work.width = img.width;
+      item.work.height = img.height;
       document.body.removeChild(img);
+      if(uuid === self.uuid) {
+        cb();
+      }
     };
     img.onerror = function() {
-      data.FileUrl = '//zhuanquan.xin/img/blank.png';
-      data.Width = 1;
-      data.Height = 100;
-      cb();
+      item.url = '//zhuanquan.xin/img/blank.png';
+      item.work.width = 1;
+      item.work.height = 100;
       document.body.removeChild(img);
+      if(uuid === self.uuid) {
+        cb();
+      }
     };
     document.body.appendChild(img);
   }
   render() {
     return <div class={ 'cp-waterfall' + (this.visible ? '' : ' fn-hide') }>
       <div class="c">
-        <div>
-          <ul ref="l1"/>
-        </div>
-        <div>
-          <ul ref="l2"/>
-        </div>
+        <ul ref="l1"/>
+        <ul ref="l2"/>
       </div>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
-      <ImageView ref="imageView"/>
     </div>;
   }
 }

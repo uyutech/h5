@@ -1,0 +1,88 @@
+/**
+ * Created by army8735 on 2018/3/30.
+ */
+
+.mod-select{
+  position:relative;
+  padding:0 0.15rem;
+  height:0.3rem;
+  > label{
+    position:relative;
+    display:inline-block;
+    padding-right:0.16rem;
+    height:100%;
+    font-size:0.13rem;
+    color:#636365;
+    line-height:0.3rem;
+    &:after{
+      position:absolute;
+      top:50%;
+      right:0;
+      width:0.16rem;
+      height:0.16rem;
+      background:url(arrow.png) no-repeat center;
+      background-size:contain;
+      content:' ';
+      transform:translateY(-50%);
+    }
+    &.no:after{
+      opacity:0.3;
+    }
+  }
+  > .pop{
+    &:before{
+      position:fixed;
+      left:0;
+      top:0;
+      display:none;
+      width:100%;
+      height:100%;
+      background:rgba(0, 0, 0, 0.5);
+      content:' ';
+      z-index:101;
+    }
+    &.on:before{
+      display:block;
+    }
+    .c{
+      position:fixed;
+      left:0;
+      bottom:0;
+      padding:0.05rem 0.15rem;
+      box-sizing:border-box;
+      width:100%;
+      background:#EDF3F7;
+      z-index:102;
+      transform:translate3d(0, 100%, 0);
+      transition:transform 0.2s;
+      label{
+        display:inline-block;
+        margin-bottom:0.05rem;
+        color:#B6B6B6;
+        font-size:0.11rem;
+      }
+      li{
+        float:left;
+        margin-right:2%;
+        margin-bottom:0.05rem;
+        width:23.5%;
+        height:0.32rem;
+        line-height:0.32rem;
+        text-align:center;
+        background:#FFF;
+        border-radius:0.05rem;
+        color:#636365;
+        font-size:0.13rem;
+        &.cur{
+          color:#8BBDE1;
+        }
+        &:nth-child(4n){
+          margin-right:0;
+        }
+      }
+    }
+    &.on .c{
+      transform:translate3d(0, 0, 0);
+    }
+  }
+}

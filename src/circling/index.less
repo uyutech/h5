@@ -3,54 +3,10 @@
  */
 
 @import '../common/var';
-@import '../component/hotpost/index';
-@import '../component/hotcircle/index';
+@import '../find/banner';
+@import '../component/postlist/index';
 
 #page > .circling{
-  .mod-banner{
-    padding-top:37%;
-    background:#EDF3F7;
-    .list{
-      display:flex;
-      li{
-        flex:1;
-        height:100%;
-        transition:transform 0.2s;
-        a{
-          display:block;
-          height:100%;
-        }
-        img{
-          display:block;
-          width:100%;
-          height:100%;
-          object-fit:cover;
-        }
-      }
-    }
-    .tags{
-      position:absolute;
-      left:0;
-      bottom:0.1rem;
-      width:100%;
-      text-align:center;
-      li{
-        display:inline-block;
-        margin:0 0.05rem;
-        width:0.06rem;
-        height:0.06rem;
-        border:1px solid @mainColor;
-        background:#FFF;
-        border-radius:0.1rem;
-        text-indent:99rem;
-        overflow:hidden;
-        &.cur{
-          width:0.12rem;
-          background:@mainColor;
-        }
-      }
-    }
-  }
   > .circle{
     display:flex;
     padding-left:0.15rem;
@@ -80,67 +36,18 @@
       height:0.22rem;
       line-height:0.22rem;
       border-radius:0.22rem;
-      border:1px solid @mainColor;
+      border:1px solid #8BBDE1;
       white-space:nowrap;
       text-align:center;
-      color:@mainColor;
+      color:#8BBDE1;
       flex-shrink:0;
       &.on{
-        background:@mainColor;
+        background:#8BBDE1;
         color:#FFF;
       }
       &:active{
         text-decoration:underline;
       }
-    }
-  }
-  > div{
-    .circles{
-      display:flex;
-      box-sizing:border-box;
-      padding:0.1rem 0.1rem 0.05rem;
-      align-items:start;
-      overflow-x:auto;
-      transform:translate3d(0, 0, 0);
-      z-index:200;
-      background:#FFF;
-      box-shadow:@boxShadow;
-      &.fix{
-        position:fixed;
-        left:0;
-        top:0.64rem;
-        width:100%;
-      }
-      li{
-        display:block;
-        margin-right:0.05rem;
-        margin-bottom:0.02rem;
-        padding:0 0.1rem;
-        line-height:0.22rem;
-        border:1px solid @mainColor;
-        color:@mainColor;
-        border-radius:0.22rem;
-        white-space:nowrap;
-        flex-shrink:0;
-        &:active{
-          color:@secondColor;
-          border-color:@secondColor;
-        }
-        &.cur{
-          background:@mainColor;
-          color:@thirdTextColor;
-          &:active{
-            background:@secondColor;
-          }
-        }
-      }
-    }
-    .cinfo{
-      margin:0.1rem;
-      color:@secondTextColor;
-    }
-    .cp-hotcircle{
-      padding-top:0.1rem;
     }
   }
 }

@@ -4,9 +4,6 @@
 
 'use strict';
 
-import net from '../common/net';
-import util from '../common/util';
-
 let loadingUser;
 let loadEndUser;
 let loadingCircle;
@@ -23,31 +20,31 @@ class Shield extends migi.Component {
       $user.on('click', 'button', function() {
         let $button = $(this);
         let id = $button.attr('rel');
-        net.postJSON('/h5/user/unShield', { userId: id }, function(res) {
+        $net.postJSON('/h5/user/unShield', { userId: id }, function(res) {
           if(res.success) {
             jsBridge.toast('解除成功');
             $button.closest('li').remove();
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
         }, function(res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         });
       });
       $circle.on('click', 'button', function() {
         let $button = $(this);
         let id = $button.attr('rel');
-        net.postJSON('/h5/circle/unShield', { circleID: id }, function(res) {
+        $net.postJSON('/h5/circle/unShield', { circleID: id }, function(res) {
           if(res.success) {
             jsBridge.toast('解除成功');
             $button.closest('li').remove();
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
         }, function(res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         });
       });
     });
@@ -57,7 +54,7 @@ class Shield extends migi.Component {
   @bind message2
   init() {
     let self = this;
-    net.postJSON('/h5/my/shield', function(res) {
+    $net.postJSON('/h5/my/shield', function(res) {
       if(res.success) {
         let data = res.data;
         self.addUser(data.user);
@@ -65,7 +62,7 @@ class Shield extends migi.Component {
       }
       else {}
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
   addUser(data) {
@@ -78,10 +75,10 @@ class Shield extends migi.Component {
   }
   genUser(data) {
     return <li>
-      <a href={ '/user.html?userID=' + data.UserID } class="pic" title={ data.UserName }>
-        <img src={ util.autoSsl(util.img120_120_80(data.HeadUrl) || '/src/common/head.png') }/>
+      <a href={ '/user.html?id=' + data.UserID } class="pic" title={ data.UserName }>
+        <img src={ $util.img(data.HeadUrl, 120, 120, 80) || '/src/common/head.png' }/>
       </a>
-      <a href={ '/user.html?userID=' + data.UserID } class="txt" title={ data.UserName }>
+      <a href={ '/user.html?id=' + data.UserID } class="txt" title={ data.UserName }>
         <span class="name">{ data.UserName }</span>
       </a>
       <button rel={ data.UserID }>解除屏蔽</button>
@@ -97,10 +94,10 @@ class Shield extends migi.Component {
   }
   genCircle(data) {
     return <li>
-      <a href={ '/circle.html?circleId=' + data.CirclingID } class="pic" title={ data.CirclingName }>
-        <img src={ util.autoSsl(util.img120_120_80(data.HeadUrl) || '/src/common/head.png') }/>
+      <a href={ '/circle.html?id=' + data.CirclingID } class="pic" title={ data.CirclingName }>
+        <img src={ $util.img(data.HeadUrl, 120, 120, 80) || '/src/common/head.png' }/>
       </a>
-      <a href={ '/circle.html?circleId=' + data.CirclingID } class="txt" title={ data.CirclingName }>
+      <a href={ '/circle.html?id=' + data.CirclingID } class="txt" title={ data.CirclingName }>
         <span class="name">{ data.CirclingName }</span>
       </a>
       <button rel={ data.CirclingID }>解除屏蔽</button>

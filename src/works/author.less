@@ -2,7 +2,7 @@
  * Created by army8735 on 2017/10/18.
  */
 
-.mod.mod-author{
+.mod-author{
   position:relative;
   margin:0.1rem 0.15rem;
   padding-bottom:0.05rem;
@@ -17,55 +17,49 @@
     overflow:hidden;
     transform:scaleY(0.5);
   }
-  ul{
-    margin-bottom:0.05rem;
-    &:last-child{
-      margin:0;
+  dl{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    margin-bottom:0.01rem;
+  }
+  dt{
+    display:flex;
+    align-items:center;
+    margin-right:0.05rem;
+    margin-bottom:0.01rem;
+    padding:0 0.05rem;
+    box-sizing:border-box;
+    height:0.2rem;
+    border:1px solid #8BBDE1;
+    border-radius:0.18rem;
+    color:#8BBDE1;
+    transform:scale(0.917);
+    transform-origin:0 center;
+  }
+  dd{
+    display:flex;
+    align-items:center;
+    margin-right:0.05rem;
+    margin-bottom:0.01rem;
+    line-height:0.24rem;
+    a{
+      display:inline-block;
     }
-    dl{
-      display:flex;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-bottom:0.01rem;
-    }
-    dt{
-      display:flex;
-      align-items:center;
+    img{
+      display:inline-block;
       margin-right:0.05rem;
-      margin-bottom:0.01rem;
-      padding:0 0.05rem;
-      box-sizing:border-box;
-      height:0.2rem;
-      border:1px solid #8BBDE1;
-      border-radius:0.18rem;
-      color:#8BBDE1;
+      width:0.24rem;
+      height:0.24rem;
+      border-radius:100%;
+      box-shadow:0 0 0.02rem rgba(185, 217, 237, 0.5);
+      vertical-align:top;
+    }
+    span{
+      display:inline-block;
+      color:#636365;
       transform:scale(0.917);
       transform-origin:0 center;
-    }
-    dd{
-      display:flex;
-      align-items:center;
-      margin-right:0.05rem;
-      margin-bottom:0.01rem;
-      line-height:0.24rem;
-      a{
-        display:inline-block;
-      }
-      img{
-        display:inline-block;
-        margin-right:0.05rem;
-        width:0.24rem;
-        height:0.24rem;
-        border-radius:100%;
-        box-shadow:0 0 0.02rem rgba(185, 217, 237, 0.5);
-        vertical-align:top;
-      }
-      span{
-        display:inline-block;
-        color:#636365;
-        transform:scale(0.917);
-        transform-origin:0 center;
-      }
     }
   }
 }

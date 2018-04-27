@@ -4,8 +4,6 @@
 
 'use strict';
 
-import util from '../../common/util';
-
 class SubCmt extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -33,7 +31,7 @@ class SubCmt extends migi.Component {
   @bind invalid = true
   @bind readOnly
   input(e, vd) {
-    if(!util.isLogin()) {
+    if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
     }
     else {

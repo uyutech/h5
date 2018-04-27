@@ -1,0 +1,165 @@
+/**
+ * Created by army8735 on 2018/4/12.
+ */
+
+.mod-message{
+  li{
+    position:relative;
+    padding:0.1rem;
+    border-bottom:0.05rem solid #EDF3F7;
+    &.cur .wrap{
+      background:#ffe;
+    }
+    &.read .reply{
+      opacity:0.5;
+    }
+    > .profile{
+      position:relative;
+      display:flex;
+      font-weight:400;
+      align-items:center;
+      .pic{
+        margin-right:0.1rem;
+        width:0.48rem;
+        height:0.48rem;
+        box-sizing:border-box;
+        border-radius:100%;
+        box-shadow:0 0 0.01rem rgba(185, 217, 237, 0.3);
+        img{
+          display:block;
+          width:100%;
+          height:100%;
+          border-radius:100%;
+          object-fit:contain;
+        }
+      }
+      .txt{
+        font-size:0.16rem;
+        .name{
+          display:block;
+          max-width:1.5rem;
+          white-space:nowrap;
+          overflow:hidden;
+          text-overflow:ellipsis;
+          color:#2D4D67;
+        }
+        .time{
+          display:block;
+          font-size:0.12rem;
+          color:#919191;
+        }
+      }
+      > .circle{
+        margin-left:0.05rem;
+        flex:1;
+        min-height:0.48rem;
+        li{
+          display:inline-block;
+          margin-left:0.05rem;
+          margin-top:0.03rem;
+          padding:0 0.1rem;
+          box-sizing:border-box;
+          line-height:0.22rem;
+          border:1px solid #8BBDE1;
+          border-radius:0.22rem;
+          a{
+            color:#8BBDE1;
+          }
+        }
+      }
+    }
+    &.author{
+      > .profile .txt .name{
+        color:#EC0;
+      }
+    }
+    > .wrap{
+      position:relative;
+      margin:0.1rem 0;
+      padding:0.1rem;
+      background:#FFF;
+      border:1px solid #D5E0E6;
+      border-radius:0.1rem;
+      &:before{
+        position:absolute;
+        left:0.17rem;
+        top:-0.05rem;
+        width:0.13rem;
+        height:0.06rem;
+        background:url(../component/postlist/arrow.png) no-repeat center;
+        background-size:contain;
+        content:' ';
+      }
+      .quote{
+        padding:0.05rem 0.1rem;
+        background:#F0F0F0;
+        border-radius:0.05rem;
+        text-decoration:none;
+        span{
+          display:block;
+          word-break:break-all;
+          word-wrap:break-word;
+          white-space:pre-wrap;
+          overflow:hidden;
+          text-overflow:ellipsis;
+          vertical-align:middle;
+          color:#919191;
+        }
+      }
+      .con{
+        position:relative;
+        padding-top:0.1rem;
+        font-size:0.14rem;
+        word-break:break-all;
+        word-wrap:break-word;
+        white-space:pre-wrap;
+        line-height:1.8;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        a{
+          margin:0 0.02rem;
+          color:#0AE;
+        }
+        strong{
+          margin:0 0.02rem;
+          font-weight:400;
+          color:#0AE;
+        }
+        .placeholder{
+          display:inline-block;
+          width:0.56rem;
+        }
+        .more,.less{
+          position:absolute;
+          right:0;
+          bottom:0;
+          margin:0;
+          font-size:0.14rem;
+          color:#4E8EB0;
+          line-height:1.8;
+          white-space:nowrap;
+          cursor:pointer;
+          &:active{
+            color:#0AE;
+          }
+        }
+        .link{
+          color:#9CF;
+        }
+      }
+    }
+    .reply{
+      display:block;
+      margin:0 0 0 auto;
+      padding-left:0.3rem;
+      width:0.24rem;
+      line-height:0.24rem;
+      font-weight:400;
+      background:url(../icon/bold-comment.png) no-repeat 0 center;
+      background-size:contain;
+      &:active{
+        background-image:url(../icon/bold-comment-hover.png);
+      }
+    }
+  }
+}

@@ -2,11 +2,7 @@
  * Created by army8735 on 2017/9/19.
  */
 
-import net from '../../common/net';
-import util from '../../common/util';
 import Background from '../background/Background.jsx';
-
-let loading;
 
 class TopNav extends migi.Component {
   constructor(...data) {
@@ -36,7 +32,7 @@ class TopNav extends migi.Component {
              placeholder="搜索音乐、图片、视频、帖子..."
              readonly="true"
              onClick={ this.click }/>
-      <Background duplicate={ true }/>
+      <Background disableEvent={ true }/>
     </div>;
   }
 }

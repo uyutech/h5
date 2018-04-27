@@ -4,117 +4,160 @@
 
 'use strict';
 
-import net from '../common/net';
-import util from '../common/util';
 import Nav from './Nav.jsx';
 import Background from '../component/background/Background.jsx';
-import HotPost from '../component/hotpost/HotPost.jsx';
-import ImageView from '../post/ImageView.jsx';
+import PostList from '../component/postlist/PostList.jsx';
+import ImageView from '../component/imageview/ImageView.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 
-let take = 10;
-let skip = take;
+let offset = 0;
+let ajax;
 let loading;
 let loadEnd;
+
+let currentPriority = 0;
+let cacheKey;
 
 class User extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  @bind userID
-  load(userID) {
+  // @bind id
+  init(id) {
     let self = this;
-    self.userID = userID;
-    net.postJSON('/h5/user/index', { userID }, function(res) {
+    self.id = id;
+    cacheKey = 'userData_' + id;
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        try {
+          self.setData(cache, 0);
+        }
+        catch(e) {}
+      }
+    });
+    $net.postJSON('/h5/user2/index', { id }, function(res) {
       if(res.success) {
-        self.setData(res.data);
+        let data = res.data;
+        let cache = {};
+        Object.keys(data).forEach(function(k) {
+          if(k !== 'comment') {
+            cache[k] = data[k];
+          }
+        });
+        jsBridge.setPreference(cacheKey, cache);
+        self.setData(data, 1);
+
+        window.addEventListener('scroll', function() {
+          self.checkMore();
+        });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
-  setData(data) {
-    let self = this;
-    self.ref.nav.userInfo = data.userInfo;
-    self.ref.nav.followState = data.followState;
+  setData(data, priority) {
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
 
-    let $window = $(window);
-    loadEnd = data.userPost.Size <= take;
-    if(loadEnd) {
-      self.ref.hotPost.message = '已经到底了';
+    let self = this;
+    self.data = data;
+    let nav = self.ref.nav;
+    let postList = self.ref.postList;
+
+    nav.setData(data.info, data.followPersonCount, data.fansCount, data.isFollow, data.isFans);
+
+    if(data.postList && data.postList.count) {
+      offset = data.postList.limit;
+      postList.setData(data.postList.data);
+      if(offset >= data.postList.count) {
+        loadEnd = true;
+        postList.message = '已经到底了';
+      }
+      else {
+        loadEnd = false;
+        postList.message = '正在加载...';
+      }
     }
     else {
-      $window.on('scroll', function() {
-        self.checkMore($window);
-      });
+      loadEnd = true;
+      postList.message = '暂无动态';
     }
 
-    let hotPost = self.ref.hotPost;
-    hotPost.appendData(data.userPost.data);
-    let imageView = self.ref.imageView;
-    imageView.on('clickLike', function(sid) {
-      hotPost.like(sid, function(res) {
-        imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
-      });
-    });
-    jsBridge.on('back', function(e) {
-      if(!imageView.isHide()) {
-        e.preventDefault();
-        imageView.hide();
-      }
-    });
+    // let imageView = self.ref.imageView;
+    // imageView.on('clickLike', function(sid) {
+    //   hotPost.like(sid, function(res) {
+    //     imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
+    //   });
+    // });
+    // jsBridge.on('back', function(e) {
+    //   if(!imageView.isHide()) {
+    //     e.preventDefault();
+    //     imageView.hide();
+    //   }
+    // });
   }
-  checkMore($window) {
+  checkMore() {
+    let self = this;
     if(loading || loadEnd) {
       return;
     }
-    let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    let bool;
-    bool = $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
-      self.loadMore();
+    if($util.isBottom()) {
+      self.load();
     }
   }
-  loadMore() {
+  load() {
     let self = this;
-    if(loading) {
-      return;
+    let postList = self.ref.postList;
+    if(ajax) {
+      ajax.abort();
     }
     loading = true;
-    let hotPost = self.ref.hotPost;
-    hotPost.message = '正在加载...';
-    net.postJSON('/h5/user/postList', { userID: self.userID, skip, take }, function(res) {
+    ajax = $net.postJSON('/h5/user2/postList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
-        hotPost.appendData(res.data.data);
-        if(skip >= data.Size) {
-          loadEnd = true;
-          hotPost.message = '已经到底了';
+        offset += data.limit;
+        if(data.data.length) {
+          postList.appendData(data.data);
         }
-        else {
-          hotPost.message = '';
+        if(offset >= data.count) {
+          loadEnd = true;
+          postList.message = '已经到底了';
         }
       }
+      else if(res.code === 1000) {
+        migi.eventBus.emit('NEED_LOGIN');
+      }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
+    });
+  }
+  follow(data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.isFollow = data.state;
+        cache.fansCount = data.count;
+        jsBridge.setPreference(cacheKey, cache);
+      }
     });
   }
   render() {
     return <div class="user">
       <Background/>
-      <Nav ref="nav"/>
-      <HotPost ref="hotPost"/>
+      <Nav ref="nav"
+           on-follow={ this.follow }/>
+      <PostList ref="postList"
+                visible={ true }
+                message={ '正在加载...' }/>
       <ImageView ref="imageView"/>
       <BotFn ref="botFn"/>
     </div>;

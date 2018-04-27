@@ -9,26 +9,18 @@ import './index.less';
 
 import qs from 'anima-querystring';
 
-import net from '../common/net';
-import util from '../common/util';
 import Circle from './Circle.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let circleId = search.circleId || search.circleID;
+let id = search.id;
 
 jsBridge.ready(function() {
   let circle = migi.preExist(
     <Circle/>,
     '#page'
   );
-  net.postJSON('/h5/circle/index', { circleID: circleId }, function(res) {
-    if(res.success) {
-      circle.setData(circleId, res.data);
-    }
-    else {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-    }
-  }, function(res) {
-    jsBridge.toast(res.message || util.ERROR_MESSAGE);
+  jsBridge.setOptionMenu({
+    icon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAALVBMVEUAAAAAAAAAAAAAAAD+/v4AAAD5+fnk5OTq6uoAAAAwMDAAAAAAAACAgID///8waL84AAAADnRSTlMABxEL8BqUoZ0nIiITDIsBZnQAAABpSURBVEjHYxgFgxYICuKXl01xu4hPnlHs3btEAXwKTN69c8anQFDl3TsnfK4Q1nj3rskQnwlaJe6L8CpQ3Tk7CJ8VjDahoYfx+kJYSclQAG9AChsKEgxqCgHjaGyOxuZobA7K2BwFNAMAj1k2xo1Ti1oAAAAASUVORK5CYII=',
   });
+  circle.init(id);
 });

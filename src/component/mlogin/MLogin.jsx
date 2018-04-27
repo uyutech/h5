@@ -2,7 +2,7 @@
  * Created by army8735 on 2017/9/14.
  */
 
-import util from '../../common/util';
+'use strict';
 
 class NeedLogin extends migi.Component {
   constructor(...data) {
@@ -11,7 +11,7 @@ class NeedLogin extends migi.Component {
     self.on(migi.Event.DOM, function() {
       jsBridge.on('resume', function(e) {
         let data = e.data;
-        if(data && data.passport && util.isLogin()) {
+        if(data && data.passport && $util.isLogin()) {
           self.hide();
         }
       });
@@ -57,10 +57,8 @@ class NeedLogin extends migi.Component {
           jsBridge.hideLoading();
           if(res.success) {
             let data = res.data;
-            jsBridge.setPreference('loginInfo', data);
+            jsBridge.setPreference('my', data);
             $.cookie('isLogin', true);
-            $.cookie('uid', data.userInfo.UID);
-            $.cookie('userType', data.userInfo.UserType);
             self.hide();
             migi.eventBus.emit('LOGIN', data);
           }
@@ -70,7 +68,7 @@ class NeedLogin extends migi.Component {
         });
       }
       else {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       }
     });
   }

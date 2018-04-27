@@ -4,16 +4,6 @@
 
 'use strict';
 
-import net from '../../common/net';
-import util from '../../common/util';
-
-let loadingFavor;
-let loadingLike;
-let ajaxFavor;
-let ajaxLike;
-let last;
-let lastId;
-let isPlaying;
 let mediaService;
 
 class Playlist extends migi.Component {
@@ -21,10 +11,9 @@ class Playlist extends migi.Component {
     super(...data);
     let self = this;
     self.message = self.props.message;
-    self.dataList = self.props.dataList || [];
-    if(self.props.visible !== undefined) {
-      self.visible = self.props.visible;
-    }
+    self.visible = self.props.visible;
+    self.list = [];
+    self.exist = {};
     self.on(migi.Event.DOM, function() {
       if(jsBridge.appVersion) {
         let version = jsBridge.appVersion.split('.');
@@ -35,327 +24,227 @@ class Playlist extends migi.Component {
           mediaService = true;
         }
       }
-      let $root = $(this.element);
-      $root.on('click', '.fn', function() {
-        let $fn = $(this);
-        let isLike = $fn.attr('isLike') === 'true';
-        let isFavor = $fn.attr('isFavor') === 'true';
-        let worksId = $fn.attr('worksId');
-        let workId = $fn.attr('workId');
-        let worksTitle = $fn.attr('worksTitle');
-        let worksCover = $fn.attr('worksCover');
-        let workCover = $fn.attr('workCover');
-        let authorStr = $fn.attr('authorStr');
-        migi.eventBus.emit('BOT_FN', {
-          canFn: true,
-          canLike: true,
-          canFavor: true,
-          canShare: true,
-          canShareIn: true,
-          canShareWb: true,
-          canShareLink: true,
-          isLike,
-          isFavor,
-          clickFavor: function(botFn) {
-            if(loadingFavor) {
-              return;
-            }
-            loadingFavor = true;
-            ajaxFavor = net.postJSON(isFavor ? '/h5/works/unFavorWork' : '/h5/works/favorWork', { workID: $fn.attr('workId') }, function(res) {
-              if(res.success) {
-                let data = res.data;
-                $fn.attr('isFavor', isFavor = botFn.isFavor = data.State === 'favorWork');
-              }
-              else {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              }
-              loadingFavor = false;
-            }, function(res) {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              loadingFavor = false;
-            });
-          },
-          clickLike: function(botFn) {
-            if(loadingLike) {
-              return;
-            }
-            loadingLike = true;
-            ajaxLike = net.postJSON('/h5/works/likeWork', { workID: $fn.attr('workId') }, function(res) {
-              if(res.success) {
-                let data = res.data;
-                $fn.attr('isLike', isLike = botFn.isLike = data.State === 'likeWordsUser');
-              }
-              else {
-                jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              }
-              loadingLike = false;
-            }, function(res) {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
-              loadingLike = false;
-            });
-          },
-          clickCancel: function() {
-            if(ajaxFavor) {
-              ajaxFavor.abort();
-            }
-            if(ajaxLike) {
-              ajaxLike.abort();
-            }
-            loadingFavor = false;
-            loadingLike = false;
-          },
-          clickShareWb: function() {
-            let url = window.ROOT_DOMAIN + '/works/' + worksId;
-            if(workId) {
-              url += '/' + workId;
-            }
-            let text = '【';
-            if(worksTitle) {
-              text += worksTitle;
-            }
-            text += '】';
-            text += authorStr;
-            text += ' #转圈circling# ';
-            text += url;
-            jsBridge.shareWb({
-              text,
-            }, function(res) {
-              if(res.success) {
-                jsBridge.toast("分享成功");
-              }
-              else if(res.cancel) {
-                jsBridge.toast("取消分享");
-              }
-              else {
-                jsBridge.toast("分享失败");
-              }
-            });
-          },
-          clickShareLink: function() {
-            let url = window.ROOT_DOMAIN + '/works/' + worksId;
-            if(workId) {
-              url += '/' + workId;
-            }
-            util.setClipboard(url);
-          },
-          clickShareIn: function(botFn) {
-            jsBridge.pushWindow('/subpost.html?worksId=' + worksId
-              + '&workId=' + workId
-              + '&cover=' + encodeURIComponent(worksCover || ''), {
-              title: '画个圈',
-              optionMenu: '发布',
-            });
-          },
+      let $list = $(self.ref.list.element);
+      $list.on('click', '.pic', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle: true,
         });
+      });
+      $list.on('click', '.txt', function() {
+        let worksId = parseInt($(this).attr('worksId'));
+        let workId = parseInt($(this).attr('workId'));
+        for(let i = 0, len = self.list.length; i < len; i++) {
+          let item = self.list[i];
+          if(item.id === worksId && item.work.id === workId) {
+            self.setCur(i);
+            self.emit('change', self.list[i]);
+            break;
+          }
+        }
+      });
+      $list.on('click', '.fn', function() {
+        let id = parseInt($(this).attr('rel'));
+        for(let i = 0, len = self.list.length; i < len; i++) {
+          let item = self.list[i];
+          if(item.work.id === id) {
+            migi.eventBus.emit('BOT_FN', {
+              canShare: true,
+              canShareIn: true,
+              canShareWb: true,
+              canShareLink: true,
+              clickShareIn: function(botFn) {
+                jsBridge.pushWindow('/sub_post.html?worksId=' + item.id
+                  + '&workId=' + id
+                  + '&cover=' + encodeURIComponent(item.work.cover || item.cover || ''), {
+                  title: '画个圈',
+                  optionMenu: '发布',
+                });
+                botFn.cancel();
+              },
+              clickShareWb: function(botFn) {
+                let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
+                let text = '【' + item.work.title;
+                if(item.work.subTitle) {
+                  text += ' ' + item.work.subTitle;
+                }
+                text += '】';
+                let hash = {};
+                item.work.author.forEach((item) => {
+                  item.list.forEach((author) => {
+                    if(!hash[author.id]) {
+                      hash[author.id] = true;
+                      text += author.name + ' ';
+                    }
+                  });
+                });
+                text += ' #转圈circling# ';
+                text += url;
+                jsBridge.shareWb({
+                  text,
+                }, function(res) {
+                  if(res.success) {
+                    jsBridge.toast("分享成功");
+                  }
+                  else if(res.cancel) {
+                    jsBridge.toast("取消分享");
+                  }
+                  else {
+                    jsBridge.toast("分享失败");
+                  }
+                });
+                botFn.cancel();
+              },
+              clickShareLink: function(botFn) {
+                let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
+                $util.setClipboard(url);
+                botFn.cancel();
+              },
+            });
+            break;
+          }
+        }
       });
     });
   }
   @bind message
-  @bind visible = true
-  show() {
-    this.visible = true;
-  }
-  hide() {
-    this.visible = false;
-    this.clearLast();
-    last = lastId = null;
-    isPlaying = false;
-  }
+  @bind visible
   setData(data) {
+    let self = this;
+    self.clearData();
+    if(!data) {
+      return;
+    }
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
     let s = '';
-    (data || []).forEach(function(item) {
-      s += this.genItem(item) || '';
-    }.bind(this));
-    $(this.ref.list.element).html(s);
+    data.forEach(function(item) {
+      if(self.exist[item.work.id]) {
+        return;
+      }
+      self.exist[item.work.id] = true;
+      self.list.push(item);
+      s += self.genItem(item);
+    });
+    $(self.ref.list.element).html(s);
   }
   appendData(data) {
+    let self = this;
+    if(!data) {
+      return;
+    }
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
     let s = '';
-    (data || []).forEach(function(item) {
-      s += this.genItem(item) || '';
-    }.bind(this));
-    $(this.ref.list.element).append(s);
+    data.forEach(function(item) {
+      if(self.exist[item.work.id]) {
+        return;
+      }
+      self.exist[item.work.id] = true;
+      self.list.push(item);
+      s += self.genItem(item);
+    });
+    $(self.ref.list.element).append(s);
+  }
+  clearData() {
+    let self = this;
+    self.exist = {};
+    self.list = [];
+    $(self.ref.list.element).html('');
   }
   genItem(item) {
     let self = this;
-    if(item.WorksState === 3) {
-      return <li class="private">
-        <span class="name">待揭秘</span>
-      </li>;
+    let url = '/works.html?id=' + item.id + '&workId=' + item.work.id;
+    let author = [];
+    let hash = {};
+    if(self.props.profession) {
+      item.work.profession.forEach((item) => {
+        author.push(item.name);
+      });
     }
-    let works = (item.Works_Items_Works || [])[0] || {};
-    if(!works) {
-      return;
-    }
-    let author = ((item.GroupAuthorTypeHash || {}).AuthorTypeHashlist || [])[0] || {};
-    let url = util.getWorksUrl(works.WorksID, works.WorksType, item.ItemID);
-    let authorStr = (author.AuthorInfo || []).map(function(item) {
-      return item.AuthorName;
-    }).join(' ');
-    if(item.WorksState === 2) {
-      let temp = <li class={ item.ItemID === lastId ? 'cur' : '' }>
-        <a href={ url }
-           title={ item.ItemName || '待揭秘' }
-           class="pic">
-          <img class="pic"
-               src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
-        </a>
-        <audio ref="audio"
-               preload="meta"
-               playsinline="true"
-               webkit-playsinline="true"/>
-        <div class="txt">
-          <a href={ url }
-             title={ item.ItemName || '待揭秘' }
-             class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
-          {
-            self.props.profession
-              ? <p class="author">{ (author.AuthorInfo || []).map(function(item) {
-                return item.AuthorTypeName;
-              }).join(' ') }</p>
-              : <p class="author">{ authorStr }</p>
+    else {
+      item.work.author.forEach(function(list) {
+        list.list.forEach(function(at) {
+          if(!hash[at.id]) {
+            hash[at.id] = true;
+            author.push(at.name);
           }
-        </div>
-      </li>;
-      if(item.ItemID === lastId) {
-        last = item;
-      }
-      return temp;
+        });
+      });
     }
-    let temp = <li class={ item.ItemID === lastId ? 'cur' : '' }>
-      <a href={ url }
-         title={ item.ItemName || '待揭秘' }
-         class="pic"
-         item={ item }>
-        <img src={ util.autoSsl(util.img80_80_80(works.WorksCoverPic || '//zhuanquan.xin/img/blank.png')) }/>
+    return <li rel={ item.id }>
+      <a class="pic"
+         title={ item.title }
+         href={ url }>
+        <img src={ $util.img(item.cover, 80, 80, 80) || '/src/common/blank.png' }/>
       </a>
-      <audio ref="audio"
-             preload="meta"
-             playsinline="true"
-             webkit-playsinline="true"/>
-      <div class="txt">
-        <a href={ url }
-           title={ item.ItemName || '待揭秘' }
-           item={ item }
-           class={ 'name' + (item.ItemName ? '' : ' empty') }>{ item.ItemName || '待揭秘' }</a>
-        {
-          self.props.profession
-            ? <p class="author">{ (author.AuthorInfo || []).map(function(item) {
-              return item.AuthorTypeName;
-            }).join(' ') }</p>
-            : <p class="author">{ authorStr }</p>
-        }
+      <div class="txt"
+           worksId={ item.id }
+           workId={ item.work.id }>
+        <span class="name">{ item.work.title }</span>
+        <p class="author">{ author.join(' ') }</p>
       </div>
       <b class="fn"
-         worksId={ works.WorksID }
-         worksTitle={ works.WorksName }
-         workId={ item.ItemID }
-         workTitle={ item.ItemName }
-         worksCover={ works.WorksCoverPic }
-         authorStr={ authorStr }
-         isLike={ item.ISLike }
-         isFavor={ item.ISFavor }/>
+         rel={ item.work.id }/>
     </li>;
-    if(item.ItemID === lastId) {
-      last = item;
-    }
-    return temp;
   }
-  clearData() {
-    $(this.ref.list.element).html('');
-    last = lastId = null;
-  }
-  clickPic(e, vd, tvd) {
-    e.preventDefault();
-    let url = tvd.props.href;
-    let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-      transparentTitle: true,
-    });
-  }
-  click(e, vd, tvd) {
-    e.preventDefault();
+  setCur(i) {
     let self = this;
-    if(self.props.playInline) {
-      let li = tvd.closest('li');
-      let audio = li.find('audio');
-      if(li.element.classList.contains('cur')) {
-        if(mediaService) {
-          jsBridge.media({
-            key: isPlaying ? 'pause' : 'play',
-          });
-        }
-        else {
-          isPlaying ? audio.element.pause() : audio.element.play();
-        }
-        isPlaying = !isPlaying;
-        return;
-      }
-      self.clearLast();
-      li.element.classList.add('cur');
-      last = li;
-      let item = tvd.props.item;
-      lastId = item.ItemID;
-      if(mediaService) {
-        jsBridge.media({
-          key: 'info',
-          value: {
-            id: item.ItemID,
-            url: location.protocol + util.autoSsl(item.FileUrl),
-            name: item.workId,
-          },
-        });
-        jsBridge.media({
-          key: 'play',
-        });
-        jsBridge.getPreference('playlist', function(res) {
-          res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
-          for (let i = 0, len = res.length; i < len; i++) {
-            if(res[i].workId === item.ItemID) {
-              res.splice(i, 1);
-              break;
-            }
-          }
-          res.unshift({
-            workId: item.ItemID,
-          });
-          jsBridge.setPreference('playlist', jsBridge.android ? res : JSON.parse(res));
-        });
-        jsBridge.setPreference('playlistCur', {
-          workId: item.ItemID,
-        });
-      }
-      else {
-        audio.element.src = item.FileUrl;
-        audio.element.play();
-        isPlaying = true;
-      }
+    let $list = $(self.ref.list.element);
+    $list.find('.cur').removeClass('cur');
+    if(i !== undefined && i !== null) {
+      $list.find('li').eq(i).addClass('cur');
+    }
+  }
+  prev() {
+    let self = this;
+    if(self.list.length < 2) {
       return;
     }
-    let url = tvd.props.href;
-    let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-      transparentTitle: true,
-    });
+    let $list = $(self.ref.list.element);
+    let $cur = $list.find('li.cur');
+    let $prev = $cur.prev();
+    if(!$prev[0]) {
+      $prev = $list.find('li:last-child');
+    }
+    let id = parseInt($prev.attr('rel'));
+    for(let i = 0, len = self.list.length; i < len; i++) {
+      let item = self.list[i];
+      if(item.id === id) {
+        self.setCur(i);
+        return item;
+      }
+    }
   }
-  clearLast() {
-    if(last) {
-      let audio = last.find('audio');
-      audio.element.pause();
-      last.element.classList.remove('cur');
+  next() {
+    let self = this;
+    if(self.list.length < 2) {
+      return;
+    }
+    let $list = $(self.ref.list.element);
+    let $cur = $list.find('li.cur');
+    let $next = $cur.next();
+    if(!$next[0]) {
+      $next = $list.find('li:first-child');
+    }
+    let id = parseInt($next.attr('rel'));
+    for(let i = 0, len = self.list.length; i < len; i++) {
+      let item = self.list[i];
+      if(item.id === id) {
+        self.setCur(i);
+        return item;
+      }
     }
   }
   render() {
-    return <div class={ 'cp-playlist' + (this.visible ? '' : ' fn-hide') }
-                onClick={ { '.pic': this.clickPic, '.name': this.click } }>
-      <ol class="list" ref="list">
-      {
-        (this.dataList || []).map(function(item) {
-          return this.genItem(item);
-        }.bind(this))
-      }
-      </ol>
+    return <div class={ 'cp-playlist' + (this.visible ? '' : ' fn-hide') }>
+      <ol ref="list"/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;
   }

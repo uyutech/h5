@@ -42,7 +42,7 @@ class First extends migi.Component {
     this.clickBtn();
   }
   render() {
-    return <div class="first"
+    return <div class="first-visit"
                 ref="first">
       <div class="c"
            ref="c"

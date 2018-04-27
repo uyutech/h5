@@ -7,8 +7,6 @@
 import './mall.html';
 import './index.less';
 
-import net from '../common/net';
-import util from '../common/util';
 import Mall from './Mall.jsx';
 
 jsBridge.ready(function() {
@@ -21,14 +19,5 @@ jsBridge.ready(function() {
     <Mall/>,
     '#page'
   );
-  net.postJSON('/h5/mall', function(res) {
-    if(res.success) {
-      mall.setData(res.data);
-    }
-    else {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
-    }
-  }, function(res) {
-    jsBridge.toast(res.message || util.ERROR_MESSAGE);
-  });
+  mall.init();
 });

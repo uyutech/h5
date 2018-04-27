@@ -5,14 +5,7 @@
 #page > .my{
   margin-top:-0.7rem;
   .cp-background{
-    position:fixed;
-    top:0.3rem;
     right:0.1rem;
-    z-index:50;
-    b{
-      box-shadow:0 0.01rem 0.02rem rgba(0, 0, 0, 0.3);
-      background:#FFF;
-    }
   }
   > .nav{
     position:relative;
@@ -42,6 +35,14 @@
           box-sizing:border-box;
           border-radius:100%;
         }
+        input{
+          position:absolute;
+          left:0;
+          top:0;
+          width:100%;
+          height:100%;
+          opacity:0;
+        }
       }
       .txt{
         flex:1;
@@ -70,7 +71,6 @@
             background-size:contain;
           }
           .edit{
-            margin-left:0.08rem;
             width:0.18rem;
             height:0.18rem;
             background:url(edit.png) no-repeat center;
@@ -216,6 +216,9 @@
         }
         &.config{
           background-image:url(../icon/my-config.png);
+        }
+        &.address{
+          background-image:url(../icon/my-address.png);
         }
         &:after{
           position:absolute;

@@ -18,7 +18,8 @@ class Column extends migi.Component {
     }
   }
   render() {
-    return <ul class="mod-column" onClick={ { li: this.click } }>
+    return <ul class="mod-column"
+               onClick={ { li: this.click } }>
       {
         (this.index, this.list || []).map(function(item, i) {
           return <li class={ this.index === i ? 'cur' : '' }

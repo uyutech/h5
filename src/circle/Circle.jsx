@@ -4,139 +4,147 @@
 
 'use strict';
 
-import net from '../common/net';
-import util from '../common/util';
-import Title from './Title.jsx';
-import HotPost from '../component/hotpost/HotPost.jsx';
-import ImageView from '../post/ImageView.jsx';
+
+import Nav from './Nav.jsx';
+import PostList from '../component/postlist/PostList.jsx';
+import ImageView from '../component/imageview/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
+import Background from '../component/background/Background.jsx';
 
-let take = 10;
-let skip = take;
+let offset = 0;
+let ajax;
 let loading;
 let loadEnd;
+
+let currentPriority = 0;
+let cacheKey;
 
 class Circle extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      jsBridge.setOptionMenu({
-        icon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAHlBMVEUAAACMvuGMvuGMvuGNveGMvuGNweOPwuuMvuKLveG52ByYAAAACXRSTlMA7+bFiGY1GfMKDs4PAAAASklEQVRIx2MYBSMZlIbjl2eTnJiAVwHzzJkGeBVwzJzZQK4JCDcQ9MUoAAInFfzyLDNnOuBVwDRzpgK5ChBWEHTkKBjNeqNgWAAAQowW2TR/xN0AAAAASUVORK5CYII=',
-      });
       jsBridge.on('optionMenu1', function() {
+        let id = self.id;
         migi.eventBus.emit('BOT_FN', {
           canFn: true,
           canBlock: true,
-          canShare: true,
-          canShareWb: true,
-          canShareLink: true,
           clickBlock: function(botFn) {
-            self.block(self.circleId, function() {
-              jsBridge.toast('屏蔽成功');
-              botFn.cancel();
+            if(!$util.isLogin()) {
+              migi.eventBus.emit('NEED_LOGIN');
+              return;
+            }
+            let id = self.id;
+            jsBridge.confirm('确认屏蔽吗？', function(res) {
+              if(!res) {
+                return;
+              }
+              $net.postJSON('/h5/circle2/block', { id }, function(res) {
+                if(res.success) {
+                  jsBridge.toast('屏蔽成功');
+                }
+                else if(res.code === 1000) {
+                  migi.eventBus.emit('NEED_LOGIN');
+                }
+                else {
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                }
+                botFn.cancel();
+              }, function(res) {
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                botFn.cancel();
+              });
             });
-          },
-          clickShareWb: function() {
-            let url = window.ROOT_DOMAIN + '/circle/' + self.circleId;
-            let text = '来转转【' + self.circleName + '】圈吧~ 每天转转圈，玩转每个圈~';
-            text += ' #转圈circling# ';
-            text += url;
-            jsBridge.shareWb({
-              text,
-            }, function(res) {
-              if(res.success) {
-                jsBridge.toast("分享成功");
-              }
-              else if(res.cancel) {
-                jsBridge.toast("取消分享");
-              }
-              else {
-                jsBridge.toast("分享失败");
-              }
-            });
-          },
-          clickShareLink: function() {
-            util.setClipboard(window.ROOT_DOMAIN + '/circle/' + self.circleId);
           },
         });
       });
     });
   }
-  @bind circleId
-  @bind circleName
-  setData(circleId, data) {
+  // @bind id
+  // @bind name
+  init(id) {
     let self = this;
-    self.circleId = circleId;
-    self.circleName = data.circleDetail.TagName;
-
-    let title = self.ref.title;
-    title.cover = data.circleDetail.TagCover;
-    title.sname = data.circleDetail.TagName;
-    title.id = data.circleDetail.TagID;
-    title.desc = data.circleDetail.Describe;
-    title.joined = data.circleDetail.ISLike;
-    title.count = data.circleDetail.Popular;
-
-    if(data.postList.Size > take) {
-      let $window = $(window);
-      $window.on('scroll', function() {
-        self.checkMore($window);
-      });
-    }
-
-    let hotPost = self.ref.hotPost;
-    hotPost.setData(data.postList.data);
-    let imageView = self.ref.imageView;
-    imageView.on('clickLike', function(sid) {
-      hotPost.like(sid, function(res) {
-        imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
-      });
-    });
-    jsBridge.on('back', function(e) {
-      if(!imageView.isHide()) {
-        e.preventDefault();
-        imageView.hide();
+    self.id = id;
+    cacheKey = 'circleData_' + id;
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        try {
+          self.setData(cache, 0);
+        }
+        catch(e) {}
       }
     });
-    jsBridge.on('resume', function(e) {
-      if(e.data && e.data.type === 'subPost') {
-        self.ref.hotPost.prependData(e.data.data);
+    ajax = $net.postJSON('/h5/circle2/index', { id }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        jsBridge.setPreference(cacheKey, data);
+        self.setData(data, 1);
+
+        window.addEventListener('scroll', function() {
+          self.checkMore();
+        });
       }
+      else {
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
-  checkMore($window) {
+  setData(data, priority) {
+    if(priority < currentPriority) {
+      return;
+    }
+    currentPriority = priority;
+
+    let self = this;
+    let nav = self.ref.nav;
+    let postList = self.ref.postList;
+
+    nav.setData(data.info, data.isFollow, data.fansCount);
+
+    postList.setData(data.top.concat(data.postList.data));
+    offset = data.postList.limit;
+    if(data.postList.count === 0) {
+      postList.message = '暂无画圈';
+      loadEnd = true;
+    }
+    else if(offset >= data.postList.count) {
+      postList.message = '已经到底了';
+      loadEnd = true;
+    }
+    else {
+      postList.message = '正在加载...';
+      loadEnd = false;
+    }
+  }
+  checkMore() {
+    let self = this;
     if(loading || loadEnd) {
       return;
     }
-    let self = this;
-    let WIN_HEIGHT = $window.height();
-    let HEIGHT = $(document.body).height();
-    let bool;
-    bool = !$(self.element).hasClass('fn-hide') && $window.scrollTop() + WIN_HEIGHT + 30 > HEIGHT;
-    if(bool) {
+    if($util.isBottom()) {
       self.load();
     }
   }
   load() {
     let self = this;
-    let hotPost = self.ref.hotPost;
+    let postList = self.ref.postList;
+    if(ajax) {
+      ajax.abort();
+    }
     loading = true;
-    hotPost.message = '正在加载...';
-    net.postJSON('/h5/circle/postList', { circleID: self.circleId, skip, take }, function(res) {
+    ajax = $net.postJSON('/h5/circle2/postList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        skip += take;
         if(data.data.length) {
-          hotPost.appendData(data.data);
+          postList.appendData(data.data);
         }
-        if(skip >= data.Size) {
+        offset += data.limit;
+        if(offset >= data.count) {
           loadEnd = true;
-          hotPost.message = '已经到底了';
-        }
-        else {
-          hotPost.message = '';
+          postList.message = '已经到底了';
         }
       }
       else {
@@ -144,12 +152,12 @@ class Circle extends migi.Component {
           migi.eventBus.emit('NEED_LOGIN');
         }
         else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         }
       }
       loading = false;
     }, function(res) {
-      jsBridge.toast(res.message || util.ERROR_MESSAGE);
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
       loading = false;
     });
   }
@@ -159,15 +167,9 @@ class Circle extends migi.Component {
       canShare: true,
       canShareWb: true,
       canShareLink: true,
-      clickBlock: function(botFn) {
-        self.block(self.circleId, function() {
-          jsBridge.toast('屏蔽成功');
-          botFn.cancel();
-        });
-      },
-      clickShareWb: function() {
-        let url = window.ROOT_DOMAIN + '/circle/' + self.circleId;
-        let text = '来转转【' + self.circleName + '】圈吧~ 每天转转圈，玩转每个圈~';
+      clickShareWb: function(botFn) {
+        let url = window.ROOT_DOMAIN + '/circle/' + self.id;
+        let text = '来转转【' + self.name + '】圈吧~ 每天转转圈，玩转每个圈~';
         text += ' #转圈circling# ';
         text += url;
         jsBridge.shareWb({
@@ -183,55 +185,75 @@ class Circle extends migi.Component {
             jsBridge.toast("分享失败");
           }
         });
+        botFn.cancel();
       },
-      clickShareLink: function() {
-        util.setClipboard(window.ROOT_DOMAIN + '/circle/' + self.circleId);
+      clickShareLink: function(botFn) {
+        $util.setClipboard(window.ROOT_DOMAIN + '/circle/' + self.id);
+        botFn.cancel();
       },
     });
   }
   comment() {
     let self = this;
-    if(!self.circleId) {
+    if(!self.id) {
       return;
     }
-    jsBridge.pushWindow('/subpost.html?circleId=' + self.circleId, {
+    jsBridge.pushWindow('/sub_post.html?circleId=' + self.id, {
       title: '画个圈',
       optionMenu: '发布',
     });
   }
-  block(id, cb) {
-    let self = this;
-    if(!util.isLogin()) {
-      migi.eventBus.emit('NEED_LOGIN');
-      return;
-    }
-    jsBridge.confirm('确认屏蔽吗？', function(res) {
-      if(!res) {
-        return;
+  favor(id, data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.postList.data.forEach(function(item) {
+          if(item.id === id) {
+            item.isFavor = data.state;
+            item.favorCount = data.count;
+          }
+        });
+        jsBridge.setPreference(cacheKey, cache);
       }
-      net.postJSON('/h5/circle/shield', { circleID: id }, function(res) {
-        if(res.success) {
-          cb && cb();
-        }
-        else {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
-        }
-      }, function(res) {
-        jsBridge.toast(res.message || util.ERROR_MESSAGE);
-      });
+    });
+  }
+  like(id, data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.postList.data.forEach(function(item) {
+          if(item.id === id) {
+            item.isLike = data.state;
+            item.likeCount = data.count;
+          }
+        });
+        jsBridge.setPreference(cacheKey, cache);
+      }
+    });
+  }
+  follow(data) {
+    jsBridge.getPreference(cacheKey, function(cache) {
+      if(cache) {
+        cache.isFollow = data.state;
+        cache.fansCount = data.count;
+        jsBridge.setPreference(cacheKey, cache);
+      }
     });
   }
   render() {
     return <div class="circle">
-      <Title ref="title"/>
-      <HotPost ref="hotPost"
-               message={ '正在加载...' }/>
+      <Background ref="background"/>
+      <Nav ref="nav"
+           on-follow={ this.follow }/>
+      <PostList ref="postList"
+                visible={ true }
+                message={ '正在加载...' }
+                on-favor={ this.favor }
+                on-like={ this.like }/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }
                 on-click={ this.comment }
                 on-share={ this.share }/>
-      <ImageView ref="imageView"/>
+      <ImageView/>
       <BotFn ref="botFn"/>
     </div>;
   }

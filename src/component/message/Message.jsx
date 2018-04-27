@@ -4,23 +4,19 @@
 
 'use strict';
 
-import net from '../../common/net';
-import util from '../../common/util';
-
 class Message extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.num = self.props.num;
+    self.num = 0;
     function reload() {
       jsBridge.getPreference('message-time', function(res) {
         res = res || 0;
         let now = Date.now();
-        if(util.isLogin() && now - res > 10000) {
-          net.postJSON('/h5/my/message', function(res) {
+        if($util.isLogin() && now - res > 10000) {
+          $net.postJSON('/h5/my2/unreadMessageCount', function(res) {
             if(res.success) {
-              let data = res.data;
-              self.num = data.Count;
+              self.num = res.data;
               jsBridge.setPreference('message-time', Date.now());
               jsBridge.setPreference('message-count', self.num);
             }
@@ -29,22 +25,21 @@ class Message extends migi.Component {
       });
     }
     self.on(migi.Event.DOM, function() {
+      reload();
       jsBridge.getPreference('message-count', function(res) {
         res = res || 0;
         self.num = res;
       });
-      reload();
       jsBridge.on('resume', function(e) {
         jsBridge.getPreference('message-count', function(res) {
           res = res || 0;
           self.num = res;
         });
         let data = e.data;
-        if(data && data.message) {
-          net.postJSON('/h5/my/message', function(res) {
+        if(data && data.myMessage) {
+          $net.postJSON('/h5/my2/unreadMessageCount', function(res) {
             if(res.success) {
-              let data = res.data;
-              self.num = data.Count;
+              self.num = res.data;
               jsBridge.setPreference('message-time', Date.now());
               jsBridge.setPreference('message-count', self.num);
             }
@@ -58,7 +53,7 @@ class Message extends migi.Component {
   }
   @bind num
   click() {
-    jsBridge.pushWindow('/message.html', {
+    jsBridge.pushWindow('/my_message.html', {
       title: '圈消息',
     });
   }

@@ -3,10 +3,12 @@
  */
 
 .cp-background{
-  position:relative;
-  display:block;
+  position:fixed;
+  top:0.26rem;
+  right:0.32rem;
   width:0.32rem;
   height:0.32rem;
+  z-index:50;
   transform:translateZ(0);
   b{
     position:absolute;
@@ -14,7 +16,8 @@
     width:0.02rem;
     height:62%;
     min-height:0.01rem;
-    background:#8bbde1;
+    background:#FFF;
+    box-shadow:0 0.01rem 0.02rem rgba(0, 0, 0, 0.3);
     border-radius:0.02rem;
     transition:height 0.2s;
     &:nth-child(1){

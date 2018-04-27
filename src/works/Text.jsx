@@ -14,8 +14,8 @@ class Text extends migi.Component {
       {
         (this.list || []).map(function(item) {
           return <li>
-            <h5>{ item.title }</h5>
-            <pre>{ item.data }</pre>
+            <h5>{ item.typeName }</h5>
+            <pre>{ item.content }</pre>
           </li>;
         })
       }

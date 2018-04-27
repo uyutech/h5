@@ -4,102 +4,182 @@
 
 'use strict';
 
-import util from '../common/util';
-import net from "../common/net";
+let uploading;
 
 class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
-    let self = this;
-    if(self.props.loginInfo) {
-      let userInfo = self.props.loginInfo.userInfo;
-      if(userInfo) {
-        self.userInfo = userInfo;
-      }
-    }
   }
   @bind userId
-  @bind head
-  @bind userName
+  @bind nickname
+  @bind headUrl
   @bind sex
-  @bind followNum
-  @bind fansNum
   @bind sign
-  @bind isAuthor
-  @bind updateNickNameTimeDiff
-  @bind updateHeadTimeDiff
-  set userInfo(userInfo) {
-    userInfo = userInfo || {};
-    this._userInfo = userInfo;
+  @bind isFollow
+  @bind followPersonCount
+  @bind isFans
+  @bind fansCount
+  @bind authorId;
+  setData(data, author, followPersonCount, fansCount) {
+    data = data || {};
+    author = author || {};
     let self = this;
-    self.userId = userInfo.UID;
-    self.head = userInfo.Head_Url;
-    self.userName = userInfo.NickName;
-    self.sex = userInfo.Sex;
-    self.followNum = userInfo.FollowNumber;
-    self.fansNum = userInfo.FansNumber;
-    self.sign = userInfo.User_Sign;
-    self.isAuthor = userInfo.ISAuthor;
+    self.userId = data.id;
+    self.headUrl = data.headUrl;
+    self.nickname = data.nickname;
+    self.sex = data.sex;
+    self.sign = data.sign;
+    self.followPersonCount = followPersonCount;
+    self.fansCount = fansCount;
+    if(author && author.length) {
+      self.authorId = author[0].id;
+    }
+    else {
+      self.authorId = null;
+    }
   }
-  get userInfo() {
-    return this._userInfo;
+  clickPic(e) {
+    if(!$util.isLogin()) {
+      e.preventDefault();
+    }
   }
-  clickPic() {
+  change(e) {
     let self = this;
-    // if(self.updateHeadTimeDiff < 24 * 60 * 60 * 1000) {
-    //   jsBridge.toast('头像一天只能修改一次哦~');
-    //   return;
-    // }
-    jsBridge.album(function(res) {
-      if(res.success) {
-        let img = Array.isArray(res.base64) ? res.base64[0] : res.base64;
-        net.postJSON('/h5/my/uploadHead', { img }, function(res) {
+    if(uploading) {
+      jsBridge.toast('有头像正在上传中...');
+      return;
+    }
+    if(!$util.isLogin()) {
+      e.preventDefault();
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
+    uploading = true;
+    let files = e.target.files;
+    if(files.length > 1) {
+      jsBridge.toast('只能选择一张图片作为头像哦~');
+      return;
+    }
+    let file = files[0];
+    let size = file.size;
+    let suffix;
+    switch(file.type) {
+      case 'image/png':
+        suffix = '.png';
+        break;
+      case 'image/gif':
+        suffix = '.gif';
+        break;
+      case 'image/jpeg':
+        suffix = '.jpg';
+        break;
+    }
+    if(size && size <= 10485760) {
+      let fileReader = new FileReader();
+      fileReader.onload = function() {
+        let spark = new SparkMd5();
+        spark.append(fileReader.result);
+        let md5 = spark.end();
+        $net.postJSON('/h5/my2/sts', { name: md5 + suffix }, function(res) {
           if(res.success) {
-            self.head = res.url;
-            self.updateHeadTimeDiff = 0;
-            jsBridge.getPreference('loginInfo', function(loginInfo) {
-              loginInfo.userInfo.Head_Url = res.url;
-              jsBridge.setPreference('loginInfo', loginInfo);
-            });
+            let data = res.data;
+            if(data.exist) {
+              self.headUrl = '//zhuanquan.xyz/pic/' + md5 + suffix;
+              $net.postJSON('/h5/my2/headUrl', { value: self.headUrl }, function(res) {
+                if(res.success) {
+                  jsBridge.getPreference(self.props.cacheKey, function(data) {
+                    if(data) {
+                      data.user.headUrl = self.headUrl;
+                      jsBridge.setPreference(self.props.cacheKey, data);
+                    }
+                  });
+                }
+                else {
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                }
+                uploading = false;
+              }, function(res) {
+                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+              });
+              return;
+            }
+            let name = md5 + suffix;
+            let key = data.prefix + name;
+            let policy = data.policy;
+            let signature = data.signature;
+            let host = data.host;
+            let accessKeyId = data.accessKeyId;
+            let form = new FormData();
+            form.append('key', key);
+            form.append('OSSAccessKeyId', accessKeyId);
+            form.append('success_action_status', 200);
+            form.append('policy', policy);
+            form.append('signature', signature);
+            form.append('file', file);
+            let xhr = new XMLHttpRequest();
+            xhr.open('post', host, true);
+            xhr.onload = function() {
+              if(xhr.status === 200) {
+                self.headUrl = '//zhuanquan.xyz/pic/' + md5 + suffix;
+                $net.postJSON('/h5/my2/headUrl', { value: self.headUrl }, function(res) {
+                  if(res.success) {
+                    jsBridge.getPreference(self.props.cacheKey, function(data) {
+                      if(data) {
+                        data.user.headUrl = self.headUrl;
+                        jsBridge.setPreference(self.props.cacheKey, data);
+                      }
+                    });
+                  }
+                  else {
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                  }
+                  uploading = false;
+                }, function(res) {
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                });
+              }
+            };
+            xhr.send(form);
           }
           else {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
         }, function(res) {
-          jsBridge.toast(res.message || util.ERROR_MESSAGE);
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
         });
-      }
-    });
+      };
+      fileReader.readAsDataURL(file);
+    }
+    else {
+      jsBridge.toast('图片体积太大了，不能超过10m！');
+    }
   }
   clickName() {
     let self = this;
-    // if(self.updateNickNameTimeDiff < 24 * 60 * 60 * 1000) {
-    //   jsBridge.toast('昵称一天只能修改一次哦~');
-    //   return;
-    // }
-    jsBridge.prompt(self.userName, function(res) {
+    jsBridge.prompt(self.nickname, function(res) {
       if(res.success) {
-        let newName = res.value;
-        let length = newName.length;
+        let nickname = res.value;
+        let length = nickname.length;
         if(length < 2 || length > 8) {
           jsBridge.toast('昵称长度需要在2~8个字之间哦~');
           return;
         }
-        if(newName !== self.userName) {
-          net.postJSON('/h5/my/updateNickName', { nickName: newName }, function(res) {
+        if(nickname !== self.nickname) {
+          $net.postJSON('/h5/my2/nickname', { value: nickname }, function(res) {
             if(res.success) {
-              self.userName = newName;
-              self.updateNickNameTimeDiff = 0;
-              jsBridge.getPreference('loginInfo', function(loginInfo) {
-                loginInfo.userInfo.NickName = newName;
-                jsBridge.setPreference('loginInfo', loginInfo);
+              self.nickname = nickname;
+              jsBridge.getPreference(self.props.cacheKey, function(data) {
+                if(data) {
+                  data.nickname = nickname;
+                  jsBridge.setPreference(self.props.cacheKey, data);
+                }
               });
             }
             else {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              jsBridge.toast(res.message || $util.ERROR_MESSAGE);
             }
           }, function(res) {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           });
         }
       }
@@ -109,67 +189,84 @@ class Nav extends migi.Component {
     let self = this;
     jsBridge.prompt(self.sign, function(res) {
       if(res.success) {
-        let newSign = res.value;
-        let length = newSign.length;
+        let sign = res.value;
+        let length = sign.length;
         if(length > 45) {
           jsBridge.toast('签名长度不能超过45个字哦~');
           return;
         }
-        if(newSign !== self.sign) {
-          net.postJSON('/h5/my/updateSign', { sign: newSign }, function(res) {
+        if(sign !== self.sign) {
+          $net.postJSON('/h5/my2/sign', { value: sign }, function(res) {
             if(res.success) {
-              self.sign = newSign;
+              self.sign = sign;
+              jsBridge.getPreference(self.props.cacheKey, function(data) {
+                if(data) {
+                  data.info.sign = sign;
+                  jsBridge.setPreference(self.props.cacheKey, data);
+                }
+              });
             }
             else {
-              jsBridge.toast(res.message || util.ERROR_MESSAGE);
+              jsBridge.toast(res.message || $util.ERROR_MESSAGE);
             }
           }, function(res) {
-            jsBridge.toast(res.message || util.ERROR_MESSAGE);
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           });
         }
       }
     });
   }
   clickPersonal() {
-    jsBridge.pushWindow('/user.html?userID=' + this.userId, {
+    jsBridge.pushWindow('/user.html?id=' + this.userId, {
       transparentTitle: true,
     });
   }
   clickAuthor() {
-    jsBridge.pushWindow('/author.html?authorId=' + this.userInfo.AuthorID, {
+    jsBridge.pushWindow('/author.html?id=' + this.authorId, {
       transparentTitle: true,
+    });
+  }
+  clickFollow() {
+    jsBridge.pushWindow('/my_relation.html?tag=' + 1, {
+      title: '圈关系',
+    });
+  }
+  clickFans() {
+    jsBridge.pushWindow('/my_relation.html?tag=' + 2, {
+      title: '圈关系',
     });
   }
   render() {
     return <div class="nav">
       <div class="profile">
         <div class="pic">
-          <img src={ util.autoSsl(util.img200_200_80(this.head || '/src/common/head.png')) }
-               onClick={ this.clickPic }/>
+          <img src={ $util.img(this.headUrl, 200, 200, 80) || '/src/common/head.png' }/>
+          <input type="file"
+                 onClick={ this.clickPic }
+                 onChange={ this.change }/>
         </div>
         <div class="txt">
           <div class="n">
-            <h3>{ this.userName }</h3>
-            <b class={ 'edit' + (this.userId ? '' : ' fn-hide') } onClick={ this.clickName }/>
+            <h3>{ this.nickname }</h3>
+            <b class={ 'edit' + (this.userId ? '' : ' fn-hide') }
+               onClick={ this.clickName }/>
           </div>
           <p>uid: { (this.userId ? this.userId.toString() : '').replace(/^20180*/, '') }</p>
         </div>
-        <button onClick={ this.clickPersonal }>个人主页</button>
-        {
-          this.isAuthor
-            ? <button class="author"
-                      onClick={ this.clickAuthor }>作者主页</button>
-            : ''
-        }
+        <button class={ this.userId ? '' : ' fn-hide' }
+                onClick={ this.clickPersonal }>个人主页</button>
+        <button class={ 'author' + (this.authorId ? '' : ' fn-hide') }
+                onClick={ this.clickAuthor }>作者主页</button>
       </div>
       <ul class="num">
-        <li>关注<strong>{ this.followNum || 0 }</strong></li>
-        <li>粉丝<strong>{ this.fansNum || 0 }</strong></li>
+        <li onClick={ this.clickFollow }>关注<strong>{ this.followPersonCount || 0 }</strong></li>
+        <li onClick={ this.clickFans }>粉丝<strong>{ this.fansCount || 0 }</strong></li>
       </ul>
       <div class="sign">
         <label>签名</label>
         <span>{ this.sign || '暂时还没有签名哦~' }</span>
-        <b class={ 'edit' + (this.userId ? '' : ' fn-hide') } onClick={ this.clickSign }/>
+        <b class={ 'edit' + (this.userId ? '' : ' fn-hide') }
+           onClick={ this.clickSign }/>
       </div>
     </div>;
   }

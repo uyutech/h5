@@ -4,38 +4,24 @@
 
 'use strict';
 
-import net from '../common/net';
-import util from '../common/util';
-
 class Post extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.on(migi.Event.DOM, function() {
-      let $root = $(self.element);
-      $root.on('click', 'a', function(e) {
-        e.preventDefault();
-        let $a = $(this);
-        let url = $a.attr('href');
-        let title = $a.attr('title');
-        jsBridge.pushWindow(url, {
-          title,
-        });
-      });
-    });
+    self.data = self.props.data;
   }
+  @bind data
   render() {
-    let data = this.props.data;
-    let post = data.commentlist[0];
-    let content = post.Content;
-    content = content.length > 50 ? (content.slice(0, 50) + '...') : content;
     return <div class="mod-post">
-      <a href={ '/post.html?postId=' + post.CommentID } title={ data.Describe } class="pic">
-        <img src={ util.autoSsl(util.img750__80(data.coverpic || '/src/common/blank.png')) }/>
+      <a class="pic"
+         href={ '/post.html?id=' + this.data }
+         title={ this.data.title }>
+        <img src={ $util.img(this.data.cover, 750, 0, 80) || '/src/common/blank.png' }/>
       </a>
       <div class="txt">
-        <span>{ data.Describe }</span>
-        <a href={ '/post.html?postId=' + post.CommentID } title={ data.Describe }>{ content }</a>
+        <span>{ this.data.title }</span>
+        <a href={ '/post.html?id=' + this.data }
+           title={ this.data.title }>{ this.data.describe }</a>
       </div>
     </div>;
   }

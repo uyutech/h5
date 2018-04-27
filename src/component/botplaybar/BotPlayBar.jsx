@@ -8,15 +8,13 @@ class BotPlayBar extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.hidden = self.props.hidden;
     self.on(migi.Event.DOM, function() {
-      jsBridge.getPreference('playlist_mode', function(res) {
+      jsBridge.getPreference('playMode', function(res) {
         res = res || 'loop';
         self.mode = res;
       });
     });
   }
-  @bind hidden
   @bind isPlaying
   @bind mode
   show() {
@@ -37,7 +35,7 @@ class BotPlayBar extends migi.Component {
       return;
     }
     self.emit('mode', self.mode);
-    jsBridge.setPreference('playlist_mode', self.mode);
+    jsBridge.setPreference('playMode', self.mode);
   }
   clickPrev() {
     this.emit('prev');
@@ -52,12 +50,17 @@ class BotPlayBar extends migi.Component {
     this.emit('comment');
   }
   render() {
-    return <ul class={ 'cp-botplaybar' + (this.hidden ? ' fn-hide' : '') }>
-      <li class={ 'mode ' + this.mode } onClick={ this.clickMode }/>
-      <li class="prev" onClick={ this.clickPrev }/>
-      <li class={ 'play' + (this.isPlaying ? ' pause' : '') } onClick={ this.clickPlay }/>
-      <li class="next" onClick={ this.clickNext }/>
-      <li class="comment" onClick={ this.clickComment }/>
+    return <ul class="cp-botplaybar">
+      <li class={ 'mode ' + this.mode }
+          onClick={ this.clickMode }/>
+      <li class="prev"
+          onClick={ this.clickPrev }/>
+      <li class={ 'play' + (this.isPlaying ? ' pause' : '') }
+          onClick={ this.clickPlay }/>
+      <li class="next"
+          onClick={ this.clickNext }/>
+      <li class="comment"
+          onClick={ this.clickComment }/>
     </ul>;
   }
 }
