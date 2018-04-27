@@ -71,7 +71,7 @@ class ImageView extends migi.Component {
     let self = this;
     let list = self.list;
     let data = list[index];
-    let url = $util.autoSsl(data.url);
+    let url = $util.img(data.url, 750, 0, 80);
     if(data.loaded || !data.preview) {
       ++uuid;
       self.$i2.find('img').attr('src', url || '/src/common/blank.png');
@@ -88,7 +88,7 @@ class ImageView extends migi.Component {
     }
     if(index) {
       if(list[index - 1].loaded || !list[index - 1].preview) {
-        self.$i1.find('img').attr('src', list[index - 1].url || '/src/common/blank.png');
+        self.$i1.find('img').attr('src', $util.img(list[index - 1].url, 750, 0, 80) || '/src/common/blank.png');
       }
       else {
         self.$i1.find('img').attr('src', list[index - 1].preview);
@@ -99,7 +99,7 @@ class ImageView extends migi.Component {
     }
     if(index < list.length - 1) {
       if(list[index + 1].loaded || !list[index + 1].preview) {
-        self.$i3.find('img').attr('src', list[index + 1].url || '/src/common/blank.png');
+        self.$i3.find('img').attr('src', $util.img(list[index + 1].url, 750, 0, 80) || '/src/common/blank.png');
       }
       else {
         self.$i3.find('img').attr('src', list[index + 1].preview);
