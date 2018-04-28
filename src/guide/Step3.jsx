@@ -99,13 +99,13 @@ class Step3 extends migi.Component {
   }
   genItem(item) {
     return <li rel={ item.id }>
-      <img src={ $util.img120_120_80(item.headUrl) || '/src/common/head.png' }/>
+      <img src={ $util.img(item.headUrl, 120, 120, 80) || '/src/common/head.png' }/>
       <span>{ item.name }</span>
     </li>;
   }
   genItem2(item) {
     return <li rel={ item.id }>
-      <img src={ $util.img120_120_80(item.headUrl) || '/src/common/head.png' }/>
+      <img src={ $util.img(item.headUrl, 120, 120, 80) || '/src/common/head.png' }/>
     </li>;
   }
   render() {
