@@ -79,6 +79,7 @@ class Dynamics extends migi.Component {
   render() {
     return <div class={ 'dynamic' + (this.visible ? '' : ' fn-hide') }>
       <PostList ref="postList"
+                disabledClickPerson={ true }
                 message="正在加载..."
                 visible={ true }/>
     </div>;

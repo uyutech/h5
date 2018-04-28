@@ -18,6 +18,9 @@ class PostList extends migi.Component {
       let $list = $(this.ref.list.element);
       $list.on('click', '.profile .pic,.profile .name', function(e) {
         e.preventDefault();
+        if(self.props.disabledClickPerson) {
+          return;
+        }
         let $this = $(this);
         let url = $this.attr('href');
         let title = $this.attr('title');

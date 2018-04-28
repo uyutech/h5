@@ -87,19 +87,6 @@ class User extends migi.Component {
       loadEnd = true;
       postList.message = '暂无动态';
     }
-
-    // let imageView = self.ref.imageView;
-    // imageView.on('clickLike', function(sid) {
-    //   hotPost.like(sid, function(res) {
-    //     imageView.isLike = res.ISLike || res.State === 'likeWordsUser';
-    //   });
-    // });
-    // jsBridge.on('back', function(e) {
-    //   if(!imageView.isHide()) {
-    //     e.preventDefault();
-    //     imageView.hide();
-    //   }
-    // });
   }
   checkMore() {
     let self = this;
@@ -156,6 +143,7 @@ class User extends migi.Component {
       <Nav ref="nav"
            on-follow={ this.follow }/>
       <PostList ref="postList"
+                disabledClickPerson={ true }
                 visible={ true }
                 message={ '正在加载...' }/>
       <ImageView ref="imageView"/>

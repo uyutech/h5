@@ -137,7 +137,7 @@ class Item extends migi.Component {
         if(list) {
           self.appendData(list.data);
         }
-        if(kindList) {
+        if(self.kind && kindList) {
           switch(self.kind) {
             case 1:
               if(self.offset) {
