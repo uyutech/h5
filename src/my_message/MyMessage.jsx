@@ -19,11 +19,16 @@ class MyMessage extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
-      jsBridge.getCache(['my', 'useAuthor'], ([my, useAuthor]) => {
+      jsBridge.getPreference('my', function(my) {
         if(my) {
           self.myInfo = my;
+          self.isAuthor = my.author && my.author.length;
+          if(self.isAuthor) {
+            jsBridge.getPreference('useAuthor', function(useAuthor) {
+              self.useAuthor = useAuthor;
+            });
+          }
         }
-        self.useAuthor = useAuthor;
       });
     });
   }

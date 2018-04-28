@@ -15,6 +15,59 @@
   display:flex;
   flex-direction:column;
   min-height:100%;
+  .limit{
+    position:relative;
+    margin:0.05rem 0.1rem 0;
+    height:0.24rem;
+    line-height:0.24rem;
+    font-size:0.11rem;
+    color:#B9B9B9;
+    strong{
+      font-weight:400;
+    }
+    &.warn{
+      color:#8BBDE1;
+      strong{
+        color:#F00;
+      }
+    }
+    .submit{
+      position:absolute;
+      left:30%;
+      bottom:0;
+      width:20%;
+      height:150%;
+      &:disabled{
+        opacity:0.5;
+      }
+    }
+    .alt{
+      position:absolute;
+      right:0;
+      bottom:0;
+      display:flex;
+      align-items:center;
+      padding-left:0.2rem;
+      background:url(../sub_post/alt.png) no-repeat 0 center;
+      background-size:0.18rem auto;
+      &.author{
+        span{
+          color:#EC0;
+        }
+      }
+      img{
+        width:0.24rem;
+        height:0.24rem;
+        border-radius:100%;
+      }
+      span{
+        flex:1;
+        margin-left:0.03rem;
+        color:#636365;
+        transform:scale(0.917);
+      }
+    }
+  }
   > .c{
     flex:1;
     display:flex;
@@ -39,56 +92,6 @@
       }
       &.dis{
         opacity:0.7;
-      }
-    }
-    .limit{
-      position:relative;
-      font-size:0.11rem;
-      color:#B9B9B9;
-      strong{
-        font-weight:400;
-      }
-      &.warn{
-        color:#8BBDE1;
-        strong{
-          color:#F00;
-        }
-      }
-      .submit{
-        position:absolute;
-        left:30%;
-        bottom:0;
-        width:20%;
-        height:150%;
-        &:disabled{
-          opacity:0.5;
-        }
-      }
-      .alt{
-        position:absolute;
-        right:0;
-        bottom:0;
-        display:flex;
-        align-items:center;
-        padding-left:0.2rem;
-        background:url(../sub_post/alt.png) no-repeat 0 center;
-        background-size:0.18rem auto;
-        &.author{
-          span{
-            color:#EC0;
-          }
-        }
-        img{
-          width:0.24rem;
-          height:0.24rem;
-          border-radius:100%;
-        }
-        span{
-          flex:1;
-          margin-left:0.03rem;
-          color:#636365;
-          transform:scale(0.917);
-        }
       }
     }
   }

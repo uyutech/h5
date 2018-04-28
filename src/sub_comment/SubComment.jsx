@@ -18,20 +18,22 @@ class sub_comment extends migi.Component {
       if(!jsBridge.isInApp) {
         document.querySelector('input.submit.fn-hide').classList.remove('fn-hide');
       }
-      jsBridge.getCache(['my', 'useAuthor'], ([data, useAuthor]) => {
-        if(data) {
-          self.myInfo = data;
-          self.isAuthor = data.author && data.author.length;
-          self.useAuthor = useAuthor;
+      jsBridge.getPreference('my', function(my) {
+        if(my) {
+          self.myInfo = my;
+          self.isAuthor = my.author && my.author.length;
           if(self.isAuthor) {
-            if(useAuthor) {
-              self.headUrl = data.author[0].headUrl;
-              self.name = data.author[0].name;
-            }
-            else {
-              self.headUrl = data.user.headUrl;
-              self.name = data.user.nickname;
-            }
+            jsBridge.getPreference('useAuthor', function(useAuthor) {
+              self.useAuthor = useAuthor;
+              if(useAuthor) {
+                self.headUrl = my.author[0].headUrl;
+                self.name = my.author[0].name;
+              }
+              else {
+                self.headUrl = my.user.headUrl;
+                self.name = my.user.nickname;
+              }
+            });
           }
         }
       });
@@ -154,23 +156,23 @@ class sub_comment extends migi.Component {
     return <form class="mod-sub"
                  ref="form"
                  onSubmit={ this.submit }>
+      <div class={ 'limit' + (this.warnLength ? ' warn' : '') }>
+        <strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }
+        <input type="submit"
+               class="submit fn-hide"
+               disabled={ this.invalid }/>
+        <div class={ 'alt' + (this.isAuthor ? '' : ' fn-hide') + (this.useAuthor ? ' author' : '') }
+             onClick={ this.clickAlt }>
+          <img src={ $util.img(this.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
+          <span>{ this.name }</span>
+        </div>
+      </div>
       <div class="c">
         <textarea class="text"
                   ref="input"
                   placeholder="请输入评论"
                   onInput={ this.input }
                   maxLength={ MAX_TEXT_LENGTH }>{ this.value }</textarea>
-        <div class={ 'limit' + (this.warnLength ? ' warn' : '') }>
-          <strong>{ this.num }</strong> / { MAX_TEXT_LENGTH }
-          <input type="submit"
-                 class="submit fn-hide"
-                 disabled={ this.invalid }/>
-          <div class={ 'alt' + (this.isAuthor ? '' : ' fn-hide') + (this.useAuthor ? ' author' : '') }
-               onClick={ this.clickAlt }>
-            <img src={ $util.img(this.headUrl, 48, 48, 80) || '/src/common/head.png' }/>
-            <span>{ this.name }</span>
-          </div>
-        </div>
       </div>
     </form>;
   }

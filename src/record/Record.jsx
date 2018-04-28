@@ -25,19 +25,21 @@ class Record extends migi.Component {
     let self = this;
     let list = self.ref.list;
     self.curColum = 0;
-    jsBridge.getCache(['record', 'recordCur'], function([record, recordCur]) {
+    jsBridge.getPreference('record', function(record) {
       if(record && record.length) {
         list.setData(record);
-        if(recordCur) {
-          for(let i = 0, len = record.length; i < len; i++) {
-            let item = record[i];
-            if(item.id === recordCur) {
-              self.setMedia(item);
-              list.setCur(i);
-              break;
+        jsBridge.getPreference('recordCur', function(recordCur) {
+          if(recordCur) {
+            for(let i = 0, len = record.length; i < len; i++) {
+              let item = record[i];
+              if(item.id === recordCur) {
+                self.setMedia(item);
+                list.setCur(i);
+                break;
+              }
             }
           }
-        }
+        });
       }
       else {
         list.message = '暂无记录';
