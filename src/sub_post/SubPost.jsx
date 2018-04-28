@@ -301,7 +301,8 @@ class SubPost extends migi.Component {
     uploading = true;
     let files = e.target.files;
     let count = 0;
-    for(let i = 0, len = files.length; i < len; i++) {
+    let all = files.length;
+    for(let i = 0, len = all; i < len; i++) {
       let file = files[i];
       let size = file.size;
       let suffix;
@@ -357,7 +358,7 @@ class SubPost extends migi.Component {
                 self.list[index].state = STATE.LOADED;
                 self.list = self.list;
                 count++;
-                if(count === len) {
+                if(count === all) {
                   uploading = false;
                   self.imgNum = self.list.length;
                 }
@@ -384,7 +385,7 @@ class SubPost extends migi.Component {
                   self.list[index].state = STATE.LOADED;
                   self.list = self.list;
                   count++;
-                  if(count === len) {
+                  if(count === all) {
                     uploading = false;
                     self.imgNum = self.list.length;
                   }
@@ -402,6 +403,11 @@ class SubPost extends migi.Component {
         fileReader.readAsDataURL(file);
       }
       else {
+        all--;
+        if(count === all) {
+          uploading = false;
+          self.imgNum = self.list.length;
+        }
         jsBridge.toast('图片体积太大了，不能超过10m！');
       }
     }
