@@ -60,16 +60,22 @@ class Item extends migi.Component {
 
     self.offset = data.list.limit;
     if(self.kind) {
-      self.loadEnd = self.offset >= data.kind.count;
+      self.loadEnd = self.offset >= data.kindList.count;
     }
     else {
       self.loadEnd = self.offset >= data.list.count;
     }
   }
   appendData(data) {
+    if(!data) {
+      return;
+    }
     let self = this;
     let s = '';
     let list = [];
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
     data.forEach(function(item) {
       let o = self.genItem(item);
       if(o) {
@@ -161,11 +167,18 @@ class Item extends migi.Component {
               }
               break;
           }
+          self.offset += kindList.limit;
+          if(self.offset >= kindList.count) {
+            self.loadEnd = true;
+            self.message = '已经到底了';
+          }
         }
-        self.offset += list.limit;
-        if(self.offset >= list.count) {
-          self.loadEnd = true;
-          self.message = '已经到底了';
+        else {
+          self.offset += list.limit;
+          if(self.offset >= list.count) {
+            self.loadEnd = true;
+            self.message = '已经到底了';
+          }
         }
       }
       else {
@@ -205,10 +218,22 @@ class Item extends migi.Component {
     return <div class={ 'mod-item' + (this.visible ? '' : ' fn-hide') }>
       <Banner ref="banner"/>
       <div ref="con"/>
-      <VideoList ref="videoList"/>
-      <Playlist ref="playlist"
-                on-change={ this.change }/>
-      <WaterFall ref="waterFall"/>
+      {
+        this.kind === 1
+          ? <VideoList ref="videoList"/>
+          : ''
+      }
+      {
+        this.kind === 2
+          ? <Playlist ref="playlist"
+                      on-change={ this.change }/>
+          : ''
+      }
+      {
+        this.kind === 3
+          ? <WaterFall ref="waterFall"/>
+          : ''
+      }
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
     </div>;
   }
