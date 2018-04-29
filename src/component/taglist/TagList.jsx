@@ -10,6 +10,18 @@ class TagList extends migi.Component {
     let self = this;
     self.visible = self.props.visible;
     self.message = self.props.message;
+    self.on(migi.Event.DOM, function() {
+      let $list = $(self.ref.list.element);
+      $list.on('click', 'a', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = '话题-' + $this.attr('title');
+        jsBridge.pushWindow(url, {
+          title,
+        });
+      });
+    });
   }
   @bind message
   @bind visible
