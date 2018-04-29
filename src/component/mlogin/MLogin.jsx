@@ -51,9 +51,9 @@ class NeedLogin extends migi.Component {
     jsBridge.loginWeibo(function(res) {
       if(res.success) {
         jsBridge.showLoading('正在登录...');
-        let openID = res.openID;
+        let openId = res.openId || res.openID;
         let token = res.token;
-        jsBridge.login('/h5/oauth/weibo', { openID, token }, function(res) {
+        jsBridge.login('/h5/passport2/loginWeibo', { openId, token }, function(res) {
           jsBridge.hideLoading();
           if(res.success) {
             let data = res.data;

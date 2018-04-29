@@ -15,8 +15,6 @@ function isType(type) {
   }
 }
 
-let isString = isType('String');
-
 let mlogin;
 migi.eventBus.on('NEED_LOGIN', function() {
   if(!mlogin) {

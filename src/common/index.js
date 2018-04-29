@@ -28,10 +28,6 @@ else {
   document.documentElement.classList.add('android');
 }
 
-if(!window.location.origin) {
-  window.location.origin = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
-}
-
 $.cookie = function(key, value, options) {
   var days, time, result, decode
 
@@ -77,6 +73,10 @@ window.requestAnimationFrame = function() {
       window.setTimeout(callback, 16.7);
     };
 }();
+
+if(!window.location.origin) {
+  window.location.origin = window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port: '');
+}
 
 $.AJAX = env.ajax;
 window.BigNumber = BigNumber;
