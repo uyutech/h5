@@ -332,11 +332,7 @@ class PostList extends migi.Component {
           });
         }
         else {
-          $list.find('.video .play,.audio .play').removeClass('play');
-          $this.addClass('play');
-          $list.find('video').each(function(i, o) {
-            o.pause();
-          });
+          migi.eventBus.emit('PLAY_INLINE');
           jsBridge.media({
             key: 'info',
             value: {
