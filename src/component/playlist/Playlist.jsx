@@ -124,7 +124,7 @@ class Playlist extends migi.Component {
     }
     let s = '';
     data.forEach(function(item) {
-      if(self.exist[item.work.id]) {
+      if(!item || !item.work || self.exist[item.work.id]) {
         return;
       }
       self.exist[item.work.id] = true;
@@ -143,7 +143,7 @@ class Playlist extends migi.Component {
     }
     let s = '';
     data.forEach(function(item) {
-      if(self.exist[item.work.id]) {
+      if(!item || !item.work || self.exist[item.work.id]) {
         return;
       }
       self.exist[item.work.id] = true;
