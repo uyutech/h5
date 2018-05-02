@@ -73,6 +73,7 @@ class MallPrize extends migi.Component {
         <li>新福利</li>
         <li><a href="/mall_express.html">等待收货</a></li>
       </ul>
+      <p>下次兑换&发货时间为五月中下旬，届时会发布兑换公告~请大家留意转圈&群&微博~注：本次发货不包邮需要联系运营小哥哥补邮费哦~</p>
       <ul class="list"
           onClick={ { '.apply': this.click } }>
         {
