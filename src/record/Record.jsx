@@ -188,7 +188,7 @@ class Record extends migi.Component {
   comment() {
     let data = this.ref.media.data;
     if(data) {
-      jsBridge.pushWindow('/sub_post.html?type=2&id=' + data.worksId, {
+      jsBridge.pushWindow('/sub_comment.html?type=2&id=' + data.worksId, {
         title: '评论',
         optionMenu: '发布',
       });
