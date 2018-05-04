@@ -235,6 +235,18 @@ class Post extends migi.Component {
       optionMenu: '发布',
     });
   }
+  share() {
+    let self = this;
+    migi.eventBus.emit('BOT_FN', {
+      canShare: true,
+      canShareLink: true,
+      clickShareLink: function(botFn) {
+        let url = window.ROOT_DOMAIN + '/post/' + self.id;
+        $util.setClipboard(url);
+        botFn.cancel();
+      },
+    });
+  }
   render() {
     return <div class="post">
       <PostList ref="postList"
