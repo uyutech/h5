@@ -5,7 +5,7 @@
 'use strict';
 
 let currentPriority = 0;
-let cacheKey;
+let cacheKey = 'mall';
 
 class Mall extends migi.Component {
   constructor(...data) {

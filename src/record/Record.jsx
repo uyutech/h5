@@ -26,6 +26,9 @@ class Record extends migi.Component {
     let list = self.ref.list;
     self.curColum = 0;
     jsBridge.getPreference('record', function(record) {
+      if(jsBridge.ios && record) {
+        record = JSON.parse(record);
+      }
       if(record && record.length) {
         list.setData(record);
         jsBridge.getPreference('recordCur', function(recordCur) {
