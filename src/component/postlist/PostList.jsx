@@ -515,6 +515,24 @@ class PostList extends migi.Component {
         <div class="con"
              dangerouslySetInnerHTML={ html }/>
         {
+          imageList.length
+            ? <ul class="image">
+              {
+                imageList.map(function(item, i) {
+                  return <li>
+                    <img src={ self.props.single
+                      ? $util.img(item.url, 750, 0, 80)
+                      : $util.img(item.url, 220, 220, 80)}
+                         i={ i }
+                         w={ item.width }
+                         h={ item.height }/>
+                  </li>;
+                })
+              }
+            </ul>
+            : ''
+        }
+        {
           videoList.length
             ? <ul class="video">
               {
@@ -557,7 +575,7 @@ class PostList extends migi.Component {
             : ''
         }
         {
-          audioList.length
+          audioList.length && !videoList.length
             ? <ul class="audio">
               {
                 audioList.map(function(item) {
@@ -585,24 +603,6 @@ class PostList extends migi.Component {
                          href={ url }>{ item.work.title }</a>
                       <p class="author">{ author.join(' ') }</p>
                     </div>
-                  </li>;
-                })
-              }
-              </ul>
-            : ''
-        }
-        {
-          imageList.length
-            ? <ul class="image">
-              {
-                imageList.map(function(item, i) {
-                  return <li>
-                    <img src={ self.props.single
-                      ? $util.img(item.url, 750, 0, 80)
-                      : $util.img(item.url, 200, 200, 80)}
-                         i={ i }
-                         w={ item.width }
-                         h={ item.height }/>
                   </li>;
                 })
               }

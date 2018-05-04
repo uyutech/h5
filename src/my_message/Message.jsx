@@ -53,7 +53,7 @@ class Message extends migi.Component {
     }
     let s = '';
     data.forEach((item) => {
-      s += self.genItem(item);
+      s += self.genItem(item) || '';
     });
     $(self.ref.list.element).html(s);
   }
@@ -71,7 +71,7 @@ class Message extends migi.Component {
     }
     let s = '';
     data.forEach((item) => {
-      s += self.genItem(item);
+      s += self.genItem(item) || '';
     });
     $(self.ref.list.element).append(s);
   }

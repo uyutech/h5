@@ -25,6 +25,7 @@ let circleHash = {};
 let currentPriority = 0;
 let cacheKey = 'subPost';
 let uploading;
+let uuid = 0;
 
 class SubPost extends migi.Component {
   constructor(...data) {
@@ -212,14 +213,17 @@ class SubPost extends migi.Component {
     jsBridge.setPreference(self.getContentKey(), content);
   }
   submit(e) {
-    e && e.preventDefault();
+    e && e.preventDefault();console.log('login', $util.isLogin())
     if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
-    let self = this;
+    let self = this;console.log(self.sending, self.invalid, uploading)
     if(!self.sending && !self.invalid && !uploading) {
       let image = [];
+      migi.sort(self.list, function(a, b) {
+        return a.weight > b.weight;
+      });
       self.list.forEach(function(item) {
         if(item.state === STATE.LOADED) {
           image.push({
@@ -230,58 +234,72 @@ class SubPost extends migi.Component {
         }
       });
       if(self.list.length > image.length) {
-        if(!window.confirm('尚有未上传成功的图片，继续提交吗？')) {
-          return;
-        }
+        jsBridge.confirm('尚有未上传成功的图片，继续提交吗？', function(res) {
+          if(!res) {
+            return;
+          }
+          self.submitConfirm(image);
+        });
       }
-      self.sending = true;
-      jsBridge.showLoading();
-      let circleId = [];
-      $(self.ref.circle.element).find('.on').each(function(i, li) {
-        circleId.push($(li).attr('rel'));
-      });
-      let authorId;
-      if(self.useAuthor && self.myInfo && self.myInfo.author && self.myInfo.author.length) {
-        authorId = self.myInfo.author[0].id;
+      else {
+        self.submitConfirm(image);
       }
-      $net.postJSON('/h5/subPost2/sub', {
-        content: self.value,
-        image: JSON.stringify(image),
-        circleId: circleId.join(','),
-        authorId,
-        worksId: self.worksId,
-        workId: self.workId,
-      }, function(res) {
-        jsBridge.hideLoading();
-        if(res.success) {
-          self.value = '';
-          self.invalid = true;
-          self.num = 0;
-          self.list = [];
-          self.clearCache();
-          jsBridge.notify({
-            title: '画圈成功',
-            url: '/post.html?id=' + res.data.id,
-          }, {
-            title: '画圈正文'
-          });
-          jsBridge.popWindow({ data: res.data, type: 'subPost' });
-        }
-        else {
-          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-        }
-        self.sending = false;
-      }, function(res) {
-        jsBridge.hideLoading();
-        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-        self.sending = false;
-      });
     }
   }
+  submitConfirm(image) {
+    let self = this;
+    self.sending = true;
+    jsBridge.showLoading();
+    let circleId = [];
+    $(self.ref.circle.element).find('.on').each(function(i, li) {
+      circleId.push($(li).attr('rel'));
+    });
+    let authorId;
+    if(self.useAuthor && self.myInfo && self.myInfo.author && self.myInfo.author.length) {
+      authorId = self.myInfo.author[0].id;
+    }
+    $net.postJSON('/h5/subPost2/sub', {
+      content: self.value,
+      image: JSON.stringify(image),
+      circleId: circleId.join(','),
+      authorId,
+      worksId: self.worksId,
+      workId: self.workId,
+    }, function(res) {
+      jsBridge.hideLoading();
+      if(res.success) {
+        self.value = '';
+        self.invalid = true;
+        self.num = 0;
+        self.list = [];
+        self.clearCache();
+        jsBridge.notify({
+          title: '画圈成功',
+          url: '/post.html?id=' + res.data.id,
+        }, {
+          title: '画圈正文'
+        });
+        jsBridge.popWindow({ data: res.data, type: 'subPost' });
+      }
+      else {
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      }
+      self.sending = false;
+    }, function(res) {
+      jsBridge.hideLoading();
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      self.sending = false;
+    });
+  }
   clickFile(e) {
+    let self = this;
     if(!$util.isLogin()) {
       e.preventDefault();
       migi.eventBus.emit('NEED_LOGIN');
+    }
+    if(self.imgNum >= MAX_IMG_NUM) {
+      e.preventDefault();
+      jsBridge.toast('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
     }
   }
   change(e) {
@@ -295,7 +313,8 @@ class SubPost extends migi.Component {
       return;
     }
     if(self.imgNum >= MAX_IMG_NUM) {
-      jsBridge('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
+      e.preventDefault();
+      jsBridge.toast('图片最多不能超过' + MAX_IMG_NUM + '张哦~');
       return;
     }
     uploading = true;
@@ -303,6 +322,11 @@ class SubPost extends migi.Component {
     let count = 0;
     let all = files.length;
     for(let i = 0, len = all; i < len; i++) {
+      if(i + self.imgNum >= MAX_IMG_NUM) {
+        all = i;
+        jsBridge.toast('图片最多不能超过' + MAX_IMG_NUM + '张哦~超出部分将自动忽略~');
+        return;
+      }
       let file = files[i];
       let size = file.size;
       let suffix;
@@ -319,13 +343,14 @@ class SubPost extends migi.Component {
       }
       if(size && size <= 10485760) {
         let fileReader = new FileReader();
+        let weight = uuid++;
         fileReader.onload = function() {
           let spark = new SparkMd5();
           spark.append(fileReader.result);
           let md5 = spark.end();
           let has;
-          for(let i = 0, len = self.list.length; i < len; i++) {
-            if(self.list[i].md5 === md5) {
+          for(let j = 0, len = self.list.length; j < len; j++) {
+            if(self.list[j].md5 === md5) {
               has = true;
               break;
             }
@@ -334,8 +359,20 @@ class SubPost extends migi.Component {
             jsBridge.toast('选择的图片已存在');
             return;
           }
-          let index = self.list.length;
-          self.list.push({
+          let index = 0;
+          let find;
+          for(let j = 0, len = self.list.length; j < len; j++) {
+            if(self.list[j].weight > weight) {
+              index = j;
+              find = true;
+              break;
+            }
+          }
+          if(!find) {
+            index = self.list.length;
+          }
+          self.list.splice(index, 0, {
+            weight,
             url: fileReader.result,
             state: STATE.LOADING,
           });
@@ -343,24 +380,34 @@ class SubPost extends migi.Component {
           node.style.position = 'absolute';
           node.style.left = '-9999rem';
           node.style.top = '-9999rem';
-          node.src = self.list[index].url;
+          node.src = fileReader.result;
           node.onload = function() {
-            self.list[index].width = node.width;
-            self.list[index].height = node.height;
-            document.body.removeChild(node);
+            for(let j = 0, len = self.list.length; j < len; j++) {
+              if(self.list[j] === weight) {
+                self.list[j].width = node.width;
+                self.list[j].height = node.height;
+                document.body.removeChild(node);
+                break;
+              }
+            }
           };
           document.body.appendChild(node);
           $net.postJSON('/h5/my2/sts', { name: md5 + suffix }, function(res) {
             if(res.success) {
               let data = res.data;
               if(data.exist) {
-                self.list[index].url = '//zhuanquan.xyz/pic/' + md5 + suffix;
-                self.list[index].state = STATE.LOADED;
-                self.list = self.list;
-                count++;
-                if(count === all) {
-                  uploading = false;
-                  self.imgNum = self.list.length;
+                for(let j = 0, len = self.list.length; j < len; j++) {
+                  if(self.list[j].weight === weight) {
+                    self.list[j].url = '//zhuanquan.xyz/pic/' + md5 + suffix;
+                    self.list[j].state = STATE.LOADED;
+                    self.list = self.list;
+                    count++;
+                    if(count === all) {
+                      uploading = false;
+                      self.imgNum = self.list.length;
+                    }
+                    break;
+                  }
                 }
                 return;
               }
@@ -381,13 +428,18 @@ class SubPost extends migi.Component {
               xhr.open('post', host, true);
               xhr.onload = function() {
                 if(xhr.status === 200) {
-                  self.list[index].url = '//zhuanquan.xyz/pic/' + md5 + suffix;
-                  self.list[index].state = STATE.LOADED;
-                  self.list = self.list;
-                  count++;
-                  if(count === all) {
-                    uploading = false;
-                    self.imgNum = self.list.length;
+                  for(let j = 0, len = self.list.length; j < len; j++) {
+                    if(self.list[j].weight === weight) {
+                      self.list[j].url = '//zhuanquan.xyz/pic/' + md5 + suffix;
+                      self.list[j].state = STATE.LOADED;
+                      self.list = self.list;
+                      count++;
+                      if(count === all) {
+                        uploading = false;
+                        self.imgNum = self.list.length;
+                      }
+                      break;
+                    }
                   }
                 }
               };
