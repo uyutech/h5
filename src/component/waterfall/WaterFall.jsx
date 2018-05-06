@@ -45,7 +45,7 @@ class WaterFall extends migi.Component {
         $b.addClass('loading');
         let id = $b.attr('rel');
         let url = $b.hasClass('liked') ? 'unLike' : 'like';
-        $net.postJSON('/h5/works2/' + url, { worksId: $b.attr('worksId'), workId: id }, function(res) {
+        $net.postJSON('/h5/works2/' + url, { id: $b.attr('worksId'), workId: id }, function(res) {
           if(res.success) {
             let data = res.data;
             data.state ? $b.addClass('liked') : $b.removeClass('liked');
@@ -76,7 +76,7 @@ class WaterFall extends migi.Component {
         $b.addClass('loading');
         let id = $b.attr('rel');
         let url = $b.hasClass('has') ? 'unFavor' : 'favor';
-        $net.postJSON('/h5/works2/' + url, { worksId: 1, workId: id }, function(res) {
+        $net.postJSON('/h5/works2/' + url, { id: 1, workId: id }, function(res) {
           if(res.success) {
             let data = res.data;
             data.state ? $b.addClass('liked') : $b.removeClass('liked');

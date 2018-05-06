@@ -277,7 +277,7 @@ class ImageView extends migi.Component {
     item.liking = true;
     let url = item.isLike ? 'unLike' : 'like';
     $net.postJSON('/h5/works2/' + url, {
-      worksId: item.worksId, workId: item.id
+      id: item.worksId, workId: item.id
     }, function(res) {
       if(res.success) {
         let data = res.data;
