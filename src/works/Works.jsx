@@ -123,7 +123,7 @@ class Works extends migi.Component {
     jsBridge.setTitle(item.title);
     let author = [];
     let hash = {};
-    item.author.forEach(function(item) {
+    (item.author || []).forEach(function(item) {
       item.list.forEach(function(at) {
         if(!hash[at.id]) {
           hash[at.id] = true;

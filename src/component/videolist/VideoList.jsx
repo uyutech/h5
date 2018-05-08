@@ -16,7 +16,7 @@ class VideoList extends migi.Component {
       let $list = $(self.ref.list.element);
       migi.eventBus.on('PLAY_INLINE', function() {
         jsBridge.media({
-          key: 'pause',
+          key: 'stop',
         });
         $list.find('.pic.play').removeClass('play');
         $list.find('video').each(function(i, o) {
@@ -235,12 +235,12 @@ class VideoList extends migi.Component {
     let author = [];
     let hash = {};
     if(self.props.profession) {
-      item.work.profession.forEach((item) => {
+      (item.work.profession || []).forEach((item) => {
         author.push(item.name);
       });
     }
     else {
-      item.work.author.forEach(function(item) {
+      (item.work.author || []).forEach(function(item) {
         item.list.forEach(function(at) {
           if(!hash[at.id]) {
             hash[at.id] = true;

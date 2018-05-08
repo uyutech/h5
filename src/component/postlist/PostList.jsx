@@ -261,7 +261,7 @@ class PostList extends migi.Component {
       });
       migi.eventBus.on('PLAY_INLINE', function() {
         jsBridge.media({
-          key: 'pause',
+          key: 'stop',
         });
         $list.find('.video .pic.play,.audio .pic.play').removeClass('play');
         $list.find('video').each(function(i, o) {
@@ -334,14 +334,11 @@ class PostList extends migi.Component {
         else {
           migi.eventBus.emit('PLAY_INLINE');
           jsBridge.media({
-            key: 'info',
+            key: 'play',
             value: {
               id: $this.attr('workId'),
               url: location.protocol + $util.autoSsl($this.attr('url')),
             },
-          });
-          jsBridge.media({
-            key: 'play',
           });
         }
       });

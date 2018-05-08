@@ -220,11 +220,23 @@ class Media extends migi.Component {
       });
     }
     else if(mediaService) {
+      let author = [];
+      let hash = {};
+      (self.data.author || []).forEach(function(item) {
+        item.list.forEach(function(at) {
+          if(!hash[at.id]) {
+            hash[at.id] = true;
+            author.push(at.name);
+          }
+        });
+      });
       jsBridge.media({
         key: 'info',
         value: {
           id: self.data.id,
           url: location.protocol + $util.autoSsl(self.data.url),
+          title: self.data.title,
+          author: author.join(' '),
         },
       }, function(res) {
         load.innerHTML = '';
@@ -576,14 +588,24 @@ class Media extends migi.Component {
     if(!self.data) {
       return;
     }
-    let url = self.data.url;
-    let name = self.data.workTitle;
-    if(url && /^\/\//.test(url)) {
-      url = location.protocol + url;
-    }
     if(jsBridge.ios) {
       jsBridge.toast('ios暂不支持下载音视频~');
       return;
+    }
+    let url = self.data.url;
+    if(!url) {
+      return;
+    }
+    let id = self.data.id;
+    let kind = self.data.kind;
+    let title = self.data.title;
+    let name = id;
+    let type = url.match(/\.\w+$/);
+    if(type) {
+      name += type;
+    }
+    if(/^\/\//.test(url)) {
+      url = location.protocol + url;
     }
     jsBridge.networkInfo(function(res) {
       if(res.available) {
@@ -591,7 +613,10 @@ class Media extends migi.Component {
           jsBridge.download({
             url,
             name,
+            kind,
+            title,
           });
+          jsBridge.setPreference('work_' + id, self.data);
         }
         else {
           jsBridge.confirm("检测到当前网络环境非wifi，继续下载可能会产生流量，是否确定继续？", function(res) {
@@ -601,7 +626,10 @@ class Media extends migi.Component {
             jsBridge.download({
               url,
               name,
+              kind,
+              title,
             });
+            jsBridge.setPreference('work_' + id, self.data);
           });
         }
       }
@@ -757,6 +785,10 @@ class Media extends migi.Component {
         <li onClick={ this.clickFavor }>
           <b class={ 'favor' + (this.isFavor ? ' favored' : '') }/>
           <span>{ this.favorCount || '收藏' }</span>
+        </li>
+        <li onClick={ this.clickDownload }>
+          <b class="download"/>
+          <span>下载</span>
         </li>
         <li onClick={ this.clickShare }>
           <b class="share"/>

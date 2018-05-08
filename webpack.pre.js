@@ -15,6 +15,7 @@ module.exports = {
     my_post: './src/my_post/pre.jsx',
     my_favor: './src/my_favor/pre.jsx',
     my_address: './src/my_address/pre.jsx',
+    my_download: './src/my_download/pre.jsx',
     // allworks: './src/allworks/pre.jsx',
     // allalbums: './src/allalbums/pre.jsx',
     // allauthors: './src/allauthors/pre.jsx',

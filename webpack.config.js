@@ -18,6 +18,7 @@ module.exports = {
     my_post: './src/my_post/index.jsx',
     my_favor: './src/my_favor/index.jsx',
     my_address: './src/my_address/index.jsx',
+    my_download: './src/my_download/index.jsx',
     // allworks: './src/allworks/index.jsx',
     // allalbums: './src/allalbums/index.jsx',
     // allauthors: './src/allauthors/index.jsx',

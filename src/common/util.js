@@ -78,7 +78,7 @@ let util = {
     return '刚刚';
   },
   abbrNum: function(n, fix) {
-    if(!n) {
+    if(!n || n < 0) {
       return 0;
     }
     if(n >= 10000) {
@@ -87,11 +87,38 @@ let util = {
       n = n.replace(/\.0+$/, '');
       n += 'w';
     }
-    if(n >= 1000) {
+    else if(n >= 1000) {
       n = new BigNumber(n).div(1000).toFixed(fix || 1);
       n = n.replace(/(\.[1-9]+)0+$/, '$1');
       n = n.replace(/\.0+$/, '');
       n += 'k';
+    }
+    return n;
+  },
+  formatLength(n, fix) {
+    if(!n || n < 0) {
+      return '--';
+    }
+    if(n > 1000000000) {
+      n = new BigNumber(n).div(1000000000).toFixed(fix || 1);
+      n = n.replace(/(\.[1-9]+)0+$/, '$1');
+      n = n.replace(/\.0+$/, '');
+      n += 'GB';
+    }
+    else if(n > 1000000) {
+      n = new BigNumber(n).div(1000000).toFixed(fix || 1);
+      n = n.replace(/(\.[1-9]+)0+$/, '$1');
+      n = n.replace(/\.0+$/, '');
+      n += 'MB';
+    }
+    else if(n >= 1000) {
+      n = new BigNumber(n).div(1000).toFixed(fix || 1);
+      n = n.replace(/(\.[1-9]+)0+$/, '$1');
+      n = n.replace(/\.0+$/, '');
+      n += 'KB';
+    }
+    else {
+      n += 'Byte';
     }
     return n;
   },
@@ -147,8 +174,8 @@ let util = {
         return;
       }
       res.unshift(data);
-      if(res.length > 20) {
-        res.splice(20);
+      if(res.length > 100) {
+        res.splice(100);
       }
       jsBridge.setPreference('record', jsBridge.android ? res : JSON.stringify(res), function() {
         if(cb) {

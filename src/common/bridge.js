@@ -542,6 +542,11 @@ let jsBridge = {
       this.call('fullscreen', data);
     }
   },
+  localMediaList: function(data, cb) {
+    if(this.isInApp) {
+      this.call('localMediaList', data, cb);
+    }
+  }
 };
 
 window.jsBridge = jsBridge;

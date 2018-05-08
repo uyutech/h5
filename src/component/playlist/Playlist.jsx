@@ -164,12 +164,12 @@ class Playlist extends migi.Component {
     let author = [];
     let hash = {};
     if(self.props.profession) {
-      item.work.profession.forEach((item) => {
+      (item.work.profession || []).forEach((item) => {
         author.push(item.name);
       });
     }
     else {
-      item.work.author.forEach(function(list) {
+      (item.work.author || []).forEach(function(list) {
         list.list.forEach(function(at) {
           if(!hash[at.id]) {
             hash[at.id] = true;
