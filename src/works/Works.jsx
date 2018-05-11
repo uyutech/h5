@@ -116,10 +116,15 @@ class Works extends migi.Component {
   }
   setMedia(item) {
     let self = this;
-    item.worksId = self.id;
-    item.worksTitle = self.data.info.title;
-    item.worksCover = self.data.info.cover;
+    if(item) {
+      item.worksId = self.id;
+      item.worksTitle = self.data.info.title;
+      item.worksCover = self.data.info.cover;
+    }
     self.ref.media.setData(item || null);
+    if(!item) {
+      return;
+    }
     jsBridge.setTitle(item.title);
     let author = [];
     let hash = {};

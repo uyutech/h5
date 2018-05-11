@@ -8,6 +8,7 @@ import 'migi';
 import './bridge';
 import BigNumber from 'bignumber.js';
 import SparkMd5 from 'spark-md5';
+import moment from 'moment';
 import $ from 'anima-yocto-ajax';
 import env from './production';
 import net from './net';
@@ -81,6 +82,7 @@ if(!window.location.origin) {
 $.AJAX = env.ajax;
 window.BigNumber = BigNumber;
 window.SparkMd5 = SparkMd5;
+window.moment = moment;
 window.$ = $;
 window.$net = net;
 window.$util = util;

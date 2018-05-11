@@ -549,7 +549,16 @@ let jsBridge = {
     else {
       cb();
     }
-  }
+  },
+  deleteLocalMedia: function(data, cb) {
+    if(this.isInApp) {
+      this.call('deleteLocalMedia', data, cb);
+    }
+    else {
+      cb({ message: '仅限真机' });
+    }
+
+  },
 };
 
 window.jsBridge = jsBridge;

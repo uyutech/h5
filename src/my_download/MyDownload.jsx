@@ -7,6 +7,7 @@
 
 import VideoList from './VideoList.jsx';
 import AudioList from './AudioList.jsx';
+import BotPanel from '../component/botpanel/BotPanel.jsx';
 
 let hash = {};
 
@@ -77,6 +78,7 @@ class MyDownload extends migi.Component {
       <AudioList ref="audioList"
                  message="正在加载..."
                  @visible={ this.kind === 2 }/>
+      <BotPanel ref="botPanel"/>
     </div>;
   }
 }

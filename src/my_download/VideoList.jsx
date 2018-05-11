@@ -56,6 +56,127 @@ class VideoList extends migi.Component {
           key: 'pause',
         });
       });
+      $list.on('click', '.fn', function() {
+        let $b = $(this);
+        let id = parseInt($b.closest('li').attr('rel'));
+        let key = 'work_' + id;
+        jsBridge.getPreference(key, function(res) {
+          if(!res) {
+            return;
+          }
+          let list = [
+            [
+              {
+                class: 'like',
+                state: res.isLike,
+                name: '点赞',
+                click: function(botPanel) {
+                  if(!$util.isLogin()) {
+                    migi.eventBus.emit('NEED_LOGIN');
+                    return;
+                  }
+                  let url = res.isLike ? 'unLike' : 'like';
+                  $net.postJSON('/h5/works2/' + url, {
+                    workId: id, id: res.worksId,
+                  }, function(resp) {
+                    if(resp.success) {
+                      let data = resp.data;
+                      list[0][0].state = res.isLike = data.state;
+                      jsBridge.setPreference(key, res);
+                      botPanel.list = list;
+                    }
+                    else if(resp.code === 1000) {
+                      migi.eventBus.emit('NEED_LOGIN');
+                    }
+                    else {
+                      jsBridge.toast(resp.message || $util.ERROR_MESSAGE);
+                    }
+                  }, function(resp) {
+                    jsBridge.toast(resp.message || $util.ERROR_MESSAGE);
+                  });
+                },
+              },
+              {
+                class: 'favor',
+                state: res.isFavor,
+                name: '收藏',
+                click: function(botPanel) {
+                  if(!$util.isLogin()) {
+                    migi.eventBus.emit('NEED_LOGIN');
+                    return;
+                  }
+                  let url = res.isFavor ? 'unFavor' : 'favor';
+                  $net.postJSON('/h5/works2/' + url, {
+                    workId: id, id: res.worksId,
+                  }, function(resp) {
+                    if(resp.success) {
+                      let data = resp.data;
+                      list[0][1].state = res.isFavor = data.state;
+                      jsBridge.setPreference(key, res);
+                      botPanel.list = list;
+                    }
+                    else if(resp.code === 1000) {
+                      migi.eventBus.emit('NEED_LOGIN');
+                    }
+                    else {
+                      jsBridge.toast(resp.message || $util.ERROR_MESSAGE);
+                    }
+                  }, function(resp) {
+                    jsBridge.toast(resp.message || $util.ERROR_MESSAGE);
+                  });
+                },
+              },
+              {
+                class: 'link',
+                name: '查看作品页',
+                click: function(botPanel) {
+                  jsBridge.pushWindow('/works.html?id=' + res.worksId + '&workId=' + id, {
+                    title: res.worksTitle,
+                    transparentTitle: true,
+                  });
+                  botPanel.cancel();
+                },
+              },
+              {
+                class: 'suggest',
+                name: '文件信息',
+                click: function() {
+                  let $li = $b.closest('li');
+                  let s = '\n文件名：' + $li.find('.name').attr('rel');
+                  s += '\n文件大小：' + $li.find('.length').text();
+                  s += '\n创建时间：' + $li.attr('time');
+                  s += '\n文件路径：' + $li.find('.txt').attr('rel');
+                  jsBridge.toast(s);
+                },
+              },
+              {
+                class: 'delete',
+                name: '删除',
+                click: function(botPanel) {
+                  jsBridge.confirm('确认删除吗？', function(res) {
+                    if(!res) {
+                      return;
+                    }
+                    jsBridge.deleteLocalMedia({
+                      name: $b.closest('li').find('.txt').attr('rel'),
+                    }, function(res) {
+                      if(res.success) {
+                        $list.find('li[rel="' + id + '"]').remove();
+                        jsBridge.toast('删除成功');
+                      }
+                      else {
+                        jsBridge.toast(res.message);
+                      }
+                      botPanel.cancel();
+                    });
+                  });
+                },
+              }
+            ]
+          ];
+          migi.eventBus.emit('BOT_PANEL', list);
+        });
+      });
       jsBridge.on('unFullscreen', function() {
         self.ref.video.element.pause();
       });
@@ -102,15 +223,17 @@ class VideoList extends migi.Component {
     $(self.ref.list.element).html('');
   }
   genItem(item) {
-    return <li rel={ item.name.replace(/\.\w+/, '') }>
+    return <li rel={ item.name.replace(/\.\w+/, '') }
+               time={ moment(item.modified).format('YYYY-MM-DD HH:mm:ss') }>
       <a class="pic">
         <img src="/src/common/blank.png"/>
       </a>
       <div class="txt"
            rel={ item.absolutePath }>
-        <span class="name">{ item.name }</span>
+        <span class="name"
+              rel={ item.name }>{ item.name }</span>
         <p class="info">
-          <span>{ $util.formatLength(item.length) }</span>
+          <span class="length">{ $util.formatLength(item.length) }</span>
           <span class="author"/>
         </p>
       </div>

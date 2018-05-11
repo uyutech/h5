@@ -10,7 +10,6 @@ import './index.less';
 import MyDownload from './MyDownload.jsx';
 
 jsBridge.ready(function() {
-  jsBridge.refreshState(false);
   let myDownload = migi.preExist(
     <MyDownload/>,
     '#page'
