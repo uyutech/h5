@@ -158,7 +158,7 @@ class VideoList extends migi.Component {
               li.classList.add('loaded');
               li.querySelector('.pic').href = '/works.html?id=' + item.worksId + '&workId=' + item.id;
               li.querySelector('.pic').title = item.worksTitle;
-              li.querySelector('.pic img').src = item.worksCover;
+              li.querySelector('.pic img').src = $util.img(item.worksCover, 80, 80, 80);
               li.querySelector('.txt .name').textContent = item.title;
               let author = [];
               let hash = {};

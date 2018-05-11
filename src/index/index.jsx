@@ -92,11 +92,13 @@ jsBridge.ready(function() {
     let minor = parseInt(version[1]) || 0;
     let patch = parseInt(version[2]) || 0;
     if(jsBridge.android) {
-      if(minor < 6) {
+      if(minor < 7) {
         old = true;
       }
-      else if(patch < 6) {
-        old = true;
+      else {
+        if(patch < 0) {
+          old = true;
+        }
       }
     }
     else {

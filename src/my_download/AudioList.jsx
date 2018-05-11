@@ -35,13 +35,21 @@ class AudioList extends migi.Component {
         let $this = $(this);
         let absolutePath = 'https://local.circling.cc' + $this.attr('rel');
         let id = $this.attr('workId');
+        let cover = $this.closest('li').find('.pic img').attr('src');
         let title = $this.find('.name').text();
         let author = $this.find('.author').text();
+        if(cover === '/src/common/blank.png') {
+          cover = '';
+        }
+        else {
+          cover = $util.protocol($util.img(cover, 128, 128, 80));
+        }
         jsBridge.media({
           key: 'play',
           value: {
             url: absolutePath,
             id,
+            cover,
             title,
             author,
           },
@@ -148,7 +156,7 @@ class AudioList extends migi.Component {
               li.classList.add('loaded');
               li.querySelector('.pic').href = '/works.html?id=' + item.worksId + '&workId=' + item.id;
               li.querySelector('.pic').title = item.worksTitle;
-              li.querySelector('.pic img').src = item.worksCover;
+              li.querySelector('.pic img').src = $util.img(item.worksCover, 80, 80, 80);
               li.querySelector('.txt .name').textContent = item.title;
               let author = [];
               let hash = {};

@@ -12,6 +12,12 @@ let util = {
     }
     return (url || '').replace(/^https?:\/\//i, '//');
   },
+  protocol: function(url) {
+    if(url && url.indexOf('//') === 0) {
+      url = location.protocol + url;
+    }
+    return url;
+  },
   img: function(url, w, h, q) {
     url = url || '';
     url = url.trim();

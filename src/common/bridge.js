@@ -546,6 +546,9 @@ let jsBridge = {
     if(this.isInApp) {
       this.call('localMediaList', data, cb);
     }
+    else {
+      cb();
+    }
   }
 };
 
