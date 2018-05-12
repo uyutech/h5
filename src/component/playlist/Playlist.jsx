@@ -109,6 +109,9 @@ class Playlist extends migi.Component {
           }
         }
       });
+      jsBridge.on('mediaStop', function() {
+        self.setCur();
+      });
     });
   }
   @bind message

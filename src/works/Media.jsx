@@ -68,9 +68,31 @@ class Media extends migi.Component {
               }
             }
           });
-          jsBridge.on('mediaEnd', function() {
-            self.isPlaying = false;
-            self.emit('end');
+          jsBridge.on('mediaEnd', function(e) {
+            if(self.data && e.data && e.data.id === self.data.id.toString()) {
+              self.isPlaying = false;
+              self.emit('end');
+            }
+          });
+          jsBridge.on('mediaPlay', function(e) {
+            if(self.data && e.data && e.data.id === self.data.id.toString()) {
+              self.isPlaying = true;
+              self.emit('play', self.data);
+            }
+          });
+          jsBridge.on('mediaPause', function(e) {
+            if(self.data && e.data && e.data.id === self.data.id.toString()) {
+              self.isPlaying = false;
+              self.emit('pause');
+            }
+          });
+          jsBridge.on('mediaStop', function(e) {
+            if(self.data && e.data && e.data.id === self.data.id.toString()) {
+              self.isPlaying = false;
+              self.duration = 0;
+              self.setBarPercent(0);
+              self.emit('pause');
+            }
           });
         }
       }
@@ -313,8 +335,25 @@ class Media extends migi.Component {
       });
     }
     else if(mediaService) {
+      let author = [];
+      let hash = {};
+      (self.data.author || []).forEach(function(item) {
+        item.list.forEach(function(at) {
+          if(!hash[at.id]) {
+            hash[at.id] = true;
+            author.push(at.name);
+          }
+        });
+      });
       jsBridge.media({
         key: 'play',
+        value: {
+          id: self.data.id,
+          url: location.protocol + $util.autoSsl(self.data.url),
+          title: self.data.title,
+          author: author.join(' '),
+          cover: $util.protocol($util.img(self.data.worksCover, 80, 80, 80)),
+        },
       }, function() {
         self.isPlaying = true;
         self.emit('play', self.data);

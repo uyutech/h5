@@ -23,6 +23,12 @@ class VideoList extends migi.Component {
           o.pause();
         });
       });
+      jsBridge.on('mediaPlay', function() {
+        $list.find('.pic.play').removeClass('play');
+        $list.find('video').each(function(i, o) {
+          o.pause();
+        });
+      });
       $list.on('click', '.pic', function() {
         let $this = $(this);
         let video = this.querySelector('video');

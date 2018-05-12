@@ -196,22 +196,31 @@ class Item extends migi.Component {
     });
   }
   change(data) {
-    migi.eventBus.emit('PLAY_INLINE');
     let work = data.work;
     work.worksId = data.id;
     work.worksTitle = data.title;
     work.worksCover = data.cover;
     $util.recordPlay(work);
     $net.postJSON('/h5/work2/addViews', { id: work.id });
-    jsBridge.media({
-      key: 'info',
-      value: {
-        id: work.id,
-        url: location.protocol + $util.autoSsl(work.url),
-      },
+    let author = [];
+    let hash = {};
+    (data.work.author || []).forEach(function(item) {
+      item.list.forEach(function(at) {
+        if(!hash[at.id]) {
+          hash[at.id] = true;
+          author.push(at.name);
+        }
+      });
     });
     jsBridge.media({
       key: 'play',
+      value: {
+        id: work.id,
+        url: location.protocol + $util.autoSsl(work.url),
+        title: data.title,
+        author: author.join(' '),
+        cover: $util.protocol($util.img(data.cover, 80, 80, 80)),
+      },
     });
   }
   render() {

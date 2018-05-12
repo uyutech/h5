@@ -268,6 +268,12 @@ class PostList extends migi.Component {
           o.pause();
         });
       });
+      jsBridge.on('mediaPlay', function() {
+        $list.find('.video .pic.play,.audio .pic.play').removeClass('play');
+        $list.find('video').each(function(i, o) {
+          o.pause();
+        });
+      });
       $list.on('click', '.video .pic', function() {
         let $this = $(this);
         let video = this.querySelector('video');
