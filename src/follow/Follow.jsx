@@ -92,7 +92,7 @@ class Follow extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = $net.postJSON('/h5/follow2/index', function(res) {
+    ajax = $net.postJSON('/h5/follow/index', function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -172,7 +172,7 @@ class Follow extends migi.Component {
     }
     let postList = self.ref.postList;
     loading = true;
-    ajax = $net.postJSON('/h5/follow2/postList', { offset }, function(res) {
+    ajax = $net.postJSON('/h5/follow/postList', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
         postList.appendData(data.data);
@@ -198,7 +198,7 @@ class Follow extends migi.Component {
     }
     let postList = self.ref.postList2;
     loading2 = true;
-    ajax = $net.postJSON('/h5/follow2/friendPostList', { offset: offset2 }, function(res) {
+    ajax = $net.postJSON('/h5/follow/friendPostList', { offset: offset2 }, function(res) {
       if(res.success) {
         let data = res.data;
         postList.appendData(data.data);
@@ -228,7 +228,7 @@ class Follow extends migi.Component {
       if(circleAjax) {
         circleAjax.abort();
       }
-      circleAjax = $net.postJSON('/h5/follow2/circleList', { offset: circleOffset }, function(res) {
+      circleAjax = $net.postJSON('/h5/follow/circleList', { offset: circleOffset }, function(res) {
         if(res.success) {
           let data = res.data;
           self.circleList = self.circleList.concat(data.data);

@@ -60,7 +60,7 @@ class My extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = $net.postJSON('/h5/my2/index', function(res) {
+    ajax = $net.postJSON('/h5/my/index', function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -123,7 +123,7 @@ class My extends migi.Component {
         jsBridge.showLoading('正在登录...');
         let openId = res.openId || res.openID;
         let token = res.token;
-        jsBridge.login('/h5/passport2/loginWeibo', { openId, token }, function(res) {
+        jsBridge.login('/h5/passport/loginWeibo', { openId, token }, function(res) {
           jsBridge.hideLoading();
           if(res.success) {
             let data = res.data;

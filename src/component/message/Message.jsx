@@ -14,7 +14,7 @@ class Message extends migi.Component {
         res = res || 0;
         let now = Date.now();
         if($util.isLogin() && now - res > 10000) {
-          $net.postJSON('/h5/my2/unreadMessageCount', function(res) {
+          $net.postJSON('/h5/my/unreadMessageCount', function(res) {
             if(res.success) {
               self.num = res.data;
               jsBridge.setPreference('message-time', Date.now());
@@ -37,7 +37,7 @@ class Message extends migi.Component {
         });
         let data = e.data;
         if(data && data.myMessage) {
-          $net.postJSON('/h5/my2/unreadMessageCount', function(res) {
+          $net.postJSON('/h5/my/unreadMessageCount', function(res) {
             if(res.success) {
               self.num = res.data;
               jsBridge.setPreference('message-time', Date.now());

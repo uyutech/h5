@@ -22,7 +22,7 @@ class MallPrize extends migi.Component {
         catch(e) {}
       }
     });
-    $net.postJSON('/h5/mall2/prize', function(res) {
+    $net.postJSON('/h5/mall/prize', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -50,7 +50,7 @@ class MallPrize extends migi.Component {
     }
     tvd.element.classList.add('loading');
     let id = tvd.props.rel;
-    $net.postJSON('/h5/mall2/applyExpress', { id }, function(res) {
+    $net.postJSON('/h5/mall/applyExpress', { id }, function(res) {
       if(res.success) {
         tvd.element.classList.remove('apply');
         tvd.element.classList.add('applied');

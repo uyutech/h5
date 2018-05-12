@@ -126,7 +126,7 @@ class sub_comment extends migi.Component {
       if(self.useAuthor && self.myInfo && self.myInfo.author && self.myInfo.author.length) {
         authorId = self.myInfo.author[0].id;
       }
-      $net.postJSON('/h5/comment2/sub', {
+      $net.postJSON('/h5/comment/sub', {
         content: self.value,
         id: self.id,
         type: self.type,

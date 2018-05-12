@@ -108,7 +108,7 @@ class Search extends migi.Component {
     let $message = $(self.ref.message.element);
     $message.addClass('fn-hide');
     let type = this.type;
-    let url = '/h5/search2/author';
+    let url = '/h5/search/author';
     let authorList = self.ref.authorList;
     let userList = self.ref.userList;
     let worksList = self.ref.worksList;
@@ -133,7 +133,7 @@ class Search extends migi.Component {
           return;
         }
         userList.message = '正在加载...';
-        url = '/h5/search2/user';
+        url = '/h5/search/user';
         offset = userOffset;
         break;
       case 2:
@@ -144,7 +144,7 @@ class Search extends migi.Component {
           return;
         }
         worksList.message = '正在加载...';
-        url = '/h5/search2/works';
+        url = '/h5/search/works';
         offset = worksOffset;
         break;
       case 3:
@@ -155,7 +155,7 @@ class Search extends migi.Component {
           return;
         }
         tagList.message = '正在加载...';
-        url = '/h5/search2/tag';
+        url = '/h5/search/tag';
         offset = tagOffset;
         break;
     }

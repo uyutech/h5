@@ -32,7 +32,7 @@ class Nav extends migi.Component {
       return;
     }
     let self = this;
-    let url = self.isFollow ? '/h5/circle2/unFollow' : '/h5/circle2/follow';
+    let url = self.isFollow ? '/h5/circle/unFollow' : '/h5/circle/follow';
     loading = true;
     $net.postJSON(url, { id: self.id }, function(res) {
       if(res.success) {

@@ -69,7 +69,7 @@ class Tag extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = $net.postJSON('/h5/tag2/index', { tag }, function(res) {
+    ajax = $net.postJSON('/h5/tag/index', { tag }, function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -121,7 +121,7 @@ class Tag extends migi.Component {
     }
     let postList = self.ref.postList;
     loading = true;
-    ajax = $net.postJSON('/h5/tag2/postList', { tag: self.tag, offset }, function(res) {
+    ajax = $net.postJSON('/h5/tag/postList', { tag: self.tag, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {

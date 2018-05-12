@@ -40,7 +40,7 @@ class Circle extends migi.Component {
               if(!res) {
                 return;
               }
-              $net.postJSON('/h5/circle2/block', { id }, function(res) {
+              $net.postJSON('/h5/circle/block', { id }, function(res) {
                 if(res.success) {
                   jsBridge.toast('屏蔽成功');
                 }
@@ -75,7 +75,7 @@ class Circle extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = $net.postJSON('/h5/circle2/index', { id }, function(res) {
+    ajax = $net.postJSON('/h5/circle/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -135,7 +135,7 @@ class Circle extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    ajax = $net.postJSON('/h5/circle2/postList', { id: self.id, offset }, function(res) {
+    ajax = $net.postJSON('/h5/circle/postList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {

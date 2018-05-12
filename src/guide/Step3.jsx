@@ -58,7 +58,7 @@ class Step3 extends migi.Component {
       ids.push($(o).attr('rel'));
     });
     ids = ids.join(',');
-    $net.postJSON('/h5/my2/guideAuthor', { ids }, function(res) {
+    $net.postJSON('/h5/my/guideAuthor', { ids }, function(res) {
       if(res.success) {
         self.emit('next');
       }
@@ -78,7 +78,7 @@ class Step3 extends migi.Component {
     }
     loading = true;
     self.message = '正在加载...';
-    $net.postJSON('/h5/author2/all', function(res) {
+    $net.postJSON('/h5/author/all', function(res) {
       if(res.success) {
         let data = res.data;
         let s = '';

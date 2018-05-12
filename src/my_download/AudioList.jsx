@@ -79,7 +79,7 @@ class AudioList extends migi.Component {
                     return;
                   }
                   let url = res.isLike ? 'unLike' : 'like';
-                  $net.postJSON('/h5/works2/' + url, {
+                  $net.postJSON('/h5/works/' + url, {
                     workId: id, id: res.worksId,
                   }, function(resp) {
                     if(resp.success) {
@@ -109,7 +109,7 @@ class AudioList extends migi.Component {
                     return;
                   }
                   let url = res.isFavor ? 'unFavor' : 'favor';
-                  $net.postJSON('/h5/works2/' + url, {
+                  $net.postJSON('/h5/works/' + url, {
                     workId: id, id: res.worksId,
                   }, function(resp) {
                     if(resp.success) {

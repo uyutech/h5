@@ -71,7 +71,7 @@ class PostList extends migi.Component {
           //     if(!res) {
           //       return;
           //     }
-          //     $net.postJSON('/h5/comment2/block', { id }, function(res) {
+          //     $net.postJSON('/h5/comment/block', { id }, function(res) {
           //       if(res.success) {
           //         jsBridge.toast('屏蔽成功');
           //       }
@@ -88,7 +88,7 @@ class PostList extends migi.Component {
           clickReport: function(botFn) {
             jsBridge.confirm('确认举报吗？', function(res) {
               if(res) {
-                $net.postJSON('/h5/comment2/report', { id }, function(res) {
+                $net.postJSON('/h5/comment/report', { id }, function(res) {
                   if(res) {
                     jsBridge.toast('举报成功');
                   }
@@ -108,7 +108,7 @@ class PostList extends migi.Component {
               if(!res) {
                 return;
               }
-              $net.postJSON('/h5/comment2/del', { id }, function(res) {
+              $net.postJSON('/h5/comment/del', { id }, function(res) {
                 if(res.success) {
                   $fn.closest('li').remove();
                   self.empty = !$(self.ref.list.element).children('li').length;
@@ -175,7 +175,7 @@ class PostList extends migi.Component {
         }
         $this.addClass('loading');
         let id = parseInt($this.attr('rel'));
-        let url = $this.hasClass('liked') ? '/h5/comment2/unLike' : '/h5/comment2/like';
+        let url = $this.hasClass('liked') ? '/h5/comment/unLike' : '/h5/comment/like';
         $net.postJSON(url, { id }, function(res) {
           if(res.success) {
             let data = res.data;
@@ -207,7 +207,7 @@ class PostList extends migi.Component {
         }
         $this.addClass('loading');
         let id = parseInt($this.attr('rel'));
-        let url = $this.hasClass('favored') ? '/h5/comment2/unFavor' : '/h5/comment2/favor';
+        let url = $this.hasClass('favored') ? '/h5/comment/unFavor' : '/h5/comment/favor';
         $net.postJSON(url, { id }, function(res) {
           if(res.success) {
             let data = res.data;
@@ -292,7 +292,7 @@ class PostList extends migi.Component {
                 o.worksCover = av.cover;
                 o.worksTitle = av.title;
                 $util.recordPlay(o);
-                $net.postJSON('/h5/work2/addViews', { id: workId });
+                $net.postJSON('/h5/work/addViews', { id: workId });
                 break outer;
               }
             }
@@ -325,7 +325,7 @@ class PostList extends migi.Component {
                 o.worksCover = av.cover;
                 o.worksTitle = av.title;
                 $util.recordPlay(o);
-                $net.postJSON('/h5/work2/addViews', { id: workId });
+                $net.postJSON('/h5/work/addViews', { id: workId });
                 break outer;
               }
             }

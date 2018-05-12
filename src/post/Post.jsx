@@ -33,7 +33,7 @@ class Post extends migi.Component {
           clickReport: function(botFn) {
             jsBridge.confirm('确认举报吗？', function(res) {
               if(res) {
-                $net.postJSON('/h5/comment2/report', { id }, function(res) {
+                $net.postJSON('/h5/comment/report', { id }, function(res) {
                   if(res) {
                     jsBridge.toast('举报成功');
                   }
@@ -51,7 +51,7 @@ class Post extends migi.Component {
           clickDel: function(botFn) {
             jsBridge.confirm('确认删除吗？', function(res) {
               if(res) {
-                $net.postJSON('/h5/comment2/del', { id }, function(res) {
+                $net.postJSON('/h5/comment/del', { id }, function(res) {
                   if(res) {
                     jsBridge.toast('删除成功');
                   }
@@ -88,7 +88,7 @@ class Post extends migi.Component {
         catch(e) {}
       }
     });
-    $net.postJSON('/h5/post2/index', { id }, function(res) {
+    $net.postJSON('/h5/post/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -146,7 +146,7 @@ class Post extends migi.Component {
     }
     let comment = self.ref.comment;
     loading = true;
-    ajax = $net.postJSON('/h5/post2/commentList', { id: self.id, offset }, function(res) {
+    ajax = $net.postJSON('/h5/post/commentList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {

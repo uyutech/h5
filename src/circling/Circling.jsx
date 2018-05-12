@@ -56,7 +56,7 @@ class Circling extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = $net.postJSON('/h5/circling2/index', function(res) {
+    ajax = $net.postJSON('/h5/circling/index', function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -116,7 +116,7 @@ class Circling extends migi.Component {
     }
     let postList = self.ref.postList;
     loading = true;
-    ajax = $net.postJSON('/h5/circling2/postList', { circleId: idStack.join(','), offset }, function(res) {
+    ajax = $net.postJSON('/h5/circling/postList', { circleId: idStack.join(','), offset }, function(res) {
       if(res.success) {
         let data = res.data;
         postList.appendData(data.data);
@@ -143,7 +143,7 @@ class Circling extends migi.Component {
     }
     if(el.scrollLeft + el.offsetWidth + 30 > el.scrollWidth) {
       loadingCircle = true;
-      $net.postJSON('/h5/circling2/circle', { offset: circleOffset }, function(res) {
+      $net.postJSON('/h5/circling/circle', { offset: circleOffset }, function(res) {
         if(res.success) {
           let data = res.data;
           self.circleList = self.circleList.concat(data.data);

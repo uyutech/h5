@@ -57,7 +57,7 @@ class Dynamics extends migi.Component {
     let postList = self.ref.postList;
     postList.message = '正在加载...';
     loading = true;
-    ajax = $net.postJSON('/h5/author2/dynamicList', { id: self.id, offset }, function(res) {
+    ajax = $net.postJSON('/h5/author/dynamicList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         postList.appendData(data.data);

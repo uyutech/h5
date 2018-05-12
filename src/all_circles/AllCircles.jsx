@@ -41,7 +41,7 @@ class AllCircles extends migi.Component {
         catch(e) {}
       }
     });
-    $net.postJSON('/h5/circle2/popularList', function(res) {
+    $net.postJSON('/h5/circle/popularList', function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -118,7 +118,7 @@ class AllCircles extends migi.Component {
       return;
     }
     loading = true;
-    $net.postJSON('/h5/circle2/popularList', { offset }, function(res) {
+    $net.postJSON('/h5/circle/popularList', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
         self.appendData(data.data);

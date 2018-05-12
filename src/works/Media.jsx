@@ -110,7 +110,7 @@ class Media extends migi.Component {
                 if(!res) {
                   return;
                 }
-                $net.postJSON('/h5/work2/report', { id }, function(res) {
+                $net.postJSON('/h5/work/report', { id }, function(res) {
                   if(res.success) {
                     jsBridge.toast('举报成功');
                   }
@@ -366,7 +366,7 @@ class Media extends migi.Component {
     }
     if(firstPlay) {
       firstPlay = false;
-      $net.postJSON('/h5/work2/addViews', { id: self.data.id });
+      $net.postJSON('/h5/work/addViews', { id: self.data.id });
     }
   }
   pause() {
@@ -557,7 +557,7 @@ class Media extends migi.Component {
     loadingLike = true;
     let item = self.data;
     let url = self.isLike ? 'unLike' : 'like';
-    ajaxLike = $net.postJSON('/h5/works2/' + url, {
+    ajaxLike = $net.postJSON('/h5/works/' + url, {
       workId: item.id, id: item.worksId,
     }, function(res) {
       if(res.success) {
@@ -597,7 +597,7 @@ class Media extends migi.Component {
     loadingFavor = true;
     let item = self.data;
     let url = self.isFavor ? 'unFavor' : 'favor';
-    ajaxFavor = $net.postJSON('/h5/works2/' + url, {
+    ajaxFavor = $net.postJSON('/h5/works/' + url, {
       workId: item.id, id: item.worksId,
     }, function(res) {
       if(res.success) {

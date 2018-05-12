@@ -60,7 +60,7 @@ class Login extends migi.Component {
         clearInterval(interval);
       }
     }, 1000);
-    $net.postJSON('/h5/passport2/registerCode', { phone: self.phone }, function(res) {
+    $net.postJSON('/h5/passport/registerCode', { phone: self.phone }, function(res) {
       if(res.success) {
         jsBridge.toast('验证码已发送，10分钟内有效~');
       }
@@ -90,7 +90,7 @@ class Login extends migi.Component {
         clearInterval(interval);
       }
     }, 1000);
-    $net.postJSON('/h5/passport2/resetCode', { phone: self.phone }, function(res) {
+    $net.postJSON('/h5/passport/resetCode', { phone: self.phone }, function(res) {
       if(res.success) {
         jsBridge.toast('验证码已发送，10分钟内有效~');
       }
@@ -123,7 +123,7 @@ class Login extends migi.Component {
       return;
     }
     self.loading = true;
-    jsBridge.login('/h5/passport2/login', {
+    jsBridge.login('/h5/passport/login', {
       phone: self.phone,
       pw: self.password,
     }, function(res) {
@@ -180,13 +180,13 @@ class Login extends migi.Component {
     self.loading = true;
     let phone = self.phone;
     let password = self.password;
-    $net.postJSON('/h5/passport2/register', {
+    $net.postJSON('/h5/passport/register', {
       phone,
       pw: password,
       code: self.code,
     }, function(res) {
       if(res.success) {
-        jsBridge.login('/h5/passport2/login', {
+        jsBridge.login('/h5/passport/login', {
           phone,
           pw: password,
         }, function(res) {
@@ -247,7 +247,7 @@ class Login extends migi.Component {
     self.loading = true;
     let phone = self.phone;
     let password = self.password;
-    $net.postJSON('/h5/passport2/reset', {
+    $net.postJSON('/h5/passport/reset', {
       phone,
       pw: password,
       code: self.code,

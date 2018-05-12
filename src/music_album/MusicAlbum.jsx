@@ -37,7 +37,7 @@ class MusicAlbum extends migi.Component {
         catch(e) {}
       }
     });
-    $net.postJSON('/h5/musicAlbum2/index', { id }, function(res) {
+    $net.postJSON('/h5/musicAlbum/index', { id }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);

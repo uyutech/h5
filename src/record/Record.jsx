@@ -87,7 +87,7 @@ class Record extends migi.Component {
     }
     loading = true;
     let playlist = self.ref.playlist;
-    $net.postJSON('/h5/my2/favorList', { offset, kind: 2 }, function(res) {
+    $net.postJSON('/h5/my/favorList', { offset, kind: 2 }, function(res) {
       if(res.success) {
         let data = res.data;
         playlist.appendData(data.data);

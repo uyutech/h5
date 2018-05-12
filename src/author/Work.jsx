@@ -101,7 +101,7 @@ class Work extends migi.Component {
     if(cache.ajax) {
       cache.ajax.abort();
     }
-    cache.ajax = $net.postJSON('/h5/author2/kindWorkList', {
+    cache.ajax = $net.postJSON('/h5/author/kindWorkList', {
       id: self.id,
       kind,
       offset: cache.offset,
@@ -190,7 +190,7 @@ class Work extends migi.Component {
     work.worksCover = data.cover;
     work.worksTitle = data.title;
     $util.recordPlay(work);
-    $net.postJSON('/h5/work2/addViews', { id: work.id });
+    $net.postJSON('/h5/work/addViews', { id: work.id });
     let author = [];
     let hash = {};
     (data.work.author || []).forEach(function(item) {

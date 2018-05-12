@@ -124,7 +124,7 @@ class Item extends migi.Component {
       self.ajax.abort();
     }
     self.loading = true;
-    self.ajax = $net.postJSON('/h5/find2/tag',
+    self.ajax = $net.postJSON('/h5/find/tag',
       { tag: self.tag, kind: self.kind, offset: self.offset, }, function(res) {
       if(res.success) {
         let data = res.data;
@@ -201,7 +201,7 @@ class Item extends migi.Component {
     work.worksTitle = data.title;
     work.worksCover = data.cover;
     $util.recordPlay(work);
-    $net.postJSON('/h5/work2/addViews', { id: work.id });
+    $net.postJSON('/h5/work/addViews', { id: work.id });
     let author = [];
     let hash = {};
     (data.work.author || []).forEach(function(item) {

@@ -80,12 +80,12 @@ class Nav extends migi.Component {
         let spark = new SparkMd5();
         spark.append(fileReader.result);
         let md5 = spark.end();
-        $net.postJSON('/h5/my2/sts', { name: md5 + suffix }, function(res) {
+        $net.postJSON('/h5/my/sts', { name: md5 + suffix }, function(res) {
           if(res.success) {
             let data = res.data;
             if(data.exist) {
               self.headUrl = '//zhuanquan.xyz/pic/' + md5 + suffix;
-              $net.postJSON('/h5/my2/headUrl', { value: self.headUrl }, function(res) {
+              $net.postJSON('/h5/my/headUrl', { value: self.headUrl }, function(res) {
                 if(res.success) {
                   jsBridge.getPreference(self.props.cacheKey, function(data) {
                     if(data) {
@@ -121,7 +121,7 @@ class Nav extends migi.Component {
             xhr.onload = function() {
               if(xhr.status === 200) {
                 self.headUrl = '//zhuanquan.xyz/pic/' + md5 + suffix;
-                $net.postJSON('/h5/my2/headUrl', { value: self.headUrl }, function(res) {
+                $net.postJSON('/h5/my/headUrl', { value: self.headUrl }, function(res) {
                   if(res.success) {
                     jsBridge.getPreference(self.props.cacheKey, function(data) {
                       if(data) {
@@ -165,7 +165,7 @@ class Nav extends migi.Component {
           return;
         }
         if(nickname !== self.nickname) {
-          $net.postJSON('/h5/my2/nickname', { value: nickname }, function(res) {
+          $net.postJSON('/h5/my/nickname', { value: nickname }, function(res) {
             if(res.success) {
               self.nickname = nickname;
               jsBridge.getPreference(self.props.cacheKey, function(data) {
@@ -196,7 +196,7 @@ class Nav extends migi.Component {
           return;
         }
         if(sign !== self.sign) {
-          $net.postJSON('/h5/my2/sign', { value: sign }, function(res) {
+          $net.postJSON('/h5/my/sign', { value: sign }, function(res) {
             if(res.success) {
               self.sign = sign;
               jsBridge.getPreference(self.props.cacheKey, function(data) {

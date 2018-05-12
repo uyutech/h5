@@ -131,7 +131,7 @@ class SubPost extends migi.Component {
         catch(e) {}
       }
     });
-    $net.postJSON('/h5/subPost2/index', { circleId: self.circleId }, function(res) {
+    $net.postJSON('/h5/subPost/index', { circleId: self.circleId }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -258,7 +258,7 @@ class SubPost extends migi.Component {
     if(self.useAuthor && self.myInfo && self.myInfo.author && self.myInfo.author.length) {
       authorId = self.myInfo.author[0].id;
     }
-    $net.postJSON('/h5/subPost2/sub', {
+    $net.postJSON('/h5/subPost/sub', {
       content: self.value,
       image: JSON.stringify(image),
       circleId: circleId.join(','),
@@ -392,7 +392,7 @@ class SubPost extends migi.Component {
             }
           };
           document.body.appendChild(node);
-          $net.postJSON('/h5/my2/sts', { name: md5 + suffix }, function(res) {
+          $net.postJSON('/h5/my/sts', { name: md5 + suffix }, function(res) {
             if(res.success) {
               let data = res.data;
               if(data.exist) {

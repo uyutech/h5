@@ -23,7 +23,7 @@ class Nav extends migi.Component {
               if(!res) {
                 return;
               }
-              $net.postJSON('/h5/author2/black', { id }, function(res) {
+              $net.postJSON('/h5/author/black', { id }, function(res) {
                 if(res.success) {
                   jsBridge.toast('加入黑名单成功');
                 }
@@ -46,7 +46,7 @@ class Nav extends migi.Component {
               if(!res) {
                 return;
               }
-              $net.postJSON('/h5/author2/report', { id }, function(res) {
+              $net.postJSON('/h5/author/report', { id }, function(res) {
                 if(res.success) {
                   jsBridge.toast('举报成功');
                 }
@@ -113,7 +113,7 @@ class Nav extends migi.Component {
           return;
         }
         self.loading = true;
-        $net.postJSON('/h5/author2/unFollow', { id: self.id }, function(res) {
+        $net.postJSON('/h5/author/unFollow', { id: self.id }, function(res) {
           if(res.success) {
             let data = res.data;
             self.isFollow = data.state;
@@ -136,7 +136,7 @@ class Nav extends migi.Component {
     }
     else {
       self.loading = true;
-      $net.postJSON('/h5/author2/follow', { id: self.id } , function(res) {
+      $net.postJSON('/h5/author/follow', { id: self.id } , function(res) {
         if(res.success) {
           let data = res.data;
           self.isFollow = data.state;

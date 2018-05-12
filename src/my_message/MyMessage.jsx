@@ -42,7 +42,7 @@ class MyMessage extends migi.Component {
         self.setData(cache, 0);
       }
     });
-    ajax = $net.postJSON('/h5/my2/messageList', function(res) {
+    ajax = $net.postJSON('/h5/my/messageList', function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -96,7 +96,7 @@ class MyMessage extends migi.Component {
     }
     let message = self.ref.message;
     loading = true;
-    ajax = $net.postJSON('/h5/my2/messageList', { offset }, function(res) {
+    ajax = $net.postJSON('/h5/my/messageList', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
         message.appendData(data.data);
@@ -133,7 +133,7 @@ class MyMessage extends migi.Component {
     if(self.useAuthor && self.myInfo && self.myInfo.author && self.myInfo.author.length) {
       authorId = self.myInfo.author[0].id;
     }
-    $net.postJSON('/h5/comment2/sub', {
+    $net.postJSON('/h5/comment/sub', {
       content,
       id: self.id,
       type: self.type,

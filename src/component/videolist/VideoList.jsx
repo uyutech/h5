@@ -45,7 +45,7 @@ class VideoList extends migi.Component {
               o.worksCover = av.cover;
               o.worksTitle = av.title;
               $util.recordPlay(o);
-              $net.postJSON('/h5/work2/addViews', { id: workId });
+              $net.postJSON('/h5/work/addViews', { id: workId });
               break outer;
             }
           }
@@ -81,7 +81,7 @@ class VideoList extends migi.Component {
           let item = self.list[i];
           if(item.work.id === id) {
             let url = $this.hasClass('liked') ? 'unLike' : 'like';
-            $net.postJSON('/h5/works2/' + url, {
+            $net.postJSON('/h5/works/' + url, {
               workId: id, id: item.id,
             }, function(res) {
               if(res.success) {

@@ -50,7 +50,7 @@ class Find extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = $net.postJSON('/h5/find2/index', function(res) {
+    ajax = $net.postJSON('/h5/find/index', function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);

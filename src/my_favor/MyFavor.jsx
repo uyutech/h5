@@ -50,7 +50,7 @@ class MyFavor extends migi.Component {
         catch(e) {}
       }
     });
-    $net.postJSON('/h5/my2/favorList', { kind: 1 }, function(res) {
+    $net.postJSON('/h5/my/favorList', { kind: 1 }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -97,7 +97,7 @@ class MyFavor extends migi.Component {
   load() {
     let self = this;
     let kind = self.kind;
-    let url = '/h5/my2/favorList';
+    let url = '/h5/my/favorList';
     let offset;
     let target;
     if(kind === 1) {
@@ -129,7 +129,7 @@ class MyFavor extends migi.Component {
         return;
       }
       postLoading = true;
-      url = '/h5/my2/favorPostList';
+      url = '/h5/my/favorPostList';
       offset = postOffset;
       target = self.ref.postList;
     }
@@ -189,7 +189,7 @@ class MyFavor extends migi.Component {
     work.worksTitle = data.title;
     work.worksCover = data.cover;
     $util.recordPlay(work);
-    $net.postJSON('/h5/work2/addViews', { id: work.id });
+    $net.postJSON('/h5/work/addViews', { id: work.id });
     let author = [];
     let hash = {};
     (data.work.author || []).forEach(function(item) {

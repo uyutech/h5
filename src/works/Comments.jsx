@@ -68,7 +68,7 @@ class Comments extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    ajax = $net.postJSON('/h5/works2/commentList', { id: self.id, offset }, function(res) {
+    ajax = $net.postJSON('/h5/works/commentList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {

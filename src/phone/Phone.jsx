@@ -51,7 +51,7 @@ class Phone extends migi.Component {
         clearInterval(interval);
       }
     }, 1000);
-    $net.postJSON('/h5/passport2/bindCode', { phone: self.phone }, function(res) {
+    $net.postJSON('/h5/passport/bindCode', { phone: self.phone }, function(res) {
       if(res.success) {
         jsBridge.toast('验证码已发送，10分钟内有效~');
       }
@@ -94,7 +94,7 @@ class Phone extends migi.Component {
     self.loading = true;
     let phone = self.phone;
     let password = self.password;
-    $net.postJSON('/h5/passport2/bindPhone', {
+    $net.postJSON('/h5/passport/bindPhone', {
       phone,
       pw: password,
       code: self.code,

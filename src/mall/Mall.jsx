@@ -22,7 +22,7 @@ class Mall extends migi.Component {
         catch(e) {}
       }
     });
-    $net.postJSON('/h5/mall2/index', function(res) {
+    $net.postJSON('/h5/mall/index', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);

@@ -31,7 +31,7 @@ class MyPost extends migi.Component {
         catch(e) {}
       }
     });
-    $net.postJSON('/h5/my2/postList', function(res) {
+    $net.postJSON('/h5/my/postList', function(res) {
       if(res.success) {
         let data = res.data;
         self.setData(data, 1);
@@ -96,7 +96,7 @@ class MyPost extends migi.Component {
       ajax.abort();
     }
     loading = true;
-    ajax = $net.postJSON('/h5/my2/postList', { offset, }, function(res) {
+    ajax = $net.postJSON('/h5/my/postList', { offset, }, function(res) {
       if(res.success) {
         let data = res.data;
         if(data.data.length) {
