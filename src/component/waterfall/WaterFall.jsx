@@ -278,6 +278,11 @@ class WaterFall extends migi.Component {
     img.onload = function() {
       item.work.width = img.width;
       item.work.height = img.height;
+      $net.postJSON('/h5/work/updateSize', {
+        id: item.work.id,
+        width: img.width,
+        height: img.height,
+      });
       document.body.removeChild(img);
       if(uuid === self.uuid) {
         cb();

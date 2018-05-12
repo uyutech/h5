@@ -197,7 +197,7 @@ class Media extends migi.Component {
       return;
     }
 
-    self.duration = 0;
+    self.duration = data.duration || 0;
     self.currentTime = 0;
     self.canControl = false;
     firstPlay = true;
@@ -287,12 +287,12 @@ class Media extends migi.Component {
   onLoadedmetadata(e) {
     this.duration = e.target.duration;
     this.canControl = true;
-    this.onProgress(e);
-  }
-  onCanplaythrough(e) {
-    this.duration = e.target.duration;
-    this.canControl = true;
-    this.onProgress(e);
+    if(!this.data.duration) {
+      $net.postJSON('/h5/work/updateDuration', { id: this.data.id, duration: Math.ceil(this.duration) });
+    }
+    if(this.data.kind === 1 && !this.data.width) {
+      $net.postJSON('/h5/work/updateSize', { id: this.data.id, width: e.target.videoWidth, height: e.target.videoHeight });
+    }
   }
   onProgress(e) {
     let buffered = e.target.buffered;
@@ -758,7 +758,6 @@ class Media extends migi.Component {
                poster="/src/common/blank.png"
                onTimeupdate={ this.onTimeupdate }
                onLoadedmetadata={ this.onLoadedmetadata }
-               onCanplaythrough={ this.onCanplaythrough }
                onProgress={ this.onProgress }
                onPause={ this.onPause }
                onEnded={ this.onEnded }
@@ -770,7 +769,6 @@ class Media extends migi.Component {
         <audio ref="audio"
                onTimeupdate={ this.onTimeupdate }
                onLoadedmetadata={ this.onLoadedmetadata }
-               onCanplaythrough={ this.onCanplaythrough }
                onProgress={ this.onProgress }
                onPause={ this.onPause }
                onEnded={ this.onEnded }

@@ -35,6 +35,7 @@ let util = {
     return str.replace(/&lt;/g, '<').replace(/&amp;/g, '&');
   },
   formatTime: function(time) {
+    time = Math.ceil(time);
     if(!time) {
       return '00:00';
     }
