@@ -33,9 +33,10 @@ class AudioList extends migi.Component {
       });
       $list.on('click', '.txt', function() {
         let $this = $(this);
+        let $li = $this.closest('li');
         let absolutePath = 'https://local.circling.cc' + $this.attr('rel');
-        let id = parseInt($this.closest('li').attr('rel'));
-        let cover = $this.closest('li').find('.pic img').attr('src');
+        let id = parseInt($li.attr('rel'));
+        let cover = $li.find('.pic img').attr('src');
         let title = $this.find('.name').text();
         let author = $this.find('.author').text();
         if(cover === '/src/common/blank.png') {
@@ -55,6 +56,8 @@ class AudioList extends migi.Component {
           },
         });
         jsBridge.delPreference('recordCur');
+        $list.find('.cur').removeClass('cur');
+        $li.addClass('cur');
       });
       $list.on('click', '.fn', function() {
         let $b = $(this);
@@ -176,6 +179,9 @@ class AudioList extends migi.Component {
           ];
           migi.eventBus.emit('BOT_PANEL', list);
         });
+      });
+      jsBridge.on('mediaStop', function() {
+        $list.find('.cur').removeClass('cur');
       });
       window.addEventListener('scroll', function() {
         if(!self.visible) {
