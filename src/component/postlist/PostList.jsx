@@ -57,34 +57,8 @@ class PostList extends migi.Component {
         let id = parseInt($fn.attr('rel'));
         migi.eventBus.emit('BOT_FN', {
           canFn: true,
-          // canBlock: true,
           canReport: true,
           canDel: $fn.attr('own') === 'true',
-          // canShare: true,
-          // canShareLink: true,
-          // clickBlock: function(botFn) {
-          //   if(!$util.isLogin()) {
-          //     migi.eventBus.emit('NEED_LOGIN');
-          //     return;
-          //   }
-          //   jsBridge.confirm('确认屏蔽吗？', function(res) {
-          //     if(!res) {
-          //       return;
-          //     }
-          //     $net.postJSON('/h5/comment/block', { id }, function(res) {
-          //       if(res.success) {
-          //         jsBridge.toast('屏蔽成功');
-          //       }
-          //       else {
-          //         jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-          //       }
-          //       botFn.cancel();
-          //     }, function(res) {
-          //       jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-          //       botFn.cancel();
-          //     });
-          //   });
-          // },
           clickReport: function(botFn) {
             jsBridge.confirm('确认举报吗？', function(res) {
               if(res) {
@@ -260,9 +234,6 @@ class PostList extends migi.Component {
         $li.find('.snap, .full, .more, .less').toggleClass('fn-hide');
       });
       migi.eventBus.on('PLAY_INLINE', function() {
-        jsBridge.media({
-          key: 'stop',
-        });
         $list.find('.video .pic.play,.audio .pic.play').removeClass('play');
         $list.find('video').each(function(i, o) {
           o.pause();
@@ -275,6 +246,9 @@ class PostList extends migi.Component {
         });
       });
       $list.on('click', '.video .pic', function() {
+        jsBridge.media({
+          key: 'stop',
+        });
         let $this = $(this);
         let video = this.querySelector('video');
         if($this.hasClass('first')) {
