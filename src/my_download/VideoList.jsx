@@ -53,7 +53,7 @@ class VideoList extends migi.Component {
           video.webkitEnterFullScreen();
         }
         jsBridge.media({
-          key: 'pause',
+          key: 'stop',
         });
       });
       $list.on('click', '.fn', function() {
@@ -302,6 +302,7 @@ class VideoList extends migi.Component {
   }
   render() {
     return <div class={ 'list video' + (this.visible ? '' : ' fn-hide') }>
+      <p class="warn">部分android机型暂无法播放本地视频，加速解决中……</p>
       <ol ref="list"/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') }>{ this.message }</div>
       <video ref="video"/>

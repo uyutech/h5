@@ -15,7 +15,7 @@ class MyDownload extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.kind = 1;
+    self.kind = 2;
     self.on(migi.Event.DOM, function() {
       self.load(self.kind);
     });
@@ -67,10 +67,10 @@ class MyDownload extends migi.Component {
     return <div class="download">
       <ul class="type"
           onClick={ { li: this.clickKind } }>
-        <li class={ this.kind === 1 ? 'cur' : 'false' }
-            rel={ 1 }>视频</li>
         <li class={ this.kind === 2 ? 'cur' : 'false' }
             rel={ 2 }>音频</li>
+        <li class={ this.kind === 1 ? 'cur' : 'false' }
+            rel={ 1 }>视频</li>
       </ul>
       <VideoList ref="videoList"
                  message="正在加载..."
