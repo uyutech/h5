@@ -482,7 +482,7 @@ class PostList extends migi.Component {
         </div>
         <ul class="circle">
         {
-          (item.circle || []).slice(0, 3).map(function(circle) {
+          (item.circle || []).map(function(circle) {
             return <li>
               <a class="circle"
                  href={ '/circle.html?id=' + circle.id }

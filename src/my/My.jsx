@@ -180,7 +180,7 @@ class My extends migi.Component {
           onClick={ { a: this.clickLink } }>
         <li><a href="/my_favor.html" class="favor">我的收藏</a></li>
         <li><a href="/my_post.html" class="post">我画的圈</a></li>
-        <li><a href="/my_download.html" class="download">我的下载</a></li>
+        <li class="ios"><a href="/my_download.html" class="download">我的下载</a></li>
       </ul>
       <ul class={ 'list' + (this.isLogin ? '' : ' fn-hide') }
           onClick={ { a: this.clickLink } }>
