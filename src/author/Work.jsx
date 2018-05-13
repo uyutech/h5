@@ -78,10 +78,6 @@ class Work extends migi.Component {
     if(cache.offset === 0) {
       self.load();
     }
-    // self.ref.fn.list = cache.type;
-    // self.ref.fn.sort = cache.sort;
-    // self.ref.waterFall.pause = !self.visible || self.groupId !== 3;
-    // self.ref.waterFall.checkPool();
   }
   checkMore() {
     let self = this;
