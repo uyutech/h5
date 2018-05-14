@@ -824,7 +824,8 @@ class Media extends migi.Component {
           <b class={ 'favor' + (this.isFavor ? ' favored' : '') }/>
           <span>{ this.favorCount || '收藏' }</span>
         </li>
-        <li onClick={ this.clickDownload }>
+        <li class="ios"
+            onClick={ this.clickDownload }>
           <b class="download"/>
           <span>下载</span>
         </li>
