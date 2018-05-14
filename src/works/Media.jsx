@@ -335,29 +335,39 @@ class Media extends migi.Component {
       });
     }
     else if(mediaService) {
-      let author = [];
-      let hash = {};
-      (self.data.author || []).forEach(function(item) {
-        item.list.forEach(function(at) {
-          if(!hash[at.id]) {
-            hash[at.id] = true;
-            author.push(at.name);
-          }
+      if(jsBridge.ios) {
+        jsBridge.media({
+          key: 'play',
+        }, function() {
+          self.isPlaying = true;
+          self.emit('play', self.data);
         });
-      });
-      jsBridge.media({
-        key: 'play',
-        value: {
-          id: self.data.id,
-          url: location.protocol + $util.autoSsl(self.data.url),
-          title: self.data.title,
-          author: author.join(' '),
-          cover: $util.protocol($util.img(self.data.worksCover, 80, 80, 80)),
-        },
-      }, function() {
-        self.isPlaying = true;
-        self.emit('play', self.data);
-      });
+      }
+      else {
+        let author = [];
+        let hash = {};
+        (self.data.author || []).forEach(function(item) {
+          item.list.forEach(function(at) {
+            if(!hash[at.id]) {
+              hash[at.id] = true;
+              author.push(at.name);
+            }
+          });
+        });
+        jsBridge.media({
+          key: 'play',
+          value: {
+            id: self.data.id,
+            url: location.protocol + $util.autoSsl(self.data.url),
+            title: self.data.title,
+            author: author.join(' '),
+            cover: $util.protocol($util.img(self.data.worksCover, 80, 80, 80)),
+          },
+        }, function() {
+          self.isPlaying = true;
+          self.emit('play', self.data);
+        });
+      }
     }
     else {
       self.ref.audio.element.play();
