@@ -107,7 +107,7 @@ class Tag extends migi.Component {
   }
   checkMore() {
     let self = this;
-    if(loading || loadEnd || !self.visible) {
+    if(loading || loadEnd) {
       return;
     }
     if($util.isBottom()) {
