@@ -90,6 +90,7 @@ class MyAddress extends migi.Component {
     });
   }
   @bind list
+  @bind message
   init() {
     let self = this;
     if(ajax) {
@@ -125,6 +126,7 @@ class MyAddress extends migi.Component {
 
     let self = this;
     self.list = data;
+    self.message = self.list && self.list.length ? '' : '暂无收货地址';
   }
   render() {
     return <div class="private">
@@ -147,6 +149,7 @@ class MyAddress extends migi.Component {
         })
       }
       </ul>
+      <div class="cp-message">{ this.message }</div>
     </div>;
   }
 }
