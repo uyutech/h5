@@ -41,6 +41,33 @@ let net = {
     }
     return $.AJAX(url, data, success, error, 'POST', timeout);
   },
+  stats: function(url) {
+    // 兼容无host
+    if (!/^http(s)?:\/\//.test(url)) {
+      url = window.ROOT_DOMAIN + '/' + url.replace(/^\//, '');
+    }
+    let img = new Image();
+    img.style.position = 'absolute';
+    img.style.display = 'none';
+    img.src = url;
+    img.onload = function() {
+      document.body.removeChild(img);
+    };
+    img.onerror = function() {
+      document.body.removeChild(img);
+    };
+    document.body.appendChild(img);
+  },
+  statsAction: function(actionId, param) {
+    jsBridge.getPreference('UUID', function(res) {
+      res = res || '';
+      let url = '/h5/stats/action?actionId=' + encodeURIComponent(actionId)
+        + '&uuid=' + encodeURIComponent(res)
+        + (param ? '&param=' + encodeURIComponent(JSON.stringify(param)) : '')
+        + '&_=' + Date.now() + Math.random();
+      net.stats(url);
+    });
+  },
 };
 
 export default net;

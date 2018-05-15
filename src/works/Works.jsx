@@ -58,6 +58,16 @@ class Works extends migi.Component {
     }, function(res) {
       jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
+    jsBridge.on('optionMenu1', function() {
+      $net.statsAction(20, {
+        id: self.id,
+      });
+    });
+    jsBridge.on('optionMenu', function() {
+      $net.statsAction(26, {
+        id: self.id,
+      });
+    });
   }
   setData(data, priority) {
     if(priority < currentPriority) {
@@ -167,8 +177,13 @@ class Works extends migi.Component {
     }
     column.list = list;
   }
-  mediaPlay(data) {
+  mediaPlay(data, firstPlay) {
     $util.recordPlay(data);
+    $net.statsAction(22, {
+      id: data.id,
+      worksId: data.worksId,
+      firstPlay,
+    });
   }
   mediaLike(data) {
     jsBridge.getPreference(cacheKey, function(cache) {
@@ -205,6 +220,10 @@ class Works extends migi.Component {
   changeColumn(id) {
     let self = this;
     self.curColumn = id;
+    $net.statsAction(14, {
+      id,
+      worksId: self.id,
+    });
   }
   change(workId) {
     let self = this;
@@ -212,6 +231,10 @@ class Works extends migi.Component {
     for(let i = 0; i < self.avList.length; i++) {
       if(self.avList[i].id === workId) {
         self.setMedia(self.avList[i]);
+        $net.statsAction(13, {
+          id: workId,
+          worksId: self.id,
+        });
         break;
       }
     }
@@ -224,6 +247,9 @@ class Works extends migi.Component {
     jsBridge.pushWindow('/sub_comment.html?type=2&id=' + self.id, {
       title: '评论',
       optionMenu: '发布',
+    });
+    $net.statsAction(21, {
+      id: self.id,
     });
   }
   share() {
@@ -281,14 +307,23 @@ class Works extends migi.Component {
         botFn.cancel();
       },
     });
+    $net.statsAction(19, {
+      id: self.id,
+    });
   }
   render() {
     return <div class="works">
       <Background ref="background"/>
       <Media ref="media"
              on-play={ this.mediaPlay }
+             on-pause={ function(data) { $net.statsAction(23, { id: data.id, worksId: data.worksId, }); } }
              on-like={ this.mediaLike }
-             on-favor={ this.mediaFavor }/>
+             on-favor={ this.mediaFavor }
+             on-fullscreen={ function(data) { $net.statsAction(24, { id: data.id, worksId: data.worksId, }); } }
+             on-clickLike={ function(data) { $net.statsAction(15, { id: data.id, worksId: data.worksId, }); } }
+             on-clickFavor={ function(data) { $net.statsAction(16, { id: data.id, worksId: data.worksId, }); } }
+             on-clickDownload={ function(data) { $net.statsAction(17, { id: data.id, worksId: data.worksId, }); } }
+             on-clickShare={ function(data) { $net.statsAction(18, { id: data.id, worksId: data.worksId, }); } }/>
       <Info ref="info"/>
       <Select ref="select"
               on-change={ this.change }/>

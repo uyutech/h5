@@ -141,6 +141,7 @@ class PostList extends migi.Component {
             botFn.cancel();
           },
         });
+        self.emit('clickShare');
       });
       $list.on('click', '.like', function() {
         let $this = $(this);
@@ -173,6 +174,7 @@ class PostList extends migi.Component {
           jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           $this.removeClass('loading');
         });
+        self.emit('clickLike');
       });
       $list.on('click', '.favor', function() {
         let $this = $(this);
@@ -205,6 +207,7 @@ class PostList extends migi.Component {
           jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           $this.removeClass('loading');
         });
+        self.emit('clickFavor');
       });
       $list.on('click', '.comment', function() {
         let $this = $(this);
@@ -228,10 +231,12 @@ class PostList extends migi.Component {
             });
           }
         }
+        self.emit('clickComment');
       });
       $list.on('click', '.more, .less', function() {
         let $li = $(this).closest('li');
         $li.find('.snap, .full, .more, .less').toggleClass('fn-hide');
+        self.emit('clickMore');
       });
       migi.eventBus.on('PLAY_INLINE', function() {
         $list.find('.video .pic.play,.audio .pic.play').removeClass('play');
@@ -250,11 +255,11 @@ class PostList extends migi.Component {
           key: 'stop',
         });
         let $this = $(this);
+        let workId = parseInt($this.attr('workId'));
+        let worksId = parseInt($this.attr('worksId'));
         let video = this.querySelector('video');
         if($this.hasClass('first')) {
           $this.removeClass('first');
-          let workId = parseInt($this.attr('workId'));
-          let worksId = parseInt($this.attr('worksId'));
           outer:
           for(let i = 0, len = self.list.length; i < len; i++) {
             let item = self.list[i].work;
@@ -281,13 +286,15 @@ class PostList extends migi.Component {
           $this.addClass('play');
           video.play();
         }
+        self.emit('clickPlay');
       });
       $list.on('click', '.audio .pic', function() {
         let $this = $(this);
+        let $li = $this.closest('li');
+        let workId = parseInt($this.attr('workId'));
+        let worksId = parseInt($this.attr('worksId'));
         if($this.hasClass('first')) {
           $this.removeClass('first');
-          let workId = parseInt($this.attr('workId'));
-          let worksId = parseInt($this.attr('worksId'));
           outer:
           for(let i = 0, len = self.list.length; i < len; i++) {
             let item = self.list[i].work;
@@ -313,14 +320,29 @@ class PostList extends migi.Component {
         }
         else {
           migi.eventBus.emit('PLAY_INLINE');
-          jsBridge.media({
-            key: 'play',
-            value: {
-              id: $this.attr('workId'),
-              url: location.protocol + $util.autoSsl($this.attr('url')),
-            },
-          });
+          if(jsBridge.ios) {
+            jsBridge.media({
+              key: 'play',
+              value: {
+                id: $this.attr('workId'),
+                url: location.protocol + $util.autoSsl($this.attr('url')),
+              },
+            });
+          }
+          else {
+            jsBridge.media({
+              key: 'play',
+              value: {
+                id: $this.attr('workId'),
+                url: location.protocol + $util.autoSsl($this.attr('url')),
+                title: $li.find('.name').text(),
+                author: $li.find('.author').text(),
+                cover: $util.protocol($util.img($this.find('img').attr('src'), 80, 80, 80)),
+              },
+            });
+          }
         }
+        self.emit('clickPlay');
       });
       $list.on('click', '.image img', function() {
         let list = [];

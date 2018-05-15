@@ -32,6 +32,9 @@ class Circling extends migi.Component {
     self._visible = self.props.visible;
     self.on(migi.Event.DOM, function() {
       self.init();
+      migi.eventBus.on('IMAGE_VIEW', function() {
+        $net.statsAction(3);
+      });
     });
   }
   get visible() {
@@ -104,6 +107,7 @@ class Circling extends migi.Component {
     }
     if($util.isBottom()) {
       self.load();
+      $net.statsAction(1);
     }
   }
   load() {
@@ -171,6 +175,7 @@ class Circling extends migi.Component {
     });
   }
   clickTag(e, vd, tvd) {
+    let self = this;
     let el = tvd.element;
     let id = tvd.props.rel;
     let add = false;
@@ -201,12 +206,13 @@ class Circling extends migi.Component {
     if(idStack.length > 3) {
       idStack.shift();
     }
-    this.ref.postList.clearData();
-    this.ref.postList.message = '正在加载...';
+    self.ref.postList.clearData();
+    self.ref.postList.message = '正在加载...';
     offset = 0;
     loadEnd = false;
     loading = false;
-    this.load();
+    self.load();
+    $net.statsAction(4);
   }
   favor(id, data) {
     jsBridge.getPreference(cacheKey, function(cache) {
@@ -265,7 +271,13 @@ class Circling extends migi.Component {
                 message="正在加载..."
                 on-favor={ this.favor }
                 on-like={ this.like }
-                on-del={ this.del }/>
+                on-del={ this.del }
+                on-clickPlay={ function() { $net.statsAction(2); } }
+                on-clickShare={ function() { $net.statsAction(5); } }
+                on-clickLike={ function() { $net.statsAction(6); } }
+                on-clickFavor={ function() { $net.statsAction(7); } }
+                on-clickComment={ function() { $net.statsAction(8); } }
+                on-clickMore={ function() { $net.statsAction(9); } }/>
     </div>;
   }
 }

@@ -104,6 +104,9 @@ class Find extends migi.Component {
           first[tag] = true;
           self.ref.item[i].load();
         }
+        $net.statsAction(10, {
+          tag,
+        });
       }
       else {
         self.ref.item[i].visible = false;

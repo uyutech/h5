@@ -116,6 +116,9 @@ class Item extends migi.Component {
     }
     if($util.isBottom()) {
       self.load();
+      $net.statsAction(11, {
+        tag: self.tag,
+      });
     }
   }
   load() {

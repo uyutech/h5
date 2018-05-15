@@ -45,6 +45,9 @@ jsBridge.ready(function() {
 
   botNav.on('change', function(i) {
     last.visible = false;
+    $net.statsAction(12, {
+      id: i,
+    });
     if(i === 0) {
       topNav.hide();
       if(!find) {

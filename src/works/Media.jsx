@@ -329,7 +329,7 @@ class Media extends migi.Component {
     if(self.isVideo) {
       self.ref.video.element.play();
       self.isPlaying = true;
-      self.emit('play', self.data);
+      self.emit('play', self.data, firstPlay);
       jsBridge.media({
         key: 'stop',
       });
@@ -340,7 +340,7 @@ class Media extends migi.Component {
           key: 'play',
         }, function() {
           self.isPlaying = true;
-          self.emit('play', self.data);
+          self.emit('play', self.data, firstPlay);
         });
       }
       else {
@@ -365,14 +365,14 @@ class Media extends migi.Component {
           },
         }, function() {
           self.isPlaying = true;
-          self.emit('play', self.data);
+          self.emit('play', self.data, firstPlay);
         });
       }
     }
     else {
       self.ref.audio.element.play();
       self.isPlaying = true;
-      self.emit('play', self.data);
+      self.emit('play', self.data, firstPlay);
     }
     if(firstPlay) {
       firstPlay = false;
@@ -384,20 +384,20 @@ class Media extends migi.Component {
     if(self.isVideo) {
       self.ref.video.element.pause();
       self.isPlaying = false;
-      self.emit('pause');
+      self.emit('pause', self.data);
     }
     else if(mediaService) {
       jsBridge.media({
         key: 'pause',
       }, function() {
         self.isPlaying = false;
-        self.emit('pause');
+        self.emit('pause', self.data);
       });
     }
     else {
       self.ref.audio.element.pause();
       self.isPlaying = false;
-      self.emit('pause');
+      self.emit('pause', self.data);
     }
   }
   toggle() {
@@ -475,6 +475,7 @@ class Media extends migi.Component {
     else if(video.webkitEnterFullScreen) {
       video.webkitEnterFullScreen();
     }
+    this.emit('fullscreen', this.data);
   }
   touchStart(e) {
     e.preventDefault();
@@ -550,15 +551,13 @@ class Media extends migi.Component {
     }
   }
   clickLike() {
-    this.like();
-  }
-  like(cb) {
     let self = this;
-    if(!$util.isLogin()) {
-      migi.eventBus.emit('NEED_LOGIN');
+    if(!self.data) {
       return;
     }
-    if(!self.data) {
+    self.emit('clickLike', self.data);
+    if(!$util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
       return;
     }
     if(loadingLike) {
@@ -590,15 +589,13 @@ class Media extends migi.Component {
     });
   }
   clickFavor() {
-    this.favor();
-  }
-  favor(cb) {
     let self = this;
-    if(!$util.isLogin()) {
-      migi.eventBus.emit('NEED_LOGIN');
+    if(!self.data) {
       return;
     }
-    if(!self.data) {
+    self.emit('clickFavor', self.data);
+    if(!$util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
       return;
     }
     if(loadingFavor) {
@@ -631,11 +628,12 @@ class Media extends migi.Component {
   }
   clickDownload() {
     let self = this;
-    if(!$util.isLogin()) {
-      migi.eventBus.emit('NEED_LOGIN');
+    if(!self.data) {
       return;
     }
-    if(!self.data) {
+    self.emit('clickDownload',  self.data);
+    if(!$util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
       return;
     }
     if(jsBridge.ios) {
@@ -693,6 +691,7 @@ class Media extends migi.Component {
     if(!self.data) {
       return;
     }
+    self.emit('clickShare', self.data);
     migi.eventBus.emit('BOT_FN', {
       canShare: true,
       canShareWb: true,
