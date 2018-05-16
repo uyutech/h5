@@ -67,11 +67,8 @@ let util = {
     time = new Date(time);
     let now = Date.now();
     let diff = now - time;
-    if(diff >= 1000 * 60 * 60 * 24 * 365) {
-      return Math.floor(diff / (1000 * 60 * 60 * 24 * 365)) + '年前';
-    }
     if(diff >= 1000 * 60 * 60 * 24 * 30) {
-      return Math.floor(diff / (1000 * 60 * 60 * 24 * 30)) + '月前';
+      return moment(time).format('YYYY-MM-DD');
     }
     if(diff >= 1000 * 60 * 60 * 24) {
       return Math.floor(diff / (1000 * 60 * 60 * 24)) + '天前';

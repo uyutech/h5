@@ -499,7 +499,7 @@ class PostList extends migi.Component {
              href={ peopleUrl }
              title={ item.name || item.nickname }>{ item.name || item.nickname }</a>
           <a class="time"
-             title={ item.createTime }
+             title={ moment(item.createTime).format('YYYY-MM-DD HH:mm:ss') }
              href={ url }>{ item.typeName || $util.formatDate(item.createTime)}</a>
         </div>
         <ul class="circle">

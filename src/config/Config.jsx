@@ -187,6 +187,12 @@ class Config extends migi.Component {
     $net.postJSON('/h5/passport/loginOut', function() {
       $.cookie('isLogin', null);
       jsBridge.loginOut();
+      jsBridge.delPreference(cacheKey);
+      jsBridge.delPreference('myAddress');
+      jsBridge.delPreference('myFavor');
+      jsBridge.delPreference('myMessage');
+      jsBridge.delPreference('myPost');
+      jsBridge.delPreference('myRelation');
       jsBridge.delPreference('my', function() {
         jsBridge.popWindow({
           loginOut: true,

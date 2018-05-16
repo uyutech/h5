@@ -20,7 +20,7 @@ class MyRelation extends migi.Component {
   init(tag) {
     let self = this;
     self.tag = tag;
-    cacheKey = 'relation';
+    cacheKey = 'myRelation';
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         try {

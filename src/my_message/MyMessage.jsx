@@ -12,7 +12,7 @@ let loadEnd;
 let ajax;
 
 let currentPriority = 0;
-let cacheKey = 'message';
+let cacheKey = 'myMessage';
 
 class MyMessage extends migi.Component {
   constructor(...data) {

@@ -6,7 +6,7 @@
 
 let ajax;
 let currentPriority = 0;
-let cacheKey = 'address';
+let cacheKey = 'myAddress';
 
 class MyAddress extends migi.Component {
   constructor(...data) {
