@@ -185,7 +185,7 @@ class Playlist extends migi.Component {
       <a class="pic"
          title={ item.title }
          href={ url }>
-        <img src={ $util.img(item.cover, 80, 80, 80) || '/src/common/blank.png' }/>
+        <img src={ $util.img(item.work.cover || item.cover, 80, 80, 80) || '/src/common/blank.png' }/>
       </a>
       <div class="txt"
            worksId={ item.id }

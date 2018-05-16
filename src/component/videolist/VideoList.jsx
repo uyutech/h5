@@ -259,7 +259,7 @@ class VideoList extends migi.Component {
       <div class="pic first"
            worksId={ item.id }
            workId={ item.work.id }>
-        <img src={ $util.img(item.work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
+        <img src={ $util.img(item.work.cover || item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
         <div class="num">
           <span class="play">{ $util.abbrNum(item.work.views) }次播放</span>
         </div>
