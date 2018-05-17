@@ -28,6 +28,7 @@ class Works extends migi.Component {
   // @bind workId
   // @bind kind
   @bind curColumn
+  @bind desc
   init(id, workId, option) {
     let self = this;
     self.id = id;
@@ -115,10 +116,13 @@ class Works extends migi.Component {
     }
     self.setMedia(avList[index]);
 
+    self.desc = data.info.describe;
     self.setColumn(imgList, data.commentList);
     author.list = data.info.author;
     text.list = textList;
-    select.id = avList[index].id;
+    if(avList[index]) {
+      select.id = avList[index].id;
+    }
     select.list = avList;
     poster.list = imgList;
 
@@ -331,6 +335,7 @@ class Works extends migi.Component {
               on-change={ this.changeColumn }/>
       <div class={ 'intro' + (this.curColumn === 0 ? '' : ' fn-hide') }>
         <Author ref="author"/>
+        <pre class="desc">{ this.desc }</pre>
         <Text ref="text"/>
       </div>
       <Poster ref="poster"

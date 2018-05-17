@@ -16,9 +16,8 @@ class WorksList extends migi.Component {
   setData(data) {
     this.data = data;
   }
-  click() {
-    let data = this.props.data;
-    let length = (data.worklist || []).length;
+  clickChange() {
+    let length = (this.data.content || []).length;
     if(this.index >= length - 6) {
       this.index = 0;
     }
