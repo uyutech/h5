@@ -76,7 +76,7 @@ class Author extends migi.Component {
     let musicAlbumList = self.ref.musicAlbumList;
     let cooperation = self.ref.cooperation;
 
-    nav.setData(data.info, data.aliases, data.skill, data.outside, data.isFollow);
+    nav.setData(data.info, data.aliases, data.outside, data.isFollow);
 
     let showHome;
     if(data.mainWorksList && data.mainWorksList.count) {
@@ -100,6 +100,7 @@ class Author extends migi.Component {
     if(data.cooperationList && data.cooperationList.count) {
       cooperation.list = data.cooperationList.data;
       self.showCooperation = true;
+      showHome = true;
     }
     else {
       cooperation.list = null;
@@ -211,12 +212,7 @@ class Author extends migi.Component {
             rel={ 3 }>留言</li>
       </ul>
       <div class={ 'home' + (this.curColumn === 0 ? '' : ' fn-hide') }>
-        <h4 class={ this.showWorks ? '' : 'fn-hide' }>主打作品</h4>
-        <WorksList ref="worksList"
-                   @visible={ this.showWorks }/>
-        <h4 class={ this.showMusicAlbum ? '' : 'fn-hide' }>相关专辑</h4>
-        <MusicAlbum ref="musicAlbumList"
-                    @visible={ this.showMusicAlbum }/>
+        {}
         <h4 class={ this.showCooperation ? '' : 'fn-hide' }>合作关系</h4>
         <Cooperation ref="cooperation"
                      @visible={ this.showCooperation }/>

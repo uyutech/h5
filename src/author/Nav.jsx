@@ -67,7 +67,6 @@ class Nav extends migi.Component {
   @bind id
   @bind name
   @bind aliases
-  @bind skill
   @bind headUrl
   @bind fansCount
   @bind like
@@ -75,7 +74,7 @@ class Nav extends migi.Component {
   @bind isSettle
   @bind outside
   @bind isFollow
-  setData(data, aliases, skill, outside, isFollow) {
+  setData(data, aliases, outside, isFollow) {
     let self = this;
     self.id = data.id;
     self.name = data.name;
@@ -83,7 +82,6 @@ class Nav extends migi.Component {
     self.fansCount = data.fansCount;
     self.isSettle = data.isSettle;
     self.aliases = aliases;
-    self.skill = skill;
     self.outside = outside;
     self.isFollow = isFollow;
     self.loading = false;
