@@ -6,8 +6,7 @@
 'use strict';
 
 import Nav from './Nav.jsx';
-import WorksList from './WorksList.jsx';
-import MusicAlbum from './MusicAlbumList.jsx';
+import SkillWorks from './SkillWorks.jsx';
 import Cooperation from './Cooperation.jsx';
 import Comments from './Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
@@ -29,7 +28,6 @@ class Author extends migi.Component {
   @bind showWork
   @bind showDynamic
   @bind showWorks
-  @bind showMusicAlbum
   @bind showCooperation
   init(id) {
     let self = this;
@@ -72,30 +70,21 @@ class Author extends migi.Component {
     let work = self.ref.work;
     let dynamics = self.ref.dynamics;
     let comments = self.ref.comments;
-    let worksList = self.ref.worksList;
-    let musicAlbumList = self.ref.musicAlbumList;
+    let skillWorks = self.ref.skillWorks;
     let cooperation = self.ref.cooperation;
 
     nav.setData(data.info, data.aliases, data.outside, data.isFollow);
 
     let showHome;
-    if(data.mainWorksList && data.mainWorksList.count) {
-      worksList.list = data.mainWorksList.data;
+    if(data.skillWorks && data.skillWorks.length) {
+      skillWorks.authorId = self.id;
+      skillWorks.list = data.skillWorks;
       showHome = true;
       self.showWorks = true;
     }
     else {
-      worksList.list = null;
+      skillWorks.list = null;
       self.showWorks = false;
-    }
-    if(data.mainMusicAlbumList && data.mainMusicAlbumList.count) {
-      musicAlbumList.list = data.mainMusicAlbumList.data;
-      showHome = true;
-      self.showMusicAlbum = true;
-    }
-    else {
-      musicAlbumList.list = null;
-      self.showMusicAlbum = false;
     }
     if(data.cooperationList && data.cooperationList.count) {
       cooperation.list = data.cooperationList.data;
@@ -212,8 +201,8 @@ class Author extends migi.Component {
             rel={ 3 }>留言</li>
       </ul>
       <div class={ 'home' + (this.curColumn === 0 ? '' : ' fn-hide') }>
-        {}
-        <h4 class={ this.showCooperation ? '' : 'fn-hide' }>合作关系</h4>
+        <SkillWorks ref="skillWorks"
+                    @visible={ this.showWorks }/>
         <Cooperation ref="cooperation"
                      @visible={ this.showCooperation }/>
       </div>

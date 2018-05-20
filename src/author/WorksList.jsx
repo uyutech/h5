@@ -7,10 +7,38 @@
 class WorksList extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.visible = this.props.visible;
+    this.data = this.props.data;
+    this.offset = this.data.limit;
+    this.list = this.data.data;
   }
+  @bind loading
   @bind list
-  @bind visible
+  clickChange() {
+    let self = this;
+    if(self.loading) {
+      return;
+    }
+    self.loading = true;
+    $net.postJSON('/h5/author/skillWorks', {
+      id: self.props.authorId, offset: self.offset, skillId: self.data.info.id,
+    }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        self.list = data.data;
+        self.offset += data.limit;
+        if(self.offset >= data.count) {
+          self.offset = 0;
+        }
+      }
+      else {
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      }
+      self.loading = false;
+    }, function(res) {
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      self.loading = false;
+    });
+  }
   click(e, vd, tvd) {
     e.preventDefault();
     let url = tvd.props.href;
@@ -21,38 +49,29 @@ class WorksList extends migi.Component {
     });
   }
   render() {
-    return <div class={ 'mod-workslist' + (this.visible ? '' : ' fn-hide') }
-                onClick={ { a: this.click } }>
+    return <div class={ 'mod-workslist ' + (this.loading ? 'loading' : '') }>
+      <h4>
+        { this.data.info.name }作品
+        { this.data.count > this.data.limit ? <span onClick={ this.clickChange }>换一换</span> : '' }
+      </h4>
+      <ul onClick={ { a: this.click } }>
       {
-        this.list
-          ? this.list.length
-            ? <ul class="list">
-              {
-                this.list.filter((item) => { return item; }).map((item) => {
-                  let url = `/works.html?id=${item.id}`;
-                  return <li>
-                    <a class="pic"
-                       href={ url }
-                       title={ item.title }>
-                      <img src={ $util.img(item.cover, 170, 170, 80) || '/src/common/blank.png' }/>
-                      <span class="type">{ item.typeName }</span>
-                      <span class="num">{ $util.abbrNum(item.popular) }</span>
-                    </a>
-                    <a class="txt"
-                       href={ url }
-                       title={ item.title }>
-                      <span>{ item.title }</span>
-                      <span class="profession">{ (item.profession || []).map((item) => {
-                        return item.name;
-                      }).join(' ') }</span>
-                    </a>
-                  </li>;
-                })
-              }
-              </ul>
-            : <div class="empty">暂无</div>
-          : <div class="placeholder"/>
+        (this.list || []).map((item) => {
+          return <li>
+            <a class="pic"
+               href={ '/works.html?id=' + item.id }
+               title={ item.title }>
+              <img src={ $util.img(item.cover, 170, 170, 80) || '/src/common/blank.png' }/>
+              <span class="type">{ item.typeName }</span>
+              <span class="num">{ $util.abbrNum(item.popular) }</span>
+            </a>
+            <a class="name"
+               href={ '/works.html?id=' + item.id }
+               title={ item.title }>{ item.title }</a>
+          </li>;
+        })
       }
+      </ul>
     </div>;
   }
 }

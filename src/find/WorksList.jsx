@@ -39,7 +39,6 @@ class WorksList extends migi.Component {
                href={ '/works.html?id=' + item.id }
                title={ item.title }>
               <img src={ $util.img(item.cover, 170, 170, 80) || '/src/common/blank.png' }/>
-              <span>{ item.CommentCount }</span>
             </a>
             <a class="name"
                href={ '/works.html?id=' + item.id }

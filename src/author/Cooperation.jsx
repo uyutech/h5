@@ -23,6 +23,7 @@ class Cooperation extends migi.Component {
   render() {
     return <div class={ 'mod-cooperation' + (this.visible ? '' : ' fn-hide') }
                 onClick={ { a: this.click } }>
+      <h4>合作关系</h4>
       {
         this.list
           ? this.list.length
