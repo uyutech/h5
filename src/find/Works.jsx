@@ -59,7 +59,7 @@ class Works extends migi.Component {
           })
         }
         </div>
-        <a href={ '/works.html?id=' + this.data.content.id }
+        <a href={ url }
            title={ this.data.content.title }
            class="intro">
           <pre>{ this.data.describe }</pre>
