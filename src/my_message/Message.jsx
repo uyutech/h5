@@ -90,20 +90,28 @@ class Message extends migi.Component {
     let action;
     switch(item.type) {
       case 1:
-        action = '回复了作者页评论';
+        action = '回复作者页评论';
         url = '/author.html?id=' + item.refId;
         break;
       case 2:
-        action = '回复了作品页评论';
+        action = '2回复作品页评论';
         url = '/works.html?id=' + item.refId;
         break;
       case 3:
-        action = '回复了画圈页评论';
+        action = '3回复画圈页评论';
         url = '/post.html?id=' + item.refId;
         break;
       case 4:
-        action = '回复了画圈';
+        action = '评论画圈页';
         url = '/post.html?id=' + item.refId;
+        break;
+      case 5:
+        action = '评论作品页';
+        url = '/works.html?id=' + item.refId;
+        break;
+      case 6:
+        action = '评论作者页';
+        url = '/author.html?id=' + item.refId;
         break;
     }
     return <li class={ (comment.authorId ? 'author' : 'user') + (item.isRead ? ' read' : '') }>
