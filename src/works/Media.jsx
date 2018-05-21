@@ -573,7 +573,6 @@ class Media extends migi.Component {
         let data = res.data;
         self.isLike = item.isLike = data.state;
         self.likeCount = item.likeCount = data.count;
-        cb && cb();
         self.emit('like', item);
       }
       else if(res.code === 1000) {
@@ -611,7 +610,6 @@ class Media extends migi.Component {
         let data = res.data;
         self.isFavor = item.isFavor = data.state;
         self.favorCount = item.favorCount = data.count;
-        cb && cb();
         self.emit('favor', item);
       }
       else if(res.code === 1000) {

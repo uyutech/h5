@@ -109,6 +109,9 @@ let jsBridge = {
     }
   },
   pushWindow: function(url, params) {
+    if(!url) {
+      return;
+    }
     url = url.trim();
     if(this.isInApp) {
       if(url) {

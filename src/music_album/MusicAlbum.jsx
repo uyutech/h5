@@ -143,7 +143,7 @@ class MusicAlbum extends migi.Component {
     this.ref.botPlayBar.isPlaying = false;
   }
   mediaTimeupdate() {
-    this.mediaPlay();
+    this.ref.botPlayBar.isPlaying = true;
   }
   mediaEnd() {
     let self = this;
