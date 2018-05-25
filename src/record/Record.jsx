@@ -200,7 +200,6 @@ class Record extends migi.Component {
   render() {
     return <div class="record">
       <Background ref="background"
-                  disableEvent={ true }
                   disableClick={ true }/>
       <Media ref="media"
              on-play={ this.mediaPlay }

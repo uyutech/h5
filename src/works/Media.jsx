@@ -259,7 +259,7 @@ class Media extends migi.Component {
           url: location.protocol + $util.autoSsl(self.data.url),
           title: self.data.title,
           author: author.join(' '),
-          cover: $util.protocol($util.img(self.data.worksCover, 80, 80, 80)),
+          cover: $util.protocol($util.img(self.data.worksCover, 128, 128, 80)),
         },
       }, function(res) {
         load.innerHTML = '';
