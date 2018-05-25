@@ -1,13 +1,13 @@
 /**
- * Created by army8735 on 2017/12/5.
+ * Created by army8735 on 2018/5/22.
  */
 
 'use strict';
 
-import './my_message.html';
+import './my_comment.html';
 import './index.less';
 
-import MyMessage from './MyMessage.jsx';
+import MyComment from './MyComment.jsx';
 
 jsBridge.ready(function() {
   jsBridge.on('back', function(e) {
@@ -16,9 +16,10 @@ jsBridge.ready(function() {
       myMessage: true,
     });
   });
-  let myMessage = migi.preExist(
-    <MyMessage/>,
+  let myComment = migi.preExist(
+    <MyComment/>,
     '#page'
   );
-  myMessage.init();
+  myComment.init();
 });
+

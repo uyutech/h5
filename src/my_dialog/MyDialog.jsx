@@ -1,38 +1,30 @@
 /**
- * Created by army8735 on 2017/12/5.
+ * Created by army8735 on 2018/5/25.
  */
 
 'use strict';
 
-import Letter from './Letter.jsx';
+import Dialog from './Dialog.jsx';
 
 let offset = 0;
 let loading;
 let loadEnd;
 let ajax;
 
-let currentPriority = 0;
-let cacheKey = 'myMessage2';
-
-class MyMessage extends migi.Component {
+class MyDialog extends migi.Component {
   constructor(...data) {
     super(...data);
   }
-  init() {
+  init(id) {
     let self = this;
     if(ajax) {
       ajax.abort();
     }
-    jsBridge.getPreference(cacheKey, function(cache) {
-      if(cache) {
-        self.setData(cache, 0);
-      }
-    });
-    ajax = $net.postJSON('/h5/my/recentLetter', function(res) {
+    self.id = id;
+    ajax = $net.postJSON('/h5/my/dialogList', { id: self.id }, function(res) {
       if(res.success) {
         let data = res.data;
-        jsBridge.setPreference(cacheKey, data);
-        self.setData(data, 1);
+        self.setData(data);
 
         window.addEventListener('scroll', function() {
           self.checkMore();
@@ -45,25 +37,22 @@ class MyMessage extends migi.Component {
       jsBridge.toast(res.message || $util.ERROR_MESSAGE);
     });
   }
-  setData(data, priority) {
-    priority = priority || 0;
-    if(priority < currentPriority) {
-      return;
-    }
-    currentPriority = priority;
-
+  setData(data) {
     let self = this;
-    let letter = self.ref.letter;
-
-    letter.setData(data.data);
+    let dialog = self.ref.dialog;
+    data.data.forEach((item) => {
+      item.userInfo = data.userInfo;
+      item.targetInfo = data.targetInfo;
+    });
+    dialog.setData(data.data);
     offset = data.limit;
     if(data.count === 0) {
       loadEnd = true;
-      letter.message = '暂无消息';
+      dialog.message = '暂无消息';
     }
     else if(offset >= data.count) {
       loadEnd = true;
-      letter.message = '已经到底了';
+      dialog.message = '已经到底了';
     }
   }
   checkMore() {
@@ -80,16 +69,20 @@ class MyMessage extends migi.Component {
     if(ajax) {
       ajax.abort();
     }
-    let letter = self.ref.letter;
+    let dialog = self.ref.dialog;
     loading = true;
-    ajax = $net.postJSON('/h5/my/recentLetter', { offset }, function(res) {
+    ajax = $net.postJSON('/h5/my/dialogList', { id: self.id, offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        letter.appendData(data.data);
+        data.data.forEach((item) => {
+          item.userInfo = data.userInfo;
+          item.targetInfo = data.targetInfo;
+        });
+        dialog.appendData(data.data);
         offset += data.limit;
         if(offset >= data.count) {
           loadEnd = true;
-          letter.message = '已经到底了';
+          dialog.message = '已经到底了';
         }
       }
       else {
@@ -101,24 +94,12 @@ class MyMessage extends migi.Component {
       loading = false;
     });
   }
-  click(e, vd, tvd) {
-    e.preventDefault();
-    let url = tvd.props.href;
-    let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
-    });
-  }
   render() {
-    return <div class="my-message">
-      <ul class="list"
-          onClick={ { a: this.click } }>
-        <li><a href="/my_comment.html" title="圈评论">评论</a></li>
-      </ul>
-      <Letter ref="letter"
+    return <div class="my-dialog">
+      <Dialog ref="dialog"
               message={ '正在加载...' }/>
     </div>;
   }
 }
 
-export default MyMessage;
+export default MyDialog;

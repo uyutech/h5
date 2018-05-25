@@ -1,0 +1,26 @@
+/**
+ * Created by army8735 on 2018/5/22.
+ */
+
+@import '../component/subcmt/index';
+@import './comment';
+
+#page > .my-comment{
+  > h4{
+    position:relative;
+    margin:0.1rem;
+    padding-left:0.05rem;
+    font-size:0.14rem;
+    font-weight:400;
+    &:before{
+      position:absolute;
+      left:0;
+      top:0.02rem;
+      bottom:0.02rem;
+      width:0.02rem;
+      background:#5D99C4;
+      content:' ';
+      border-radius:0.05rem;
+    }
+  }
+}

@@ -1,10 +1,10 @@
 /**
- * Created by army8735 on 2018/4/12.
+ * Created by army8735 on 2018/5/22.
  */
 
 'use strict';
 
-class Message extends migi.Component {
+class Comment extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
@@ -119,7 +119,7 @@ class Message extends migi.Component {
         <a class="pic"
            href={ peopleUrl }
            title={ comment.name || comment.nickname }>
-          <img src={ $util.img(comment.headUrl, 208, 208, 80) || '/src/common/head.png' }/>
+          <img src={ $util.img(comment.headUrl, 96, 96, 80) || '/src/common/head.png' }/>
         </a>
         <div class="txt">
           <a class="name"
@@ -128,7 +128,7 @@ class Message extends migi.Component {
           <a class="time"
              title={ item.type !== 3 && item.type !== 4 ? '' : '画圈详情'  }
              transParentTitle={ item.type !== 3 && item.type !== 4 }
-             href={ url }>{ $util.formatDate(comment.createTime)}</a>
+             href={ url }>{ $util.formatDate(comment.createTime) }</a>
         </div>
       </div>
       <div class="wrap">
@@ -152,7 +152,7 @@ class Message extends migi.Component {
     </li>;
   }
   render() {
-    return <div class="mod-message">
+    return <div class="mod-comment">
       <ol class="list"
           ref="list"/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') } >{ this.message }</div>
@@ -160,4 +160,4 @@ class Message extends migi.Component {
   }
 }
 
-export default Message;
+export default Comment;

@@ -1,0 +1,71 @@
+/**
+ * Created by army8735 on 2018/5/25.
+ */
+
+.mod-dialog{
+  margin:0.1rem;
+  .list{
+    > li{
+      > .t{
+        display:flex;
+        > .profile{
+          flex:1;
+          display:flex;
+          align-items:center;
+          .pic{
+            display:block;
+            margin-right:0.1rem;
+            width:0.3rem;
+            height:0.3rem;
+            border-radius:0.3rem;
+            box-shadow:0 0 1px rgba(0, 0, 0, 0.3);
+            overflow:hidden;
+            img{
+              display:block;
+              width:100%;
+              height:100%;
+              object-fit:contain;
+            }
+          }
+          .txt{
+            line-height:0.3rem;
+            .name{
+              margin-right:0.1rem;
+            }
+            .time{
+              color:#B1C0C9;
+              font-size:0.12rem;
+            }
+          }
+        }
+      }
+      > .wrap{
+        position:relative;
+        display:inline-block;
+        box-sizing:border-box;
+        max-width:100%;
+        margin:0.1rem 0;
+        padding:0.05rem 0.1rem;
+        background:#FFF;
+        border:1px solid #D5E0E6;
+        border-radius:0.1rem;
+        &:after{
+          position:absolute;
+          left:0.08rem;
+          top:-0.05rem;
+          width:0.13rem;
+          height:0.06rem;
+          background:url(../component/postlist/arrow.png) no-repeat center;
+          background-size:contain;
+          content:' ';
+        }
+        > pre{
+          word-break:break-all;
+          word-wrap:break-word;
+          white-space:pre-wrap;
+          overflow:hidden;
+        }
+      }
+    }
+  }
+}

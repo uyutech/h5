@@ -1,10 +1,10 @@
 /**
- * Created by army8735 on 2017/12/5.
+ * Created by army8735 on 2018/5/22.
  */
 
 'use strict';
 
-import Letter from './Letter.jsx';
+import Comment from './Comment.jsx';
 
 let offset = 0;
 let loading;
@@ -12,11 +12,25 @@ let loadEnd;
 let ajax;
 
 let currentPriority = 0;
-let cacheKey = 'myMessage2';
+let cacheKey = 'myComment';
 
 class MyMessage extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      jsBridge.getPreference('my', function(my) {
+        if(my) {
+          self.myInfo = my;
+          self.isAuthor = my.author && my.author.length;
+          if(self.isAuthor) {
+            jsBridge.getPreference('useAuthor', function(useAuthor) {
+              self.useAuthor = useAuthor;
+            });
+          }
+        }
+      });
+    });
   }
   init() {
     let self = this;
@@ -28,7 +42,7 @@ class MyMessage extends migi.Component {
         self.setData(cache, 0);
       }
     });
-    ajax = $net.postJSON('/h5/my/recentLetter', function(res) {
+    ajax = $net.postJSON('/h5/my/commentList', function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -53,17 +67,17 @@ class MyMessage extends migi.Component {
     currentPriority = priority;
 
     let self = this;
-    let letter = self.ref.letter;
+    let message = self.ref.message;
 
-    letter.setData(data.data);
+    message.setData(data.data);
     offset = data.limit;
     if(data.count === 0) {
       loadEnd = true;
-      letter.message = '暂无消息';
+      message.message = '暂无消息';
     }
     else if(offset >= data.count) {
       loadEnd = true;
-      letter.message = '已经到底了';
+      message.message = '已经到底了';
     }
   }
   checkMore() {
@@ -80,16 +94,16 @@ class MyMessage extends migi.Component {
     if(ajax) {
       ajax.abort();
     }
-    let letter = self.ref.letter;
+    let message = self.ref.message;
     loading = true;
-    ajax = $net.postJSON('/h5/my/recentLetter', { offset }, function(res) {
+    ajax = $net.postJSON('/h5/my/messageList', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        letter.appendData(data.data);
+        message.appendData(data.data);
         offset += data.limit;
         if(offset >= data.count) {
           loadEnd = true;
-          letter.message = '已经到底了';
+          message.message = '已经到底了';
         }
       }
       else {
@@ -101,22 +115,21 @@ class MyMessage extends migi.Component {
       loading = false;
     });
   }
-  click(e, vd, tvd) {
-    e.preventDefault();
-    let url = tvd.props.href;
-    let title = tvd.props.title;
-    jsBridge.pushWindow(url, {
-      title,
+  reply(type, id, pid) {
+    if(type === 4) {
+      type = 3;
+    }
+    jsBridge.pushWindow('/sub_comment.html?type=' + type + '&id=' + id + '&pid=' + pid, {
+      title: '评论',
+      optionMenu: '发布',
     });
   }
   render() {
-    return <div class="my-message">
-      <ul class="list"
-          onClick={ { a: this.click } }>
-        <li><a href="/my_comment.html" title="圈评论">评论</a></li>
-      </ul>
-      <Letter ref="letter"
-              message={ '正在加载...' }/>
+    return <div class="my-comment">
+      <h4>圈消息</h4>
+      <Comment ref="message"
+               message="正在加载..."
+               on-reply={ this.reply }/>
     </div>;
   }
 }
