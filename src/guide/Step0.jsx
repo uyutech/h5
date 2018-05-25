@@ -62,7 +62,7 @@ class Step0 extends migi.Component {
       return;
     }
     self.sending = true;
-    $net.postJSON('h5/my2/settle', {
+    $net.postJSON('/h5/my/settle', {
       authorId,
       type: 1,
     }, function(res) {
@@ -84,7 +84,7 @@ class Step0 extends migi.Component {
       return;
     }
     self.sending = true;
-    $net.postJSON('h5/my2/settle', {
+    $net.postJSON('/h5/my/settle', {
       authorId,
       type: 2,
     }, function(res) {
@@ -106,7 +106,7 @@ class Step0 extends migi.Component {
       return;
     }
     self.sending = true;
-    $net.postJSON('h5/my2/settle', {
+    $net.postJSON('/h5/my/settle', {
       authorId,
       type: 3,
     }, function(res) {

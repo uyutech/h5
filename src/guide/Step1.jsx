@@ -32,7 +32,7 @@ class Step1 extends migi.Component {
       return;
     }
     self.sending = true;
-    $net.postJSON('h5/my2/guideNameAndSex', {
+    $net.postJSON('/h5/my/guideNameAndSex', {
       nickname: self.nickname,
       sex: self.sex,
     }, function(res) {
