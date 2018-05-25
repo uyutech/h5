@@ -4,3 +4,9 @@
 
 'use strict';
 
+import MyDialog from './MyDialog.jsx';
+
+let s = '';
+s += migi.preRender(<MyDialog/>);
+
+export default s;
