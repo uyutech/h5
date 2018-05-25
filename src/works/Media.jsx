@@ -456,6 +456,10 @@ class Media extends migi.Component {
     this.lrcMode = !this.lrcMode;
   }
   clickFullScreen() {
+    let self = this;
+    if(!self.data) {
+      return;
+    }
     if(jsBridge.ios) {
       jsBridge.fullscreen(true);
     }
@@ -475,7 +479,7 @@ class Media extends migi.Component {
     else if(video.webkitEnterFullScreen) {
       video.webkitEnterFullScreen();
     }
-    this.emit('fullscreen', this.data);
+    self.emit('fullscreen', self.data);
   }
   touchStart(e) {
     e.preventDefault();
