@@ -40,7 +40,7 @@ class Step2 extends migi.Component {
     }
     self.sending = true;
     let ids = [];
-    $(self.ref.list.element).find('li').each(function(i, o) {
+    $(self.ref.list.element).find('li.on').each(function(i, o) {
       ids.push($(o).attr('rel'));
     });
     ids = ids.join(',');
