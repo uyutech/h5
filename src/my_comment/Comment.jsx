@@ -94,11 +94,11 @@ class Comment extends migi.Component {
         url = '/author.html?id=' + item.refId;
         break;
       case 2:
-        action = '2回复作品页评论';
+        action = '回复作品页评论';
         url = '/works.html?id=' + item.refId;
         break;
       case 3:
-        action = '3回复画圈页评论';
+        action = '回复画圈页评论';
         url = '/post.html?id=' + item.refId;
         break;
       case 4:
