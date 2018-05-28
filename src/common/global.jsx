@@ -20,13 +20,13 @@ migi.eventBus.on('NEED_LOGIN', function() {
 });
 
 jsBridge.ready(function() {
-  if(location.pathname !== '/my_message.html') {
+  if(['/my_comment.html', '/my_message.html'].indexOf(location.pathname) === -1) {
     setTimeout(function() {
       migi.render(
         <Message/>,
         document.body
       );
-    }, 1000);
+    }, 200);
   }
   jsBridge.getPreference('UUID', function(res) {
     let first = !res;

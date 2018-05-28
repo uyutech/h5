@@ -5,6 +5,7 @@
 'use strict';
 
 import Letter from './Letter.jsx';
+import Message from '../component/message/Message.jsx';
 
 let offset = 0;
 let loading;
@@ -113,7 +114,11 @@ class MyMessage extends migi.Component {
     return <div class="my-message">
       <ul class="list"
           onClick={ { a: this.click } }>
-        <li><a href="/my_comment.html" title="圈评论">评论</a></li>
+        <li>
+          <a href="/my_comment.html"
+             title="圈评论">评论</a>
+          <Message/>
+        </li>
       </ul>
       <Letter ref="letter"
               message={ '正在加载...' }/>
