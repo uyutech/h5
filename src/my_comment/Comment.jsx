@@ -94,7 +94,12 @@ class Comment extends migi.Component {
         url = '/author.html?id=' + item.refId;
         break;
       case 2:
-        action = '回复作品页评论';
+        if(item.works) {
+          action = '回复作品《' + item.works.title + '》评论';
+        }
+        else {
+          action = '回复作品评论';
+        }
         url = '/works.html?id=' + item.refId;
         break;
       case 3:
@@ -106,11 +111,16 @@ class Comment extends migi.Component {
         url = '/post.html?id=' + item.refId;
         break;
       case 5:
-        action = '评论作品页';
+        if(item.works) {
+          action = '评论了您参与的作品《' + item.works.title + '》';
+        }
+        else {
+          action = '评论了您参与的作品';
+        }
         url = '/works.html?id=' + item.refId;
         break;
       case 6:
-        action = '评论作者页';
+        action = '给您的作者主页留言';
         url = '/author.html?id=' + item.refId;
         break;
     }
