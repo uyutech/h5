@@ -72,24 +72,15 @@ class Banner extends migi.Component {
     e.preventDefault();
     let url = tvd.props.href;
     let title = tvd.props.title;
-    switch(tvd.props.class) {
-      case 'works':
-        jsBridge.pushWindow(url, {
-          title,
-          transparentTitle: true,
-        });
-        break;
-      case 'author':
-        jsBridge.pushWindow(url, {
-          title,
-          transparentTitle: true,
-        });
-        break;
-      default:
-        jsBridge.pushWindow(url, {
-          title,
-        });
-        break;
+    let transparentTitle = tvd.props.transparentTitle;
+    if(/^http/.test(url)) {
+      jsBridge.openUri(url);
+    }
+    else {
+      jsBridge.pushWindow(url, {
+        title,
+        transparentTitle,
+      });
     }
   }
   start(e) {
@@ -196,23 +187,31 @@ class Banner extends migi.Component {
         {
           this.list.map(function(item) {
             let url = '';
+            let transparentTitle = false;
             switch(item.type) {
               case 1:
                 url = '/works.html?id=' + item.targetId;
+                transparentTitle = true;
                 break;
               case 2:
                 url = '/author.html?id=' + item.targetId;
+                transparentTitle = true;
                 break;
               case 3:
                 url = '/user.html?id=' + item.targetId;
+                transparentTitle = true;
                 break;
               case 4:
                 url = '/post.html?id=' + item.targetId;
                 break;
+              default:
+                url = item.link;
+                break;
             }
             return <li>
               <a href={ url }
-                 title={ item.title }>
+                 title={ item.title }
+                 transparentTitle={ transparentTitle }>
                 <img src={ $util.img(item.url, 750, 0, 80) || '/src/common/blank.png' }/>
               </a>
             </li>;
