@@ -8,24 +8,49 @@ class BotNav extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.on(migi.Event.DOM, function() {
-      migi.eventBus.on('CLICK_MENU_USER', function() {
-        if(rel !== 3) {
-          rel = 3;
-          $(self.element).find('.cur').removeClass('cur');
-          $(self.element).find('.my').addClass('cur');
-          self.emit('change', rel);
+    function reload() {
+      jsBridge.getPreference('message-time', function(res) {
+        res = res || 0;
+        let now = Date.now();
+        if($util.isLogin() && now - res > 10000) {
+          $net.postJSON('/h5/my/unreadMessageCount', function(res) {
+            if(res.success) {
+              self.num = res.data;
+              jsBridge.setPreference('message-time', Date.now());
+              jsBridge.setPreference('message-count', self.num);
+            }
+          });
         }
       });
-      migi.eventBus.on('FOLLOW_UPDATE', function() {
-        self.followUpdate = true;
+    }
+    self.on(migi.Event.DOM, function() {
+      reload();
+      jsBridge.getPreference('message-count', function(res) {
+        res = res || 0;
+        self.num = res;
       });
-      migi.eventBus.on('FOLLOW_UPDATED', function() {
-        self.followUpdate = false;
+      jsBridge.on('resume', function(e) {
+        jsBridge.getPreference('message-count', function(res) {
+          res = res || 0;
+          self.num = res;
+        });
+        let data = e.data;
+        if(data && data.myMessage) {
+          $net.postJSON('/h5/my/unreadMessageCount', function(res) {
+            if(res.success) {
+              self.num = res.data;
+              jsBridge.setPreference('message-time', Date.now());
+              jsBridge.setPreference('message-count', self.num);
+            }
+          });
+        }
+      });
+      migi.eventBus.on('REFRESH_MESSAGE', function() {
+        reload();
       });
     });
   }
-  @bind followUpdate
+  @bind num
   click(e, vd, tvd) {
     if(tvd.props.class === 'new') {
       jsBridge.pushWindow('/sub_post.html', {
@@ -57,9 +82,10 @@ class BotNav extends migi.Component {
       <li class="new">
         <b class="icon"/>
       </li>
-      <li class={ 'follow' + (this.followUpdate ? ' update' : '') } rel={ 2 }>
+      <li class="message" rel={ 2 }>
         <b class="icon"/>
-        <span>关注</span>
+        <span>消息</span>
+        <small class="num">{ this.num || '' }</small>
       </li>
       <li class="my" rel={ 3 }>
         <b class="icon"/>

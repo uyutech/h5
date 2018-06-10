@@ -18,9 +18,21 @@ let cacheKey = 'myMessage2';
 class MyMessage extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.visible = true;
+    self.on(migi.Event.DOM, function() {
+      migi.eventBus.on('LOGIN', function() {
+        self.init();
+      });
+    });
   }
+  @bind visible
   init() {
     let self = this;
+    if(!$util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
     if(ajax) {
       ajax.abort();
     }
@@ -64,7 +76,7 @@ class MyMessage extends migi.Component {
     }
     else if(offset >= data.count) {
       loadEnd = true;
-      letter.message = '已经到底了';
+      // letter.message = '已经到底了';
     }
   }
   checkMore() {
@@ -104,6 +116,10 @@ class MyMessage extends migi.Component {
   }
   click(e, vd, tvd) {
     e.preventDefault();
+    if(!$util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
     let url = tvd.props.href;
     let title = tvd.props.title;
     jsBridge.pushWindow(url, {
@@ -111,7 +127,7 @@ class MyMessage extends migi.Component {
     });
   }
   render() {
-    return <div class="my-message">
+    return <div class={ 'my-message' + (this.visible ? '' : ' fn-hide') }>
       <ul class="list"
           onClick={ { a: this.click } }>
         <li>

@@ -9,7 +9,8 @@ import BotNav from '../component/botnav/BotNav.jsx';
 import TopNav from '../component/topnav/TopNav.jsx';
 import Find from '../find/Find.jsx';
 import Circling from '../circling/Circling.jsx';
-import Follow from '../follow/Follow.jsx';
+// import Follow from '../follow/Follow.jsx';
+import MyMessage from '../my_message/MyMessage.jsx';
 import My from '../my/My.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
 import First from './First.jsx';
@@ -40,7 +41,8 @@ jsBridge.ready(function() {
   );
   let my;
   let circling;
-  let follow;
+  // let follow;
+  let myMessage;
   let last = find;
 
   botNav.on('change', function(i) {
@@ -59,7 +61,7 @@ jsBridge.ready(function() {
       last = find;
     }
     else if(i === 1) {
-      topNav.show();
+      topNav.hide();
       if(!circling) {
         circling = migi.render(
           <Circling/>,
@@ -70,10 +72,15 @@ jsBridge.ready(function() {
     }
     else if(i === 2) {
       topNav.show();
-      if(!follow) {
-        follow = migi.render(<Follow/>, '#page');
+      // if(!follow) {
+      //   follow = migi.render(<Follow/>, '#page');
+      // }
+      // last = follow;
+      if(!myMessage) {
+        myMessage = migi.render(<MyMessage/>, '#page');
+        myMessage.init();
       }
-      last = follow;
+      last = myMessage;
     }
     else if(i === 3) {
       topNav.hide();

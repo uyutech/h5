@@ -500,7 +500,7 @@ class PostList extends migi.Component {
              title={ item.name || item.nickname }>{ item.name || item.nickname }</a>
           <a class="time"
              title={ moment(item.createTime).format('YYYY-MM-DD HH:mm:ss') }
-             href={ url }>{ item.typeName || $util.formatDate(item.createTime)}</a>
+             href={ url }>{ item.tag || item.typeName || $util.formatDate(item.createTime) }</a>
         </div>
         <ul class="circle">
         {

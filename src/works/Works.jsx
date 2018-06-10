@@ -303,10 +303,7 @@ class Works extends migi.Component {
         botFn.cancel();
       },
       clickShareLink: function(botFn) {
-        if(!self.data) {
-          return;
-        }
-        let url = window.ROOT_DOMAIN + '/works/' + self.data.id;
+        let url = window.ROOT_DOMAIN + '/works/' + self.id;
         $util.setClipboard(url);
         botFn.cancel();
       },

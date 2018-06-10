@@ -58,7 +58,8 @@ class Message extends migi.Component {
     });
   }
   render() {
-    return <div class={ 'g-message' + (this.num ? '' : ' fn-hide') } onClick={ this.click }>
+    return <div class={ 'g-message' + (this.num ? '' : ' fn-hide') }
+                onClick={ this.click }>
       <b>{ this.num ? (this.num > 99 ? '99+' : this.num) : '' }</b>
     </div>;
   }

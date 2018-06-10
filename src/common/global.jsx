@@ -6,7 +6,7 @@
 
 import uuidv4 from 'uuid/v4';
 import MLogin from '../component/mlogin/MLogin.jsx';
-import Message from '../component/message/Message.jsx';
+// import Message from '../component/message/Message.jsx';
 
 let mlogin;
 migi.eventBus.on('NEED_LOGIN', function() {
@@ -20,14 +20,14 @@ migi.eventBus.on('NEED_LOGIN', function() {
 });
 
 jsBridge.ready(function() {
-  if(['/my_comment.html', '/my_message.html'].indexOf(location.pathname) === -1) {
-    setTimeout(function() {
-      migi.render(
-        <Message/>,
-        document.body
-      );
-    }, 200);
-  }
+  // if(['/my_comment.html', '/my_message.html'].indexOf(location.pathname) === -1) {
+  //   setTimeout(function() {
+  //     migi.render(
+  //       <Message/>,
+  //       document.body
+  //     );
+  //   }, 200);
+  // }
   jsBridge.getPreference('UUID', function(res) {
     let first = !res;
     if(first) {

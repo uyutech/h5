@@ -191,6 +191,8 @@ class Config extends migi.Component {
       jsBridge.delPreference('myAddress');
       jsBridge.delPreference('myFavor');
       jsBridge.delPreference('myMessage');
+      jsBridge.delPreference('myMessage2');
+      jsBridge.delPreference('myComment');
       jsBridge.delPreference('myPost');
       jsBridge.delPreference('myRelation');
       jsBridge.delPreference('my', function() {

@@ -38,17 +38,6 @@
     &.follow{
       position:relative;
       padding-left:5%;
-      &.update:after{
-        position:absolute;
-        top:0.1rem;
-        right:0.1rem;
-        width:0.06rem;
-        height:0.06rem;
-        background:#F00;
-        border-radius:100%;
-        content:' ';
-        overflow:hidden;
-      }
     }
     &.follow .icon{
       background:url(follow-off.png) no-repeat center;
@@ -56,6 +45,34 @@
     }
     &.follow.cur .icon, &.follow:active .icon{
       background:url(follow-on.png) no-repeat center;
+      background-size:contain;
+    }
+    &.message{
+      position:relative;
+      padding-left:5%;
+      .num{
+        position:absolute;
+        top:0;
+        right:0.1rem;
+        padding:0 0.02rem;
+        min-width:0.18rem;
+        box-sizing:border-box;
+        color:#FFF;
+        background:#F33;
+        border-radius:0.18rem;
+        font-weight:400;
+        text-align:center;
+        font-size:0.12rem;
+        z-index:999;
+        transform:scale(0.833) translateZ(0);
+      }
+    }
+    &.message .icon{
+      background:url(message-off.png) no-repeat center;
+      background-size:contain;
+    }
+    &.message.cur .icon, &.message:active .icon{
+      background:url(message-on.png) no-repeat center;
       background-size:contain;
     }
     &.circling{
@@ -110,6 +127,19 @@
         background-size:contain;
         transform:translateY(-0.04rem);
       }
+    }
+  }
+  .g-message{
+    position:absolute;
+    top:0;
+    left:50%;
+    bottom:auto;
+    width:0;
+    height:0;
+    background:none;
+    b{
+      top:0;
+      //left:0;
     }
   }
 }
