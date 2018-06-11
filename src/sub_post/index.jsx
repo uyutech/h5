@@ -12,7 +12,7 @@ import qs from 'anima-querystring';
 import SubPost from './SubPost.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
-let circleId = parseInt(search.circleId);
+let circleId = parseInt(search.circleId) || null;
 let tag = search.tag;
 let worksId = parseInt(search.worksId);
 let workId = parseInt(search.workId);
@@ -21,7 +21,7 @@ let cover = search.cover;
 jsBridge.ready(function() {
   jsBridge.refreshState(false);
   let subPost = migi.preExist(
-    <SubPost placeholder="在转圈圈画个圈吧"/>,
+    <SubPost/>,
     '#page'
   );
   subPost.init({

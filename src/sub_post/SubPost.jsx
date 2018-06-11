@@ -131,7 +131,7 @@ class SubPost extends migi.Component {
         catch(e) {}
       }
     });
-    $net.postJSON('/h5/subPost/index', { circleId: self.circleId }, function(res) {
+    $net.postJSON('/h5/subPost/index2', { circleId: self.circleId }, function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -152,24 +152,9 @@ class SubPost extends migi.Component {
     currentPriority = priority;
 
     let self = this;
-    let circleList = [];
     activity = data.activity;
     let tagList = activity.slice();
-    circleHash = {};
-    if(data.circle) {
-      circleHash[data.circle.id] = data.circle;
-      circleList.push(data.circle);
-      data.circle.tag.forEach((item) => {
-        tagList.push(item);
-      });
-    }
-    data.circleList.data.forEach((item) => {
-      if(!circleHash[item.id]) {
-        circleHash[item.id] = item;
-        circleList.push(item);
-      }
-    });
-    self.circleList = circleList;
+    self.circleList = data.circleList;
     self.tagList = tagList;
   }
   clickAlt() {
@@ -213,7 +198,7 @@ class SubPost extends migi.Component {
     jsBridge.setPreference(self.getContentKey(), content);
   }
   submit(e) {
-    e && e.preventDefault();console.log('login', $util.isLogin())
+    e && e.preventDefault();
     if(!$util.isLogin()) {
       migi.eventBus.emit('NEED_LOGIN');
       return;
@@ -524,20 +509,32 @@ class SubPost extends migi.Component {
       return;
     }
     $li.toggleClass('on');
-    let temp = [];
+    let circleIdHash = [];
     $ul.find('.on').each((i, o) => {
       let $o = $(o);
-      let circleId = $o.attr('rel');
-      let tag = circleHash[circleId].tag;
-      temp = temp.concat(tag);
+      circleIdHash[$o.attr('rel')] = true;
     });
-    temp = temp.concat(activity);
-    self.tagList = temp;
+    let list = [];
+    self.circleList.forEach((item) => {
+      if(circleIdHash[item.id] && item.tag) {
+        list = list.concat(item.tag);
+      }
+    });
+    self.tagList = list.concat(activity);
   }
   clickTag(e, vd, tvd) {
     let self = this;
     self.value += tvd.props.rel + ' ';
     self.input(null, self.ref.input);
+    let describe = tvd.props.describe;
+    if(describe) {
+      let $tip = $(self.ref.tip.element);
+      $tip.text(describe);
+      $tip.removeClass('fn-hide');
+      setTimeout(function() {
+        $tip.addClass('fn-hide');
+      }, 3000);
+    }
   }
   render() {
     return <form class="mod-sub"
@@ -560,7 +557,8 @@ class SubPost extends migi.Component {
         <ul onClick={ { li: this.clickTag } }>
         {
           (this.tagList || []).map((item) => {
-            return <li rel={ item.value || ('#' + item.name + '#') }>{ item.name }</li>;
+            return <li rel={ item.value || ('#' + item.name + '#') }
+                       describe={ item.describe }>{ item.name }</li>;
           })
         }
         </ul>
@@ -576,7 +574,7 @@ class SubPost extends migi.Component {
       <div class="c">
         <textarea class="text"
                   ref="input"
-                  placeholder="在转圈画个圈吧"
+                  placeholder="画个圈记录你的生活吧~"
                   onInput={ this.input }
                   maxLength={ MAX_TEXT_LENGTH }>{ this.value }</textarea>
       </div>

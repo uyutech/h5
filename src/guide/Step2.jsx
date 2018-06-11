@@ -39,12 +39,11 @@ class Step2 extends migi.Component {
       return;
     }
     self.sending = true;
-    let ids = [];
+    let idList = [];
     $(self.ref.list.element).find('li.on').each(function(i, o) {
-      ids.push($(o).attr('rel'));
+      idList.push($(o).attr('rel'));
     });
-    ids = ids.join(',');
-    $net.postJSON('/h5/my/guideCircle', { ids }, function(res) {
+    $net.postJSON('/h5/guide/followTag', { idList }, function(res) {
       if(res.success) {
         self.emit('next');
       }
@@ -68,12 +67,14 @@ class Step2 extends migi.Component {
     if(!self.isShow) {
       return;
     }
-    $net.postJSON('/h5/circle/all', function(res) {
+    $net.postJSON('/h5/guide/tag', function(res) {
       if(res.success) {
         let data = res.data;
         let s = '';
-        (data.data || []).forEach(function(item) {
-          s += self.genItem(item);
+        (data || []).forEach(function(item) {
+          if(item) {
+            s += self.genItem(item);
+          }
         });
         $(self.ref.list.element).append(s);
         self.message = '';
