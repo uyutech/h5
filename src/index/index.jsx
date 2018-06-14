@@ -7,7 +7,7 @@ import './index.less';
 
 import BotNav from '../component/botnav/BotNav.jsx';
 import TopNav from '../component/topnav/TopNav.jsx';
-import Find from '../find/Find.jsx';
+import Find from '../find2/Find.jsx';
 import Circling from '../circling/Circling.jsx';
 // import Follow from '../follow/Follow.jsx';
 import MyMessage from '../my_message/MyMessage.jsx';
