@@ -52,7 +52,7 @@ class BotNav extends migi.Component {
   }
   @bind num
   click(e, vd, tvd) {
-    if(tvd.props.class === 'new') {
+    if(tvd.props.class === 'post') {
       jsBridge.pushWindow('/sub_post.html', {
         title: '画圈',
         showOptionMenu: 'true',
@@ -70,22 +70,20 @@ class BotNav extends migi.Component {
     this.emit('change', rel);
   }
   render() {
-    return <ul class="bot-nav" onClick={ { li: this.click } }>
-      <li class="find cur" rel={ 0 }>
+    return <ul class="bot-nav"
+               onClick={ { li: this.click } }>
+      <li class="circling cur" rel={ 1 }>
         <b class="icon"/>
         <span>发现</span>
-      </li>
-      <li class="circling" rel={ 1 }>
-        <b class="icon"/>
-        <span>转圈</span>
-      </li>
-      <li class="new">
-        <b class="icon"/>
       </li>
       <li class="message" rel={ 2 }>
         <b class="icon"/>
         <span>消息</span>
         <small class="num">{ this.num || '' }</small>
+      </li>
+      <li class="post">
+        <b class="icon"/>
+        <span>画圈</span>
       </li>
       <li class="my" rel={ 3 }>
         <b class="icon"/>

@@ -9,26 +9,37 @@ import PostList from '../component/postlist/PostList.jsx';
 
 let scrollY = 0;
 
-let circleOffset = 0;
-let loadingCircle;
-let loadCircleEnd;
-
 let ajax;
 let loading;
 let loadEnd;
-let elStack = [];
-let idStack = [];
 let offset = 0;
 
 let currentPriority = 0;
-let cacheKey = 'circling';
+let cacheKey = 'circling2';
 let scroll;
+
+let lastVideo;
+let lastAudio;
 
 class Post extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
     self._visible = self.props.visible;
+    self.worksList = [];
+    self.on(migi.Event.DOM, function() {
+      migi.eventBus.on('PLAY_INLINE', function() {
+        if(lastVideo) {
+          lastVideo.parent.element.classList.add('pause');
+          lastVideo.element.pause();
+          lastVideo = null;
+        }
+        if(lastAudio) {
+          lastAudio.element.classList.remove('pause');
+          lastAudio = null;
+        }
+      });
+    });
   }
   get visible() {
     return this._visible;
@@ -38,7 +49,7 @@ class Post extends migi.Component {
     this._visible = v;
     $util.scrollY(scrollY);
   }
-  @bind circleList
+  @bind worksList
   init() {
     let self = this;
     if(ajax) {
@@ -52,7 +63,7 @@ class Post extends migi.Component {
         catch(e) {}
       }
     });
-    ajax = $net.postJSON('/h5/circling/index', function(res) {
+    ajax = $net.postJSON('/h5/circling/index2', function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -83,14 +94,130 @@ class Post extends migi.Component {
     currentPriority = priority;
 
     let self = this;
-    let banner = self.ref.banner;
-    let postList = self.ref.postList;
 
+    let banner = self.ref.banner;
     banner.setData(data.bannerList);
-    self.circleList = data.circleList.data;
-    circleOffset = data.circleList.limit;
+
+    let list = [];
+    data.newest.forEach((item) => {
+      list.push(self.genItem(item));
+    });
+    data.hottest.forEach((item) => {
+      list.push(self.genItem(item));
+    });
+    if(list.length) {
+      self.worksList = list;
+    }
+
+    let postList = self.ref.postList;
     postList.setData(data.recommendComment.concat(data.postList.data));
     offset = data.postList.limit;
+  }
+  genItem(item) {
+    let work = item.collection[0];
+    let txt = item.describe;
+    if(!txt) {
+      for(let i = 1; i < item.collection.length; i++) {
+        let o = item.collection[i];
+        if(o.kind === 4) {
+          txt = o.content;
+          break;
+        }
+      }
+    }
+    let url = '/works.html?id=' + item.id + '&workId=' + work.id;
+    let author = [];
+    let hash = {};
+    item.author = item.author[0];
+    item.author.forEach((item) => {
+      item.list.forEach(function(at) {
+        if(!hash[at.id]) {
+          hash[at.id] = true;
+          author.push(at.name);
+        }
+      });
+    });
+    if(work.kind === 2) {
+      return <li class="audio">
+        <div class="pic first"
+             worksId={ item.id }
+             workId={ work.id }
+             title={ work.title }
+             cover={ work.cover || item.cover }
+             url={ work.url }>
+          <img src={ $util.img(item.cover || work.cover, 250, 250, 80)
+          || '/src/common/blank.png' }/>
+          <div>
+            <span>{ item.typeName }</span>
+          </div>
+        </div>
+        <div class="txt">
+          <a href={ url }
+             title={ item.title }
+             class="name">{ item.title }</a>
+          <div class="author"
+               title={ author }>
+            {
+              item.author.map((item) => {
+                return <dl>
+                  <dt>{ item.name }</dt>
+                  {
+                    item.list.map((item) => {
+                      return <dd>
+                        <a href={ '/author.html?id=' + item.id }
+                           title={ item.name }>
+                          <img src={ $util.img(item.headUrl, 60, 60, 80) || '/src/common/head.png' }/>
+                          <span>{ item.name }</span>
+                        </a>
+                      </dd>;
+                    })
+                  }
+                </dl>
+              })
+            }
+          </div>
+          <a href={ url }
+             title={ item.title }
+             class="intro">
+            <pre>{ txt }</pre>
+          </a>
+        </div>
+      </li>;
+    }
+    return <li class="video">
+      <div class="pic"
+           worksId={ item.id }
+           workId={ work.id }>
+        <img src={ $util.img(work.cover || item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
+        <div class="num">
+          <span class="play">{ $util.abbrNum(work.views) }次播放</span>
+        </div>
+        <span class="type">{ item.typeName }</span>
+        <video class="fn-hide"
+               poster="/src/common/blank.png"
+               src={ work.url }
+               preload="meta"
+               playsinline="true"
+               webkit-playsinline="true"/>
+      </div>
+      <a class="name"
+         href={ url }
+         title={ item.title }>{ work.title }</a>
+      <div class="info">
+        <p class="author">{ author.join(' ') }</p>
+        <b class={ 'like' + (work.isLike ? ' liked' : '') }
+           worksId={ item.id }
+           workId={ work.id }>{ work.likeCount || '' }</b>
+        <b class="comment"
+           title={ item.title }
+           rel={ item.id }>{ item.commentCount || '' }</b>
+        <b class="fn"
+           worksId={ item.id }
+           workId={ work.id }
+           title={ work.title }
+           cover={ work.cover || item.cover }/>
+      </div>
+    </li>;
   }
   checkMore() {
     let self = this;
@@ -112,7 +239,7 @@ class Post extends migi.Component {
     }
     let postList = self.ref.postList;
     loading = true;
-    ajax = $net.postJSON('/h5/circling/postList', { offset }, function(res) {
+    ajax = $net.postJSON('/h5/circling/postList2', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
         postList.appendData(data.data);
@@ -131,80 +258,8 @@ class Post extends migi.Component {
       loading = false;
     });
   }
-  scroll(e, vd) {
-    let self = this;
-    let el = vd.element;
-    if(loadingCircle || loadCircleEnd) {
-      return;
-    }
-    if(el.scrollLeft + el.offsetWidth + 30 > el.scrollWidth) {
-      loadingCircle = true;
-      $net.postJSON('/h5/circling/circleList', { offset: circleOffset }, function(res) {
-        if(res.success) {
-          let data = res.data;
-          self.circleList = self.circleList.concat(data.data);
-          circleOffset += data.limit;
-          if(circleOffset >= data.count) {
-            loadCircleEnd = true;
-          }
-        }
-        else {
-          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-        }
-        loadingCircle = false;
-      }, function(res) {
-        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-        loadingCircle = false;
-      });
-    }
-  }
   refresh() {
     this.init();
-  }
-  clickCircle() {
-    jsBridge.pushWindow('/all_circles.html', {
-      title: '全部圈子',
-    });
-  }
-  clickTag(e, vd, tvd) {
-    let self = this;
-    let el = tvd.element;
-    let id = tvd.props.rel;
-    let add = false;
-    if(el.classList.contains('on')) {
-      el.classList.remove('on');
-    }
-    else {
-      el.classList.add('on');
-      add = true;
-    }
-    if(add) {
-      elStack.push(el);
-      idStack.push(id);
-    }
-    else {
-      for(let i = 0; i < idStack.length; i++) {
-        if(idStack[i] === id) {
-          idStack.splice(i, 1);
-          elStack.splice(i, 1);
-          break;
-        }
-      }
-    }
-    if(elStack.length > 3) {
-      let el = elStack.shift();
-      el.classList.remove('on');
-    }
-    if(idStack.length > 3) {
-      idStack.shift();
-    }
-    self.ref.postList.clearData();
-    self.ref.postList.message = '正在加载...';
-    offset = 0;
-    loadEnd = false;
-    loading = false;
-    self.load();
-    $net.statsAction(4);
   }
   favor(id, data) {
     jsBridge.getPreference(cacheKey, function(cache) {
@@ -244,20 +299,203 @@ class Post extends migi.Component {
       }
     });
   }
+  clickPic(e, vd, tvd, cvd) {
+    let el = tvd.element;
+    let video = tvd.find('video');
+    let videoEl = video.element;
+    if(videoEl.classList.contains('fn-hide')) {
+      migi.eventBus.emit('PLAY_INLINE');
+      videoEl.classList.remove('fn-hide');
+      videoEl.play();
+      $net.postJSON('/h5/work/addViews', { id: tvd.props.workId });
+      lastVideo = video;
+      jsBridge.media({
+        key: 'pause',
+      });
+    }
+    else if(el.classList.contains('pause')) {
+      migi.eventBus.emit('PLAY_INLINE');
+      el.classList.remove('pause');
+      videoEl.play();
+      lastVideo = video;
+      jsBridge.media({
+        key: 'pause',
+      });
+    }
+    else {
+      el.classList.add('pause');
+      videoEl.pause();
+      lastVideo = null;
+    }
+  }
+  clickLike(e, vd, tvd) {
+    if(!$util.isLogin()) {
+      migi.eventBus.emit('NEED_LOGIN');
+      return;
+    }
+    let el = tvd.element;
+    if(el.classList.contains('loading')) {
+      return;
+    }
+    el.classList.add('loading');
+    let id = tvd.props.worksId;
+    let workId = tvd.props.workId;
+    let url = el.classList.contains('liked') ? 'unLike' : 'like';
+    $net.postJSON('/h5/works/' + url, { id, workId }, function(res) {
+      if(res.success) {
+        let data = res.data;
+        if(data.state) {
+          el.classList.add('liked');
+        }
+        else {
+          el.classList.remove('liked');
+        }
+        el.textContent = data.count || '';
+      }
+      else if(res.code === 1000) {
+        migi.eventBus.emit('NEED_LOGIN');
+      }
+      else {
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      }
+      el.classList.remove('loading');
+    }, function(res) {
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      el.classList.remove('loading');
+    });
+  }
+  clickComment(e, vd, tvd) {
+    let title = tvd.props.title;
+    let id = tvd.props.rel;
+    migi.eventBus.emit('PLAY_INLINE');
+    if(tvd.element.textContent) {
+      jsBridge.pushWindow('/works.html?id=' + id + '&comment=1', {
+        title,
+        transparentTitle: true,
+      });
+    }
+    else {
+      jsBridge.pushWindow('/sub_comment.html?type=2&id=' + id, {
+        title: '评论',
+        optionMenu: '发布',
+      });
+    }
+  }
+  clickName(e, vd, tvd) {
+    e.preventDefault();
+    let title = tvd.props.title;
+    jsBridge.pushWindow(tvd.props.href, {
+      title,
+      transparentTitle: true,
+    });
+  }
+  clickFn(e, vd, tvd) {
+    let id = tvd.props.worksId;
+    let workId = tvd.props.workId;
+    let title = tvd.props.title;
+    migi.eventBus.emit('BOT_FN', {
+      canShare: true,
+      canShareIn: true,
+      canShareWb: true,
+      canShareLink: true,
+      clickShareIn: function(botFn) {
+        jsBridge.pushWindow('/sub_post.html?worksId=' + id
+          + '&workId=' + workId
+          + '&cover=' + encodeURIComponent(tvd.props.cover || ''), {
+          title: '画个圈',
+          optionMenu: '发布',
+        });
+        botFn.cancel();
+      },
+      clickShareWb: function(botFn) {
+        let author = tvd.parent.find('.author').element.textContent;
+        let url = window.ROOT_DOMAIN + '/works/' + id + '/' + workId;
+        let text = '【' + title + '】';
+        text += author;
+        text += ' #转圈circling# ';
+        text += url;
+        jsBridge.shareWb({
+          text,
+        }, function(res) {
+          if(res.success) {
+            jsBridge.toast("分享成功");
+          }
+          else if(res.cancel) {
+            jsBridge.toast("取消分享");
+          }
+          else {
+            jsBridge.toast("分享失败");
+          }
+        });
+        botFn.cancel();
+      },
+      clickShareLink: function(botFn) {
+        let url = window.ROOT_DOMAIN + '/works/' + id + '/' + workId;
+        $util.setClipboard(url);
+        botFn.cancel();
+      },
+    });
+  }
+  clickA(e, vd, tvd) {
+    e.preventDefault();
+    let url = tvd.props.href;
+    let title = tvd.props.title;
+    jsBridge.pushWindow(url, {
+      title,
+      transparentTitle: true,
+    });
+  }
+  clickPic2(e, vd, tvd) {
+    let el = tvd.element;
+    let id = tvd.props.worksId;
+    let workId = tvd.props.workId;
+    if(el.classList.contains('first')) {
+      migi.eventBus.emit('PLAY_INLINE');
+      let author = tvd.parent.find('.txt').find('.author').props.title;
+      jsBridge.media({
+        key: 'play',
+        value: {
+          id: workId,
+          url: location.protocol + $util.autoSsl(tvd.props.url),
+          title: tvd.props.titile,
+          author,
+          cover: $util.protocol($util.img(tvd.props.cover, 80, 80, 80)),
+        },
+      });
+      $net.postJSON('/h5/work/addViews', { id });
+      el.classList.remove('first');
+      el.classList.add('pause');
+      lastAudio = tvd;
+    }
+    else if(el.classList.contains('pause')) {
+      jsBridge.media({
+        key: 'pause',
+      });
+      el.classList.remove('pause');
+      lastAudio = null;
+    }
+    else {
+      migi.eventBus.emit('PLAY_INLINE');
+      jsBridge.media({
+        key: 'play',
+      });
+      el.classList.add('pause');
+      lastAudio = tvd;
+    }
+  }
   render() {
     return <div class={ 'mod-post2' + (this.visible ? '' : ' fn-hide') }>
       <Banner ref="banner"/>
-      <div class="circle">
-        <label onClick={ this.clickCircle }>圈子</label>
-        <ul onScroll={ this.scroll }
-            onClick={ this.clickTag }>
-          {
-            (this.circleList || []).map(function(item) {
-              return <li rel={ item.id }>{ item.name }</li>;
-            })
-          }
-        </ul>
-      </div>
+      <ul class="works"
+          onClick={ {
+            '.video .pic': this.clickPic,
+            '.like': this.clickLike,
+            '.comment': this.clickComment,
+            '.name': this.clickName,
+            '.fn': this.clickFn,
+            '.audio a': this.clickA,
+            '.audio .pic': this.clickPic2,
+          } }>{ this.worksList }</ul>
       <PostList ref="postList"
                 visible={ true }
                 message="正在加载..."

@@ -49,7 +49,7 @@
     }
     &.message{
       position:relative;
-      padding-left:5%;
+      //padding-left:5%;
       .num{
         position:absolute;
         top:0;
@@ -76,27 +76,28 @@
       background-size:contain;
     }
     &.circling{
-      padding-right:5%;
+      //padding-right:5%;
+      padding-left:5%;
     }
     &.circling .icon{
-      background:url(circling-off.png) no-repeat center;
+      background:url(find-off.png) no-repeat center;
       background-size:contain;
     }
     &.circling.cur .icon, &.circling:active .icon{
-      background:url(circling-on.png) no-repeat center;
+      background:url(find-on.png) no-repeat center;
       background-size:contain;
     }
     &.find{
       padding-left:5%;
     }
-    &.find .icon{
-      background:url(find-off.png) no-repeat center;
-      background-size:contain;
-    }
-    &.find.cur .icon, &.find:active .icon{
-      background:url(find-on.png) no-repeat center;
-      background-size:contain;
-    }
+    //&.find .icon{
+    //  background:url(find-off.png) no-repeat center;
+    //  background-size:contain;
+    //}
+    //&.find.cur .icon, &.find:active .icon{
+    //  background:url(find-on.png) no-repeat center;
+    //  background-size:contain;
+    //}
     &.my{
       padding-right:5%;
     }
@@ -111,22 +112,9 @@
     span{
       display:block;
     }
-    &.new{
-      position:relative;
-      flex:none;
-      width:0.51rem;
-      border:none;
-      overflow:visible;
-      .icon{
-        position:absolute;
-        left:0;
-        bottom:0;
-        width:0.5rem;
-        height:0.63rem;
-        background:url(icon.png) no-repeat center;
-        background-size:contain;
-        transform:translateY(-0.04rem);
-      }
+    &.post .icon{
+      background:url(post.png) no-repeat center;
+      background-size:contain;
     }
   }
   .g-message{

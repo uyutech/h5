@@ -30,7 +30,6 @@ class Circling extends migi.Component {
     this._visible = v;
     // $util.scrollY(scrollY);
   }
-  @bind circleList
   @bind index
   init() {
     let self = this;

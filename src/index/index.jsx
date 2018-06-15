@@ -7,7 +7,7 @@ import './index.less';
 
 import BotNav from '../component/botnav/BotNav.jsx';
 import TopNav from '../component/topnav/TopNav.jsx';
-import Find from '../find/Find.jsx';
+// import Find from '../find/Find.jsx';
 import Circling from '../circling/Circling.jsx';
 // import Follow from '../follow/Follow.jsx';
 import MyMessage from '../my_message/MyMessage.jsx';
@@ -35,32 +35,25 @@ jsBridge.ready(function() {
   let topNav = migi.preExist(<TopNav/>, '#page');
   let botNav = migi.preExist(<BotNav/>, '#page');
 
-  let find = migi.preExist(
-    <Find visible={ true }/>,
+  // let find = migi.preExist(
+  //   <Find visible={ true }/>,
+  //   '#page'
+  // );
+  let my;
+  let circling = migi.preExist(
+    <Circling visible={ true }/>,
     '#page'
   );
-  let my;
-  let circling;
   // let follow;
   let myMessage;
-  let last = find;
+  let last = circling;
 
   botNav.on('change', function(i) {
     last.visible = false;
     $net.statsAction(12, {
       id: i,
     });
-    if(i === 0) {
-      topNav.hide();
-      if(!find) {
-        find = migi.render(
-          <Find/>,
-          '#page'
-        );
-      }
-      last = find;
-    }
-    else if(i === 1) {
+    if(i === 1) {
       topNav.hide();
       if(!circling) {
         circling = migi.render(
