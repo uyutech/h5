@@ -84,6 +84,7 @@ jsBridge.ready(function() {
     }
     last.visible = true;
     migi.eventBus.emit('REFRESH_MESSAGE');
+    migi.eventBus.emit('PLAY_INLINE');
   });
   migi.render(<BotFn/>, '#page');
   migi.render(<ImageView/>, '#page');

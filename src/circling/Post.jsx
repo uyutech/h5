@@ -29,12 +29,12 @@ class Post extends migi.Component {
     self.worksList = [];
     self.on(migi.Event.DOM, function() {
       migi.eventBus.on('PLAY_INLINE', function() {
-        if(lastVideo) {
+        if(lastVideo && lastVideo.element) {
           lastVideo.parent.element.classList.add('pause');
           lastVideo.element.pause();
           lastVideo = null;
         }
-        if(lastAudio) {
+        if(lastAudio && lastAudio.element) {
           lastAudio.element.classList.remove('pause');
           lastAudio = null;
         }
@@ -128,9 +128,8 @@ class Post extends migi.Component {
     let url = '/works.html?id=' + item.id + '&workId=' + work.id;
     let author = [];
     let hash = {};
-    item.author = item.author[0];
-    item.author.forEach((item) => {
-      item.list.forEach(function(at) {
+    work.author.forEach((item) => {
+      item.list.forEach((at) => {
         if(!hash[at.id]) {
           hash[at.id] = true;
           author.push(at.name);
@@ -144,7 +143,8 @@ class Post extends migi.Component {
              workId={ work.id }
              title={ work.title }
              cover={ work.cover || item.cover }
-             url={ work.url }>
+             url={ work.url }
+             rel={ item }>
           <img src={ $util.img(item.cover || work.cover, 250, 250, 80)
           || '/src/common/blank.png' }/>
           <div>
@@ -158,7 +158,7 @@ class Post extends migi.Component {
           <div class="author"
                title={ author }>
             {
-              item.author.map((item) => {
+              work.author.map((item) => {
                 return <dl>
                   <dt>{ item.name }</dt>
                   {
@@ -187,7 +187,8 @@ class Post extends migi.Component {
     return <li class="video">
       <div class="pic"
            worksId={ item.id }
-           workId={ work.id }>
+           workId={ work.id }
+           rel={ item }>
         <img src={ $util.img(work.cover || item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
         <div class="num">
           <span class="play">{ $util.abbrNum(work.views) }次播放</span>
@@ -299,7 +300,7 @@ class Post extends migi.Component {
       }
     });
   }
-  clickPic(e, vd, tvd, cvd) {
+  clickPic(e, vd, tvd) {
     let el = tvd.element;
     let video = tvd.find('video');
     let videoEl = video.element;
@@ -312,6 +313,12 @@ class Post extends migi.Component {
       jsBridge.media({
         key: 'pause',
       });
+      let works = tvd.props.rel;
+      let work = works.collection[0];
+      work.worksId = works.id;
+      work.worksCover = works.cover;
+      work.worksTitle = work.title;
+      $util.recordPlay(work);
     }
     else if(el.classList.contains('pause')) {
       migi.eventBus.emit('PLAY_INLINE');
@@ -388,6 +395,7 @@ class Post extends migi.Component {
       title,
       transparentTitle: true,
     });
+    migi.eventBus.emit('PLAY_INLINE');
   }
   clickFn(e, vd, tvd) {
     let id = tvd.props.worksId;
@@ -466,6 +474,12 @@ class Post extends migi.Component {
       el.classList.remove('first');
       el.classList.add('pause');
       lastAudio = tvd;
+      let works = tvd.props.rel;
+      let work = works.collection[0];
+      work.worksId = works.id;
+      work.worksCover = works.cover;
+      work.worksTitle = work.title;
+      $util.recordPlay(work);
     }
     else if(el.classList.contains('pause')) {
       jsBridge.media({

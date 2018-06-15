@@ -26,7 +26,7 @@ class Nav extends migi.Component {
       <ul ref="list"
           onClick={ { li: this.click } }>
         <li class={ this.index === 0 ? 'cur' : '' }
-            rel={ 0 }>推荐</li>
+            rel={ 0 }>发现</li>
         <li class={ this.index === 1 ? 'cur' : '' }
             rel={ 1 }>关注</li>
       </ul>
