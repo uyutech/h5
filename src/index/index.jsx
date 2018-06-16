@@ -131,5 +131,5 @@ jsBridge.ready(function() {
       <First/>,
       document.body
     );
-  });
+  });migi.eventBus.emit('FIRST');
 });

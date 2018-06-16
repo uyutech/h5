@@ -19,6 +19,12 @@ class Nav extends migi.Component {
     this.index = tvd.props.rel;
     this.emit('change', this.index);
   }
+  clickSearch() {
+    jsBridge.pushWindow('/search.html', {
+      hideBackButton: true,
+      transparentTitle: true,
+    });
+  }
   render() {
     return <div class="mod-nav">
       <b class="search"

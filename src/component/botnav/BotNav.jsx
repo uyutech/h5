@@ -74,7 +74,7 @@ class BotNav extends migi.Component {
                onClick={ { li: this.click } }>
       <li class="circling cur" rel={ 1 }>
         <b class="icon"/>
-        <span>发现</span>
+        <span>首页</span>
       </li>
       <li class="message" rel={ 2 }>
         <b class="icon"/>

@@ -75,6 +75,7 @@ class Post extends migi.Component {
             if(self.visible) {
               self.checkMore();
               scrollY = $util.scrollY();
+              self.checkRead();
             }
           });
         }
@@ -99,10 +100,7 @@ class Post extends migi.Component {
     banner.setData(data.bannerList);
 
     let list = [];
-    data.newest.forEach((item) => {
-      list.push(self.genItem(item));
-    });
-    data.hottest.forEach((item) => {
+    data.recommendWorks.forEach((item) => {
       list.push(self.genItem(item));
     });
     if(list.length) {
@@ -110,7 +108,7 @@ class Post extends migi.Component {
     }
 
     let postList = self.ref.postList;
-    postList.setData(data.recommendComment.concat(data.postList.data));
+    postList.setData(data.recommendPost.concat(data.postList.data));
     offset = data.postList.limit;
   }
   genItem(item) {
@@ -496,6 +494,9 @@ class Post extends migi.Component {
       el.classList.add('pause');
       lastAudio = tvd;
     }
+  }
+  checkRead() {
+
   }
   render() {
     return <div class={ 'mod-post2' + (this.visible ? '' : ' fn-hide') }>
