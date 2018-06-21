@@ -9,7 +9,32 @@ let timeout;
 class Dialog extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.exist = {};
+    let self = this;
+    self.exist = {};
+    self.on(migi.Event.DOM, function() {
+      let $list = $(this.ref.list.element);
+      $list.on('click', '.link', function(e) {
+        e.preventDefault();
+        let $this = $(this);
+        let url = $this.attr('href');
+        let title = $this.attr('title');
+        let transparentTitle = $this.attr('transparentTitle') === 'true';
+        jsBridge.pushWindow(url, {
+          title,
+          transparentTitle,
+        });
+      });
+      $list.on('click', '.outside', function(e) {
+        e.preventDefault();
+        let url = $(this).attr('href');
+        jsBridge.confirm('即将前往站外链接，确定吗？', function(res) {
+          if(!res) {
+            return;
+          }
+          jsBridge.openUri(url);
+        });
+      });
+    });
   }
   @bind message
   setData(data) {
@@ -74,9 +99,37 @@ class Dialog extends migi.Component {
         </div>
       </div>
       <div class="wrap">
-        <pre>{ item.content }</pre>
+        <div class="con"
+             dangerouslySetInnerHTML={ self.encode(item.content, item.refHash) }/>
       </div>
     </li>;
+  }
+  encode(s, refHash) {
+    refHash = refHash || {};
+    return s.replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/@\/(\w+)\/(\d+)\/?(\d+)?(?:\s|$)/g, function($0, $1, $2, $3) {
+        let data = refHash[$2];
+        if(!data && $1 !== 'post') {
+          return $0;
+        }
+        switch($1) {
+          case 'works':
+            let url = `/${$1}.html?id=${$2}`;
+            if($3) {
+              url += '&workId=' + $3;
+            }
+            return `<a href="${url}" class="link" transparentTitle="true" title="${data.title}">《${data.title}》</a>`;
+          case 'author':
+            return `<a href="/${$1}.html?id=${$2}" class="link" transparentTitle="true" title="${data.name}">${data.name}</a>`;
+          case 'user':
+            return `<a href="/${$1}.html?id=${$2}" class="link" transparentTitle="true" title="${data.nickname}">${data.nickname}</a>`;
+          case 'post':
+            return `<a href="/${$1}.html?id=${$2}" class="link" title="画圈正文">查看正文</a>`;
+        }
+        return $0;
+      })
+      .replace(/(http(?:s)?:\/\/[\w-]+\.[\w]+\S*)/gi, '<a class="outside" href="$1" target="_blank">$1</a>');
   }
   checkRead() {
     if(timeout) {
