@@ -195,7 +195,7 @@ class Post extends migi.Component {
         <video class="fn-hide"
                poster="/src/common/blank.png"
                src={ work.url }
-               preload="meta"
+               preload="none"
                playsinline="true"
                webkit-playsinline="true"/>
       </div>

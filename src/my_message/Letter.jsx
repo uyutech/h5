@@ -74,14 +74,16 @@ class Letter extends migi.Component {
       return;
     }
     self.exist[id] = true;
-    return <li>
+    return <li id={ 'letter_' + (item.id) }
+               rel={ item.userId }>
       <a class="pic"
-         href={ '/user.html?id=' + item.targetId }
-        title={ (item.user || {}).nickname }>
+         href={ '/user.html?id=' + item.userId }
+         title={ (item.user || {}).nickname }>
         <img src={ $util.img((item.user || {}).headUrl, 96, 96, 80) || '/src/common/head.png' }/>
+        <small class="num">{ item.count || '' }</small>
       </a>
       <a class="txt"
-         href={ '/my_dialog.html?id=' + item.targetId }
+         href={ '/my_dialog.html?id=' + item.userId }
          title={ '和' + (item.user || {}).nickname + '的私信对话' }>
         <span class="name">{ (item.user || {}).nickname }</span>
         <p class="content">{ (item.letter || {}).content }</p>
@@ -95,6 +97,9 @@ class Letter extends migi.Component {
         }
       </div>
     </li>;
+  }
+  setNum(id, num) {
+    this.ref.list.element.querySelector('li[rel="' + id + '"]').querySelector('.num').textContent = num || '';
   }
   render() {
     return <div class="mod-letter">

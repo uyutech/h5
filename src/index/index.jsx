@@ -13,7 +13,7 @@ import Circling from '../circling/Circling.jsx';
 import MyMessage from '../my_message/MyMessage.jsx';
 import My from '../my/My.jsx';
 import BotFn from '../component/botfn/BotFn.jsx';
-import First from './First.jsx';
+// import First from './First.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
 
 jsBridge.ready(function() {
@@ -26,8 +26,8 @@ jsBridge.ready(function() {
   });
   jsBridge.on('networkChange', function(e) {
     if(e.data && e.data.available) {
-      if(find) {
-        find.refresh();
+      if(circling) {
+        circling.refresh();
       }
     }
   });
@@ -126,10 +126,10 @@ jsBridge.ready(function() {
       $(notice.element).addClass('show');
     }, 1000);
   }
-  migi.eventBus.on('FIRST', function() {
-    migi.render(
-      <First/>,
-      document.body
-    );
-  });migi.eventBus.emit('FIRST');
+  // migi.eventBus.on('FIRST', function() {
+  //   migi.render(
+  //     <First/>,
+  //     document.body
+  //   );
+  // });
 });

@@ -13,7 +13,7 @@ class BotNav extends migi.Component {
         res = res || 0;
         let now = Date.now();
         if($util.isLogin() && now - res > 10000) {
-          $net.postJSON('/h5/my/unreadMessageCount', function(res) {
+          $net.postJSON('/h5/my/unreadNotifyCount', function(res) {
             if(res.success) {
               self.num = res.data;
               jsBridge.setPreference('message-time', Date.now());
@@ -36,7 +36,7 @@ class BotNav extends migi.Component {
         });
         let data = e.data;
         if(data && data.myMessage) {
-          $net.postJSON('/h5/my/unreadMessageCount', function(res) {
+          $net.postJSON('/h5/my/unreadNotifyCount', function(res) {
             if(res.success) {
               self.num = res.data;
               jsBridge.setPreference('message-time', Date.now());
@@ -76,14 +76,14 @@ class BotNav extends migi.Component {
         <b class="icon"/>
         <span>首页</span>
       </li>
+      <li class="post">
+        <b class="icon"/>
+        <span>发布</span>
+      </li>
       <li class="message" rel={ 2 }>
         <b class="icon"/>
         <span>消息</span>
         <small class="num">{ this.num || '' }</small>
-      </li>
-      <li class="post">
-        <b class="icon"/>
-        <span>画圈</span>
       </li>
       <li class="my" rel={ 3 }>
         <b class="icon"/>

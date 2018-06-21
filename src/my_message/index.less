@@ -28,6 +28,16 @@
     border-bottom:0.1rem solid #EDF3F7;
     li{
       position:relative;
+      &:after{
+        position:absolute;
+        left:0.5rem;
+        right:0;
+        bottom:0;
+        height:1px;
+        background:#ECECEC;
+        transform:scaleY(0.5);
+        content:' ';
+      }
       a{
         position:relative;
         display:block;
@@ -54,15 +64,20 @@
           content:' ';
         }
       }
-      &:after{
+      .num{
         position:absolute;
-        left:0.5rem;
-        right:0;
-        bottom:0;
-        height:1px;
-        background:#ECECEC;
-        transform:scaleY(0.5);
-        content:' ';
+        left:0.4rem;
+        top:0.4rem;
+        padding:0 0.02rem;
+        min-width:0.18rem;
+        box-sizing:border-box;
+        color:#FFF;
+        background:#F33;
+        border-radius:0.18rem;
+        font-weight:400;
+        text-align:center;
+        font-size:0.12rem;
+        transform:scale(0.833) translateZ(0);
       }
     }
   }

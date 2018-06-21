@@ -28,7 +28,9 @@ class MyDialog extends migi.Component {
 
         window.addEventListener('scroll', function() {
           self.checkMore();
+          self.ref.dialog.checkRead();
         });
+        self.ref.dialog.checkRead();
       }
       else {
         jsBridge.toast(res.message || $util.ERROR_MESSAGE);

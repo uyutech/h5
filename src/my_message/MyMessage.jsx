@@ -5,7 +5,7 @@
 'use strict';
 
 import Letter from './Letter.jsx';
-import Message from '../component/message/Message.jsx';
+// import Message from '../component/message/Message.jsx';
 
 let offset = 0;
 let loading;
@@ -13,7 +13,7 @@ let loadEnd;
 let ajax;
 
 let currentPriority = 0;
-let cacheKey = 'myMessage2';
+let cacheKey = 'myMessage';
 
 class MyMessage extends migi.Component {
   constructor(...data) {
@@ -24,9 +24,25 @@ class MyMessage extends migi.Component {
       migi.eventBus.on('LOGIN', function() {
         self.init();
       });
+      jsBridge.on('resume', function(e) {
+        if(e && e.data && e.data.myDialog) {
+          let id = e.data.myDialog;
+          $net.postJSON('/h5/my/unReadLetterCount', { id }, function(res) {
+            if(res.success) {
+              self.ref.letter.setNum(id, res.data);
+            }
+            else {
+              jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+            }
+          }, function(res) {
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+          });
+        }
+      });
     });
   }
   @bind visible
+  @bind num
   init() {
     let self = this;
     if(!$util.isLogin()) {
@@ -41,7 +57,7 @@ class MyMessage extends migi.Component {
         self.setData(cache, 0);
       }
     });
-    ajax = $net.postJSON('/h5/my/recentLetter', function(res) {
+    ajax = $net.postJSON('/h5/my/unreadMessageCountWithRecentLetter', function(res) {
       if(res.success) {
         let data = res.data;
         jsBridge.setPreference(cacheKey, data);
@@ -66,17 +82,21 @@ class MyMessage extends migi.Component {
     currentPriority = priority;
 
     let self = this;
+    self.num = data.count;
     let letter = self.ref.letter;
 
-    letter.setData(data.data);
-    offset = data.limit;
-    if(data.count === 0) {
+    letter.setData(data.letter.data);
+    offset = data.letter.limit;
+    if(data.letter.count === 0) {
       loadEnd = true;
       letter.message = '暂无消息';
     }
-    else if(offset >= data.count) {
+    else if(data.letter.count > 5 && offset >= data.letter.count) {
       loadEnd = true;
-      // letter.message = '已经到底了';
+      letter.message = '已经到底了';
+    }
+    else {
+      loadEnd = true;
     }
   }
   checkMore() {
@@ -126,6 +146,28 @@ class MyMessage extends migi.Component {
       title,
     });
   }
+  refresh() {
+    let self = this;
+    if(ajax) {
+      ajax.abort();
+    }
+    loading = true;
+    ajax = $net.postJSON('/h5/my/unreadMessageCountWithRecentLetter', function(res) {
+      if(res.success) {
+        let data = res.data;
+        jsBridge.setPreference(cacheKey, data);
+        self.setData(data, 1);
+      }
+      else {
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      }
+      loading = false;
+    }, function(res) {
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      loading = false;
+    });
+    migi.eventBus.emit("REFRESH_MESSAGE");
+  }
   render() {
     return <div class={ 'my-message' + (this.visible ? '' : ' fn-hide') }>
       <ul class="list"
@@ -133,7 +175,7 @@ class MyMessage extends migi.Component {
         <li>
           <a href="/my_comment.html"
              title="圈评论">评论</a>
-          <Message/>
+          <small class="num">{ this.num || '' }</small>
         </li>
       </ul>
       <Letter ref="letter"

@@ -96,7 +96,7 @@ class MyMessage extends migi.Component {
     }
     let message = self.ref.message;
     loading = true;
-    ajax = $net.postJSON('/h5/my/messageList', { offset }, function(res) {
+    ajax = $net.postJSON('/h5/my/commentList', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
         message.appendData(data.data);

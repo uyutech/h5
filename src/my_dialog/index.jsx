@@ -15,6 +15,13 @@ let search = qs.parse(location.search.replace(/^\?/, ''));
 let id = search.id;
 
 jsBridge.ready(function() {
+  jsBridge.on('back', function(e) {
+    e.preventDefault();
+    jsBridge.popWindow({
+      myMessage: true,
+      myDialog: id,
+    });
+  });
   let myDialog = migi.preExist(
     <MyDialog/>,
     '#page'
