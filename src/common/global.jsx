@@ -46,4 +46,22 @@ jsBridge.ready(function() {
       + '&first=' + encodeURIComponent(first)
       + '&_=' + Date.now() + Math.random());
   });
+  setTimeout(function() {
+    let top = migi.render(
+      <div class="g-top" onClick={ function() { document.body.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      }) } }/>,
+      document.body
+    );
+    window.onscroll = function() {
+      let y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+      if(y > document.documentElement.clientHeight) {
+        top.element.classList.add('show');
+      }
+      else {
+        top.element.classList.remove('show');
+      }
+    };
+  }, 200);
 });
