@@ -142,17 +142,18 @@ class Dialog extends migi.Component {
       let list = [];
       for(let i = 0; i < lis.length; i++) {
         let item = lis[i];
-        if(item.classList.contains('read')) {
-          continue;
-        }
         let rect = item.getBoundingClientRect();
         if(rect.top >= 0 && rect.top <= height) {
-          list.push(item);
+          if(!item.classList.contains('read')) {
+            list.push(item);
+          }
           for(let j = i + 1; j < lis.length; j++) {
             let item = lis[j];
             let rect = item.getBoundingClientRect();
             if(rect.top >= 0 && rect.top <= height) {
-              list.push(item);
+              if(!item.classList.contains('read')) {
+                list.push(item);
+              }
             }
             else {
               break;

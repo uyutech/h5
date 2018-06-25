@@ -21,6 +21,8 @@ let scroll;
 let lastVideo;
 let lastAudio;
 
+let timeout;
+
 class Post extends migi.Component {
   constructor(...data) {
     super(...data);
@@ -78,6 +80,7 @@ class Post extends migi.Component {
               self.checkRead();
             }
           });
+          self.checkRead();
         }
       }
       else {
@@ -135,7 +138,8 @@ class Post extends migi.Component {
       });
     });
     if(work.kind === 2) {
-      return <li class="audio">
+      return <li class="audio"
+                 rel={ item.contentId }>
         <div class="pic first"
              worksId={ item.id }
              workId={ work.id }
@@ -182,7 +186,8 @@ class Post extends migi.Component {
         </div>
       </li>;
     }
-    return <li class="video">
+    return <li class="video"
+               rel={ item.contentId }>
       <div class="pic"
            worksId={ item.id }
            workId={ work.id }
@@ -496,12 +501,83 @@ class Post extends migi.Component {
     }
   }
   checkRead() {
-
+    if(timeout) {
+      clearTimeout(timeout);
+    }
+    let self = this;
+    timeout = setTimeout(function() {
+      let lis = self.ref.works.element.querySelectorAll('li');
+      let height = document.documentElement.clientHeight;
+      let list = [];
+      for(let i = 0; i < lis.length; i++) {
+        let item = lis[i];
+        let rect = item.getBoundingClientRect();
+        if(rect.top >= 0 && rect.top <= height) {
+          if(!item.classList.contains('read')) {
+            list.push(item);
+          }
+          for(let j = i + 1; j < lis.length; j++) {
+            let item = lis[j];
+            let rect = item.getBoundingClientRect();
+            if(rect.top >= 0 && rect.top <= height) {
+              if(!item.classList.contains('read')) {
+                list.push(item);
+              }
+            }
+            else {
+              break;
+            }
+          }
+          break;
+        }
+      }
+      lis = self.ref.postList.element.querySelectorAll('li');
+      for(let i = 0; i < lis.length; i++) {
+        let item = lis[i];
+        let rect = item.getBoundingClientRect();
+        if(rect.top >= 0 && rect.top <= height) {
+          if(!item.classList.contains('read') && item.getAttribute('rel')) {
+            list.push(item);
+          }
+          for(let j = i + 1; j < lis.length; j++) {
+            let item = lis[j];
+            let rect = item.getBoundingClientRect();
+            if(rect.top >= 0 && rect.top <= height) {
+              if(!item.classList.contains('read') && item.getAttribute('rel')) {
+                list.push(item);
+              }
+            }
+            else {
+              break;
+            }
+          }
+          break;
+        }
+      }
+      if(list.length && $util.isLogin()) {
+        let idList = list.map((item) => {
+          return item.getAttribute('rel');
+        });
+        $net.postJSON('/h5/circling/read', { idList }, function(res) {
+          if(res.success) {
+            list.forEach((item) => {
+              item.classList.add('read');
+            });
+          }
+          else {
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+          }
+        }, function(res) {
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+        });
+      }
+    }, 500);
   }
   render() {
     return <div class={ 'mod-post2' + (this.visible ? '' : ' fn-hide') }>
       <Banner ref="banner"/>
       <ul class="works"
+          ref="works"
           onClick={ {
             '.video .pic': this.clickPic,
             '.like': this.clickLike,
