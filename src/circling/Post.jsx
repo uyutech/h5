@@ -531,7 +531,7 @@ class Post extends migi.Component {
           break;
         }
       }
-      lis = self.ref.postList.element.querySelectorAll('li');
+      lis = self.ref.postList.element.querySelectorAll('.list>li');
       for(let i = 0; i < lis.length; i++) {
         let item = lis[i];
         let rect = item.getBoundingClientRect();
