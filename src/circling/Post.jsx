@@ -116,7 +116,7 @@ class Post extends migi.Component {
   }
   genItem(item) {
     let work = item.collection[0];
-    let txt = item.describe;
+    let txt = item.describe || '';
     if(!txt) {
       for(let i = 1; i < item.collection.length; i++) {
         let o = item.collection[i];
@@ -143,20 +143,31 @@ class Post extends migi.Component {
         <div class="pic first"
              worksId={ item.id }
              workId={ work.id }
-             title={ work.title }
-             cover={ work.cover || item.cover }
+             title={ item.title || work.title }
+             cover={ item.cover || work.cover }
              url={ work.url }
              rel={ item }>
           <img src={ $util.img(item.cover || work.cover, 250, 250, 80)
           || '/src/common/blank.png' }/>
-          <div>
-            <span>{ item.typeName }</span>
+          <span class="type">{ item.label || item.typeName }</span>
+          <div class="btn">
+            <b class={ 'like' + (work.isLike ? ' liked' : '') }
+               worksId={ item.id }
+               workId={ work.id }>{ $util.abbrNum(work.likeCount) || '' }</b>
+            <b class="comment"
+               title={ item.title || work.title }
+               rel={ item.id }>{ $util.abbrNum(item.commentCount) || '' }</b>
+            <b class="fn"
+               worksId={ item.id }
+               workId={ work.id }
+               title={ item.title || work.title }
+               cover={ item.cover || work.cover }/>
           </div>
         </div>
         <div class="txt">
           <a href={ url }
-             title={ item.title }
-             class="name">{ item.title }</a>
+             title={ item.title || work.title }
+             class="name">{ item.title || work.title }</a>
           <div class="author"
                title={ author }>
             {
@@ -179,10 +190,21 @@ class Post extends migi.Component {
             }
           </div>
           <a href={ url }
-             title={ item.title }
+             title={ item.title || work.title }
              class="intro">
             <pre>{ txt }</pre>
           </a>
+          {
+            item.tag
+              ? <ul class="tag">
+                {
+                  item.tag.map((tag) => {
+                    return <li>{ tag.name }</li>;
+                  })
+                }
+              </ul>
+              : ''
+          }
         </div>
       </li>;
     }
@@ -192,34 +214,68 @@ class Post extends migi.Component {
            worksId={ item.id }
            workId={ work.id }
            rel={ item }>
-        <img src={ $util.img(work.cover || item.cover, 750, 0, 80) || '/src/common/blank.png' }/>
-        <div class="num">
-          <span class="play">{ $util.abbrNum(work.views) }次播放</span>
-        </div>
-        <span class="type">{ item.typeName }</span>
+        <img src={ $util.img(item.cover || work.cover, 750, 0, 80) || '/src/common/blank.png' }/>
         <video class="fn-hide"
                poster="/src/common/blank.png"
                src={ work.url }
                preload="none"
                playsinline="true"
                webkit-playsinline="true"/>
+        <a class="name"
+           href={ url }
+           title={ item.title || work.title }>{ item.title || work.title }</a>
+        <div class="num">
+          <span class="play">{ $util.abbrNum(work.views) }次播放</span>
+        </div>
+        <span class="type">{ item.label || item.typeName }</span>
+        <div class="btn">
+          <b class={ 'like' + (work.isLike ? ' liked' : '') }
+             worksId={ item.id }
+             workId={ work.id }>{ $util.abbrNum(work.likeCount) || '' }</b>
+          <b class="comment"
+             title={ item.title || work.title }
+             rel={ item.id }>{ $util.abbrNum(item.commentCount) || '' }</b>
+          <b class="fn"
+             worksId={ item.id }
+             workId={ work.id }
+             title={ item.title || work.title }
+             cover={ item.cover || work.cover }/>
+        </div>
       </div>
-      <a class="name"
-         href={ url }
-         title={ item.title }>{ work.title }</a>
       <div class="info">
-        <p class="author">{ author.join(' ') }</p>
-        <b class={ 'like' + (work.isLike ? ' liked' : '') }
-           worksId={ item.id }
-           workId={ work.id }>{ work.likeCount || '' }</b>
-        <b class="comment"
-           title={ item.title }
-           rel={ item.id }>{ item.commentCount || '' }</b>
-        <b class="fn"
-           worksId={ item.id }
-           workId={ work.id }
-           title={ work.title }
-           cover={ work.cover || item.cover }/>
+        <div class="author"
+             title={ author }>
+          {
+            work.author.map((item) => {
+              return <dl>
+                <dt>{ item.name }</dt>
+                {
+                  item.list.map((item) => {
+                    return <dd>
+                      <a href={ '/author.html?id=' + item.id }
+                         title={ item.name }>
+                        <img src={ $util.img(item.headUrl, 60, 60, 80) || '/src/common/head.png' }/>
+                        <span>{ item.name }</span>
+                      </a>
+                    </dd>;
+                  })
+                }
+              </dl>
+            })
+          }
+        </div>
+        <pre>{ txt }</pre>
+        {
+          item.tag
+            ? <ul class="tag">
+              {
+                item.tag.map((tag) => {
+                  return <li>{ tag.name }</li>;
+                })
+              }
+              </ul>
+            : ''
+        }
       </div>
     </li>;
   }
@@ -303,7 +359,10 @@ class Post extends migi.Component {
       }
     });
   }
-  clickPic(e, vd, tvd) {
+  clickPic(e, vd, tvd, evd) {
+    if(evd.name === 'b' || evd.name === 'a') {
+      return;
+    }
     let el = tvd.element;
     let video = tvd.find('video');
     let videoEl = video.element;
@@ -456,7 +515,10 @@ class Post extends migi.Component {
       transparentTitle: true,
     });
   }
-  clickPic2(e, vd, tvd) {
+  clickPic2(e, vd, tvd, evd) {
+    if(evd.name === 'b') {
+      return;
+    }
     let el = tvd.element;
     let id = tvd.props.worksId;
     let workId = tvd.props.workId;
@@ -506,7 +568,7 @@ class Post extends migi.Component {
     }
     let self = this;
     timeout = setTimeout(function() {
-      let lis = self.ref.works.element.querySelectorAll('li');
+      let lis = self.ref.works.element.querySelectorAll('li.video,li.audio');
       let height = document.documentElement.clientHeight;
       let list = [];
       for(let i = 0; i < lis.length; i++) {
@@ -582,7 +644,7 @@ class Post extends migi.Component {
             '.video .pic': this.clickPic,
             '.like': this.clickLike,
             '.comment': this.clickComment,
-            '.name': this.clickName,
+            '.video .name': this.clickName,
             '.fn': this.clickFn,
             '.audio a': this.clickA,
             '.audio .pic': this.clickPic2,
