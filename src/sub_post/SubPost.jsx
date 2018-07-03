@@ -203,7 +203,7 @@ class SubPost extends migi.Component {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
-    let self = this;console.log(self.sending, self.invalid, uploading)
+    let self = this;
     if(!self.sending && !self.invalid && !uploading) {
       let image = [];
       migi.sort(self.list, function(a, b) {
