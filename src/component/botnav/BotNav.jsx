@@ -19,6 +19,9 @@ class BotNav extends migi.Component {
               jsBridge.setPreference('message-time', Date.now());
               jsBridge.setPreference('message-count', self.num);
             }
+            else if(res.code === 1000) {
+              $.cookie('isLogin', null);
+            }
           });
         }
       });

@@ -626,6 +626,9 @@ class Post extends migi.Component {
               item.classList.add('read');
             });
           }
+          else if(res.code === 1000) {
+            $.cookie('isLogin', null);
+          }
           else {
             jsBridge.toast(res.message || $util.ERROR_MESSAGE);
           }
