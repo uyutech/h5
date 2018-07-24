@@ -101,6 +101,9 @@ class Post extends migi.Component {
     banner.setData(data.bannerList);
 
     let postList = self.ref.postList;
+    data.recommendPost.forEach((item) => {
+      item.recommend = true;
+    });
     postList.setData(data.recommendPost.concat(data.postList.data));
     offset = data.postList.limit;
     if(offset >= data.count) {

@@ -487,7 +487,7 @@ class PostList extends migi.Component {
       }
     });
     return <li id={ 'post_' + id }
-               class={ item.authorId ? 'author'  : 'user' }
+               class={ (item.authorId ? 'author'  : 'user') + (item.recommend ? ' recommend' : '') }
                rel={ item.id }>
       <div class="profile">
         <a class="pic"
@@ -501,7 +501,7 @@ class PostList extends migi.Component {
              title={ item.name || item.nickname }>{ item.name || item.nickname }</a>
           <a class="time"
              title={ moment(item.createTime).format('YYYY-MM-DD HH:mm:ss') }
-             href={ url }>{ item.tag || item.typeName || $util.formatDate(item.createTime) }</a>
+             href={ url }>{ $util.formatDate(item.createTime) }</a>
         </div>
         <ul class="circle">
         {
