@@ -7,6 +7,7 @@
 let ajax;
 let currentPriority = 0;
 let cacheKey = 'myAddress';
+let loading;
 
 class MyAddress extends migi.Component {
   constructor(...data) {
@@ -128,6 +129,55 @@ class MyAddress extends migi.Component {
     self.list = data;
     self.message = self.list && self.list.length ? '' : '暂无收货地址';
   }
+  add() {
+    if(this.list.length >= 10) {
+      jsBridge.toast('收货地址最多只能有10个！');
+      return;
+    }
+    if(loading) {
+      return;
+    }
+    let self = this;
+    jsBridge.prompt({
+      message: '请输入收件人名称',
+    }, function(res) {
+      if(res.success) {
+        let name = res.value.trim();
+        jsBridge.prompt({
+          message: '请输入联系手机',
+        }, function(res) {
+          if(res.success) {
+            let phone = res.value.trim();
+            jsBridge.prompt({
+              message: '请输入收货地址',
+            }, function(res) {
+              if(res.success) {
+                let address = res.value.trim();
+                loading = true;
+                $net.postJSON('/h5/my/addAddress', { name, phone, address }, function(res) {
+                  if(res.success) {
+                    self.list.push({
+                      name,
+                      phone,
+                      address,
+                    });
+                    self.message = '';
+                  }
+                  else {
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                  }
+                  loading = false;
+                }, function(res) {
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                  loading = false;
+                });
+              }
+            });
+          }
+        });
+      }
+    });
+  }
   render() {
     return <div class="private">
       <ul>
@@ -149,6 +199,8 @@ class MyAddress extends migi.Component {
         })
       }
       </ul>
+      <div class="add"
+           onClick={ this.add }>添加收货地址</div>
       <div class="cp-message">{ this.message }</div>
     </div>;
   }

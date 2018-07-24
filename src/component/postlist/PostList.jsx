@@ -488,7 +488,7 @@ class PostList extends migi.Component {
     });
     return <li id={ 'post_' + id }
                class={ item.authorId ? 'author'  : 'user' }
-               rel={ item.contentId }>
+               rel={ item.id }>
       <div class="profile">
         <a class="pic"
            href={ peopleUrl }

@@ -233,10 +233,17 @@ let jsBridge = {
     }
     else {
       let res = window.prompt(s.message, s.value);
-      cb({
-        success: true,
-        value: res,
-      });
+      if(res === null) {
+        cb({
+          success: false,
+        });
+      }
+      else {
+        cb({
+          success: true,
+          value: res,
+        });
+      }
     }
   },
   hideBackButton: function() {
