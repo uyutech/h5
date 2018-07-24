@@ -142,11 +142,11 @@ let util = {
   },
   setClipboard: function(s) {
     let input = document.createElement('input');
-    input.setAttribute('style', 'position:fixed;left:-9999rem;top:-9999rem;');
+    input.setAttribute('style', 'position:fixed;left:0;top:20%;height:1px;opacity:0;');
     input.value = s;
     document.body.appendChild(input);
     input.focus();
-    input.setSelectionRange(0, 9999);
+    input.setSelectionRange(0, 65535);
     document.execCommand('copy');
     document.body.removeChild(input);
     jsBridge.toast('复制成功');
