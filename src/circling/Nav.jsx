@@ -9,7 +9,7 @@ import Background from '../component/background/Background.jsx';
 class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.index = 0;
+    this.index = 2;
   }
   @bind index
   click(e, vd, tvd) {
@@ -35,6 +35,8 @@ class Nav extends migi.Component {
             rel={ 0 }>发现</li>
         <li class={ this.index === 1 ? 'cur' : '' }
             rel={ 1 }>关注</li>
+        <li class={ this.index === 2 ? 'cur' : '' }
+            rel={ 2 }>最新</li>
       </ul>
       <Background/>
     </div>;

@@ -8,13 +8,14 @@
 import Nav from './Nav.jsx';
 import Post from './Post.jsx';
 import Follow from './Follow.jsx';
+import Newest from './Newest.jsx';
 
 class Circling extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
     self._visible = self.props.visible;
-    self.index = 0;
+    self.index = 2;
     self.on(migi.Event.DOM, function() {
       self.init();
       migi.eventBus.on('IMAGE_VIEW', function() {
@@ -32,7 +33,8 @@ class Circling extends migi.Component {
   @bind index
   init() {
     let self = this;
-    self.ref.post.init();
+    self.ref.newest.init();
+    // self.ref.post.init();
   }
   refresh() {
     if(this.index === 0) {
@@ -41,9 +43,13 @@ class Circling extends migi.Component {
     else if(this.index === 1) {
       this.ref.follow.refresh();
     }
+    else if(this.index === 2) {
+      this.ref.newest.refresh();
+    }
   }
   change(i) {
     this.index = i;
+    migi.eventBus.emit('PLAY_INLINE');
   }
   render() {
     return <div class={ 'circling' + (this.visible ? '' : ' fn-hide') }>
@@ -53,6 +59,8 @@ class Circling extends migi.Component {
             @visible={ this.index === 0 }/>
       <Follow ref="follow"
               @visible={ this.index === 1 }/>
+      <Newest ref="newest"
+              @visible={ this.index === 2 }/>
     </div>;
   }
 }

@@ -17,6 +17,7 @@ let offset = 0;
 let currentPriority = 0;
 let cacheKey = 'circling3';
 let scroll;
+let first = true;
 
 let lastVideo;
 let lastAudio;
@@ -49,6 +50,12 @@ class Post extends migi.Component {
   set visible(v) {
     this._visible = v;
     $util.scrollY(scrollY);
+    if(v) {
+      if(first) {
+        first = false;
+        this.init();
+      }
+    }
   }
   init() {
     let self = this;
@@ -104,6 +111,9 @@ class Post extends migi.Component {
     data.recommendPost.forEach((item) => {
       item.recommend = true;
     });
+    data.postList.data.forEach((item) => {
+      item.recommend = true;
+    });
     postList.setData(data.recommendPost.concat(data.postList.data));
     offset = data.postList.limit;
     if(offset >= data.count) {
@@ -138,6 +148,9 @@ class Post extends migi.Component {
     ajax = $net.postJSON('/h5/circling/postList3', { offset }, function(res) {
       if(res.success) {
         let data = res.data;
+        data.data.forEach((item) => {
+          item.recommend = true;
+        });
         postList.appendData(data.data);
         offset += data.limit;
         if(offset >= data.count) {

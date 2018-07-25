@@ -82,6 +82,10 @@ class MyFavor extends migi.Component {
         videoLoadEnd = true;
         videoList.message = '已经到底了';
       }
+      else {
+        videoLoadEnd = false;
+        videoList.message = '正在加载...';
+      }
     }
     else {
       videoList.clearData();
