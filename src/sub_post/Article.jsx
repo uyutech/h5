@@ -159,6 +159,7 @@ class Article extends migi.Component {
     $net.postJSON('/h5/subPost/sub', {
       content,
       authorId,
+      circleId: 2019000000008345,
     }, function(res) {
       jsBridge.hideLoading();
       if(res.success) {

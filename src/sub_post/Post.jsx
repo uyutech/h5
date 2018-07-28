@@ -180,7 +180,6 @@ class Post extends migi.Component {
   input(e, vd) {
     let self = this;
     let $vd = $(vd.element);
-    self.num = $vd.val().length;
     self.num = $vd.val().trim().length;
     let content = $vd.val().trim();
     let oldInvalid = self.invalid;
