@@ -372,7 +372,7 @@ class Post extends migi.Component {
           node.src = fileReader.result;
           node.onload = function() {
             for(let j = 0, len = self.list.length; j < len; j++) {
-              if(self.list[j] === weight) {
+              if(self.list[j].weight === weight) {
                 self.list[j].width = node.width;
                 self.list[j].height = node.height;
                 document.body.removeChild(node);
