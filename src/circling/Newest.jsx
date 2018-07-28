@@ -150,7 +150,7 @@ class Newest extends migi.Component {
   favor(id, data) {
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
-        cache.postList.data.forEach(function(item) {
+        cache.data.forEach(function(item) {
           if(item.id === id) {
             item.isFavor = data.state;
             item.favorCount = data.count;
@@ -163,7 +163,7 @@ class Newest extends migi.Component {
   like(id, data) {
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
-        cache.postList.data.forEach(function(item) {
+        cache.data.forEach(function(item) {
           if(item.id === id) {
             item.isLike = data.state;
             item.likeCount = data.count;
@@ -176,9 +176,9 @@ class Newest extends migi.Component {
   del(id) {
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
-        cache.postList.data.forEach(function(item, i) {
+        cache.data.forEach(function(item, i) {
           if(item.id === id) {
-            cache.postList.data.splice(i, 1);
+            cache.data.splice(i, 1);
           }
         });
         jsBridge.setPreference(cacheKey, cache);

@@ -7,6 +7,37 @@
 #page{
   display:flex;
   flex-direction:column;
+  > .sub-post{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    > .tab{
+      display:flex;
+      justify-content:center;
+      li{
+        position:relative;
+        margin:0 0.1rem;
+        line-height:0.32rem;
+        font-size:0.16rem;
+        color:#636365;
+        flex-shrink:0;
+        &.cur{
+          font-weight:700;
+          &:after{
+            position:absolute;
+            left:50%;
+            bottom:0;
+            width:70%;
+            height:0.02rem;
+            background:#8BBDE1;
+            border-radius:0.02rem;
+            content:' ';
+            transform:translateX(-50%);
+          }
+        }
+      }
+    }
+  }
 }
 
 .mod-sub{
@@ -300,6 +331,215 @@
             opacity:0.5;
           }
         }
+      }
+    }
+  }
+}
+
+.mod-article{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  padding:0.1rem;
+  h2{
+    margin-top:0.1rem;
+    font-size:0.22rem;
+    text-align:center;
+    font-weight:400;
+  }
+  h4{
+    font-size:0.16rem;
+    opacity:0.6;
+    text-align:center;
+    line-height:1.8;
+    font-weight:400;
+  }
+  .step0{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    .icon{
+      margin:0 auto;
+      display:block;
+      width:1.72rem;
+      height:1.79rem;
+      background:url(//zhuanquan.xin/img/31b199a310f118bdc8ce1d839a116b75.png) no-repeat center;
+      background-size:contain;
+    }
+    li{
+      margin:0.1rem auto;
+      display:block;
+      width:2.7rem;
+      line-height:0.4rem;
+      background:#8BBDE1;
+      border:none;
+      color:#FFF;
+      border-radius:0.2rem;
+      font-size:0.15rem;
+      text-align:center;
+      &.dis{
+        background:#EDF3F7;
+      }
+    }
+  }
+  .step1{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    .icon{
+      margin:0 auto;
+      display:block;
+      width:1.72rem;
+      height:1.79rem;
+      background:url(//zhuanquan.xin/img/dbfec7b0c56a3b6c58de0a7c154d684a.png) no-repeat center;
+      background-size:contain;
+    }
+    .list{
+      margin:0 auto 0.1rem;
+      width:2.94rem;
+      transform:translateX(0.05rem);
+      li{
+        display:inline-block;
+        margin-right:0.1rem;
+        margin-top:0.1rem;
+        padding:0 0.1rem;
+        width:0.88rem;
+        height:0.34rem;
+        line-height:0.34rem;
+        box-sizing:border-box;
+        text-align:center;
+        color:#8BBDE1;
+        border:1px solid #8BBDE1;
+        border-radius:0.17rem;
+        overflow:hidden;
+        font-size:0.14rem;
+        &.on{
+          color:#fff;
+          background:#8BBDE1;
+        }
+      }
+    }
+    .sub{
+      margin:0.1rem auto;
+      display:block;
+      width:2.7rem;
+      line-height:0.4rem;
+      background:#8BBDE1;
+      border:none;
+      color:#FFF;
+      border-radius:0.2rem;
+      font-size:0.15rem;
+      text-align:center;
+      &.dis{
+        background:#EDF3F7;
+      }
+    }
+  }
+  .step2{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    .icon{
+      margin:0 auto;
+      display:block;
+      width:1.72rem;
+      height:1.79rem;
+      background:url(//zhuanquan.xin/img/dbfec7b0c56a3b6c58de0a7c154d684a.png) no-repeat center;
+      background-size:contain;
+    }
+    .list{
+      margin:0 auto 0.1rem;
+      width:2.94rem;
+      transform:translateX(0.05rem);
+      li{
+        display:inline-block;
+        margin-right:0.1rem;
+        margin-top:0.1rem;
+        padding:0 0.1rem;
+        width:0.88rem;
+        height:0.34rem;
+        line-height:0.34rem;
+        box-sizing:border-box;
+        text-align:center;
+        color:#8BBDE1;
+        border:1px solid #8BBDE1;
+        border-radius:0.17rem;
+        overflow:hidden;
+        font-size:0.14rem;
+        &.on{
+          color:#fff;
+          background:#8BBDE1;
+        }
+      }
+    }
+    label{
+      position:relative;
+      font-size:0.14rem;
+      &:after{
+        display:inline-block;
+        margin:0.02rem 0 0 0.05rem;
+        border:0.05rem solid transparent;
+        border-top-color:#000;
+        content:' ';
+        overflow:hidden;
+        transition:transform 0.2s;
+      }
+      &.more:after{
+        transform:rotateZ(180deg);
+        transform-origin:center;
+      }
+    }
+    .sub{
+      margin:0.1rem auto;
+      display:block;
+      width:2.7rem;
+      line-height:0.4rem;
+      background:#8BBDE1;
+      border:none;
+      color:#FFF;
+      border-radius:0.2rem;
+      font-size:0.15rem;
+      text-align:center;
+      &.dis{
+        background:#EDF3F7;
+      }
+    }
+  }
+  .step3{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    .icon{
+      margin:0 auto;
+      display:block;
+      width:1.72rem;
+      height:1.79rem;
+      background:url(//zhuanquan.xin/img/2847055c1eb1ee3c4910f7aa8b037155.png) no-repeat center;
+      background-size:contain;
+    }
+    h2{
+      font-size:0.16rem;
+    }
+    textarea{
+      flex:1;
+      padding:0.05rem 0.08rem;
+      background:#F7F7F7;
+      border:1px solid #9BBDE1;
+      font-size:0.14rem;
+    }
+    .sub{
+      margin:0.1rem auto;
+      display:block;
+      width:2.7rem;
+      line-height:0.4rem;
+      background:#8BBDE1;
+      border:none;
+      color:#FFF;
+      border-radius:0.2rem;
+      font-size:0.15rem;
+      text-align:center;
+      &.dis{
+        background:#EDF3F7;
       }
     }
   }

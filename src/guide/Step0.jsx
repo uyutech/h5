@@ -10,30 +10,6 @@ class Step0 extends migi.Component {
     let self = this;
     self.isShow = self.props.isShow;
     authorId = self.props.authorId;
-    // if(self.isShow) {
-    //   self.on(migi.Event.DOM, function() {
-    //     $net.postJSON('/h5/my/authorRelevant', function(res) {
-    //       if(res.success) {
-    //         let s = '';
-    //         let data = res.data;
-    //         if(data.Hot_Works_Items.length) {
-    //           s += '作为一只立志成为创作圈百科全书的兔，圈儿欣赏过您参与创作的';
-    //           data.Hot_Works_Items.forEach(function(item) {
-    //             s += <span>{ item.Title }</span>;
-    //           });
-    //           s += '等作品！<br/>';
-    //         }
-    //         if(data.Hot_Works_Items.length || data.AuthorToAuthor.length) {
-    //           s += '您合作过的';
-    //           data.AuthorToAuthor.forEach(function(item) {
-    //             s += <span>{ item.AuthorName }</span>;
-    //           });
-    //           s += '等作者也入驻了转圈哦。';
-    //         }
-    //       }
-    //     });
-    //   });
-    // }
   }
   @bind isShow
   @bind sending
