@@ -115,19 +115,24 @@ class Post extends migi.Component {
     self.data = data;
     self.ref.postList.setData(data.info);
 
-    offset = data.commentList.limit;
-    self.ref.comment.setData(data.commentList.data);
-    if(data.commentList.count === 0) {
-      loadEnd = true;
-      self.ref.comment.message = '';
-    }
-    else if(offset >= data.commentList.count) {
-      loadEnd = true;
-      self.ref.comment.message = '已经到底了';
+    if(data.commentList) {
+      offset = data.commentList.limit;
+      self.ref.comment.setData(data.commentList.data);
+      if(data.commentList.count === 0) {
+        loadEnd = true;
+        self.ref.comment.message = '';
+      }
+      else if(offset >= data.commentList.count) {
+        loadEnd = true;
+        self.ref.comment.message = '已经到底了';
+      }
+      else {
+        loadEnd = false;
+        self.ref.comment.message = '正在加载...';
+      }
     }
     else {
-      loadEnd = false;
-      self.ref.comment.message = '正在加载...';
+      self.ref.comment.message = '暂无评论';
     }
   }
   checkMore() {
