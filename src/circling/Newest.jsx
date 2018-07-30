@@ -4,6 +4,7 @@
 
 'use strict';
 
+import Banner from '../find/Banner.jsx';
 import PostList from '../component/postlist/PostList.jsx';
 
 let scrollY = 0;
@@ -93,6 +94,10 @@ class Newest extends migi.Component {
     currentPriority = priority;
 
     let self = this;
+
+    let banner = self.ref.banner;
+    banner.setData(data.bannerList);
+
     let postList = self.ref.postList;
     postList.setData(data.data);
     offset = data.limit;
@@ -240,6 +245,7 @@ class Newest extends migi.Component {
   }
   render() {
     return <div class={ 'mod-post2' + (this.visible ? '' : ' fn-hide') }>
+      <Banner ref="banner"/>
       <PostList ref="postList"
                 visible={ true }
                 message='正在加载...'
