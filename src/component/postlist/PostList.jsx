@@ -245,7 +245,7 @@ class PostList extends migi.Component {
         });
       });
       jsBridge.on('mediaPlay', function() {
-        $list.find('.video .pic.play,.audio .pic.play').removeClass('play');
+        $list.find('.video .pic.play').removeClass('play');
         $list.find('video').each(function(i, o) {
           o.pause();
         });
@@ -320,6 +320,7 @@ class PostList extends migi.Component {
         }
         else {
           migi.eventBus.emit('PLAY_INLINE');
+          $this.addClass('play');
           if(jsBridge.ios) {
             jsBridge.media({
               key: 'play',
@@ -358,6 +359,57 @@ class PostList extends migi.Component {
           });
         });
         migi.eventBus.emit('IMAGE_VIEW', list, index);
+      });
+      $list.on('click', '.mv li', function() {
+        jsBridge.media({
+          key: 'stop',
+        });
+        let $this = $(this);
+        let video = this.querySelector('video');
+        $this.addClass('start');
+        if($this.hasClass('play')) {
+          $this.removeClass('play');
+          video.pause();
+        }
+        else {
+          migi.eventBus.emit('PLAY_INLINE');
+          $this.addClass('play');
+          video.play();
+        }
+        self.emit('clickPlay');
+      });
+      $list.on('click', '.av li', function() {
+        let $this = $(this);
+        if($this.hasClass('play')) {
+          $this.removeClass('play');
+          jsBridge.media({
+            key: 'pause',
+          });
+        }
+        else {
+          migi.eventBus.emit('PLAY_INLINE');
+          $this.addClass('play');
+          if(jsBridge.ios) {
+            jsBridge.media({
+              key: 'play',
+              value: {
+                id: $this.attr('rel'),
+                url: location.protocol + $util.autoSsl($this.attr('url')),
+              },
+            });
+          }
+          else {
+            jsBridge.media({
+              key: 'play',
+              value: {
+                id: $this.attr('rel'),
+                url: location.protocol + $util.autoSsl($this.attr('url')),
+                title: '音乐',
+              },
+            });
+          }
+        }
+        self.emit('clickPlay');
       });
       jsBridge.on('resume', function(e) {
         let data = e.data;
@@ -466,6 +518,8 @@ class PostList extends migi.Component {
     let videoList = [];
     let audioList = [];
     let imageList = [];
+    let mvList = [];
+    let maList = [];
     item.work.forEach((item) => {
       if(item) {
         if(item.work.kind === 1) {
@@ -481,6 +535,12 @@ class PostList extends migi.Component {
     });
     item.media.forEach((item) => {
       switch(item.kind) {
+        case 1:
+          mvList.push(item);
+          break;
+        case 2:
+          maList.push(item);
+          break;
         case 3:
           imageList.push(item);
           break;
@@ -628,6 +688,38 @@ class PostList extends migi.Component {
                 })
               }
               </ul>
+            : ''
+        }
+        {
+          mvList.length
+            ? <ul class="mv">
+              {
+                mvList.map((item) => {
+                  return <li>
+                    <video poster="/src/common/blank.png"
+                           src={ item.url }
+                           preload="none"
+                           playsinline="true"
+                           webkit-playsinline="true"/>
+                  </li>;
+                })
+              }
+              </ul>
+            : ''
+        }
+        {
+          maList.length
+            ? <ul class="av">
+              {
+                maList.map((item) => {
+                  return <li url={ item.url }
+                             rel={ item.id }>
+                    <div class="pic"/>
+                    <div class="txt">音乐</div>
+                  </li>;
+                })
+              }
+            </ul>
             : ''
         }
       </div>

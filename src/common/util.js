@@ -166,7 +166,7 @@ let util = {
   },
   recordPlay(data, cb) {
     jsBridge.setPreference('recordCur', data.id);
-    jsBridge.getPreference('record', function(res) {debugger
+    jsBridge.getPreference('record', function(res) {
       res = jsBridge.android ? (res || []) : JSON.parse(res || '[]');
       for(let i = 0, len = res.length; i < len; i++) {
         if(res[i].id === data.id && res[i].worksId === data.worksId) {
