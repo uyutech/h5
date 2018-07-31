@@ -9,6 +9,7 @@ let uploading;
 class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
+    this.checkIn = {};
   }
   @bind userId
   @bind nickname
@@ -19,8 +20,10 @@ class Nav extends migi.Component {
   @bind followPersonCount
   @bind isFans
   @bind fansCount
-  @bind authorId;
-  setData(data, author, followPersonCount, fansCount) {
+  @bind authorId
+  @bind checkIn
+  @bind isChecking
+  setData(data, author, followPersonCount, fansCount, checkIn) {
     data = data || {};
     author = author || {};
     let self = this;
@@ -31,6 +34,7 @@ class Nav extends migi.Component {
     self.sign = data.sign;
     self.followPersonCount = followPersonCount;
     self.fansCount = fansCount;
+    self.checkIn = checkIn || {};
     if(author && author.length) {
       self.authorId = author[0].id;
     }
@@ -236,6 +240,30 @@ class Nav extends migi.Component {
       title: '圈关系',
     });
   }
+  clickCheckIn() {
+    let self = this;
+    if(self.isChecking) {
+      return;
+    }
+    self.isChecking = true;
+    $net.postJSON('/h5/my/checkIn', function(res) {
+      if(res.success) {
+        self.checkIn = {
+          num: res.data,
+          state: true,
+        };
+        jsBridge.toast(`转圈打卡第${res.data}天，圈儿奉上圈币10枚！转得开心哦！`);
+        self.emit('incrementCoins', 10);
+      }
+      else {
+        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+        self.isChecking = false;
+      }
+    }, function(res) {
+      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+      self.isChecking = false;
+    });
+  }
   render() {
     return <div class="nav">
       <div class="profile">
@@ -268,6 +296,10 @@ class Nav extends migi.Component {
         <b class={ 'edit' + (this.userId ? '' : ' fn-hide') }
            onClick={ this.clickSign }/>
       </div>
+      <p class="check-in">已连续签到<strong>{ this.checkIn.num || 0 }</strong>天。
+      <span class={ this.isChecking || this.checkIn.state ? 'ing' : '' }
+            onClick={ this.clickCheckIn }>{ this.checkIn.state ? '已签' : '签到' }</span>
+      </p>
     </div>;
   }
 }

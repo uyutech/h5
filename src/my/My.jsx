@@ -94,7 +94,7 @@ class My extends migi.Component {
 
     if(data && data.user) {
       self.coins = data.user.coins;
-      nav.setData(data.user, data.author, data.followPersonCount, data.fansCount);
+      nav.setData(data.user, data.author, data.followPersonCount, data.fansCount, data.checkIn);
       if(priority === 1) {
         let regState = data.user.regState || 0;
         let isAuthor = !!(data.author && data.author.length);
@@ -162,11 +162,16 @@ class My extends migi.Component {
       transparentTitle: true,
     });
   }
+  increment(n) {
+    this.coins = this.coins || 0;
+    this.coins += n;
+  }
   render() {
     return <div class={ 'my' + (this.visible ? '' : ' fn-hide') }>
       <Background/>
       <Nav ref="nav"
-           cacheKey={ cacheKey }/>
+           cacheKey={ cacheKey }
+           on-increment={ this.increment }/>
       <ul class={ 'list' + (this.isLogin ? '' : ' fn-hide') }
           onClick={ { a: this.clickLink } }>
         <li><a href="/my_relation.html" class="relation">圈关系</a></li>
