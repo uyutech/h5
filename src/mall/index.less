@@ -45,13 +45,21 @@
       transform:translateY(-50%);
     }
   }
+  > .coins{
+    margin:0.1rem 0.1rem 0.05rem;
+  }
   > .prod{
-    .line{
-      display:flex;
-    }
+    padding:0 0.1rem;
     .item{
-      flex:1;
-      margin:0 0.05rem;
+      float:left;
+      margin:0 2% 0.1rem 0;
+      width:32%;
+      &:nth-child(3n) {
+        margin-right:0;
+      }
+      &:nth-child(3n + 1) {
+        clear:both;
+      }
       img{
         display:block;
         margin-bottom:0.05rem;
@@ -71,18 +79,27 @@
         text-decoration-color:#CCC;
       }
       .btn{
-        color:#919191;
         text-align:center;
         border-width:1px;
+        &:disabled{
+          color:#919191;
+        }
+      }
+      strong{
+        font-weight:400;
+      }
+      .price{
+        line-height:0.2rem;
       }
       .icon{
         display:inline-block;
         margin-left:0.02rem;
-        width:0.12rem;
-        height:0.12rem;
-        background:url(../icon/my-coins.png) no-repeat;
+        width:0.2rem;
+        height:0.2rem;
+        background:url(../icon/my-coins.png) no-repeat center;
         background-size:contain;
-        transform:translateY(0.02rem);
+        vertical-align:middle;
+        transform:translateY(-0.01rem);
       }
     }
   }

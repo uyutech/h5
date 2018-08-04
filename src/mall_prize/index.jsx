@@ -10,7 +10,7 @@ import './index.less';
 import MallPrize from './MallPrize.jsx';
 
 jsBridge.ready(function() {
-  jsBridge.setTitle('新福利');
+  jsBridge.setTitle('我的福利');
   jsBridge.on('back', function(e) {
     e.preventDefault();
     jsBridge.popWindow();

@@ -2,8 +2,6 @@
  * Created by army8735 on 2017/12/11.
  */
 
-@import '../common/var';
-
 #page > .private{
   > ul{
     padding:0.1rem;
@@ -30,17 +28,11 @@
       transform:translateY(0.06rem);
     }
     button{
-      margin-left:0.1rem;
-      vertical-align:bottom;
-    }
-    textarea{
       display:block;
-      padding:0.02rem 0.05rem;
-      width:100%;
-      box-sizing:border-box;
-      resize:none;
-      border:1px solid #CCC;
-      border-radius:0.05rem;
+      margin-top:0.02rem;
+      &.disabled{
+        color:#919191;
+      }
     }
   }
   > .add{

@@ -48,6 +48,13 @@ class Post extends migi.Component {
           migi.eventBus.emit('myInfo', my);
           self.isAuthor = my.author && my.author.length;
           if(self.isAuthor) {
+            if(my.author[0].settle) {
+              self.headUrl = my.author[0].headUrl;
+              self.name = my.author[0].name;
+              self.useAuthor = true;
+              self.isAuthor = false;
+              return;
+            }
             jsBridge.getPreference('useAuthor', function(useAuthor) {
               self.useAuthor = useAuthor;
               migi.eventBus.emit('useAuthor', useAuthor);
@@ -164,11 +171,15 @@ class Post extends migi.Component {
   clickAlt() {
     let self = this;
     if(self.myInfo) {
+      let author = self.myInfo.author[0];
+      if(author.settle === 1) {
+        return;
+      }
       self.useAuthor = !self.useAuthor;
       migi.eventBus.emit('userAuthor', self.useAuthor);
       if(self.useAuthor) {
-        self.headUrl = self.myInfo.author[0].headUrl;
-        self.name = self.myInfo.author[0].name;
+        self.headUrl = author.headUrl;
+        self.name = author.name;
       }
       else {
         self.headUrl = self.myInfo.user.headUrl;

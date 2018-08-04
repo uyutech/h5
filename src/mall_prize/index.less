@@ -51,11 +51,31 @@
   }
   .list{
     padding:0 0.1rem;
-    span,button{
-      margin-left:0.1rem;
+    input{
+      margin-left:0.05rem;
+      -webkit-appearance:checkbox;
+      vertical-align:middle;
+      transform:translateY(-0.01rem);
     }
   }
   .private{
     margin:0 0.1rem;
+  }
+  .address{
+    margin:0.1rem;
+    label{
+      display:inline-block;
+      color:#919191;
+    }
+    span{
+      margin-right:0.1rem;
+    }
+  }
+  button{
+    display:block;
+    margin:0 auto;
+    &:disabled{
+      color:#919191;
+    }
   }
 }

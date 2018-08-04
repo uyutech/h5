@@ -8,6 +8,7 @@ let ajax;
 let currentPriority = 0;
 let cacheKey = 'myAddress';
 let loading;
+let loading2;
 
 class MyAddress extends migi.Component {
   constructor(...data) {
@@ -88,6 +89,48 @@ class MyAddress extends migi.Component {
           }
         });
       });
+      $root.on('click', 'button', function() {
+        if(loading2) {
+          return;
+        }
+        let $this = $(this);
+        if($this.hasClass('disabled')) {
+          return;
+        }
+        loading2 = true;
+        let id = parseInt($this.attr('rel'));
+        $net.postJSON('/h5/my/setDefaultAddress', { id }, function(res) {
+          if(res.success) {
+            $root.find('button').removeClass('disabled').text('设为默认');
+            $this.addClass('disabled').text('默认地址');
+            self.list.forEach((item) => {
+              item.isDefault = item.id === id;
+            });
+            jsBridge.setPreference(cacheKey, self.list);
+          }
+          else {
+            jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+          }
+          loading2 = false;
+        }, function(res) {
+          jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+          loading2 = false;
+        });
+      });
+      jsBridge.on('back', function(e) {
+        let o;
+        self.list.forEach((item) => {
+          if(item.isDefault) {
+            o = item;
+          }
+        });
+        if(o) {
+          e.preventDefault();
+          jsBridge.popWindow({
+            defaultAddress: o,
+          });
+        }
+      });
     });
   }
   @bind list
@@ -143,16 +186,28 @@ class MyAddress extends migi.Component {
     }, function(res) {
       if(res.success) {
         let name = res.value.trim();
+        if(!name) {
+          jsBridge.toast('名称不能为空');
+          return;
+        }
         jsBridge.prompt({
           message: '请输入联系手机',
         }, function(res) {
           if(res.success) {
             let phone = res.value.trim();
+            if(!phone) {
+              jsBridge.toast('手机不能为空');
+              return;
+            }
             jsBridge.prompt({
               message: '请输入收货地址',
             }, function(res) {
               if(res.success) {
                 let address = res.value.trim();
+                if(!address) {
+                  jsBridge.toast('地址不能为空');
+                  return;
+                }
                 loading = true;
                 $net.postJSON('/h5/my/addAddress', { name, phone, address }, function(res) {
                   if(res.success) {
@@ -195,6 +250,8 @@ class MyAddress extends migi.Component {
             <label>收货地址：</label>
             <span>{ item.address }</span>
             <b class="address" rel={ item.id }/>
+            <button class={ item.isDefault ? 'disabled' : '' }
+                    rel={ item.id }>{ item.isDefault ? '默认地址' : '设为默认' }</button>
           </li>;
         })
       }
