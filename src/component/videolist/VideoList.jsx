@@ -265,7 +265,7 @@ class VideoList extends migi.Component {
         </div>
         <video poster="/src/common/blank.png"
                src={ item.work.url }
-               preload="meta"
+               preload="none"
                playsinline="true"
                webkit-playsinline="true"/>
       </div>

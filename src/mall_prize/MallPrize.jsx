@@ -136,7 +136,12 @@ class MallPrize extends migi.Component {
         <span>{ this.address && this.address.address }</span>
       </div>
       <div class="free">
-        <p>免邮次数 * { this.freePost || 0 }</p>
+        <p>获取免邮机会后才可选择发货哦~<br/><strong>免邮次数 * { this.freePost || 0 }</strong></p>
+        <p class="intro" onClick={ function() {
+          jsBridge.pushWindow('/post.html?id=498119', {
+            title: '免邮说明',
+          });
+        } }>如何获取免邮？</p>
       </div>
       <button disabled={ !this.freePost || !this.address || this.loading }
               onClick={ this.sub }>申请发货</button>

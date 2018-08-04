@@ -212,6 +212,7 @@ class MyAddress extends migi.Component {
                 $net.postJSON('/h5/my/addAddress', { name, phone, address }, function(res) {
                   if(res.success) {
                     self.list.push({
+                      id: res.data.id,
                       name,
                       phone,
                       address,
