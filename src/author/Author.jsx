@@ -11,7 +11,7 @@ import Cooperation from './Cooperation.jsx';
 import Comments from './Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
 import Background from '../component/background/Background.jsx';
-import BotFn from '../component/botfn/BotFn.jsx';
+import BotPanel from '../component/botpanel/BotPanel.jsx';
 import Work from './Work.jsx';
 import Dynamics from './Dynamics.jsx';
 
@@ -139,41 +139,63 @@ class Author extends migi.Component {
   }
   share() {
     let self = this;
-    migi.eventBus.emit('BOT_FN', {
-      canShare: true,
-      canShareWb: true,
-      canShareLink: true,
-      clickShareWb: function(botFn) {
-        if(!self.data) {
-          return;
+    let list = [
+      [
+        {
+          class: 'share',
+          name: '分享',
+          click: function(botPanel) {
+            if(!$util.isLogin()) {
+              migi.eventBus.emit('NEED_LOGIN');
+              return;
+            }
+            botPanel.cancel();
+            jsBridge.pushWindow('/sub_post.html?content=' + encodeURIComponent('@/author/' + self.id), {
+              title: '画圈',
+            });
+          },
+        },
+        {
+          class: 'wb',
+          name: '微博',
+          click: function(botPanel) {
+            if(!self.data) {
+              return;
+            }
+            let url = window.ROOT_DOMAIN + '/author/' + self.id;
+            let text = '来欣赏【' + self.data.info.name + '】的作品吧~ ';
+            text += '#转圈circling# ';
+            text += url;
+            jsBridge.shareWb({
+              text,
+            }, function(res) {
+              if(res.success) {
+                jsBridge.toast("分享成功");
+              }
+              else if(res.cancel) {
+                jsBridge.toast("取消分享");
+              }
+              else {
+                jsBridge.toast("分享失败");
+              }
+            });
+            botPanel.cancel();
+          },
+        },
+        {
+          class: 'link',
+          name: '复制链接',
+          click: function(botPanel) {
+            if(!self.data) {
+              return;
+            }
+            $util.setClipboard(window.ROOT_DOMAIN + '/author/' + self.id);
+            botPanel.cancel();
+          },
         }
-        let url = window.ROOT_DOMAIN + '/author/' + self.id;
-        let text = '来欣赏【' + self.data.info.name + '】的作品吧~ ';
-        text += '#转圈circling# ';
-        text += url;
-        jsBridge.shareWb({
-          text,
-        }, function(res) {
-          if(res.success) {
-            jsBridge.toast("分享成功");
-          }
-          else if(res.cancel) {
-            jsBridge.toast("取消分享");
-          }
-          else {
-            jsBridge.toast("分享失败");
-          }
-        });
-        botFn.cancel();
-      },
-      clickShareLink: function(botFn) {
-        if(!self.data) {
-          return;
-        }
-        $util.setClipboard(window.ROOT_DOMAIN + '/author/' + self.id);
-        botFn.cancel();
-      },
-    });
+      ]
+    ];
+    migi.eventBus.emit('BOT_PANEL', list);
   }
   follow(data) {
     jsBridge.getPreference(cacheKey, function(cache) {
@@ -217,7 +239,7 @@ class Author extends migi.Component {
                 readOnly={ true }
                 on-share={ this.share }
                 on-click={ this.comment }/>
-      <BotFn ref="botFn"/>
+      <BotPanel ref="botPanel"/>
     </div>;
   }
 }

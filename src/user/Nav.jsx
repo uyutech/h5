@@ -16,60 +16,79 @@ class Nav extends migi.Component {
     super(...data);
     let self = this;
     self.on(migi.Event.DOM, function() {
+      let list = [
+        [
+          {
+            class: 'share',
+            name: '分享',
+            click: function(botPanel) {
+              if(!$util.isLogin()) {
+                migi.eventBus.emit('NEED_LOGIN');
+                return;
+              }
+              botPanel.cancel();
+              jsBridge.pushWindow('/sub_post.html?content=' + encodeURIComponent('@/user/' + self.id), {
+                title: '画圈',
+              });
+            },
+          }
+        ],
+        [
+          {
+            class: 'block',
+            name: '黑名单',
+            click: function(botPanel) {
+              let id = self.id;
+              jsBridge.confirm('确认加入黑名单吗？', function(res) {
+                if(!res) {
+                  return;
+                }
+                $net.postJSON('/h5/user/black', { id }, function(res) {
+                  if(res.success) {
+                    jsBridge.toast('加入黑名单成功');
+                  }
+                  else if(res.code === 1000) {
+                    migi.eventBus.emit('NEED_LOGIN');
+                  }
+                  else {
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                  }
+                  botPanel.cancel();
+                }, function(res) {
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                  botPanel.cancel();
+                });
+              });
+            },
+          },
+          {
+            class: 'report',
+            name: '举报',
+            click: function(botPanel) {
+              let id = self.id;
+              jsBridge.confirm('确认举报吗？', function(res) {
+                if(!res) {
+                  return;
+                }
+                $net.postJSON('/h5/user/report', { id }, function(res) {
+                  if(res.success) {
+                    jsBridge.toast('举报成功');
+                  }
+                  else {
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                  }
+                  botPanel.cancel();
+                }, function(res) {
+                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                  botPanel.cancel();
+                });
+              });
+            },
+          }
+        ]
+      ];
       jsBridge.on('optionMenu1', function() {
-        migi.eventBus.emit('BOT_FN', {
-          canFn: true,
-          canBlock: true,
-          blockText: '加入黑名单',
-          canReport: true,
-          clickBlock: function(botFn) {
-            if(!$util.isLogin()) {
-              migi.eventBus.emit('NEED_LOGIN');
-              return;
-            }
-            let id = self.id;
-            jsBridge.confirm('确认加入黑名单吗？', function(res) {
-              if(!res) {
-                return;
-              }
-              $net.postJSON('/h5/user/black', { id }, function(res) {
-                if(res.success) {
-                  jsBridge.toast('加入黑名单成功');
-                }
-                else if(res.code === 1000) {
-                  migi.eventBus.emit('NEED_LOGIN');
-                }
-                else {
-                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                }
-                botFn.cancel();
-              }, function(res) {
-                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                botFn.cancel();
-              });
-            });
-          },
-          clickReport: function(botFn) {
-            let id = self.id;
-            jsBridge.confirm('确认举报吗？', function(res) {
-              if(!res) {
-                return;
-              }
-              $net.postJSON('/h5/user/report', { id }, function(res) {
-                if(res.success) {
-                  jsBridge.toast('举报成功');
-                }
-                else {
-                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                }
-                botFn.cancel();
-              }, function(res) {
-                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                botFn.cancel();
-              });
-            });
-          },
-        });
+        migi.eventBus.emit('BOT_PANEL', list);
       });
     });
   }

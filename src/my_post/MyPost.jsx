@@ -7,7 +7,7 @@
 
 import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
-import BotFn from '../component/botfn/BotFn.jsx';
+import BotPanel from '../component/botpanel/BotPanel.jsx';
 
 let offset = 0;
 let ajax;
@@ -156,7 +156,7 @@ class MyPost extends migi.Component {
                 message={ '正在加载...' }
                 on-favor={ this.commentFavor }
                 on-like={ this.commentLike }/>
-      <BotFn/>
+      <BotPanel ref="botPanel"/>
       <ImageView/>
     </div>;
   }

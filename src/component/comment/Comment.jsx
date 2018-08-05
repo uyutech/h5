@@ -50,74 +50,61 @@ class Comment extends migi.Component {
       $list.on('click', '.fn', function() {
         let $fn = $(this);
         let id = parseInt($fn.attr('rel'));
-        migi.eventBus.emit('BOT_FN', {
-          canFn: true,
-          // canBlock: true,
-          canReport: true,
-          canDel: $fn.attr('own') === 'true',
-          // clickBlock: function(botFn) {
-          //   if(!$util.isLogin()) {
-          //     migi.eventBus.emit('NEED_LOGIN');
-          //     return;
-          //   }
-          //   jsBridge.confirm('确认屏蔽吗？', function(res) {
-          //     if(!res) {
-          //       return;
-          //     }
-          //     $net.postJSON('/h5/comment/block', { id }, function(res) {
-          //       if(res.success) {
-          //         jsBridge.toast('屏蔽成功');
-          //       }
-          //       else {
-          //         jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-          //       }
-          //       botFn.cancel();
-          //     }, function(res) {
-          //       jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-          //       botFn.cancel();
-          //     });
-          //   });
-          // },
-          clickReport: function(botFn) {
-            jsBridge.confirm('确认举报吗？', function(res) {
-              if(!res) {
-                return;
-              }
-              $net.postJSON('/h5/comment/report', { id }, function(res) {
-                if(res) {
-                  jsBridge.toast('举报成功');
+        let list = [
+          [
+            {
+              class: 'report',
+              name: '举报',
+              click: function(botPanel) {
+                jsBridge.confirm('确认举报吗？', function(res) {
+                  if(!res) {
+                    return;
+                  }
+                  $net.postJSON('/h5/comment/report', { id }, function(res) {
+                    if(res) {
+                      jsBridge.toast('举报成功');
+                    }
+                    else {
+                      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                    }
+                    botPanel.cancel();
+                  }, function(res) {
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                    botPanel.cancel();
+                  });
+                });
+              },
+            }
+          ]
+        ];
+        if($fn.attr('own') === 'true') {
+          list[0].push({
+            class: 'delete',
+            name: '删除',
+            click: function(botPanel) {
+              jsBridge.confirm('确定要删除吗？', function(res) {
+                if(!res) {
+                  return;
                 }
-                else {
+                $net.postJSON('/h5/comment/del', { id }, function(res) {
+                  if(res.success) {
+                    $fn.closest('li').remove();
+                    self.empty = !$(self.ref.list.element).children('li').length;
+                    self.emit('del', id);
+                  }
+                  else {
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                  }
+                  botPanel.cancel();
+                }, function(res) {
                   jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                }
-                botFn.cancel();
-              }, function(res) {
-                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                botFn.cancel();
+                  botPanel.cancel();
+                });
               });
-            });
-          },
-          clickDel: function(botFn) {
-            jsBridge.confirm('确定要删除吗？', function(res) {
-              if(!res) {
-                return;
-              }
-              $net.postJSON('/h5/comment/del', { id }, function(res) {
-                if(res.success) {
-                  $fn.closest('li').remove();
-                  self.empty = !$(self.ref.list.element).children('li').length;
-                  botFn.cancel();
-                  self.emit('del', id);
-                }
-                else {
-                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                }
-              }, function(res) {
-                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-              });
-            });
-          },
-        });
+            },
+          });
+        }
+        migi.eventBus.emit('BOT_PANEL', list);
       });
       $list.on('click', 'li.author a', function(e) {
         e.stopImmediatePropagation();

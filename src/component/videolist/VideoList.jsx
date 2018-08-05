@@ -133,55 +133,66 @@ class VideoList extends migi.Component {
         for(let i = 0, len = self.list.length; i < len; i++) {
           let item = self.list[i];
           if(item.work.id === id) {
-            migi.eventBus.emit('BOT_FN', {
-              canShare: true,
-              canShareIn: true,
-              canShareWb: true,
-              canShareLink: true,
-              clickShareIn: function(botFn) {
-                jsBridge.pushWindow('/sub_post.html?worksId=' + item.id
-                  + '&workId=' + id
-                  + '&cover=' + encodeURIComponent(item.work.cover || item.cover || ''), {
-                  title: '画个圈',
-                  optionMenu: '发布',
-                });
-                botFn.cancel();
-              },
-              clickShareWb: function(botFn) {
-                let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
-                let text = '【' + item.work.title;
-                if(item.work.subTitle) {
-                  text += ' ' + item.work.subTitle;
+            let list = [
+              [
+                {
+                  class: 'share',
+                  name: '分享',
+                  click: function(botPanel) {
+                    jsBridge.pushWindow('/sub_post.html?worksId=' + item.id
+                      + '&workId=' + id
+                      + '&cover=' + encodeURIComponent(item.work.cover || item.cover || ''), {
+                      title: '画个圈',
+                      optionMenu: '发布',
+                    });
+                    botPanel.cancel();
+                  },
+                },
+                {
+                  class: 'wb',
+                  name: '微博',
+                  click: function(botPanel) {
+                    let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
+                    let text = '【' + item.work.title;
+                    if(item.work.subTitle) {
+                      text += ' ' + item.work.subTitle;
+                    }
+                    text += '】';
+                    item.work.author.forEach((item) => {
+                      item.list.forEach((author) => {
+                        text += author.name + ' ';
+                      });
+                    });
+                    text += ' #转圈circling# ';
+                    text += url;
+                    jsBridge.shareWb({
+                      text,
+                    }, function(res) {
+                      if(res.success) {
+                        jsBridge.toast("分享成功");
+                      }
+                      else if(res.cancel) {
+                        jsBridge.toast("取消分享");
+                      }
+                      else {
+                        jsBridge.toast("分享失败");
+                      }
+                    });
+                    botPanel.cancel();
+                  },
+                },
+                {
+                  class: 'link',
+                  name: '复制链接',
+                  click: function(botPanel) {
+                    let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
+                    $util.setClipboard(url);
+                    botPanel.cancel();
+                  },
                 }
-                text += '】';
-                item.work.author.forEach((item) => {
-                  item.list.forEach((author) => {
-                    text += author.name + ' ';
-                  });
-                });
-                text += ' #转圈circling# ';
-                text += url;
-                jsBridge.shareWb({
-                  text,
-                }, function(res) {
-                  if(res.success) {
-                    jsBridge.toast("分享成功");
-                  }
-                  else if(res.cancel) {
-                    jsBridge.toast("取消分享");
-                  }
-                  else {
-                    jsBridge.toast("分享失败");
-                  }
-                });
-                botFn.cancel();
-              },
-              clickShareLink: function(botFn) {
-                let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
-                $util.setClipboard(url);
-                botFn.cancel();
-              },
-            });
+              ]
+            ];
+            migi.eventBus.emit('BOT_PANEL', list);
             break;
           }
         }

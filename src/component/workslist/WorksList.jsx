@@ -63,7 +63,6 @@ class WorksList extends migi.Component {
          title={ item.title }>
         <img src={ $util.img(item.cover, 170, 170, 80) || '/src/common/blank.png' }/>
         <span class="type">{ item.typeName }</span>
-        <span class="num">{ $util.abbrNum(item.popular) }</span>
       </a>
       <a class="txt"
          href={ url }

@@ -7,7 +7,7 @@
 import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
-import BotFn from '../component/botfn/BotFn.jsx';
+import BotPanel from '../component/botpanel/BotPanel.jsx';
 
 let offset = 0;
 let loading;
@@ -26,33 +26,42 @@ class Tag extends migi.Component {
         icon1: 'iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAHlBMVEUAAACMvuGMvuGMvuGNveGMvuGNweOPwuuMvuKLveG52ByYAAAACXRSTlMA7+bFiGY1GfMKDs4PAAAASklEQVRIx2MYBSMZlIbjl2eTnJiAVwHzzJkGeBVwzJzZQK4JCDcQ9MUoAAInFfzyLDNnOuBVwDRzpgK5ChBWEHTkKBjNeqNgWAAAQowW2TR/xN0AAAAASUVORK5CYII=',
       });
       jsBridge.on('optionMenu1', function() {
-        migi.eventBus.emit('BOT_FN', {
-          canShare: true,
-          canShareWb: true,
-          canShareLink: true,
-          clickShareWb: function() {
-            let url = window.ROOT_DOMAIN + '/tag/' + encodeURIComponent(self.tag);
-            let text = '聊一聊【' + self.tag + '】吧~ 每天转转圈，玩转每个圈~';
-            text += ' #转圈circling# ';
-            text += url;
-            jsBridge.shareWb({
-              text,
-            }, function(res) {
-              if(res.success) {
-                jsBridge.toast("分享成功");
-              }
-              else if(res.cancel) {
-                jsBridge.toast("取消分享");
-              }
-              else {
-                jsBridge.toast("分享失败");
-              }
-            });
-          },
-          clickShareLink: function() {
-            $util.setClipboard(window.ROOT_DOMAIN + '/tag/' + encodeURIComponent(self.tag));
-          },
-        });
+        let list = [
+          [
+            {
+              class: 'wb',
+              name: '微博',
+              click: function(botPanel) {
+                let url = window.ROOT_DOMAIN + '/tag/' + encodeURIComponent(self.tag);
+                let text = '聊一聊【' + self.tag + '】吧~ 每天转转圈，玩转每个圈~';
+                text += ' #转圈circling# ';
+                text += url;
+                jsBridge.shareWb({
+                  text,
+                }, function(res) {
+                  if(res.success) {
+                    jsBridge.toast("分享成功");
+                  }
+                  else if(res.cancel) {
+                    jsBridge.toast("取消分享");
+                  }
+                  else {
+                    jsBridge.toast("分享失败");
+                  }
+                });
+              },
+            },
+            {
+              class: 'link',
+              name: '复制链接',
+              click: function(botPanel) {
+                $util.setClipboard(window.ROOT_DOMAIN + '/tag/' + encodeURIComponent(self.tag));
+                botPanel.cancel();
+              },
+            }
+          ]
+        ];
+        migi.eventBus.emit('BOT_PANEL', list);
       });
     });
   }
@@ -160,7 +169,7 @@ class Tag extends migi.Component {
                 placeholder={ '画个圈吧！' }
                 readOnly={ true }
                 on-click={ this.comment }/>
-      <BotFn ref="botFn"/>
+      <BotPanel ref="botPanel"/>
     </div>;
   }
 }

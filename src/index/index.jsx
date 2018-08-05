@@ -12,7 +12,7 @@ import Circling from '../circling/Circling.jsx';
 // import Follow from '../follow/Follow.jsx';
 import MyMessage from '../my_message/MyMessage.jsx';
 import My from '../my/My.jsx';
-import BotFn from '../component/botfn/BotFn.jsx';
+import BotPanel from '../component/botpanel/BotPanel.jsx';
 // import First from './First.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
 
@@ -86,7 +86,7 @@ jsBridge.ready(function() {
     migi.eventBus.emit('REFRESH_MESSAGE');
     migi.eventBus.emit('PLAY_INLINE');
   });
-  migi.render(<BotFn/>, '#page');
+  migi.render(<BotPanel/>, '#page');
   migi.render(<ImageView/>, '#page');
 
   let old = false;

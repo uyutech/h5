@@ -217,62 +217,6 @@ class MusicAlbum extends migi.Component {
       optionMenu: '发布',
     });
   }
-  // share() {
-  //   let self = this;
-  //   migi.eventBus.emit('BOT_FN', {
-  //     canShare: true,
-  //     canShareWb: true,
-  //     canShareLink: true,
-  //     clickShareWb: function(botFn) {
-  //       if(!self.data) {
-  //         return;
-  //       }
-  //       let url = window.ROOT_DOMAIN + '/musicAlbum/' + self.id;
-  //       let text = '【';
-  //       if(self.data.info.title) {
-  //         text += self.data.info.title;
-  //       }
-  //       if(self.data.info.subTitle) {
-  //         if(self.data.info.subTitle) {
-  //           text += ' ';
-  //         }
-  //         text += self.data.info.subTitle;
-  //       }
-  //       text += '】';
-  //       if(self.data.info.author[0]) {
-  //         self.data.info.author[0].forEach((item) => {
-  //           item.list.forEach((author) => {
-  //             text += author.name + ' ';
-  //           });
-  //         });
-  //       }
-  //       text += '#转圈circling# ';
-  //       text += url;
-  //       jsBridge.shareWb({
-  //         text,
-  //       }, function(res) {
-  //         if(res.success) {
-  //           jsBridge.toast("分享成功");
-  //         }
-  //         else if(res.cancel) {
-  //           jsBridge.toast("取消分享");
-  //         }
-  //         else {
-  //           jsBridge.toast("分享失败");
-  //         }
-  //       });
-  //       botFn.cancel();
-  //     },
-  //     clickShareLink: function(botFn) {
-  //       if(!self.data) {
-  //         return;
-  //       }
-  //       let url = window.ROOT_DOMAIN + '/musicAlbum/' + self.data.id;
-  //       $util.setClipboard(url);
-  //       botFn.cancel();
-  //     },
-  //   });
-  // }
   render() {
     return <div class="music">
       <Background ref="background"/>

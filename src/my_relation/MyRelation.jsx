@@ -54,10 +54,10 @@ class MyRelation extends migi.Component {
     let fans = self.ref.fans;
     let author = self.ref.author;
 
-    friend.setData(data.friendList);
-    follow.setData(data.followUserList);
-    fans.setData(data.fansList);
-    author.setData(data.followAuthorList);
+    friend.setData(data.friendList, priority);
+    follow.setData(data.followUserList, priority);
+    fans.setData(data.fansList, priority);
+    author.setData(data.followAuthorList, priority);
   }
   clickTag(e, vd, tvd) {
     if(tvd.props.rel === this.tag) {
@@ -79,17 +79,17 @@ class MyRelation extends migi.Component {
             rel={ 3 }>关注作者</li>
       </ul>
       <List ref="friend"
-            url={ '/h5/my/relation/friend' }
+            url={ '/h5/my/friendList' }
             message="正在加载..."
             @visible={ this.tag === 0}/>
       <List ref="follow"
-            url={ '/h5/my/relation/follow' }
+            url={ '/h5/my/followUserList' }
             @visible={ this.tag === 1}/>
       <List ref="fans"
-            url={ '/h5/my/relation/fans' }
+            url={ '/h5/my/fansList' }
             @visible={ this.tag === 2}/>
       <List ref="author"
-            url={ '/h5/my/relation/author' }
+            url={ '/h5/my/followAuthorList' }
             isAuthor={ true }
             @visible={ this.tag === 3}/>
     </div>;

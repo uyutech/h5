@@ -6,11 +6,11 @@
 'use strict';
 
 import Media from '../works/Media.jsx';
-import BotFn from '../component/botfn/BotFn.jsx';
 import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
 import Playlist from '../component/playlist/Playlist.jsx';
 import List from './List.jsx';
 import Background from '../component/background/Background.jsx';
+import BotPanel from '../component/botpanel/BotPanel.jsx';
 
 let offset = 0;
 let loading;
@@ -229,7 +229,7 @@ class Record extends migi.Component {
                   on-prev={ this.prev }
                   on-next={ this.next }
                   on-comment={ this.comment }/>
-      <BotFn ref="botFn"/>
+      <BotPanel ref="botPanel"/>
     </div>;
   }
 }

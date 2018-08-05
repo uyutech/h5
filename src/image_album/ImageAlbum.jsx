@@ -175,59 +175,65 @@ class ImageAlbum extends migi.Component {
   }
   share() {
     let self = this;
-    migi.eventBus.emit('BOT_FN', {
-      canShare: true,
-      canShareWb: true,
-      canShareLink: true,
-      clickShareWb: function(botFn) {
-        if(!self.data) {
-          return;
-        }
-        let url = window.ROOT_DOMAIN + '/imageAlbum/' + self.id;
-        let text = '【';
-        if(self.data.info.title) {
-          text += self.data.info.title;
-        }
-        if(self.data.info.subTitle) {
+    let list = [
+      {
+        class: 'wb',
+        name: '微博',
+        click: function(botPanel) {
+          if(!self.data) {
+            return;
+          }
+          let url = window.ROOT_DOMAIN + '/imageAlbum/' + self.id;
+          let text = '【';
+          if(self.data.info.title) {
+            text += self.data.info.title;
+          }
           if(self.data.info.subTitle) {
-            text += ' ';
+            if(self.data.info.subTitle) {
+              text += ' ';
+            }
+            text += self.data.info.subTitle;
           }
-          text += self.data.info.subTitle;
-        }
-        text += '】';
-        if(self.data.info.author[0]) {
-          self.data.info.author[0].forEach((item) => {
-            item.list.forEach((author) => {
-              text += author.name + ' ';
+          text += '】';
+          if(self.data.info.author[0]) {
+            self.data.info.author[0].forEach((item) => {
+              item.list.forEach((author) => {
+                text += author.name + ' ';
+              });
             });
+          }
+          text += '#转圈circling# ';
+          text += url;
+          jsBridge.shareWb({
+            text,
+          }, function(res) {
+            if(res.success) {
+              jsBridge.toast("分享成功");
+            }
+            else if(res.cancel) {
+              jsBridge.toast("取消分享");
+            }
+            else {
+              jsBridge.toast("分享失败");
+            }
           });
-        }
-        text += '#转圈circling# ';
-        text += url;
-        jsBridge.shareWb({
-          text,
-        }, function(res) {
-          if(res.success) {
-            jsBridge.toast("分享成功");
-          }
-          else if(res.cancel) {
-            jsBridge.toast("取消分享");
-          }
-          else {
-            jsBridge.toast("分享失败");
-          }
-        });
-        botFn.cancel();
+          botPanel.cancel();
+        },
       },
-      clickShareLink: function(botFn) {
-        if(!self.data) {
-          return;
-        }
-        let url = window.ROOT_DOMAIN + '/imageAlbum/' + self.data.id;
-        $util.setClipboard(url);
-        botFn.cancel();
-      },
-    });
+      {
+        class: 'link',
+        name: '复制链接',
+        click: function(botPanel) {
+          if(!self.data) {
+            return;
+          }
+          let url = window.ROOT_DOMAIN + '/imageAlbum/' + self.data.id;
+          $util.setClipboard(url);
+          botPanel.cancel();
+        },
+      }
+    ];
+    migi.eventBus.emit('BOT_PANEL', list);
   }
   render() {
     return <div class="image">

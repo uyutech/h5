@@ -98,33 +98,103 @@ class Media extends migi.Component {
       }
       jsBridge.on('optionMenu1', function() {
         if(self.data) {
-          migi.eventBus.emit('BOT_FN', {
-            canFn: true,
-            canReport: true,
-            clickReport: function(botFn) {
-              if(!self.data) {
-                return;
+          let list = [
+            [
+              {
+                class: 'share',
+                name: '分享',
+                click: function(botPanel) {
+                  if(!self.data) {
+                    return;
+                  }
+                  self.shareIn();
+                  botPanel.cancel();
+                },
+              },
+              {
+                class: 'wb',
+                name: '分享',
+                click: function(botPanel) {
+                  if(!self.data) {
+                    return;
+                  }
+                  let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId + '/' + self.data.id;
+                  let text = '【' + self.data.title;
+                  if(self.data.subTitle) {
+                    text += ' ' + self.data.subTitle;
+                  }
+                  text += '】';
+                  let hash = {};
+                  self.data.author.forEach((item) => {
+                    item.list.forEach((author) => {
+                      if(!hash[author.id]) {
+                        hash[author.id] = true;
+                        text += author.name + ' ';
+                      }
+                    });
+                  });
+                  text += '#转圈circling# ';
+                  text += url;
+                  jsBridge.shareWb({
+                    text,
+                  }, function(res) {
+                    if(res.success) {
+                      jsBridge.toast("分享成功");
+                    }
+                    else if(res.cancel) {
+                      jsBridge.toast("取消分享");
+                    }
+                    else {
+                      jsBridge.toast("分享失败");
+                    }
+                  });
+                  botPanel.cancel();
+                },
+              },
+              {
+                class: 'link',
+                name: '分享',
+                click: function(botPanel) {
+                  if(!self.data) {
+                    return;
+                  }
+                  let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId + '/' + self.data.id;
+                  $util.setClipboard(url);
+                  botPanel.cancel();
+                },
               }
-              let id = self.data.id;
-              jsBridge.confirm('确认举报吗？', function(res) {
-                if(!res) {
-                  return;
-                }
-                $net.postJSON('/h5/work/report', { id }, function(res) {
-                  if(res.success) {
-                    jsBridge.toast('举报成功');
+            ],
+            [
+              {
+                class: 'report',
+                name: '举报',
+                click: function(botPanel) {
+                  if(!self.data) {
+                    return;
                   }
-                  else {
-                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                  }
-                  botFn.cancel();
-                }, function(res) {
-                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                  botFn.cancel();
-                });
-              });
-            },
-          });
+                  let id = self.data.id;
+                  jsBridge.confirm('确认举报吗？', function(res) {
+                    if(!res) {
+                      return;
+                    }
+                    $net.postJSON('/h5/work/report', { id }, function(res) {
+                      if(res.success) {
+                        jsBridge.toast('举报成功');
+                      }
+                      else {
+                        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                      }
+                      botPanel.cancel();
+                    }, function(res) {
+                      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                      botPanel.cancel();
+                    });
+                  });
+                },
+              }
+            ]
+          ];
+          migi.eventBus.emit('BOT_PANEL', list);
         }
       });
     });
@@ -694,67 +764,86 @@ class Media extends migi.Component {
       return;
     }
     self.emit('clickShare', self.data);
-    migi.eventBus.emit('BOT_FN', {
-      canShare: true,
-      canShareWb: true,
-      canShareLink: true,
-      canShareIn: true,
-      clickShareIn: function(botFn) {
-        if(!self.data) {
-          return;
-        }
-        jsBridge.pushWindow('/sub_post.html?worksId=' + self.data.worksId
-          + '&workId=' + self.data.id
-          + '&cover=' + encodeURIComponent(self.data.cover || self.data.worksCover || ''), {
-          title: '画个圈',
-          optionMenu: '发布',
-        });
-        botFn.cancel();
-      },
-      clickShareWb: function(botFn) {
-        if(!self.data) {
-          return;
-        }
-        let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId + '/' + self.data.id;
-        let text = '【' + self.data.title;
-        if(self.data.subTitle) {
-          text += ' ' + self.data.subTitle;
-        }
-        text += '】';
-        let hash = {};
-        self.data.author.forEach((item) => {
-          item.list.forEach((author) => {
-            if(!hash[author.id]) {
-              hash[author.id] = true;
-              text += author.name + ' ';
+    let list = [
+      [
+        {
+          class: 'share',
+          name: '分享',
+          click: function(botPanel) {
+            if(!self.data) {
+              return;
             }
-          });
-        });
-        text += '#转圈circling# ';
-        text += url;
-        jsBridge.shareWb({
-          text,
-        }, function(res) {
-          if(res.success) {
-            jsBridge.toast("分享成功");
-          }
-          else if(res.cancel) {
-            jsBridge.toast("取消分享");
-          }
-          else {
-            jsBridge.toast("分享失败");
-          }
-        });
-        botFn.cancel();
-      },
-      clickShareLink: function(botFn) {
-        if(!self.data) {
-          return;
+            self.shareIn();
+            botPanel.cancel();
+          },
+        },
+        {
+          class: 'wb',
+          name: '分享',
+          click: function(botPanel) {
+            if(!self.data) {
+              return;
+            }
+            let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId + '/' + self.data.id;
+            let text = '【' + self.data.title;
+            if(self.data.subTitle) {
+              text += ' ' + self.data.subTitle;
+            }
+            text += '】';
+            let hash = {};
+            self.data.author.forEach((item) => {
+              item.list.forEach((author) => {
+                if(!hash[author.id]) {
+                  hash[author.id] = true;
+                  text += author.name + ' ';
+                }
+              });
+            });
+            text += '#转圈circling# ';
+            text += url;
+            jsBridge.shareWb({
+              text,
+            }, function(res) {
+              if(res.success) {
+                jsBridge.toast("分享成功");
+              }
+              else if(res.cancel) {
+                jsBridge.toast("取消分享");
+              }
+              else {
+                jsBridge.toast("分享失败");
+              }
+            });
+            botPanel.cancel();
+          },
+        },
+        {
+          class: 'link',
+          name: '分享',
+          click: function(botPanel) {
+            if(!self.data) {
+              return;
+            }
+            let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId + '/' + self.data.id;
+            $util.setClipboard(url);
+            botPanel.cancel();
+          },
         }
-        let url = window.ROOT_DOMAIN + '/works/' + self.data.worksId + '/' + self.data.id;
-        $util.setClipboard(url);
-        botFn.cancel();
-      },
+      ]
+    ];
+    migi.eventBus.emit('BOT_PANEL', list);
+  }
+  shareIn() {
+    let self = this;
+    if(!self.data) {
+      return;
+    }
+    jsBridge.pushWindow('/sub_post.html?worksId=' + self.data.worksId
+      + '&workId=' + self.data.id
+      + '&content=@%2Fworks%2F' + self.data.worksId + '%2F' + self.data.id
+      + '&cover=' + encodeURIComponent(self.data.cover || self.data.worksCover || ''), {
+      title: '画个圈',
+      optionMenu: '发布',
     });
   }
   render() {

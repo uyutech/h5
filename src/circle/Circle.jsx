@@ -2,6 +2,7 @@
  * Created by army8735 on 2017/12/3.
  */
 
+
 'use strict';
 
 
@@ -9,8 +10,8 @@ import Nav from './Nav.jsx';
 import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
-import BotFn from '../component/botfn/BotFn.jsx';
 import Background from '../component/background/Background.jsx';
+import BotPanel from '../component/botpanel/BotPanel.jsx';
 
 let offset = 0;
 let ajax;
@@ -27,37 +28,41 @@ class Circle extends migi.Component {
     self.on(migi.Event.DOM, function() {
       jsBridge.on('optionMenu1', function() {
         let id = self.id;
-        migi.eventBus.emit('BOT_FN', {
-          canFn: true,
-          canBlock: true,
-          clickBlock: function(botFn) {
-            if(!$util.isLogin()) {
-              migi.eventBus.emit('NEED_LOGIN');
-              return;
-            }
-            let id = self.id;
-            jsBridge.confirm('确认屏蔽吗？', function(res) {
-              if(!res) {
-                return;
-              }
-              $net.postJSON('/h5/circle/block', { id }, function(res) {
-                if(res.success) {
-                  jsBridge.toast('屏蔽成功');
-                }
-                else if(res.code === 1000) {
+        let list = [
+          [
+            {
+              class: 'block',
+              name: '屏蔽',
+              click: function(botPanel) {
+                if(!$util.isLogin()) {
                   migi.eventBus.emit('NEED_LOGIN');
+                  return;
                 }
-                else {
-                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                }
-                botFn.cancel();
-              }, function(res) {
-                jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                botFn.cancel();
-              });
-            });
-          },
-        });
+                jsBridge.confirm('确认屏蔽吗？', function(res) {
+                  if(!res) {
+                    return;
+                  }
+                  $net.postJSON('/h5/circle/block', { id }, function(res) {
+                    if(res.success) {
+                      jsBridge.toast('屏蔽成功');
+                    }
+                    else if(res.code === 1000) {
+                      migi.eventBus.emit('NEED_LOGIN');
+                    }
+                    else {
+                      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                    }
+                    botPanel.cancel();
+                  }, function(res) {
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                    botPanel.cancel();
+                  });
+                });
+              },
+            }
+          ]
+        ];
+        migi.eventBus.emit('BOT_PANEL', list);
       });
     });
   }
@@ -163,35 +168,43 @@ class Circle extends migi.Component {
   }
   share() {
     let self = this;
-    migi.eventBus.emit('BOT_FN', {
-      canShare: true,
-      canShareWb: true,
-      canShareLink: true,
-      clickShareWb: function(botFn) {
-        let url = window.ROOT_DOMAIN + '/circle/' + self.id;
-        let text = '来转转【' + self.name + '】圈吧~ 每天转转圈，玩转每个圈~';
-        text += ' #转圈circling# ';
-        text += url;
-        jsBridge.shareWb({
-          text,
-        }, function(res) {
-          if(res.success) {
-            jsBridge.toast("分享成功");
-          }
-          else if(res.cancel) {
-            jsBridge.toast("取消分享");
-          }
-          else {
-            jsBridge.toast("分享失败");
-          }
-        });
-        botFn.cancel();
-      },
-      clickShareLink: function(botFn) {
-        $util.setClipboard(window.ROOT_DOMAIN + '/circle/' + self.id);
-        botFn.cancel();
-      },
-    });
+    let list = [
+      [
+        {
+          class: 'wb',
+          name: '微博',
+          click: function(botPanel) {
+            let url = window.ROOT_DOMAIN + '/circle/' + self.id;
+            let text = '来转转【' + self.name + '】圈吧~ 每天转转圈，玩转每个圈~';
+            text += ' #转圈circling# ';
+            text += url;
+            jsBridge.shareWb({
+              text,
+            }, function(res) {
+              if(res.success) {
+                jsBridge.toast("分享成功");
+              }
+              else if(res.cancel) {
+                jsBridge.toast("取消分享");
+              }
+              else {
+                jsBridge.toast("分享失败");
+              }
+            });
+            botPanel.cancel();
+          },
+        },
+        {
+          class: 'link',
+          name: '复制链接',
+          click: function(botPanel) {
+            $util.setClipboard(window.ROOT_DOMAIN + '/circle/' + self.id);
+            botPanel.cancel();
+          },
+        }
+      ]
+    ];
+    migi.eventBus.emit('BOT_PANEL', list);
   }
   comment() {
     let self = this;
@@ -254,7 +267,7 @@ class Circle extends migi.Component {
                 on-click={ this.comment }
                 on-share={ this.share }/>
       <ImageView/>
-      <BotFn ref="botFn"/>
+      <BotPanel ref="botPanel"/>
     </div>;
   }
 }

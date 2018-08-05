@@ -9,7 +9,7 @@ import PostList from '../component/postlist/PostList.jsx';
 import CommentBar from '../component/commentbar/CommentBar.jsx';
 import Comment from '../component/comment/Comment.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
-import BotFn from '../component/botfn/BotFn.jsx';
+import BotPanel from '../component/botpanel/BotPanel.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
 
 let offset;
@@ -26,47 +26,82 @@ class Post extends migi.Component {
     self.on(migi.Event.DOM, function() {
       jsBridge.on('optionMenu1', function() {
         let id = self.id;
-        migi.eventBus.emit('BOT_FN', {
-          canFn: true,
-          canReport: true,
-          canDel: self.data.info.isOwn,
-          clickReport: function(botFn) {
-            jsBridge.confirm('确认举报吗？', function(res) {
-              if(res) {
-                $net.postJSON('/h5/comment/report', { id }, function(res) {
-                  if(res) {
-                    jsBridge.toast('举报成功');
-                  }
-                  else {
-                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                  }
-                  botFn.cancel();
-                }, function(res) {
-                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                  botFn.cancel();
+        let list = [
+          [
+            {
+              class: 'share',
+              name: '分享',
+              click: function(botPanel) {
+                if(!$util.isLogin()) {
+                  migi.eventBus.emit('NEED_LOGIN');
+                  return;
+                }
+                botPanel.cancel();
+                jsBridge.pushWindow('/sub_post.html?content=' + encodeURIComponent('@/post/' + id), {
+                  title: '画圈',
                 });
-              }
-            });
-          },
-          clickDel: function(botFn) {
-            jsBridge.confirm('确认删除吗？', function(res) {
-              if(res) {
-                $net.postJSON('/h5/comment/del', { id }, function(res) {
+              },
+            },
+            {
+              class: 'link',
+              name: '复制链接',
+              click: function(botPanel) {
+                let url = window.ROOT_DOMAIN + '/post/' + self.id;
+                $util.setClipboard(url);
+                botPanel.cancel();
+              },
+            }
+          ],
+          [
+            {
+              class: 'report',
+              name: '举报',
+              click: function(botPanel) {
+                jsBridge.confirm('确认举报吗？', function(res) {
                   if(res) {
-                    jsBridge.toast('删除成功');
+                    $net.postJSON('/h5/comment/report', { id }, function(res) {
+                      if(res) {
+                        jsBridge.toast('举报成功');
+                      }
+                      else {
+                        jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                      }
+                      botPanel.cancel();
+                    }, function(res) {
+                      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                      botPanel.cancel();
+                    });
                   }
-                  else {
-                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                  }
-                  botFn.cancel();
-                }, function(res) {
-                  jsBridge.toast(res.message || $util.ERROR_MESSAGE);
-                  botFn.cancel();
                 });
-              }
-            });
-          }
-        });
+              },
+            }
+          ]
+        ];
+        if(self.data.info.isOwn) {
+          list[1].push({
+            class: 'delete',
+            name: '删除',
+            click: function(botPanel) {
+              jsBridge.confirm('确认删除吗？', function(res) {
+                if(res) {
+                  $net.postJSON('/h5/comment/del', { id }, function(res) {
+                    if(res) {
+                      jsBridge.toast('删除成功');
+                    }
+                    else {
+                      jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                    }
+                    botPanel.cancel();
+                  }, function(res) {
+                    jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+                    botPanel.cancel();
+                  });
+                }
+              });
+            },
+          });
+        }
+        migi.eventBus.emit('BOT_PANEL', list);
       });
       jsBridge.on('resume', function(e) {
         let data = e.data;
@@ -242,15 +277,34 @@ class Post extends migi.Component {
   }
   share() {
     let self = this;
-    migi.eventBus.emit('BOT_FN', {
-      canShare: true,
-      canShareLink: true,
-      clickShareLink: function(botFn) {
-        let url = window.ROOT_DOMAIN + '/post/' + self.id;
-        $util.setClipboard(url);
-        botFn.cancel();
-      },
-    });
+    let list = [
+      [
+        {
+          class: 'share',
+          name: '分享',
+          click: function(botPanel) {
+            if(!$util.isLogin()) {
+              migi.eventBus.emit('NEED_LOGIN');
+              return;
+            }
+            botPanel.cancel();
+            jsBridge.pushWindow('/sub_post.html?content=' + encodeURIComponent('@/post/' + self.id), {
+              title: '画圈',
+            });
+          },
+        },
+        {
+          class: 'link',
+          name: '复制链接',
+          click: function(botPanel) {
+            let url = window.ROOT_DOMAIN + '/post/' + self.id;
+            $util.setClipboard(url);
+            botPanel.cancel();
+          },
+        }
+      ]
+    ];
+    migi.eventBus.emit('BOT_PANEL', list);
   }
   render() {
     return <div class="post">
@@ -269,7 +323,7 @@ class Post extends migi.Component {
                 readOnly={ true }
                 on-click={ this.comment }
                 on-share={ this.share }/>
-      <BotFn ref="botFn"/>
+      <BotPanel ref="botPanel"/>
       <ImageView/>
     </div>;
   }

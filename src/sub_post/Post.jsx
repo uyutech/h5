@@ -48,10 +48,10 @@ class Post extends migi.Component {
           migi.eventBus.emit('myInfo', my);
           self.isAuthor = my.author && my.author.length;
           if(self.isAuthor) {
-            if(my.author[0].settle) {
-              self.headUrl = my.author[0].headUrl;
-              self.name = my.author[0].name;
-              self.useAuthor = true;
+            if(my.author[0].settle === 1) {
+              self.headUrl = my.user.headUrl;
+              self.name = my.user.name;
+              self.useAuthor = false;
               self.isAuthor = false;
               return;
             }
@@ -86,9 +86,15 @@ class Post extends migi.Component {
       jsBridge.getPreference(self.getContentKey(), (cache) => {
         if(cache) {
           self.value = cache.trim();
+          if(self.content) {
+            self.value += ' ' + self.content;
+          }
           self.input(null, self.ref.input);
           let length = self.value.trim().length;
           self.invalid = length < 3 || length > MAX_TEXT_LENGTH;
+        }
+        else if(self.content) {
+          self.value = self.content;
         }
       });
       jsBridge.on('resume', function(e) {
@@ -134,6 +140,7 @@ class Post extends migi.Component {
     self.worksId = data.worksId;
     self.workId = data.workId;
     self.circleId = data.circleId;
+    self.content = data.content;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         try {
@@ -283,8 +290,8 @@ class Post extends migi.Component {
       }
       else {
         jsBridge.toast(res.message || $util.ERROR_MESSAGE);
+        self.sending = false;
       }
-      self.sending = false;
     }, function(res) {
       jsBridge.hideLoading();
       jsBridge.toast(res.message || $util.ERROR_MESSAGE);

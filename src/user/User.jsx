@@ -8,7 +8,7 @@ import Nav from './Nav.jsx';
 import Background from '../component/background/Background.jsx';
 import PostList from '../component/postlist/PostList.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
-import BotFn from '../component/botfn/BotFn.jsx';
+import BotPanel from '../component/botpanel/BotPanel.jsx';
 
 let offset = 0;
 let ajax;
@@ -147,7 +147,7 @@ class User extends migi.Component {
                 visible={ true }
                 message={ '正在加载...' }/>
       <ImageView ref="imageView"/>
-      <BotFn ref="botFn"/>
+      <BotPanel/>
     </div>;
   }
 }

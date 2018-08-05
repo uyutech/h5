@@ -108,7 +108,6 @@ class Step0 extends migi.Component {
         <p>不知您是否愿意在转圈入驻？</p>
         <button class={ 'sub' + (this.sending ? ' dis' : '') }
                 onClick={ this.clickEnterPublic }>我要公开入驻！</button>
-        <small>（您依然可以进行作者相关的操作，但将以普通用户的身份进行评论等互动，别人不会知道你就是{ this.props.authorName }）</small>
         <button class={ 'sub' + (this.sending ? ' dis' : '') }
                 onClick={ this.clickNotEnter }>我放弃入驻</button>
       </div>

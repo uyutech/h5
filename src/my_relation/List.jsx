@@ -19,15 +19,17 @@ class List extends migi.Component {
     self.exist = {};
 
     if(data.count) {
-      self.offset = self.limit = data.limit;
+      self.offset = data.limit;
       let list = data.data.map(function(item) {
         return self.genItem(item);
       });
       self.list = list;
-      if(data.count > self.limit) {
+      if(data.count > data.limit) {
         window.addEventListener('scroll', function() {
           self.checkMore();
         });
+        self.message = '加载中...';
+        self.loadEnd = false;
       }
       else {
         self.loadEnd = true;
@@ -35,7 +37,9 @@ class List extends migi.Component {
       }
     }
     else {
+      self.offset = 0;
       self.message = '暂无数据';
+      self.loadEnd = true;
     }
   }
   genItem(item) {
@@ -66,10 +70,10 @@ class List extends migi.Component {
       self.ajax.abort();
     }
     self.loading = true;
-    self.ajax = $net.postJSON(self.url, { offset: self.offset, limit: self.limit, }, function(res) {
+    self.ajax = $net.postJSON(self.props.url, { offset: self.offset }, function(res) {
       if(res.success) {
         let data = res.data;
-        self.offset += self.limit;
+        self.offset += data.limit;
         if(data.data.length) {
           data.data.forEach(function(item) {
             if(self.exist[item.id]) {
@@ -81,7 +85,7 @@ class List extends migi.Component {
         }
         if(self.offset >= data.count) {
           self.loadEnd = true;
-          postList.message = '已经到底了';
+          self.message = '已经到底了';
         }
       }
       else {

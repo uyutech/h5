@@ -13,7 +13,7 @@ import Text from './Text.jsx';
 import Poster from './Poster.jsx';
 import Comments from './Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
-import BotFn from '../component/botfn/BotFn.jsx';
+import BotPanel from '../component/botpanel/BotPanel.jsx';
 import Background from '../component/background/Background.jsx';
 
 let currentPriority = 0;
@@ -258,56 +258,76 @@ class Works extends migi.Component {
   }
   share() {
     let self = this;
-    migi.eventBus.emit('BOT_FN', {
-      canShare: true,
-      canShareWb: true,
-      canShareLink: true,
-      clickShareWb: function(botFn) {
-        if(!self.data) {
-          return;
-        }
-        let url = window.ROOT_DOMAIN + '/works/' + self.id;
-        let text = '【';
-        if(self.data.info.title) {
-          text += self.data.info.title;
-        }
-        if(self.data.info.subTitle) {
-          if(self.data.info.subTitle) {
-            text += ' ';
-          }
-          text += self.data.info.subTitle;
-        }
-        text += '】';
-        if(self.data.info.author[0]) {
-          self.data.info.author[0].forEach((item) => {
-            item.list.forEach((author) => {
-              text += author.name + ' ';
+    let list = [
+      [
+        {
+          class: 'share',
+          name: '分享',
+          click: function(botPanel) {
+            if(!$util.isLogin()) {
+              migi.eventBus.emit('NEED_LOGIN');
+              return;
+            }
+            self.ref.media.shareIn();
+            botPanel.cancel();
+          },
+        },
+        {
+          class: 'wb',
+          name: '微博',
+          click: function(botPanel) {
+            if(!self.data) {
+              return;
+            }
+            let url = window.ROOT_DOMAIN + '/works/' + self.id;
+            let text = '【';
+            if(self.data.info.title) {
+              text += self.data.info.title;
+            }
+            if(self.data.info.subTitle) {
+              if(self.data.info.subTitle) {
+                text += ' ';
+              }
+              text += self.data.info.subTitle;
+            }
+            text += '】';
+            if(self.data.info.author[0]) {
+              self.data.info.author[0].forEach((item) => {
+                item.list.forEach((author) => {
+                  text += author.name + ' ';
+                });
+              });
+            }
+            text += '#转圈circling# ';
+            text += url;
+            jsBridge.shareWb({
+              text,
+            }, function(res) {
+              if(res.success) {
+                jsBridge.toast("分享成功");
+              }
+              else if(res.cancel) {
+                jsBridge.toast("取消分享");
+              }
+              else {
+                jsBridge.toast("分享失败");
+              }
             });
-          });
-        }
-        text += '#转圈circling# ';
-        text += url;
-        jsBridge.shareWb({
-          text,
-        }, function(res) {
-          if(res.success) {
-            jsBridge.toast("分享成功");
-          }
-          else if(res.cancel) {
-            jsBridge.toast("取消分享");
-          }
-          else {
-            jsBridge.toast("分享失败");
-          }
-        });
-        botFn.cancel();
-      },
-      clickShareLink: function(botFn) {
-        let url = window.ROOT_DOMAIN + '/works/' + self.id;
-        $util.setClipboard(url);
-        botFn.cancel();
-      },
-    });
+            botPanel.cancel();
+          },
+        },
+        {
+          class: 'link',
+          name: '复制链接',
+          click: function(botPanel) {
+            let url = window.ROOT_DOMAIN + '/works/' + self.id;
+            $util.setClipboard(url);
+            botPanel.cancel();
+          },
+        },
+      ]
+    ];
+    migi.eventBus.emit('BOT_PANEL', list);
     $net.statsAction(19, {
       id: self.id,
     });
@@ -344,7 +364,7 @@ class Works extends migi.Component {
                 readOnly={ true }
                 on-click={ this.comment }
                 on-share={ this.share }/>
-      <BotFn ref="botFn"/>
+      <BotPanel ref="botPanel"/>
     </div>;
   }
 }

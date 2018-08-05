@@ -17,6 +17,7 @@ let tag = search.tag;
 let worksId = parseInt(search.worksId);
 let workId = parseInt(search.workId);
 let cover = search.cover;
+let content = search.content;
 
 jsBridge.ready(function() {
   jsBridge.refreshState(false);
@@ -30,5 +31,6 @@ jsBridge.ready(function() {
     worksId,
     workId,
     cover,
+    content,
   });
 });

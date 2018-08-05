@@ -39,28 +39,33 @@ class List extends migi.Component {
         let $fn = $(this);
         let $li = $fn.closest('li');
         let id = parseInt($fn.attr('rel'));
-        migi.eventBus.emit('BOT_FN', {
-          canFn: true,
-          canDel: true,
-          clickDel: function(botFn) {
-            jsBridge.confirm('确认删除吗？', function(res) {
-              if(!res) {
-                botFn.cancel();
-                return;
-              }
-              $li.remove();
-              botFn.cancel();
-              for(let i = 0, len = self.list.length; i < len; i++) {
-                if(self.list[i].id === id) {
-                  let data = self.list.splice(i, 1);
-                  self.emit('del', data[0], self.list);
-                  jsBridge.setPreference('record', self.list);
-                  return;
-                }
-              }
-            });
-          },
-        });
+        let list = [
+          [
+            {
+              class: 'delete',
+              name: '删除',
+              click: function(botPanel) {
+                jsBridge.confirm('确认删除吗？', function(res) {
+                  if(!res) {
+                    botPanel.cancel();
+                    return;
+                  }
+                  $li.remove();
+                  botPanel.cancel();
+                  for(let i = 0, len = self.list.length; i < len; i++) {
+                    if(self.list[i].id === id) {
+                      let data = self.list.splice(i, 1);
+                      self.emit('del', data[0], self.list);
+                      jsBridge.setPreference('record', self.list);
+                      return;
+                    }
+                  }
+                });
+              },
+            }
+          ]
+        ];
+        migi.eventBus.emit('BOT_PANEL', list);
       });
     });
   }

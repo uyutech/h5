@@ -23,6 +23,13 @@ class sub_comment extends migi.Component {
           self.myInfo = my;
           self.isAuthor = my.author && my.author.length;
           if(self.isAuthor) {
+            if(my.author[0].settle === 1) {
+              self.headUrl = my.user.headUrl;
+              self.name = my.user.name;
+              self.useAuthor = false;
+              self.isAuthor = false;
+              return;
+            }
             jsBridge.getPreference('useAuthor', function(useAuthor) {
               self.useAuthor = useAuthor;
               if(useAuthor) {
