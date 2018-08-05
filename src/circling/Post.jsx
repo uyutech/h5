@@ -62,6 +62,7 @@ class Post extends migi.Component {
     if(ajax) {
       ajax.abort();
     }
+    first = false;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         try {

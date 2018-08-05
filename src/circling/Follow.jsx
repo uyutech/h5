@@ -74,6 +74,7 @@ class Follow extends migi.Component {
       migi.eventBus.emit('NEED_LOGIN');
       return;
     }
+    first = false;
     if(ajax) {
       ajax.abort();
     }

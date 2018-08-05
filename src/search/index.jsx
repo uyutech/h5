@@ -13,4 +13,5 @@ jsBridge.ready(function() {
   jsBridge.refreshState(false);
 
   let search = migi.preExist(<Search/>, '#page');
+  search.init();
 });

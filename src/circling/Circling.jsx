@@ -15,7 +15,7 @@ class Circling extends migi.Component {
     super(...data);
     let self = this;
     self._visible = self.props.visible;
-    self.index = 2;
+    self.index = 0;
     self.on(migi.Event.DOM, function() {
       self.init();
       migi.eventBus.on('IMAGE_VIEW', function() {
@@ -33,8 +33,8 @@ class Circling extends migi.Component {
   @bind index
   init() {
     let self = this;
-    self.ref.newest.init();
-    // self.ref.post.init();
+    // self.ref.newest.init();
+    self.ref.post.init();
   }
   refresh() {
     if(this.index === 0) {

@@ -47,7 +47,7 @@ class TagList extends migi.Component {
     (data || []).forEach(function(item) {
       s += self.genItem(item);
     });
-    $(self.ref.list.element).html(s);
+    $(self.ref.list.element).append(s);
   }
   clearData() {
     let self = this;

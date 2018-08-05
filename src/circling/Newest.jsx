@@ -4,7 +4,7 @@
 
 'use strict';
 
-import Banner from '../find/Banner.jsx';
+// import Banner from '../find/Banner.jsx';
 import PostList from '../component/postlist/PostList.jsx';
 
 let scrollY = 0;
@@ -21,7 +21,7 @@ let scroll;
 let lastVideo;
 let lastAudio;
 
-let timeout;
+let first = true;
 
 class Newest extends migi.Component {
   constructor(...data) {
@@ -49,12 +49,19 @@ class Newest extends migi.Component {
   set visible(v) {
     this._visible = v;
     $util.scrollY(scrollY);
+    if(v) {
+      if(first) {
+        first = false;
+        this.init();
+      }
+    }
   }
   init() {
     let self = this;
     if(ajax) {
       ajax.abort();
     }
+    first = false;
     jsBridge.getPreference(cacheKey, function(cache) {
       if(cache) {
         try {
@@ -95,8 +102,8 @@ class Newest extends migi.Component {
 
     let self = this;
 
-    let banner = self.ref.banner;
-    banner.setData(data.bannerList);
+    // let banner = self.ref.banner;
+    // banner.setData(data.bannerList);
 
     let postList = self.ref.postList;
     postList.setData(data.data);
@@ -245,7 +252,6 @@ class Newest extends migi.Component {
   }
   render() {
     return <div class={ 'mod-post2' + (this.visible ? '' : ' fn-hide') }>
-      <Banner ref="banner"/>
       <PostList ref="postList"
                 visible={ true }
                 message='正在加载...'

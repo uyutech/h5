@@ -9,7 +9,7 @@ import Background from '../component/background/Background.jsx';
 class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.index = 2;
+    this.index = 0;
   }
   @bind index
   click(e, vd, tvd) {

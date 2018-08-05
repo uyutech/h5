@@ -35,7 +35,7 @@ class UserList extends migi.Component {
     }
     let s = '';
     (data || []).forEach(function(item) {
-      s += self.genItem(item);
+      s += self.genItem(item) || '';
     });
     $(self.ref.list.element).html(s);
   }
@@ -46,7 +46,7 @@ class UserList extends migi.Component {
     }
     let s = '';
     (data || []).forEach(function(item) {
-      s += self.genItem(item);
+      s += self.genItem(item) || '';
     });
     $(self.ref.list.element).append(s);
   }
@@ -56,6 +56,9 @@ class UserList extends migi.Component {
     self.exist = {};
   }
   genItem(item) {
+    if(!item) {
+      return;
+    }
     return <li>
       <a href={ '/author.html?id=' + item.id }
          title={ item.name }>

@@ -24,7 +24,7 @@ class Search extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.type = 0;
+    self.type = 2;
     self.on(migi.Event.DOM, function() {
       window.addEventListener('scroll', function() {
         self.checkMore();
@@ -33,26 +33,8 @@ class Search extends migi.Component {
   }
   @bind value
   @bind type
-  change(e, vd) {
-    let self = this;
-    self.type = vd.element.value;
-    switch(self.type) {
-      case 0:
-        if(authorOffset === 0) {
-          self.load();
-        }
-        break;
-      case 1:
-        if(userOffset === 0) {
-          self.load();
-        }
-        break;
-      case 3:
-        if(tagOffset === 0) {
-          self.load();
-        }
-        break;
-    }
+  init() {
+    this.load();
   }
   submit(e) {
     e.preventDefault();
@@ -99,7 +81,9 @@ class Search extends migi.Component {
   load() {
     let self = this;
     let keyword = (self.value || '').trim();
-    if(!keyword) {
+    if(!keyword && self.type === 1) {
+      let $message = $(self.ref.message.element);
+      $message.removeClass('fn-hide empty');
       return;
     }
     if(ajax) {
@@ -241,6 +225,17 @@ class Search extends migi.Component {
     loading = false;
     let $message = $(self.ref.message.element);
     $message.removeClass('fn-hide empty');
+    self.ref.authorList.clearData();
+    self.ref.authorList.message = '';
+    self.ref.userList.clearData();
+    self.ref.userList.message = '';
+    self.ref.worksList.clearData();
+    self.ref.worksList.message = '';
+    self.ref.tagList.clearData();
+    self.ref.tagList.message = '';
+    authorOffset = userOffset = worksOffset = tagOffset = 0;
+    authorLoadEnd = userLoadEnd = worksLoadEnd = tagLoadEnd = loading = false;
+    self.load();
   }
   clickBack() {
     jsBridge.popWindow();
@@ -267,15 +262,17 @@ class Search extends migi.Component {
       </div>
       <ul class="type"
           onClick={ { li: this.clickType } }>
-        <li class={ this.type === 0 ? 'cur' : '' }
-            rel={ 0 }>作者</li>
-        <li class={ this.type === 1 ? 'cur' : '' }
-            rel={ 1 }>用户</li>
         <li class={ this.type === 2 ? 'cur' : '' }
             rel={ 2 }>作品</li>
+        <li class={ this.type === 0 ? 'cur' : '' }
+            rel={ 0 }>作者</li>
         <li class={ this.type === 3 ? 'cur' : '' }
-            rel={ 3 }>标签</li>
+            rel={ 3 }>话题</li>
+        <li class={ this.type === 1 ? 'cur' : '' }
+            rel={ 1 }>用户</li>
       </ul>
+      <p class={ this.type === 0 ? '' : 'fn-hide' }>最新入驻</p>
+      <p class={ this.type === 2 ? '' : 'fn-hide' }>最新上传</p>
       <div class="message"
            ref="message"/>
       <AuthorList ref="authorList"
