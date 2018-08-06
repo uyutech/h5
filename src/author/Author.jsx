@@ -14,6 +14,7 @@ import Background from '../component/background/Background.jsx';
 import BotPanel from '../component/botpanel/BotPanel.jsx';
 import Work from './Work.jsx';
 import Dynamics from './Dynamics.jsx';
+import ImageView from '../component/imageview/ImageView.jsx';
 
 let currentPriority = 0;
 let cacheKey;
@@ -63,6 +64,10 @@ class Author extends migi.Component {
       return;
     }
     currentPriority = priority;
+    if(data.user && data.user[0].type === 1 && data.user[0].settle <= 1) {
+      location.replace('/user.html?id=' + data.user[0].userId);
+      return;
+    }
 
     let self = this;
     self.data = data;
@@ -70,42 +75,12 @@ class Author extends migi.Component {
     let work = self.ref.work;
     let dynamics = self.ref.dynamics;
     let comments = self.ref.comments;
-    let skillWorks = self.ref.skillWorks;
-    let cooperation = self.ref.cooperation;
 
     nav.setData(data.info, data.aliases, data.outside, data.isFollow);
 
-    let showHome;
-    if(data.skillWorks && data.skillWorks.length) {
-      skillWorks.authorId = self.id;
-      skillWorks.list = data.skillWorks;
-      showHome = true;
-      self.showWorks = true;
-    }
-    else {
-      skillWorks.list = null;
-      self.showWorks = false;
-    }
-    if(data.cooperationList && data.cooperationList.count) {
-      cooperation.list = data.cooperationList.data;
-      self.showCooperation = true;
-      showHome = true;
-    }
-    else {
-      cooperation.list = null;
-      self.showCooperation = false;
-    }
-
-    if(showHome) {
-      self.showHome = true;
-      if(self.curColumn === undefined) {
-        self.curColumn = 0;
-      }
-    }
-
     if(data.workKindList && data.workKindList.length) {
       self.showWork = true;
-      work.setData(data.workKindList, data.kindWorkList);
+      work.setData(data.workKindList, data.skillWorks, self.id);
       if(self.curColumn === undefined) {
         self.curColumn = 1;
       }
@@ -213,8 +188,6 @@ class Author extends migi.Component {
            on-follow={ this.follow }/>
       <ul class="index"
           onClick={ { li: this.clickType } }>
-        <li class={ (this.showHome ? '' : 'fn-hide ') + (this.curColumn === 0 ? 'cur' : '') }
-            rel={ 0 }>主页</li>
         <li class={ (this.showWork ? '' : 'fn-hide ') + (this.curColumn === 1 ? 'cur' : '') }
             rel={ 1 }>作品</li>
         <li class={ (this.showDynamic ? '' : 'fn-hide ') + (this.curColumn === 2 ? 'cur' : '') }
@@ -222,18 +195,13 @@ class Author extends migi.Component {
         <li class={ (this.curColumn === 3 ? 'cur' : '') }
             rel={ 3 }>留言</li>
       </ul>
-      <div class={ 'home' + (this.curColumn === 0 ? '' : ' fn-hide') }>
-        <SkillWorks ref="skillWorks"
-                    @visible={ this.showWorks }/>
-        <Cooperation ref="cooperation"
-                     @visible={ this.showCooperation }/>
-      </div>
       <Work ref="work"
             @visible={ this.curColumn === 1 }/>
       <Dynamics ref="dynamics"
                 @visible={ this.curColumn === 2 }/>
       <Comments ref="comments"
                 @visible={ this.curColumn === 3 }/>
+      <ImageView ref="imageView"/>
       <InputCmt ref="inputCmt"
                 placeholder={ '发表评论...' }
                 readOnly={ true }

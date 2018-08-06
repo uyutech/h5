@@ -15,7 +15,12 @@ class BotPanel extends migi.Component {
         if(loading) {
           return;
         }
-        self.list = list;
+        if(Array.isArray(list[0])) {
+          self.list = list;
+        }
+        else {
+          self.list = [list];
+        }
         self.pop = true;
       });
       $(self.element).on('click', function(e) {

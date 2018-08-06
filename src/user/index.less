@@ -4,10 +4,56 @@
 
 @import '../common/var';
 @import '../component/background/index';
-@import './nav';
 @import '../component/postlist/index';
 @import '../component/botpanel/index';
 @import '../component/imageview/index';
+@import '../component/inputcmt/index';
+@import '../component/playlist/index';
+@import '../component/waterfall/index';
+@import '../component/videolist/index';
+@import './nav';
+@import '../author/work';
+@import '../author/comments';
+@import '../author/workslist';
 
 #page > .user{
+  .cp-videolist{
+    margin:0 0.1rem;
+  }
+  .cp-playlist{
+    margin:0 0.1rem;
+  }
+  .mod-workslist h4{
+    padding-left:0.15rem;
+  }
+  > .index{
+    display:flex;
+    justify-content:space-around;
+    height:0.4rem;
+    border-top:0.05rem solid #edf3f7;
+    li{
+      width:0.6rem;
+      position:relative;
+      margin:0 0.1rem;
+      height:0.4rem;
+      line-height:0.4rem;
+      color:#636365;
+      font-size:0.15rem;
+      text-align:center;
+      &.cur{
+        color:#8BBDE1;
+        &:after{
+          position:absolute;
+          left:50%;
+          bottom:0.03rem;
+          width:70%;
+          height:0.02rem;
+          background:#8BBDE1;
+          border-radius:0.02rem;
+          content:' ';
+          transform:translateX(-50%);
+        }
+      }
+    }
+  }
 }

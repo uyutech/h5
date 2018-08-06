@@ -11,10 +11,12 @@ class SkillWorks extends migi.Component {
     super(...data);
     let self = this;
     self.list = self.props.list;
+    self.visible = self.props.visible;
   }
+  @bind visible
   @bind list
   render() {
-    return <div class="mod-skillworks">
+    return <div class={ 'mod-skillworks' + (this.visible ? '' : ' fn-hide') }>
       {
         (this.list || []).map((item) => {
           return <WorksList data={ item } authorId={ this.authorId }/>;

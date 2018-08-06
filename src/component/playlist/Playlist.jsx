@@ -53,69 +53,71 @@ class Playlist extends migi.Component {
           let item = self.list[i];
           if(item.work.id === id) {
             let list = [
-              {
-                class: 'share',
-                name: '分享',
-                click: function(botPanel) {
-                  if(!$util.isLogin()) {
-                    migi.eventBus.emit('NEED_LOGIN');
-                    return;
-                  }
-                  botPanel.cancel();
-                  jsBridge.pushWindow('/sub_post.html?worksId=' + item.id
-                    + '&workId=' + id
-                    + '&cover=' + encodeURIComponent(item.work.cover || item.cover || ''), {
-                    title: '画个圈',
-                    optionMenu: '发布',
-                  });
+              [
+                {
+                  class: 'share',
+                  name: '分享',
+                  click: function(botPanel) {
+                    if(!$util.isLogin()) {
+                      migi.eventBus.emit('NEED_LOGIN');
+                      return;
+                    }
+                    botPanel.cancel();
+                    jsBridge.pushWindow('/sub_post.html?worksId=' + item.id
+                      + '&workId=' + id
+                      + '&cover=' + encodeURIComponent(item.work.cover || item.cover || ''), {
+                      title: '画个圈',
+                      optionMenu: '发布',
+                    });
+                  },
                 },
-              },
-              {
-                class: 'wb',
-                name: '微博',
-                click: function(botPanel) {
-                  let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
-                  let text = '【' + item.work.title;
-                  if(item.work.subTitle) {
-                    text += ' ' + item.work.subTitle;
-                  }
-                  text += '】';
-                  let hash = {};
-                  item.work.author.forEach((item) => {
-                    item.list.forEach((author) => {
-                      if(!hash[author.id]) {
-                        hash[author.id] = true;
-                        text += author.name + ' ';
+                {
+                  class: 'wb',
+                  name: '微博',
+                  click: function(botPanel) {
+                    let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
+                    let text = '【' + item.work.title;
+                    if(item.work.subTitle) {
+                      text += ' ' + item.work.subTitle;
+                    }
+                    text += '】';
+                    let hash = {};
+                    item.work.author.forEach((item) => {
+                      item.list.forEach((author) => {
+                        if(!hash[author.id]) {
+                          hash[author.id] = true;
+                          text += author.name + ' ';
+                        }
+                      });
+                    });
+                    text += ' #转圈circling# ';
+                    text += url;
+                    jsBridge.shareWb({
+                      text,
+                    }, function(res) {
+                      if(res.success) {
+                        jsBridge.toast("分享成功");
+                      }
+                      else if(res.cancel) {
+                        jsBridge.toast("取消分享");
+                      }
+                      else {
+                        jsBridge.toast("分享失败");
                       }
                     });
-                  });
-                  text += ' #转圈circling# ';
-                  text += url;
-                  jsBridge.shareWb({
-                    text,
-                  }, function(res) {
-                    if(res.success) {
-                      jsBridge.toast("分享成功");
-                    }
-                    else if(res.cancel) {
-                      jsBridge.toast("取消分享");
-                    }
-                    else {
-                      jsBridge.toast("分享失败");
-                    }
-                  });
-                  botPanel.cancel();
+                    botPanel.cancel();
+                  },
                 },
-              },
-              {
-                class: 'link',
-                name: '复制链接',
-                click: function(botPanel) {
-                  let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
-                  $util.setClipboard(url);
-                  botPanel.cancel();
-                },
-              }
+                {
+                  class: 'link',
+                  name: '复制链接',
+                  click: function(botPanel) {
+                    let url = window.ROOT_DOMAIN + '/works/' + item.id + '/' + id;
+                    $util.setClipboard(url);
+                    botPanel.cancel();
+                  },
+                }
+              ]
             ];
             migi.eventBus.emit('BOT_PANEL', list);
             break;

@@ -3,6 +3,26 @@
  */
 
 .mod-post2{
+  > .circle{
+    display:flex;
+    margin:0.1rem 0;
+    padding-left:0.15rem;
+    overflow-x:scroll;
+    transform:translateZ(0);
+    li{
+      flex-shrink:0;
+      margin-right:0.1rem;
+      text-align:center;
+      img{
+        display:block;
+        margin-bottom:0.05rem;
+        width:0.8rem;
+        height:0.8rem;
+        border-radius:100%;
+        box-shadow:0 0 0.04rem rgba(185, 217, 237, 0.7);
+      }
+    }
+  }
   > .works{
     padding:0.1rem 0;
     >li{

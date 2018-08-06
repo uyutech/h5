@@ -7,6 +7,7 @@
 import Playlist from '../component/playlist/Playlist.jsx';
 import VideoList from '../component/videolist/VideoList.jsx';
 import WaterFall from '../component/waterfall/WaterFall.jsx';
+import SkillWorks from './SkillWorks.jsx';
 
 const CACHE = {};
 
@@ -15,6 +16,7 @@ class Work extends migi.Component {
     super(...data);
     let self = this;
     self.visible = self.props.visible;
+    self.kind = 0;
     self.on(migi.Event.DATA, function(k) {
       if(k === 'visible') {
         self.ref.waterFall.pause = !self.visible || self.groupId !== 3;
@@ -28,44 +30,35 @@ class Work extends migi.Component {
   @bind visible
   @bind kind
   @bind kindList
+  @bind showAll
   // @bind id
-  setData(kindList, kindWorkList) {
+  setData(kindList, skillWorksData, authorId) {
     let self = this;
+    if(kindList[0] && kindList[0].kind === 0) {
+      kindList.splice(0, 1);
+    }
     self.kindList = kindList;
     kindList.forEach(function(item) {
       CACHE[item.kind] = {
         offset: 0,
       };
     });
-    if(!kindList[0]) {
-      return;
+    if(skillWorksData && skillWorksData.length) {
+      this.showAll = true;
     }
-    self.kind = kindList[0].kind;
-    let cache = CACHE[self.kind];
-    cache.limit = kindWorkList.limit;
-    cache.offset += kindWorkList.limit;
-    switch(self.kind) {
-      case 1:
-        self.ref.videoList.setData(kindWorkList.data);
-        if(cache.offset >= kindWorkList.count) {
-          cache.loadEnd = true;
-          self.ref.videoList.message = '已经到底了';
-        }
-        break;
-      case 2:
-        self.ref.playlist.setData(kindWorkList.data);
-        if(cache.offset >= kindWorkList.count) {
-          cache.loadEnd = true;
-          self.ref.playlist.message = '已经到底了';
-        }
-        break;
-      case 3:
-        self.ref.waterFall.setData(kindWorkList.data);
-        if(cache.offset >= kindWorkList.count) {
-          cache.loadEnd = true;
-          self.ref.waterFall.message = '已经到底了';
-        }
-        break;
+    else {
+      this.showAll = false;
+      this.kind = kindList[0].kind;
+      this.id = authorId;
+      this.load();
+    }
+    let skillWorks = self.ref.skillWorks;
+    if(skillWorksData && skillWorksData.length) {
+      skillWorks.authorId = authorId;
+      skillWorks.list = skillWorksData;
+    }
+    else {
+      skillWorks.list = null;
     }
   }
   clickClass(e, vd, tvd) {
@@ -75,7 +68,7 @@ class Work extends migi.Component {
     }
     self.kind = tvd.props.rel;
     let cache = CACHE[self.kind];
-    if(cache.offset === 0) {
+    if(cache && cache.offset === 0) {
       self.load();
     }
   }
@@ -101,7 +94,6 @@ class Work extends migi.Component {
       id: self.id,
       kind,
       offset: cache.offset,
-      limit: cache.limit
     }, function(res) {
       if(res.success) {
         let data = res.data;
@@ -140,46 +132,6 @@ class Work extends migi.Component {
       cache.loading = false;
     });
   }
-  fnSort(sort) {
-    let self = this;
-    let cache = CACHE[self.groupId];
-    cache.offset = 0;
-    cache.loading = false;
-    cache.loadEnd = false;
-    cache.sort = sort;
-    if(cache.ajax) {
-      cache.ajax.abort();
-    }
-    self.clear();
-    self.load();
-  }
-  fnType(typeId) {
-    let self = this;
-    let cache = CACHE[self.groupId];
-    cache.offset = 0;
-    cache.loading = false;
-    cache.loadEnd = false;
-    cache.typeId = typeId;
-    if(cache.ajax) {
-      cache.ajax.abort();
-    }
-    self.clear();
-    self.load();
-  }
-  clear() {
-    let self = this;
-    switch(self.groupId) {
-      case 1:
-        self.ref.videoList.clearData();
-        break;
-      case 2:
-        self.ref.playlist.clearData();
-        break;
-      case 3:
-        self.ref.waterFall.clearData();
-        break;
-    }
-  }
   change(data) {
     let work = data.work;
     work.worksId = data.id;
@@ -210,8 +162,10 @@ class Work extends migi.Component {
   }
   render() {
     return <div class={ 'mod-work' + (this.visible ? '' : ' fn-hide') }>
-      <ul class={ 'group' + (this.kind ? '' : ' fn-hide') }
+      <ul class="group"
           onClick={ { li: this.clickClass } }>
+        <li class={ (this.showAll ? '' : 'fn-hide ') + (0 === this.kind ? 'cur' : '') }
+            rel={ 0 }>全部</li>
         {
           (this.kind, this.kindList || []).map(function(item) {
             return <li class={ item.kind === this.kind ? 'cur' : '' }
@@ -219,6 +173,8 @@ class Work extends migi.Component {
           }.bind(this))
         }
       </ul>
+      <SkillWorks ref="skillWorks"
+                  @visible={ this.kind === 0 }/>
       <VideoList ref="videoList"
                  profession={ true }
                  message="正在加载..."
