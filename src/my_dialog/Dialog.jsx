@@ -10,65 +10,97 @@ class Dialog extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
+    self.list = [];
     self.exist = {};
     self.on(migi.Event.DOM, function() {
-      let $list = $(this.ref.list.element);
-      $list.on('click', '.link', function(e) {
-        e.preventDefault();
-        let $this = $(this);
-        let url = $this.attr('href');
-        let title = $this.attr('title');
-        let transparentTitle = $this.attr('transparentTitle') === 'true';
-        jsBridge.pushWindow(url, {
-          title,
-          transparentTitle,
-        });
-      });
-      $list.on('click', '.outside', function(e) {
-        e.preventDefault();
-        let url = $(this).attr('href');
-        jsBridge.confirm('即将前往站外链接，确定吗？', function(res) {
-          if(!res) {
-            return;
-          }
-          jsBridge.openUri(url);
-        });
-      });
+      // let $list = $(this.ref.list.element);
+      // $list.on('click', '.link', function(e) {
+      //   e.preventDefault();
+      //   let $this = $(this);
+      //   let url = $this.attr('href');
+      //   let title = $this.attr('title');
+      //   let transparentTitle = $this.attr('transparentTitle') === 'true';
+      //   jsBridge.pushWindow(url, {
+      //     title,
+      //     transparentTitle,
+      //   });
+      // });
+      // $list.on('click', '.outside', function(e) {
+      //   e.preventDefault();
+      //   let url = $(this).attr('href');
+      //   jsBridge.confirm('即将前往站外链接，确定吗？', function(res) {
+      //     if(!res) {
+      //       return;
+      //     }
+      //     jsBridge.openUri(url);
+      //   });
+      // });
     });
   }
   @bind message
+  @bind list
   setData(data) {
     let self = this;
-    self.clearData();
     if(!data) {
       return;
     }
     if(!Array.isArray(data)) {
       data = [data];
     }
-    let s = '';
+    data.reverse();
+    let l = [];
     data.forEach((item) => {
-      s += self.genItem(item) || '';
+      let o = self.genItem(item);
+      if(o) {
+        l.push(o);
+      }
     });
-    $(self.ref.list.element).html(s);
+    self.list = l;
+    self.ref.placeholder.element.scrollIntoView({
+      block: 'end',
+    });
+  }
+  prependData(data) {
+    let self = this;
+    if(!data) {
+      return;
+    }
+    if(!Array.isArray(data)) {
+      data = [data];
+    }
+    data.reverse();
+    let l = [];
+    data.forEach((item) => {
+      let o = self.genItem(item);
+      if(o) {
+        l.push(o);
+      }
+    });
+    self.list.splice(0, 0, ...l);
   }
   appendData(data) {
     let self = this;
-    self.clearData();
     if(!data) {
       return;
     }
     if(!Array.isArray(data)) {
       data = [data];
     }
-    let s = '';
+    let l = [];
     data.forEach((item) => {
-      s += self.genItem(item) || '';
+      let o = self.genItem(item);
+      if(o) {
+        l.push(o);
+      }
     });
-    $(self.ref.list.element).append(s);
+    self.list.push(...l);
+    self.ref.placeholder.element.scrollIntoView({
+      block: 'end',
+    });
   }
   clearData() {
     let self = this;
+    self.list = [];
     self.exist = {};
   }
   genItem(item) {
@@ -184,9 +216,10 @@ class Dialog extends migi.Component {
   }
   render() {
     return <div class="mod-dialog">
-      <ol class="list"
-          ref="list"/>
       <div class={ 'cp-message' + (this.message ? '' : ' fn-hide') } >{ this.message }</div>
+      <ol class="list"
+          ref="list">{ this.list }</ol>
+      <div class="placeholder" ref="placeholder"/>
     </div>;
   }
 }

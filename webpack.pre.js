@@ -34,6 +34,7 @@ module.exports = {
     music_album: './src/music_album/pre.jsx',
     image_album: './src/image_album/pre.jsx',
     config: './src/config/pre.jsx',
+    send_letter: './src/send_letter/pre.jsx',
     // shield: './src/shield/pre.jsx',
   },
   output: {

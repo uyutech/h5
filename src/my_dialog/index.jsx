@@ -13,6 +13,7 @@ import MyDialog from './MyDialog.jsx';
 
 let search = qs.parse(location.search.replace(/^\?/, ''));
 let id = search.id;
+let nickname = search.nickname;
 
 jsBridge.ready(function() {
   jsBridge.on('back', function(e) {
@@ -22,9 +23,10 @@ jsBridge.ready(function() {
       myDialog: id,
     });
   });
+  jsBridge.refreshState(false);
   let myDialog = migi.preExist(
     <MyDialog/>,
     '#page'
   );
-  myDialog.init(id);
+  myDialog.init(id, nickname);
 });

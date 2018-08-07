@@ -38,6 +38,7 @@ module.exports = {
     music_album: './src/music_album/index.jsx',
     image_album: './src/image_album/index.jsx',
     config: './src/config/index.jsx',
+    send_letter: './src/send_letter/index.jsx',
     // shield: './src/shield/index.jsx',
   },
   output: {

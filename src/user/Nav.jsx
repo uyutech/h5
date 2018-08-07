@@ -168,6 +168,27 @@ class Nav extends migi.Component {
       });
     }
   }
+  sendLetter() {
+    if(!$util.isLogin()) {
+      jsBridge.toast('请先登录');
+      return;
+    }
+    let self = this;
+    jsBridge.getPreference('my', function(my) {
+      if(my) {
+        if(my.user.id === self.id) {
+          jsBridge.toast('不能给自己发私信');
+          return;
+        }
+        jsBridge.pushWindow('/send_letter.html?id=' + self.id, {
+          title: '私信-' + self.nickname,
+        });
+      }
+      else {
+        jsBridge.toast('请先登录');
+      }
+    });
+  }
   render() {
     return <div class="mod-nav">
       <div class="profile">
@@ -180,7 +201,9 @@ class Nav extends migi.Component {
           </div>
           <p>uid: { (this.id ? this.id.toString() : '').replace(/^20180*/, '') }</p>
         </div>
-        <button class={ 's' + (this.isFollow ? '1' : '0') + (this.isFans ? '1' : '0') + (this.loading ? ' loading' : '') }
+        <button class="letter"
+                onClick={ this.sendLetter }>发私信</button>
+        <button class={ 'fr s' + (this.isFollow ? '1' : '0') + (this.isFans ? '1' : '0') + (this.loading ? ' loading' : '') }
                 onClick={ this.clickFollow }>{ FOLLOW_STATE[(this.isFollow ? '1' : '0') + (this.isFans ? '1' : '0')] }</button>
       </div>
       <ul class="num">

@@ -83,18 +83,14 @@ class Letter extends migi.Component {
         <small class="num">{ item.count || '' }</small>
       </a>
       <a class="txt"
-         href={ '/my_dialog.html?id=' + item.userId }
+         href={ '/my_dialog.html?id=' + item.userId + '&nickname=' + encodeURIComponent((item.user || {}).nickname) }
          title={ '和' + (item.user || {}).nickname + '的私信对话' }>
         <span class="name">{ (item.user || {}).nickname }</span>
         <p class="content">{ (item.letter || {}).content }</p>
       </a>
       <div class="info">
         <span class="time">{ $util.formatDate(item.updateTime) }</span>
-        {
-          item.typeName
-            ? <span class="type">{ item.typeName }</span>
-            : ''
-        }
+        <span class="type">{ item.letter.type === 1 ? '系统消息' : '私信' }</span>
       </div>
     </li>;
   }

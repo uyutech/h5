@@ -5,6 +5,7 @@
 'use strict';
 
 import Dialog from './Dialog.jsx';
+import InputCmt from '../component/inputcmt/InputCmt.jsx';
 
 let offset = 0;
 let loading;
@@ -14,13 +15,24 @@ let ajax;
 class MyDialog extends migi.Component {
   constructor(...data) {
     super(...data);
+    let self = this;
+    self.on(migi.Event.DOM, function() {
+      jsBridge.on('resume', function(e) {
+        if(e && e.data && e.data.sendLetter) {
+          e.data.data.isOwn = true;
+          e.data.data.userInfo = self.userInfo;
+          self.ref.dialog.appendData(e.data.data);
+        }
+      });
+    });
   }
-  init(id) {
+  init(id, nickname) {
     let self = this;
     if(ajax) {
       ajax.abort();
     }
     self.id = id;
+    self.nickname = nickname;
     ajax = $net.postJSON('/h5/my/dialogList', { id: self.id }, function(res) {
       if(res.success) {
         let data = res.data;
@@ -43,6 +55,7 @@ class MyDialog extends migi.Component {
     let self = this;
     let dialog = self.ref.dialog;
     data.data.forEach((item) => {
+      self.userInfo = self.userINfo || data.userInfo;
       item.userInfo = data.userInfo;
       item.targetInfo = data.targetInfo;
     });
@@ -54,7 +67,7 @@ class MyDialog extends migi.Component {
     }
     else if(offset >= data.count) {
       loadEnd = true;
-      dialog.message = '已经到底了';
+      dialog.message = '已经到顶了';
     }
   }
   checkMore() {
@@ -62,7 +75,7 @@ class MyDialog extends migi.Component {
     if(loading || loadEnd) {
       return;
     }
-    if($util.isBottom()) {
+    if($util.isTop()) {
       self.load();
     }
   }
@@ -84,7 +97,7 @@ class MyDialog extends migi.Component {
         offset += data.limit;
         if(offset >= data.count) {
           loadEnd = true;
-          dialog.message = '已经到底了';
+          dialog.message = '已经到顶了';
         }
       }
       else {
@@ -96,10 +109,20 @@ class MyDialog extends migi.Component {
       loading = false;
     });
   }
+  comment() {
+    let self = this;
+    jsBridge.pushWindow('/send_letter.html?id=' + self.id, {
+      title: '私信-' + self.nickname,
+    });
+  }
   render() {
     return <div class="my-dialog">
       <Dialog ref="dialog"
               message={ '正在加载...' }/>
+      <InputCmt ref="inputCmt"
+                placeholder={ '回复私信...' }
+                readOnly={ true }
+                on-click={ this.comment }/>
     </div>;
   }
 }

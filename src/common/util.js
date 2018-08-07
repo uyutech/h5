@@ -151,6 +151,11 @@ let util = {
     document.body.removeChild(input);
     jsBridge.toast('复制成功');
   },
+  isTop: function(offset) {
+    offset = offset || 30;
+    let y = this.scrollY();
+    return y <= offset;
+  },
   isBottom: function(offset) {
     offset = offset || 30;
     let y = this.scrollY();
