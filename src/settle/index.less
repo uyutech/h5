@@ -1,0 +1,105 @@
+/**
+ * Created by army8735 on 2018/8/8.
+ */
+
+#page{
+  display:flex;
+  flex-direction:column;
+  padding:0.2rem 0;
+  > .settle{
+    flex: 1;
+    display:flex;
+    flex-direction:column;
+  }
+}
+
+h2{
+  margin-top:0.1rem;
+  font-size:0.23rem;
+  text-align:center;
+  font-weight:400;
+}
+h4{
+  font-size:0.16rem;
+  opacity:0.6;
+  text-align:center;
+  line-height:1.8;
+  font-weight:400;
+}
+.sub{
+  margin:0 auto;
+  display:block;
+  width:2.7rem;
+  height:0.4rem;
+  background:#8BBDE1;
+  border:none;
+  color:#FFF;
+  border-radius:0.2rem;
+  font-size:0.15rem;
+  &.dis{
+    background:#EDF3F7;
+  }
+}
+
+.step0,.step1{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  .icon{
+    margin:0 auto 0.1rem;
+    display:block;
+    width:1.72rem;
+    height:1.79rem;
+    background:url(//zhuanquan.xin/img/31b199a310f118bdc8ce1d839a116b75.png) no-repeat center;
+    background-size:contain;
+  }
+  p{
+    margin:0.05rem 0.15rem 0;
+    font-size:0.14rem;
+    opacity:0.6;
+    text-align:center;
+  }
+  .name{
+    margin:0.2rem auto;
+    display:block;
+    width:2.7rem;
+    height:0.4rem;
+    border:1px solid #8BBDE1;
+    border-radius:0.1rem;
+    text-align:center;
+    color:#555;
+    font-size:0.14rem;
+    &::placeholder{
+      color:#8BBDE1;
+    }
+  }
+  .list{
+    flex:1;
+    margin:0.1rem auto;
+    width:2.94rem;
+    transform:translateX(0.05rem);
+    li{
+      display:inline-block;
+      margin-right:0.1rem;
+      margin-top:0.1rem;
+      padding:0 0.1rem;
+      width:0.88rem;
+      height:0.34rem;
+      line-height:0.34rem;
+      box-sizing:border-box;
+      text-align:center;
+      color:#8BBDE1;
+      border:1px solid #8BBDE1;
+      border-radius:0.17rem;
+      overflow:hidden;
+      font-size:0.14rem;
+      &.checked{
+        color:#fff;
+        background:#8BBDE1;
+      }
+    }
+  }
+  button{
+    margin-top:0.1rem;
+  }
+}

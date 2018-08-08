@@ -39,6 +39,7 @@ module.exports = {
     image_album: './src/image_album/index.jsx',
     config: './src/config/index.jsx',
     send_letter: './src/send_letter/index.jsx',
+    settle: './src/settle/index.jsx',
     // shield: './src/shield/index.jsx',
   },
   output: {

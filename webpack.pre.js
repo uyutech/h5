@@ -35,6 +35,7 @@ module.exports = {
     image_album: './src/image_album/pre.jsx',
     config: './src/config/pre.jsx',
     send_letter: './src/send_letter/pre.jsx',
+    settle: './src/settle/pre.jsx',
     // shield: './src/shield/pre.jsx',
   },
   output: {

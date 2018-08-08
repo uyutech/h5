@@ -64,7 +64,7 @@ class Author extends migi.Component {
       return;
     }
     currentPriority = priority;
-    if(data.user && data.user[0].type === 1 && data.user[0].settle <= 1) {
+    if(data.user && data.user[0] && data.user[0].type === 1 && data.user[0].settle <= 1) {
       location.replace('/user.html?id=' + data.user[0].userId);
       return;
     }

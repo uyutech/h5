@@ -9,7 +9,15 @@ let uploading;
 class Nav extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.checkIn = {};
+    let self = this;
+    self.checkIn = {};
+    self.on(migi.Event.DOM, function() {
+      jsBridge.on('resume', function(e) {
+        if(e && e.data && e.data.settle && e.data.authorId) {
+          self.authorId = e.data.authorId;
+        }
+      });
+    });
   }
   @bind userId
   @bind nickname
@@ -27,6 +35,8 @@ class Nav extends migi.Component {
     data = data || {};
     author = author || {};
     let self = this;
+    self.data = data;
+    self.author = author;
     self.userId = data.id;
     self.headUrl = data.headUrl;
     self.nickname = data.nickname;
@@ -226,9 +236,16 @@ class Nav extends migi.Component {
     });
   }
   clickAuthor() {
-    jsBridge.pushWindow('/author.html?id=' + this.authorId, {
-      transparentTitle: true,
-    });
+    if(this.authorId) {
+      jsBridge.pushWindow('/author.html?id=' + this.authorId, {
+        transparentTitle: true,
+      });
+    }
+    else {
+      jsBridge.pushWindow('/settle.html', {
+        transparentTitle: true,
+      });
+    }
   }
   clickFollow() {
     jsBridge.pushWindow('/my_relation.html?tag=' + 1, {
@@ -283,8 +300,8 @@ class Nav extends migi.Component {
         </div>
         <button class={ this.userId ? '' : ' fn-hide' }
                 onClick={ this.clickPersonal }>个人主页</button>
-        <button class={ 'author' + (this.authorId ? '' : ' fn-hide') }
-                onClick={ this.clickAuthor }>作者主页</button>
+        <button class={ 'author' + (this.userId ? '' : ' fn-hide') }
+                onClick={ this.clickAuthor }>{ this.authorId ? '作者主页' : '申请作者' }</button>
       </div>
       <ul class="num">
         <li onClick={ this.clickFollow }>关注<strong>{ this.followPersonCount || 0 }</strong></li>

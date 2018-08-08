@@ -2,6 +2,8 @@
  * Created by army on 2017/4/18.
  */
 
+'use strict';
+
 import qs from 'anima-querystring';
 
 import './guide.html';
