@@ -24,6 +24,7 @@ class MallPrize extends migi.Component {
   @bind address
   @bind freePost
   @bind loading
+  @bind message
   init() {
     let self = this;
     jsBridge.getPreference(cacheKey, function(cache) {
@@ -90,7 +91,11 @@ class MallPrize extends migi.Component {
         return;
       }
       self.loading = true;
-      $net.postJSON('/h5/mall/applyExpressList', { ids, addressId: self.address.id }, function(res) {
+      $net.postJSON('/h5/mall/applyExpressList', {
+        ids,
+        addressId: self.address.id,
+        message: self.message,
+      }, function(res) {
         if(res.success) {
           jsBridge.delPreference(cacheKey);
           location.replace('/mall_express.html');
@@ -106,7 +111,7 @@ class MallPrize extends migi.Component {
     });
   }
   render() {
-    return <div class="mall-new">
+    return <div class="mall-prize">
       <ul class="type">
         <li><a href="/mall.html">圈商城</a></li>
         <li>我的福利</li>
@@ -143,6 +148,7 @@ class MallPrize extends migi.Component {
           });
         } }>如何获取免邮？</p>
       </div>
+      <textarea placeholder="填写发货留言（可为空）">{ this.message }</textarea>
       <button disabled={ !this.freePost || !this.address || this.loading }
               onClick={ this.sub }>申请发货</button>
     </div>;
