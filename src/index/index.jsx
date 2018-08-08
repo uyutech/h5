@@ -100,7 +100,7 @@ jsBridge.ready(function() {
         old = true;
       }
       else {
-        if(patch < 1) {
+        if(patch < 2) {
           old = true;
         }
       }
@@ -116,7 +116,7 @@ jsBridge.ready(function() {
       <a class="notice" href="#" onClick={ function(e) {
         e.preventDefault();
         let url = jsBridge.android
-          ? 'https://circling.net.cn/android/circling-0.7.1.apk'
+          ? 'https://circling.net.cn/android/circling-0.7.2.apk'
           : 'https://itunes.apple.com/cn/app/id1331367220';
         jsBridge.openUri(url);
       } }>您的app版本过低，考虑到功能和体验，请点击下载更新</a>

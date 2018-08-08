@@ -75,7 +75,7 @@ class Work extends migi.Component {
   checkMore() {
     let self = this;
     let cache = CACHE[self.kind];
-    if(!self.visible || cache.loading || cache.loadEnd) {
+    if(!self.visible || !cache || cache.loading || cache.loadEnd) {
       return;
     }
     if($util.isBottom()) {
