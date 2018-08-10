@@ -86,9 +86,6 @@ class Settle extends migi.Component {
     let skill = this.list.map((item) => {
       return item.id;
     });
-    let skillName = this.list.map((item) => {
-      return item.name;
-    });
     $net.postJSON('/h5/guide/setSettle', {
       skill,
       name: self.authorName,
