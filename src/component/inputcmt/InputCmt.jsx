@@ -15,7 +15,7 @@ class InputCmt extends migi.Component {
       jsBridge.getPreference('my', function(my) {
         if(my) {
           jsBridge.getPreference('useAuthor', function(useAuthor) {
-            if(useAuthor) {
+            if(useAuthor && my.author && my.author.length) {
               self.headUrl = my.author[0].headUrl;
             }
             else if(my) {

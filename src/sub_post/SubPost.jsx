@@ -20,7 +20,13 @@ class SubPost extends migi.Component {
     if(this.index === tvd.props.rel) {
       return;
     }
-    this.index = tvd.props.rel
+    this.index = tvd.props.rel;
+    if(this.index === 0) {
+      jsBridge.setOptionMenu('发布');
+    }
+    else {
+      jsBridge.setOptionMenu('');
+    }
   }
   render() {
     return <div class="sub-post">
