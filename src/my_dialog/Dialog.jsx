@@ -127,7 +127,6 @@ class Dialog extends migi.Component {
              title={ userInfo.nickname }>{ userInfo.nickname }</a>
           <small class="time"
                  rel={ item.createTime }>{ $util.formatDate(item.createTime) }</small>
-          <small class="state">{ item.isOwn ? '' : (item.isRead ? '已读' : '未读') }</small>
         </div>
       </div>
       <div class="wrap">
@@ -202,7 +201,6 @@ class Dialog extends migi.Component {
           if(res.success) {
             list.forEach((item) => {
               item.classList.add('read');
-              item.querySelector('.state').textContent = '已读';
             });
           }
           else {
