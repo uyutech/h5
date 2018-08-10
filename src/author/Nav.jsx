@@ -28,9 +28,6 @@ class Nav extends migi.Component {
               class: 'wb',
               name: '微博',
               click: function(botPanel) {
-                if(!self.data) {
-                  return;
-                }
                 let url = window.ROOT_DOMAIN + '/author/' + self.id;
                 let text = '来欣赏【' + self.name + '】的作品吧~ ';
                 text += '#转圈circling# ';
@@ -55,9 +52,6 @@ class Nav extends migi.Component {
               class: 'link',
               name: '复制链接',
               click: function(botPanel) {
-                if(!self.data) {
-                  return;
-                }
                 $util.setClipboard(window.ROOT_DOMAIN + '/author/' + self.id);
                 botPanel.cancel();
               },

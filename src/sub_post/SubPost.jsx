@@ -7,10 +7,34 @@
 import Post from './Post.jsx';
 import Article from './Article.jsx';
 
+let myInfo;
+
 class SubPost extends migi.Component {
   constructor(...data) {
     super(...data);
-    this.index = 0;
+    let self = this;
+    self.index = 0;
+    self.on(migi.Event.DOM, function() {
+      jsBridge.getPreference('my', function(my) {
+        if(my) {
+          myInfo = my;
+        }
+      });
+      jsBridge.on('resume', function(e) {
+        if(e.data) {console.log(e.data);
+          if(e.data.settle) {
+            jsBridge.getPreference('my', function(cache) {
+              if(cache) {
+                cache.user = e.data.data.user;
+                cache.author = e.data.data.author;
+                myInfo = cache;
+                jsBridge.setPreference('my', cache);
+              }
+            });
+          }
+        }
+      });
+    });
   }
   @bind index
   init(data) {
@@ -19,6 +43,16 @@ class SubPost extends migi.Component {
   click(e, vd, tvd) {
     if(this.index === tvd.props.rel) {
       return;
+    }
+    if(tvd.props.rel === 1 && myInfo) {
+      let user = myInfo.user;
+      let author = myInfo.author;
+      if(!user || user.regState < 100 || !author || !author[0]) {
+        jsBridge.pushWindow('/settle.html', {
+          title: '申请作者',
+        });
+        return;
+      }
     }
     this.index = tvd.props.rel;
     if(this.index === 0) {

@@ -251,7 +251,7 @@ class User extends migi.Component {
             rel={ 2 }>画圈</li>
         <li class={ (this.showWork ? '' : 'fn-hide ') + (this.curColumn === 1 ? 'cur' : '') }
             rel={ 1 }>作品</li>
-        <li class={ (this.curColumn === 3 ? 'cur' : '') }
+        <li class={ (this.showComment ? '' : 'fn-hide ') + (this.curColumn === 3 ? 'cur' : '') }
             rel={ 3 }>留言</li>
       </ul>
       <Work ref="work"
@@ -262,7 +262,7 @@ class User extends migi.Component {
                 message={ '正在加载...' }
                 @visible={ this.curColumn === 2 }/>
       <Comments ref="comments"
-                @visible={ this.curColumn === 3 }/>
+                @visible={ this.showComment && this.curColumn === 3 }/>
       <ImageView ref="imageView"/>
       {
         this.showComment

@@ -13,8 +13,8 @@ class Nav extends migi.Component {
     self.checkIn = {};
     self.on(migi.Event.DOM, function() {
       jsBridge.on('resume', function(e) {
-        if(e && e.data && e.data.settle && e.data.authorId) {
-          self.authorId = e.data.authorId;
+        if(e && e.data && e.data.settle) {
+          self.authorId = e.data.author[0].id;
         }
       });
     });
@@ -243,7 +243,7 @@ class Nav extends migi.Component {
     }
     else {
       jsBridge.pushWindow('/settle.html', {
-        transparentTitle: true,
+        title: '申请作者',
       });
     }
   }
@@ -269,7 +269,7 @@ class Nav extends migi.Component {
           num: res.data,
           state: true,
         };
-        jsBridge.toast(`转圈打卡第${res.data}天，圈儿奉上圈币10枚！转得开心哦！`);
+        jsBridge.toast(`转圈打卡第${res.data}天，圈儿奉上圈币10枚！`);
         self.emit('incrementCoins', 10);
       }
       else {

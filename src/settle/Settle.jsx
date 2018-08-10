@@ -6,6 +6,7 @@
 
 import Step0 from './Step0.jsx';
 import Step1 from './Step1.jsx';
+import Step2 from './Step2.jsx';
 
 let ajax;
 let cacheKey = 'settle';
@@ -55,7 +56,7 @@ class Settle extends migi.Component {
     if(priority < currentPriority) {
       return;
     }
-    currentPriority = priority;console.log(data.author);
+    currentPriority = priority;
 
     let self = this;
     let step0 = self.ref.step0;
@@ -63,14 +64,22 @@ class Settle extends migi.Component {
     step0.list = data.allSkills;
     if(data.author && data.author[0]) {
       step1.authorName = data.author[0].name;
-      step1.input();
     }
+    else {
+      step1.authorName = data.user.nickname;
+    }
+    step1.input();
   }
   next(list) {
     this.list = list;
     this.index = 1;
+    this.ref.step2.lsit = list;
   }
-  sub(name) {
+  next2(name) {
+    this.authorName = name;
+    this.index = 2;
+  }
+  sub() {
     let self = this;
     let step1 = self.ref.step1;
     step1.enable = false;
@@ -82,16 +91,13 @@ class Settle extends migi.Component {
     });
     $net.postJSON('/h5/guide/setSettle', {
       skill,
-      name,
+      name: self.authorName,
     }, function(res) {
       if(res.success) {
         let data = res.data;
-        jsBridge.toast('恭喜你获得了转圈作者身份，并点亮了' + skillName.join('、') + '技能点~\n' +
-          '你可以去右下角“我的”中进入你的主页进行相关编辑操作！\n' +
-          '也欢迎登录网页端上传你的作品，增加相应的技能点！');
         jsBridge.popWindow({
           settle: true,
-          authorId: data.authorId,
+          data,
         });
       }
       else {
@@ -109,8 +115,11 @@ class Settle extends migi.Component {
              on-next={ this.next }
              @visible={ this.index === 0 }/>
       <Step1 ref="step1"
-             on-next={ this.sub }
+             on-next={ this.next2 }
              @visible={ this.index === 1 }/>
+      <Step2 ref="step2"
+             on-next={ this.sub }
+             @visible={ this.index === 2 }/>
     </div>;
   }
 }

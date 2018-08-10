@@ -180,6 +180,15 @@ class PostList extends migi.Component {
                   title: '画圈',
                 });
               },
+            },
+            {
+              class: 'link',
+              name: '复制链接',
+              click: function(botPanel) {
+                let url = window.ROOT_DOMAIN + '/post/' + id;
+                $util.setClipboard(url);
+                botPanel.cancel();
+              },
             }
           ]
         ];

@@ -41,7 +41,7 @@ class Step0 extends migi.Component {
     this.emit('next', list);
   }
   render() {
-    return <div class={ 'step0' + (this.visible ? '' : ' fn-hide') }>
+    return <div class={ 'step' + (this.visible ? '' : ' fn-hide') }>
       <b class="icon"/>
       <p>欢迎使用转圈约稿功能~在发布第一个约稿之前，请简单介绍一下自己吧！</p>
       <p>请问你希望点亮下列哪一种技能点呢？不论是已经具备的技能，还是想要学习、尝试的技能都可以哦！</p>

@@ -22,12 +22,12 @@ class Step0 extends migi.Component {
     this.emit('next', this.authorName);
   }
   render() {
-    return <div class={ 'step1' + (this.visible ? '' : ' fn-hide') }>
+    return <div class={ 'step' + (this.visible ? '' : ' fn-hide') }>
       <b class="icon"/>
       <h4>请问你的笔名是？</h4>
       <input type="text"
              class="name"
-             placeholder="不得少于2个字哦~"
+             placeholder="请输入2~8个字哦~"
              maxLength="8"
              onInput={ this.input }
              value={ this.authorName }/>

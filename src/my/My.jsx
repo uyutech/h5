@@ -33,6 +33,15 @@ class My extends migi.Component {
           else if(e.data.guide || e.data.login) {
             self.init();
           }
+          else if(e.data.settle) {
+            jsBridge.getPreference(cacheKey, function(cache) {
+              if(cache) {
+                cache.user = e.data.user;
+                cache.author = e.data.author;
+                jsBridge.setPreference(cacheKey, cache);
+              }
+            });
+          }
         }
       });
     });
