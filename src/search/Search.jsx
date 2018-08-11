@@ -8,6 +8,7 @@ import AuthorList from '../component/authorlist/AuthorList.jsx';
 import UserList from '../component/userlist/UserList.jsx';
 import WorksList from '../component/workslist/WorksList.jsx';
 import TagList from '../component/taglist/TagList.jsx';
+import CircleList from '../component/circlelist/CircleList.jsx';
 
 let loading;
 let ajax;
@@ -19,12 +20,14 @@ let worksOffset = 0;
 let worksLoadEnd;
 let tagOffset = 0;
 let tagLoadEnd;
+let circleOffset = 0;
+let circleLoadEnd;
 
 class Search extends migi.Component {
   constructor(...data) {
     super(...data);
     let self = this;
-    self.type = 2;
+    self.type = 4;
     self.on(migi.Event.DOM, function() {
       window.addEventListener('scroll', function() {
         self.checkMore();
@@ -39,8 +42,8 @@ class Search extends migi.Component {
   submit(e) {
     e.preventDefault();
     let self = this;
-    authorOffset = userOffset = worksOffset = tagOffset = 0;
-    authorLoadEnd = userLoadEnd = worksLoadEnd = tagLoadEnd = loading = false;
+    authorOffset = userOffset = worksOffset = tagOffset = circleOffset = 0;
+    authorLoadEnd = userLoadEnd = worksLoadEnd = tagLoadEnd = circleLoadEnd = loading = false;
     self.ref.authorList.clearData();
     self.ref.authorList.message = '正在加载...';
     self.ref.userList.clearData();
@@ -49,6 +52,8 @@ class Search extends migi.Component {
     self.ref.worksList.message = '正在加载...';
     self.ref.tagList.clearData();
     self.ref.tagList.message = '正在加载...';
+    self.ref.circleList.clearData();
+    self.ref.circleList.message = '正在加载...';
     self.load();
   }
   checkMore() {
@@ -75,6 +80,11 @@ class Search extends migi.Component {
             self.load();
           }
           break;
+        case 4:
+          if(!loading && !circleLoadEnd) {
+            self.load();
+          }
+          break;
       }
     }
   }
@@ -97,6 +107,7 @@ class Search extends migi.Component {
     let userList = self.ref.userList;
     let worksList = self.ref.worksList;
     let tagList = self.ref.tagList;
+    let circleList = self.ref.circleList;
     let offset = 0;
     switch(type) {
       case 0:
@@ -141,6 +152,17 @@ class Search extends migi.Component {
         tagList.message = '正在加载...';
         url = '/h5/search/tag';
         offset = tagOffset;
+        break;
+      case 4:
+        if(circleLoadEnd) {
+          if(circleOffset === 0) {
+            $message.removeClass('fn-hide').addClass('empty');
+          }
+          return;
+        }
+        circleList.message = '正在加载...';
+        url = '/h5/search/circle';
+        offset = circleOffset;
         break;
     }
 
@@ -205,6 +227,20 @@ class Search extends migi.Component {
               tagLoadEnd = true;
             }
             break;
+          case 4:
+            circleList.appendData(data.data);
+            circleOffset += data.count ? data.limit : 0;
+            if(data.count === 0) {
+              userList.message = '';
+              $message.removeClass('fn-hide');
+              $message.addClass('empty');
+              circleLoadEnd = true;
+            }
+            else if(circleOffset >= data.count) {
+              circleList.message = '已经到底了';
+              circleOffset = true;
+            }
+            break;
         }
       }
       else {
@@ -262,6 +298,8 @@ class Search extends migi.Component {
       </div>
       <ul class="type"
           onClick={ { li: this.clickType } }>
+        <li class={ this.type === 4 ? 'cur' : '' }
+            rel={ 4 }>圈子</li>
         <li class={ this.type === 2 ? 'cur' : '' }
             rel={ 2 }>作品</li>
         <li class={ this.type === 0 ? 'cur' : '' }
@@ -275,6 +313,8 @@ class Search extends migi.Component {
       <p class={ this.type === 2 ? '' : 'fn-hide' }>最新上传</p>
       <div class="message"
            ref="message"/>
+      <CircleList ref="circleList"
+                  @visible={ this.type === 4 }/>
       <AuthorList ref="authorList"
                   @visible={ this.type === 0 }/>
       <UserList ref="userList"

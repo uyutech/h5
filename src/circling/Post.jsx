@@ -57,6 +57,7 @@ class Post extends migi.Component {
       }
     }
   }
+  @bind circleList
   init() {
     let self = this;
     if(ajax) {
@@ -104,6 +105,7 @@ class Post extends migi.Component {
     currentPriority = priority;
 
     let self = this;
+    self.circleList = data.circleList;
 
     let banner = self.ref.banner;
     banner.setData(data.bannerList);
@@ -316,6 +318,12 @@ class Post extends migi.Component {
     }, 500);
   }
   clickCircle(e, vd, tvd) {
+    if(tvd.props.class === 'all') {
+      jsBridge.pushWindow('/search.html', {
+        title: '搜索',
+      });
+      return;
+    }
     let title = tvd.find('span').element.textContent;
     jsBridge.pushWindow('/circle.html?id=' + tvd.props.rel, {
       title,
@@ -326,22 +334,15 @@ class Post extends migi.Component {
       <Banner ref="banner"/>
       <ul class="circle"
           onClick={ { li: this.clickCircle } }>
-        <li rel={ 2019000000008345 }>
-          <img src="//zhuanquan.xyz/temp/52241cc1e454f0a49ff4506443149302.png-160_160_80"/>
-          <span>合作圈</span>
-        </li>
-        <li rel={ 2019000000000001 }>
-          <img src="//zhuanquan.xyz/temp/4ec79947e068b21fbef207a825cb53c0.jpg-160_160_80"/>
-          <span>音乐圈</span>
-        </li>
-        <li rel={ 2019000000000015 }>
-          <img src="//zhuanquan.xyz/temp/a90520ad2270e08c943f1089c2ddbad3.jpg-160_160_80"/>
-          <span>美图圈</span>
-        </li>
-        <li rel={ 2019000000000072 }>
-          <img src="//zhuanquan.xyz/temp/206944362384abfed762ab94c1975fa1.jpg-160_160_80"/>
-          <span>古风圈</span>
-        </li>
+        {
+          (this.circleList || []).map((item) => {
+            return <li rel={ item.id }>
+              <img src={ $util.img(item.cover, 160, 160, 80) || '/src/common/blank.png' }/>
+              <span>{ item.name }圈</span>
+            </li>;
+          })
+        }
+        <li class="all">全部</li>
       </ul>
       <PostList ref="postList"
                 visible={ true }

@@ -1,0 +1,29 @@
+/**
+ * Created by army8735 on 2018/8/11.
+ */
+
+.cp-circlelist{
+  ul{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:flex-start;
+  }
+  li{
+    margin-right:5%;
+    margin-bottom:0.1rem;
+    width:30%;
+    overflow:hidden;
+    text-align:center;
+    &:nth-child(3n){
+      margin-right:0;
+    }
+  }
+  img{
+    display:block;
+    margin:0 auto 0.05rem;
+    width:0.8rem;
+    height:0.8rem;
+    border-radius:100%;
+    box-shadow:0 0 0.04rem rgba(185, 217, 237, 0.7);
+  }
+}

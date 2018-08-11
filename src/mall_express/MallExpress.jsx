@@ -78,7 +78,7 @@ class MallExpress extends migi.Component {
         <li><a href="/mall_prize.html">我的福利</a></li>
         <li>等待收货</li>
       </ul>
-      <p>考虑到小伙伴们寒假的地址和开学以后的地址不相同以及春节快递停止发货。所以发货将于3月份开始，在此之间，发货功能将被锁定。具体发货时间将会在转圈微博通知，请小伙伴谅解。</p>
+      <p>福利将在福利状态变为【已发货】后的7个工作日内发出，请圈友们在兑换之后耐心等待收货~</p>
       <ul class="list"
           onClick={ { 'button': this.click } }>
         {

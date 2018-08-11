@@ -128,7 +128,7 @@ class MallPrize extends migi.Component {
           })
         }
       </ul>
-      <div class={ 'address' + (this.address ? '' : ' fn-hide') }
+      <div class="address"
            onClick={ this.clickAddress }>
         <h4>默认发货地址（点击去地址管理修改）</h4>
         <label>收件人：</label>
