@@ -10,9 +10,9 @@ import WaterFall from '../component/waterfall/WaterFall.jsx';
 import Author from '../works/Author.jsx';
 import Comments from '../works/Comments.jsx';
 import InputCmt from '../component/inputcmt/InputCmt.jsx';
-import BotFn from '../component/botfn/BotFn.jsx';
 import Background from '../component/background/Background.jsx';
 import ImageView from '../component/imageview/ImageView.jsx';
+import BotPanel from '../component/botpanel/BotPanel.jsx';
 
 let offset = 0;
 let loadEnd;
@@ -257,7 +257,7 @@ class ImageAlbum extends migi.Component {
                 readOnly={ true }
                 on-click={ this.comment }
                 on-share={ this.share }/>
-      <BotFn ref="botFn"/>
+      <BotPanel ref="botPanel"/>
       <ImageView/>
     </div>;
   }

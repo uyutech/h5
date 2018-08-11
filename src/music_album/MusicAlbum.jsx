@@ -2,6 +2,7 @@
  * Created by army8735 on 2018/2/3.
  */
 
+
 'use strict';
 
 import Media from '../works/Media.jsx';
@@ -11,8 +12,8 @@ import Playlist from '../component/playlist/Playlist.jsx';
 import Author from '../works/Author.jsx';
 import Comments from '../works/Comments.jsx';
 import BotPlayBar from '../component/botplaybar/BotPlayBar.jsx';
-import BotFn from '../component/botfn/BotFn.jsx';
 import Background from '../component/background/Background.jsx';
+import BotPanel from '../component/botpanel/BotPanel.jsx';
 
 let currentPriority = 0;
 let cacheKey;
@@ -246,7 +247,7 @@ class MusicAlbum extends migi.Component {
                   on-prev={ this.prev }
                   on-next={ this.next }
                   on-comment={ this.comment }/>
-      <BotFn ref="botFn"/>
+      <BotPanel ref="botPanel"/>
     </div>;
   }
 }
