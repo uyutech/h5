@@ -170,6 +170,9 @@ class User extends migi.Component {
     let rel = tvd.props.rel;
     if(rel !== this.curColumn) {
       this.curColumn = rel;
+      if(rel === 3) {
+        this.ref.comments.visible = true;
+      }
     }
   }
   share() {
@@ -233,7 +236,7 @@ class User extends migi.Component {
     migi.eventBus.emit('BOT_PANEL', list);
   }
   comment() {
-    let self = this;console.log(self.data);
+    let self = this;
     let authorId = self.data.author[0].id;
     jsBridge.pushWindow('/sub_comment.html?type=1&id=' + authorId, {
       title: '评论',
