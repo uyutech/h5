@@ -21,7 +21,7 @@ class SubPost extends migi.Component {
         }
       });
       jsBridge.on('resume', function(e) {
-        if(e.data) {console.log(e.data);
+        if(e.data) {
           if(e.data.settle) {
             jsBridge.getPreference('my', function(cache) {
               if(cache) {

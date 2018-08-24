@@ -11,7 +11,7 @@ class Step3 extends migi.Component {
     self.visible = self.props.visible;
   }
   @bind visible
-  @bind text
+  @bind text = '作品题材：\n时间要求：\n需要风格：\n有偿/无偿：\n自我介绍：\n其它说明：'
   @bind valid
   @bind finish
   input(e, vd) {
